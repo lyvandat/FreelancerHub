@@ -1,11 +1,11 @@
-﻿using DeToiServer.Services.AccountService;
-using DeToiServerCore.Dtos;
+﻿using DeToiServer.Dtos;
+using DeToiServer.Services.AccountService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeToiServer.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/auth")]
     public class AuthController : ControllerBase
     {
         readonly IConfiguration _configuration;
@@ -17,14 +17,14 @@ namespace DeToiServer.Controllers
             _accService = accService;
         }
 
-        [HttpGet]
+        [HttpGet("detail")]
         public async Task<ActionResult<AccountDto>> GetById(int id)
         {
             var user = await _accService.GetAccountById(id);
             return Ok(user);
         }
 
-        [HttpGet("all")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<AccountDto>>> GetAll()
         {
             var user = await _accService.GetAllAccount();

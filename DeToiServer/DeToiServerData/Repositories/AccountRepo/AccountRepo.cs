@@ -1,5 +1,4 @@
 ﻿using DeToiServerCore.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace DeToiServerData.Repositories;
 

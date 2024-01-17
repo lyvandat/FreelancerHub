@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DeToiServerData.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace DeToiServerData
         public static IServiceCollection AddUnitOfWork(this IServiceCollection services, Action<DbContextOptionsBuilder> optionsAction)
         {
             services.AddDbContext<DataContext>(optionsAction);
+            services.AddScoped<IAccountRepo, AccountRepo>();
             services.AddScoped<UnitOfWork>();
             return services;
         }
