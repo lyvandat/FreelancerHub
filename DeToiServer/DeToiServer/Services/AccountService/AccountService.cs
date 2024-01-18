@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System.Linq.Expressions;
 
 namespace DeToiServer.Services.AccountService
 {
@@ -12,14 +13,35 @@ namespace DeToiServer.Services.AccountService
             _mapper = mapper;
         }
 
-        public async Task<Account> GetAccountById(int id)
+        public async Task<IEnumerable<Account>> GetAll()
+        {
+            return await _unitOfWork.AccountRepo.GetAllAsync();
+        }
+
+        public async Task<Account> GetById(int id)
         {
             return await _unitOfWork.AccountRepo.GetByIdAsync(id);
         }
 
-        public async Task<IEnumerable<Account>> GetAllAccount()
+        public async Task<Account> GetByCondition(Expression<Func<Account, bool>> predicate)
         {
-            return await _unitOfWork.AccountRepo.GetAllAsync();
+            return await _unitOfWork.AccountRepo.GetByConditionsAsync(predicate);
+        }
+
+        public async Task<Account> Add(Account acc)
+        {
+            var added = await _unitOfWork.AccountRepo.CreateAsync(acc);
+            await _unitOfWork.SaveChangesAsync();
+
+            return added;
+        }
+
+        public async Task<Account> Update(Account acc)
+        {
+            var updated = await _unitOfWork.AccountRepo.UpdateAsync(acc);
+            await _unitOfWork.SaveChangesAsync();
+
+            return updated;
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace DeToiServerCore.Models
+﻿namespace DeToiServerCore.Models
 {
     public abstract class ModelBase
     {

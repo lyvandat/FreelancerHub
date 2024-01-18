@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos;
 
-namespace DeToiServerCore
+namespace DeToiServer.AutoMapper
 {
     public class MappingProfile : Profile
     {

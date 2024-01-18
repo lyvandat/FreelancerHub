@@ -1,1 +1,5 @@
 dotnet ef dbcontext scaffold "Name=ConnectionStrings:local" Npgsql.EntityFrameworkCore.PostgreSQL --context-dir Database --output-dir Database/Models
+
+dotnet ef migrations add Inital --project ..\DeToiServerData\
+dotnet ef migrations remove --project ..\DeToiServerData\ 
+dotnet ef database update

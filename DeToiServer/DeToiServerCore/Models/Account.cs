@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DeToiServerCore.Models
+﻿namespace DeToiServerCore.Models
 {
     public class Account : ModelBase
     {
@@ -12,8 +9,9 @@ namespace DeToiServerCore.Models
         public string Role { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public string PasswordSalt { get; set; } = string.Empty;
-        public string PasswordResetToken { get; set; } = string.Empty;
         public string RefreshToken { get; set; } = string.Empty;
+        public string PasswordResetToken { get; set; } = string.Empty;
+        public DateTime ResetTokenExpires { get; set; } = DateTime.Now;
         public DateTime TokenCreated { get; set; }
         public DateTime TokenExpires { get; set; }
     }
