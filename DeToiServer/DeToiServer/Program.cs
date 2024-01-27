@@ -1,8 +1,11 @@
 global using DeToiServerCore.Models;
 global using DeToiServerData;
+using DeToiServer;
 using DeToiServer.AutoMapper;
+using DeToiServer.Dtos;
 using DeToiServer.Services.AccountService;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text.Json.Serialization;
@@ -10,6 +13,9 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
+builder.Services.Configure<ApplicationSecretSettings>(builder.Configuration.GetSection("LoginSocial"));
 
 builder.Services.AddControllers()
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
@@ -41,7 +47,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddServicesData();
 builder.Services.AddUnitOfWork(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("local")));
-
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

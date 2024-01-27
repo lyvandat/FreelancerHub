@@ -2,10 +2,6 @@
 
 namespace DeToiServer.Dtos
 {
-    public class AuthDto
-    {
-    }
-
     public class RegisterDto
     {
         public string FullName { get; set; } = string.Empty;

@@ -9,15 +9,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeToiServer", "DeToiServer\
 		{D2A31301-EE81-4450-A7CC-A5F57A08A749} = {D2A31301-EE81-4450-A7CC-A5F57A08A749}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeToiServerData", "DeToiServerData\DeToiServerData.csproj", "{017D10D4-6329-457D-AA5D-8B1E2F1DB91B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeToiServerData", "DeToiServerData\DeToiServerData.csproj", "{017D10D4-6329-457D-AA5D-8B1E2F1DB91B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D2A31301-EE81-4450-A7CC-A5F57A08A749} = {D2A31301-EE81-4450-A7CC-A5F57A08A749}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeToiServerCore", "DeToiServerCore\DeToiServerCore.csproj", "{D2A31301-EE81-4450-A7CC-A5F57A08A749}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeToiServerCore", "DeToiServerCore\DeToiServerCore.csproj", "{D2A31301-EE81-4450-A7CC-A5F57A08A749}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6855D48D-0EC0-4A2B-8DC9-82F982AD279C}"
 	ProjectSection(SolutionItems) = preProject
+		.env = .env
 		.gitignore = .gitignore
 		database_scalfold.txt = database_scalfold.txt
 	EndProjectSection

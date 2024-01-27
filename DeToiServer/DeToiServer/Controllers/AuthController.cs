@@ -3,8 +3,11 @@ using DeToiServer.Services.AccountService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
 using DeToiServerCore.Common.Helper;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using OtpNet;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
@@ -17,13 +20,15 @@ namespace DeToiServer.Controllers
     [Route("api/v1/auth")]
     public class AuthController : ControllerBase
     {
-        readonly IConfiguration _configuration;
-        readonly IAccountService _accService;
+        private readonly IConfiguration _configuration;
+        private readonly IAccountService _accService;
+        private readonly ApplicationSecretSettings _socialSecret;
 
-        public AuthController(IConfiguration configuration, IAccountService accService)
+        public AuthController(IConfiguration configuration, IAccountService accService, IOptions<ApplicationSecretSettings> socialSecret)
         {
             _configuration = configuration;
             _accService = accService;
+            _socialSecret = socialSecret.Value ?? throw new ArgumentException(null, nameof(socialSecret));
         }
 
         [HttpGet("detail")]
@@ -130,6 +135,48 @@ namespace DeToiServer.Controllers
                 refreshToken = refreshToken.Token,
                 role = account.Role
             });
+        }
+
+        [HttpPost("login-social")]
+        public async Task<ActionResult<string>> LoginSocial(LoginSocialRequestDto request)
+        {
+
+            //var account = await _accService.GetByCondition(acc => acc.Email.Equals(request.Email));
+
+            //if (account == null)
+            //{
+            //    return NotFound(new
+            //    {
+            //        Message = "Tài khoản không tồn tại."
+            //    });
+            //}
+
+            //var hasOrigin = this.Request.Headers.TryGetValue("Origin", out var requestOrigin);
+            //if (!hasOrigin || !Helper.IsAuthorizedOrigin(requestOrigin.ToString(), account.Role))
+            //{
+            //    return BadRequest(new
+            //    {
+            //        message = "Tài khoản đang đăng nhập tại sai trang web!",
+            //    });
+            //}
+
+            //if (!VerifyPasswordHash(request.Password, Helper.StringToByteArray(account.PasswordHash), Helper.StringToByteArray(account.PasswordSalt)))
+            //{
+            //    return BadRequest(new
+            //    {
+            //        message = "Sai thông tin tài khoản",
+            //    });
+            //}
+
+            //string token = CreateToken(account, account.Role);
+            //var refreshToken = GenerateRefreshToken();
+            //SetRefreshToken(refreshToken, account);
+
+            //await _accService.Update(account);
+
+            var res = await ValidateSocialToken(request);
+
+            return Ok(res);
         }
 
         [HttpPost("refresh-token")]
@@ -384,6 +431,77 @@ namespace DeToiServer.Controllers
         {
             TimeSpan timeSinceOtp = DateTime.Now - otpTime;
             return timeSinceOtp.TotalSeconds > validityPeriodSeconds;
+        }
+
+        private async Task<IActionResult> ValidateSocialToken(LoginSocialRequestDto request)
+        {
+            return request.Provider switch
+            {
+                LoginProviders.Facebook => await ValidateFacebookToken(request),
+                LoginProviders.Google => await ValidateGoogleToken(request),
+                _ => BadRequest(new
+                {
+                    message = $"Đăng nhập sử dụng {request.Provider} chưa hỗ trợ."
+                })
+            };
+        }
+
+        private async Task<IActionResult> ValidateFacebookToken(LoginSocialRequestDto request)
+        {
+            var handler = new HttpClientHandler();
+            handler.ServerCertificateCustomValidationCallback +=
+                (sender, certificate, chain, errors) =>
+                {
+                    return true;
+                };
+
+            var clientId = _socialSecret.Facebook.ClientId;
+            var clientSecret = _socialSecret.Facebook.ClientSecret;
+
+            using (var httpClient = new HttpClient(handler))
+            {
+                var getCall = await httpClient.GetAsync($"https://graph.facebook.com/oauth/access_token?client_id={clientId}&client_secret={clientSecret}&grant_type=client_credentials");
+                var appAccessTokenResponse = getCall.IsSuccessStatusCode ? await getCall.Content.ReadFromJsonAsync<FacebookAppAccessTokenResponse>() : null;
+
+                var debugCall = await httpClient.GetAsync($"https://graph.facebook.com/debug_token?input_token={request.AccessToken}&access_token={appAccessTokenResponse!.AccessToken}");
+                var response = debugCall.IsSuccessStatusCode ? await debugCall.Content.ReadFromJsonAsync<FacebookTokenValidationResult>() : null;
+
+                if (response != null && response.Data.IsValid)
+                {
+                    return Ok(response);
+                }
+            }
+
+            return BadRequest(new
+            {
+                message = $"{request.Provider} access token không hợp lệ."
+            });
+        }
+
+        private async Task<IActionResult> ValidateGoogleToken(LoginSocialRequestDto request)
+        {
+            try
+            {
+                var settings = new GoogleJsonWebSignature.ValidationSettings
+                {
+                    Audience = new List<string> { _socialSecret.Google.ClientId }
+                };
+                GoogleJsonWebSignature.Payload payload = await GoogleJsonWebSignature.ValidateAsync(request.AccessToken, settings);
+
+                if (payload != null)
+                {
+                    return Ok(payload);
+                }
+            }
+            catch (InvalidJwtException)
+            {
+                throw;
+            }
+
+            return Ok(new
+            {
+                message = "out"
+            });
         }
     }
 }

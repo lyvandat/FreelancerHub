@@ -23,5 +23,8 @@ namespace DeToiServerData
         }
 
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<ServiceOrder> ServiceOrders { get; set; }
+        public DbSet<ServiceStatus> ServiceStatuses { get; set; }
+        public DbSet<ServiceType> ServiceTypes { get; set; }
     }
 }
