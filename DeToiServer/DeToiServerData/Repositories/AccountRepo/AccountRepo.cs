@@ -1,4 +1,4 @@
-﻿using DeToiServerCore.Models;
+﻿using DeToiServerCore.Models.Accounts;
 
 namespace DeToiServerData.Repositories;
 

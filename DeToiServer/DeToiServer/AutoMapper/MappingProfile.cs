@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos;
+using DeToiServerCore.Models.Accounts;
 
 namespace DeToiServer.AutoMapper
 {

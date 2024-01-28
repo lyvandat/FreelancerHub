@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables();
-builder.Services.Configure<ApplicationSecretSettings>(builder.Configuration.GetSection("LoginSocial"));
+//builder.Services.Configure<ApplicationSecretSettings>(builder.Configuration.GetSection("LoginSocial"));
 
 builder.Services.AddControllers()
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
@@ -46,7 +46,7 @@ builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddServicesData();
 builder.Services.AddUnitOfWork(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("local")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("local_dat")));
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();

@@ -1,4 +1,5 @@
-﻿using DeToiServerData;
+﻿using DeToiServerCore.Models.Accounts;
+using DeToiServerData;
 using System.Linq.Expressions;
 
 namespace DeToiServer.Services.AccountService
