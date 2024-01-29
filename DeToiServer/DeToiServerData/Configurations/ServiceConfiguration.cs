@@ -2,6 +2,7 @@
 using DeToiServerCore.Models.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 
 namespace DeToiServerData.Configurations
 {
@@ -13,9 +14,18 @@ namespace DeToiServerData.Configurations
                 .WithMany(sc => sc.Services)
                 .HasForeignKey(s => s.ServiceCategoryId);
 
-            builder.HasMany(s => s.Orders)
-                .WithMany(o => o.Services)
-                .UsingEntity(j => j.ToTable("OrderService")); // name of the join table
+            //builder.HasMany(s => s.Orders)
+            //    .WithMany(o => o.Services)
+            //    .UsingEntity(j => j.ToTable("OrderService").HasOne()
+            //        .OnDelete(DeleteBehavior.Restrict));
+
+            // Configure the inheritance hierarchy using the Discriminator column
+            builder.HasDiscriminator<string>("Discriminator")
+                .HasValue<CleaningService>("CleaningService")
+                .HasValue<RepairingService>("RepairingService")
+                .HasValue<ShoppingService>("ShoppingService");
+
+            
         }
     }
 
@@ -33,35 +43,12 @@ namespace DeToiServerData.Configurations
 
             builder.HasOne(o => o.Freelance)
                 .WithMany(c => c.Orders)
-                .HasForeignKey(o => o.FreelancerId);
+                .HasForeignKey(o => o.FreelancerId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(o => o.ServiceStatus)
                 .WithMany(ss => ss.Orders)
                 .HasForeignKey(o => o.ServiceStatusId);
-        }
-    }
-
-    internal class CleaningServiceConfiguration : EntityTypeConfigurationBase<CleaningService>
-    {
-        protected override void OnConfigure(EntityTypeBuilder<CleaningService> builder)
-        {
-            builder.HasBaseType<Service>();
-        }
-    }
-
-    internal class RepairingServiceConfiguration : EntityTypeConfigurationBase<RepairingService>
-    {
-        protected override void OnConfigure(EntityTypeBuilder<RepairingService> builder)
-        {
-            builder.HasBaseType<Service>();
-        }
-    }
-
-    internal class ShoppingServiceConfiguration : EntityTypeConfigurationBase<ShoppingService>
-    {
-        protected override void OnConfigure(EntityTypeBuilder<ShoppingService> builder)
-        {
-            builder.HasBaseType<Service>();
         }
     }
 }

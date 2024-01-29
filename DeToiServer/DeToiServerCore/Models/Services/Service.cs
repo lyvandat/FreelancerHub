@@ -8,6 +8,7 @@
         public string? Description { get; set; }
         public int ServiceCategoryId { get; set; }
         public ServiceCategory? ServiceCategory { get; set; }
-        public ICollection<Order>? Orders { get; set; }
+        public string ServiceType { get; set; } = string.Empty;
+        public ICollection<OrderService>? OrderServices { get; set; }
     }
 }

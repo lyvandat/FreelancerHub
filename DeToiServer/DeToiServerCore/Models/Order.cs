@@ -20,6 +20,6 @@ namespace DeToiServerCore.Models
         public required ServiceCategory ServiceCategory { get; set; }
         public int ServiceStatusId { get; set; }
         public ServiceStatus? ServiceStatus { get; set; }
-        public ICollection<Service>? Services { get; set; }
+        public ICollection<OrderService>? OrderServices { get; set; }
     }
 }

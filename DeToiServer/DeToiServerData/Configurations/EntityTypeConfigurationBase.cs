@@ -10,7 +10,7 @@ namespace DeToiServerData.Configurations
         public void Configure(EntityTypeBuilder<TModel> builder)
         {
             builder.HasKey(prop => prop.Id);
-            builder.Property(prop => prop.Id).HasColumnName("id").ValueGeneratedOnAdd();
+            builder.Property(prop => prop.Id).ValueGeneratedOnAdd();
             OnConfigure(builder);
         }
 
