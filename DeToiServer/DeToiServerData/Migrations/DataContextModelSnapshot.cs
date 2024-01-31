@@ -125,9 +125,6 @@ namespace DeToiServerData.Migrations
                     b.Property<int>("AccountId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
@@ -152,9 +149,6 @@ namespace DeToiServerData.Migrations
 
                     b.Property<double>("Balance")
                         .HasColumnType("float");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("IdentityNumber")
                         .IsRequired()
@@ -359,7 +353,6 @@ namespace DeToiServerData.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Discriminator")
-                        .IsRequired()
                         .HasMaxLength(21)
                         .HasColumnType("nvarchar(21)");
 
@@ -384,9 +377,7 @@ namespace DeToiServerData.Migrations
 
                     b.ToTable("Services");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Service");
-
-                    b.UseTphMappingStrategy();
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Services.ServiceStatus", b =>
@@ -418,7 +409,7 @@ namespace DeToiServerData.Migrations
 
                     b.HasIndex("SkillsId");
 
-                    b.ToTable("FreelanceAccountSkill");
+                    b.ToTable("FreelanceSkills", (string)null);
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Services.CleaningService", b =>
@@ -442,10 +433,10 @@ namespace DeToiServerData.Migrations
 
                     b.HasIndex("HomeInfoId");
 
-                    b.ToTable("Services", t =>
+                    b.ToTable("CleaningServices", null, t =>
                         {
-                            t.Property("Price")
-                                .HasColumnName("CleaningService_Price");
+                            t.Property("Id")
+                                .HasColumnName("CleaningServiceId");
                         });
 
                     b.HasDiscriminator().HasValue("CleaningService");
@@ -466,6 +457,12 @@ namespace DeToiServerData.Migrations
 
                     b.HasIndex("DeviceInfoId");
 
+                    b.ToTable("RepairingServices", null, t =>
+                        {
+                            t.Property("Id")
+                                .HasColumnName("RepairingServiceId");
+                        });
+
                     b.HasDiscriminator().HasValue("RepairingService");
                 });
 
@@ -481,10 +478,10 @@ namespace DeToiServerData.Migrations
 
                     b.HasIndex("ShoppingInfoId");
 
-                    b.ToTable("Services", t =>
+                    b.ToTable("ShoppingServices", null, t =>
                         {
-                            t.Property("Price")
-                                .HasColumnName("ShoppingService_Price");
+                            t.Property("Id")
+                                .HasColumnName("ShoppingServiceId");
                         });
 
                     b.HasDiscriminator().HasValue("ShoppingService");
@@ -609,6 +606,12 @@ namespace DeToiServerData.Migrations
                         .WithMany()
                         .HasForeignKey("HomeInfoId");
 
+                    b.HasOne("DeToiServerCore.Models.Services.Service", null)
+                        .WithOne()
+                        .HasForeignKey("DeToiServerCore.Models.Services.CleaningService", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("HomeInfo");
                 });
 
@@ -618,11 +621,23 @@ namespace DeToiServerData.Migrations
                         .WithMany()
                         .HasForeignKey("DeviceInfoId");
 
+                    b.HasOne("DeToiServerCore.Models.Services.Service", null)
+                        .WithOne()
+                        .HasForeignKey("DeToiServerCore.Models.Services.RepairingService", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("DeviceInfo");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Services.ShoppingService", b =>
                 {
+                    b.HasOne("DeToiServerCore.Models.Services.Service", null)
+                        .WithOne()
+                        .HasForeignKey("DeToiServerCore.Models.Services.ShoppingService", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DeToiServerCore.Models.Infos.ShoppingInfo", "ShoppingInfo")
                         .WithMany()
                         .HasForeignKey("ShoppingInfoId");

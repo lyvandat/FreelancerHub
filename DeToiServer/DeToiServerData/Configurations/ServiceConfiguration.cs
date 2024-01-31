@@ -14,18 +14,11 @@ namespace DeToiServerData.Configurations
                 .WithMany(sc => sc.Services)
                 .HasForeignKey(s => s.ServiceCategoryId);
 
-            //builder.HasMany(s => s.Orders)
-            //    .WithMany(o => o.Services)
-            //    .UsingEntity(j => j.ToTable("OrderService").HasOne()
-            //        .OnDelete(DeleteBehavior.Restrict));
-
             // Configure the inheritance hierarchy using the Discriminator column
             builder.HasDiscriminator<string>("Discriminator")
                 .HasValue<CleaningService>("CleaningService")
                 .HasValue<RepairingService>("RepairingService")
                 .HasValue<ShoppingService>("ShoppingService");
-
-            
         }
     }
 
@@ -49,6 +42,57 @@ namespace DeToiServerData.Configurations
             builder.HasOne(o => o.ServiceStatus)
                 .WithMany(ss => ss.Orders)
                 .HasForeignKey(o => o.ServiceStatusId);
+        }
+    }
+
+    internal class OrderServiceConfiguration : EntityTypeConfigurationBaseClass<OrderService>
+    {
+        protected override void OnConfigure(EntityTypeBuilder<OrderService> builder)
+        {
+            builder.HasKey(os => new { os.OrderId, os.ServiceId });
+
+            builder.HasOne(os => os.Order)
+                .WithMany(o => o.OrderServices)
+                .HasForeignKey(os => os.OrderId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(os => os.Service)
+                .WithMany(s => s.OrderServices)
+                .HasForeignKey(os => os.ServiceId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Optionally, set the table name for the joint table
+            builder.ToTable("OrderService");
+        }
+    }
+
+    internal class CleaningServiceConfiguration : EntityTypeConfigurationBaseClass<CleaningService>
+    {
+        protected override void OnConfigure(EntityTypeBuilder<CleaningService> builder)
+        {
+            builder.ToTable(
+                    "CleaningServices",
+                    tableBuilder => tableBuilder.Property(cat => cat.Id).HasColumnName("CleaningServiceId"));
+        }
+    }
+
+    internal class RepairingServiceConfiguration : EntityTypeConfigurationBaseClass<RepairingService>
+    {
+        protected override void OnConfigure(EntityTypeBuilder<RepairingService> builder)
+        {
+            builder.ToTable(
+                    "RepairingServices",
+                    tableBuilder => tableBuilder.Property(cat => cat.Id).HasColumnName("RepairingServiceId"));
+        }
+    }
+
+    internal class ShoppingServiceConfiguration : EntityTypeConfigurationBaseClass<ShoppingService>
+    {
+        protected override void OnConfigure(EntityTypeBuilder<ShoppingService> builder)
+        {
+            builder.ToTable(
+                    "ShoppingServices",
+                    tableBuilder => tableBuilder.Property(cat => cat.Id).HasColumnName("ShoppingServiceId"));
         }
     }
 }

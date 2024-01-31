@@ -16,4 +16,15 @@ namespace DeToiServerData.Configurations
 
         protected abstract void OnConfigure(EntityTypeBuilder<TModel> builder);
     }
+
+    internal abstract class EntityTypeConfigurationBaseClass<TModel> : IEntityTypeConfiguration<TModel>
+        where TModel : class
+    {
+        public void Configure(EntityTypeBuilder<TModel> builder)
+        {
+            OnConfigure(builder);
+        }
+
+        protected abstract void OnConfigure(EntityTypeBuilder<TModel> builder);
+    }
 }

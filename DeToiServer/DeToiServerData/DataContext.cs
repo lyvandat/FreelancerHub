@@ -23,26 +23,13 @@ namespace DeToiServerData
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new AccountConfiguration());
+            modelBuilder.ApplyConfiguration(new FreelanceConfiguration());
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
-
-            modelBuilder.Entity<OrderService>()
-                .HasKey(os => new { os.OrderId, os.ServiceId });
-
-            modelBuilder.Entity<OrderService>()
-                .HasOne(os => os.Order)
-                .WithMany(o => o.OrderServices)
-                .HasForeignKey(os => os.OrderId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<OrderService>()
-                .HasOne(os => os.Service)
-                .WithMany(s => s.OrderServices)
-                .HasForeignKey(os => os.ServiceId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // Optionally, set the table name for the joint table
-            modelBuilder.Entity<OrderService>().ToTable("OrderService");
+            modelBuilder.ApplyConfiguration(new OrderServiceConfiguration());
+            modelBuilder.ApplyConfiguration(new CleaningServiceConfiguration());
+            modelBuilder.ApplyConfiguration(new ShoppingServiceConfiguration());
+            modelBuilder.ApplyConfiguration(new RepairingServiceConfiguration());
         }
 
         // Account related models

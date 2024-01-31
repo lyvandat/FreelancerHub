@@ -10,7 +10,6 @@ namespace DeToiServerCore.Models.Accounts
     {
         public required Account Account { get; set; }
         public required int AccountId { get; set; }
-        public DateTime DateOfBirth { get; set; }
         public ICollection<Address>? Addresses { get; set; }
         public ICollection<Order>? Orders { get; set; }
     }
