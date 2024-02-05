@@ -1,4 +1,6 @@
 ﻿using DeToiServerData.Repositories;
+using DeToiServerData.Repositories.ServiceRepo;
+using DeToiServerData.Repositories.ServiceTypeRepo;
 using System.Transactions;
 
 namespace DeToiServerData
@@ -19,6 +21,18 @@ namespace DeToiServerData
             {
                 _accountRepo ??= new AccountRepo(_dataContext);
                 return _accountRepo;
+            }
+        }
+        #endregion
+
+        #region Service
+        private IServiceTypeRepo _serviceTypeRepo;
+        public IServiceTypeRepo ServiceTypeRepo
+        {
+            get
+            {
+                _serviceTypeRepo ??= new ServiceTypeRepo(_dataContext);
+                return _serviceTypeRepo;
             }
         }
         #endregion

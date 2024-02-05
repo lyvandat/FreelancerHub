@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeToiServerData.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240131141452_V2_BasicModels2")]
-    partial class V2_BasicModels2
+    [Migration("20240205153841_V1_ModelsForServices")]
+    partial class V1_ModelsForServices
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -128,9 +128,6 @@ namespace DeToiServerData.Migrations
                     b.Property<int>("AccountId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
@@ -155,9 +152,6 @@ namespace DeToiServerData.Migrations
 
                     b.Property<double>("Balance")
                         .HasColumnType("float");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("IdentityNumber")
                         .IsRequired()
@@ -355,34 +349,20 @@ namespace DeToiServerData.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("BasePrice")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Discriminator")
                         .HasMaxLength(21)
                         .HasColumnType("nvarchar(21)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Note")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ServiceCategoryId")
+                    b.Property<int>("ServiceTypeId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ServiceType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ServiceCategoryId");
+                    b.HasIndex("ServiceTypeId");
 
                     b.ToTable("Services");
 
@@ -406,6 +386,34 @@ namespace DeToiServerData.Migrations
                     b.ToTable("ServiceStatuses");
                 });
 
+            modelBuilder.Entity("DeToiServerCore.Models.Services.ServiceType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("BasePrice")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ServiceCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServiceCategoryId");
+
+                    b.ToTable("ServiceTypes");
+                });
+
             modelBuilder.Entity("FreelanceAccountSkill", b =>
                 {
                     b.Property<int>("FreelancersId")
@@ -418,7 +426,7 @@ namespace DeToiServerData.Migrations
 
                     b.HasIndex("SkillsId");
 
-                    b.ToTable("FreelanceAccountSkill");
+                    b.ToTable("FreelanceSkills", (string)null);
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Services.CleaningService", b =>
@@ -585,11 +593,20 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("DeToiServerCore.Models.Services.Service", b =>
                 {
-                    b.HasOne("DeToiServerCore.Models.ServiceCategory", "ServiceCategory")
+                    b.HasOne("DeToiServerCore.Models.Services.ServiceType", "ServiceType")
                         .WithMany("Services")
-                        .HasForeignKey("ServiceCategoryId")
+                        .HasForeignKey("ServiceTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ServiceType");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.Services.ServiceType", b =>
+                {
+                    b.HasOne("DeToiServerCore.Models.ServiceCategory", "ServiceCategory")
+                        .WithMany("ServiceTypes")
+                        .HasForeignKey("ServiceCategoryId");
 
                     b.Navigation("ServiceCategory");
                 });
@@ -675,7 +692,7 @@ namespace DeToiServerData.Migrations
                 {
                     b.Navigation("Orders");
 
-                    b.Navigation("Services");
+                    b.Navigation("ServiceTypes");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Services.Service", b =>
@@ -686,6 +703,11 @@ namespace DeToiServerData.Migrations
             modelBuilder.Entity("DeToiServerCore.Models.Services.ServiceStatus", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.Services.ServiceType", b =>
+                {
+                    b.Navigation("Services");
                 });
 #pragma warning restore 612, 618
         }

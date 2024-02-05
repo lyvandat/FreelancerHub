@@ -43,6 +43,7 @@ namespace DeToiServerData
         public DbSet<Order> Orders { get; set; }
         public DbSet<ServiceStatus> ServiceStatuses { get; set; }
         public DbSet<Service> Services { get; set; }
+        public DbSet<ServiceType> ServiceTypes { get; set; }
         public DbSet<CleaningService> CleaningServices { get; set; }
         public DbSet<RepairingService> RepairingServices { get; set; }
         public DbSet<ShoppingService> ShoppingServices { get; set; }

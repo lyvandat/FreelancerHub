@@ -10,9 +10,9 @@ namespace DeToiServerData.Configurations
     {
         protected override void OnConfigure(EntityTypeBuilder<Service> builder)
         {
-            builder.HasOne(s => s.ServiceCategory)
-                .WithMany(sc => sc.Services)
-                .HasForeignKey(s => s.ServiceCategoryId);
+            builder.HasOne(s => s.ServiceType)
+                .WithMany(st => st.Services)
+                .HasForeignKey(s => s.ServiceTypeId);
 
             // Configure the inheritance hierarchy using the Discriminator column
             builder.HasDiscriminator<string>("Discriminator")
