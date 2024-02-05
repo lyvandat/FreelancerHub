@@ -41,7 +41,7 @@ builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddServicesData();
 builder.Services.AddUnitOfWork(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("local_dat")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("local")));
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();

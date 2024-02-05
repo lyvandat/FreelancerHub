@@ -30,6 +30,10 @@ namespace DeToiServerData
             modelBuilder.ApplyConfiguration(new CleaningServiceConfiguration());
             modelBuilder.ApplyConfiguration(new ShoppingServiceConfiguration());
             modelBuilder.ApplyConfiguration(new RepairingServiceConfiguration());
+
+            modelBuilder.ApplyConfiguration(new TermOfServiceConfiguration());
+            modelBuilder.ApplyConfiguration(new FrequentlyAskedQuestionConfiguration());
+            modelBuilder.ApplyConfiguration(new BlogPostConfiguration());
         }
 
         // Account related models
@@ -52,5 +56,10 @@ namespace DeToiServerData
         public DbSet<DeviceInfo> DeviceInfo { get; set; }
         public DbSet<ShoppingInfo> ShoppingInfo { get; set; }
 
+        #region Content_related_models
+        public DbSet<TermOfService> TermOfServices { get; set; }
+        public DbSet<BlogPost> BlogPosts { get; set; }
+        public DbSet<FrequentlyAskedQuestion> FrequentlyAskedQuestions { get; set; }
+        #endregion
     }
 }
