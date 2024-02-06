@@ -89,7 +89,7 @@ namespace DeToiServerData.Migrations
                     b.HasKey("Id")
                         .HasName("pk_accounts");
 
-                    b.ToTable("Accounts", (string)null);
+                    b.ToTable("Accounts");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Accounts.Address", b =>
@@ -111,7 +111,7 @@ namespace DeToiServerData.Migrations
 
                     b.HasIndex("CustomerAccountId");
 
-                    b.ToTable("Addresses", (string)null);
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Accounts.CustomerAccount", b =>
@@ -129,7 +129,7 @@ namespace DeToiServerData.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Customers", (string)null);
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Accounts.FreelanceAccount", b =>
@@ -164,7 +164,7 @@ namespace DeToiServerData.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Freelancers", (string)null);
+                    b.ToTable("Freelancers");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Accounts.Skill", b =>
@@ -185,7 +185,71 @@ namespace DeToiServerData.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Skills", (string)null);
+                    b.ToTable("Skills");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.BlogPost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateOnly>("EffectiveDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tilte")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BlogPosts");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.FrequentlyAskedQuestion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateOnly>("EffectiveDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tilte")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FrequentlyAskedQuestions");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Infos.DeviceInfo", b =>
@@ -206,7 +270,7 @@ namespace DeToiServerData.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DeviceInfo", (string)null);
+                    b.ToTable("DeviceInfo");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Infos.HomeInfo", b =>
@@ -227,7 +291,7 @@ namespace DeToiServerData.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HomeInfo", (string)null);
+                    b.ToTable("HomeInfo");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Infos.ShoppingInfo", b =>
@@ -244,7 +308,7 @@ namespace DeToiServerData.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ShoppingInfo", (string)null);
+                    b.ToTable("ShoppingInfo");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Order", b =>
@@ -296,7 +360,7 @@ namespace DeToiServerData.Migrations
 
                     b.HasIndex("ServiceStatusId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.ServiceCategory", b =>
@@ -320,7 +384,7 @@ namespace DeToiServerData.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ServiceCategories", (string)null);
+                    b.ToTable("ServiceCategories");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Services.OrderService", b =>
@@ -347,7 +411,6 @@ namespace DeToiServerData.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Discriminator")
-                        .IsRequired()
                         .HasMaxLength(21)
                         .HasColumnType("nvarchar(21)");
 
@@ -362,9 +425,7 @@ namespace DeToiServerData.Migrations
 
                     b.HasIndex("ServiceTypeId");
 
-                    b.ToTable("Services", (string)null);
-
-                    b.HasDiscriminator<string>("Discriminator");
+                    b.ToTable("Services");
 
                     b.UseTptMappingStrategy();
                 });
@@ -383,7 +444,7 @@ namespace DeToiServerData.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ServiceStatuses", (string)null);
+                    b.ToTable("ServiceStatuses");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Services.ServiceType", b =>
@@ -412,6 +473,38 @@ namespace DeToiServerData.Migrations
                     b.HasIndex("ServiceCategoryId");
 
                     b.ToTable("ServiceTypes");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.TermOfService", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateOnly>("EffectiveDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tilte")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TermOfServices");
                 });
 
             modelBuilder.Entity("FreelanceAccountSkill", b =>
