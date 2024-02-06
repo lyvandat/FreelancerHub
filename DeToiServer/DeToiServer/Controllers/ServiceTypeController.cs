@@ -27,7 +27,17 @@ namespace DeToiServer.Controllers
         [HttpGet("detail")]
         public async Task<ActionResult<GetServiceTypeDto>> GetServiceById(int id)
         {
-            return Ok(await _service.GetById(id));
+            var serviceType = await _service.GetById(id);
+
+            if (serviceType is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không thể tìm thấy dịch vụ!"
+                });
+            }
+
+            return Ok(serviceType);
         }
 
         [HttpPost]
@@ -50,6 +60,7 @@ namespace DeToiServer.Controllers
         public async Task<IActionResult> DeleteService(int id)
         {
             await _service.Delete(id);
+            await _uow.SaveChangesAsync();
             return NoContent();
         }
     }

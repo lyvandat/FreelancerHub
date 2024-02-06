@@ -1,8 +1,8 @@
 ﻿using DeToiServerCore.Models.Services;
-using DeToiServerData.Repositories.ServiceTypeRepo;
+using DeToiServerData.Specifications.ServiceTypeSpecification;
 using Microsoft.EntityFrameworkCore;
 
-namespace DeToiServerData.Repositories.ServiceRepo
+namespace DeToiServerData.Repositories.ServiceTypeRepo
 {
     public class ServiceTypeRepo : RepositoryBase<ServiceType>, IServiceTypeRepo
     {
@@ -14,13 +14,9 @@ namespace DeToiServerData.Repositories.ServiceRepo
         }
 
         public async Task<IEnumerable<ServiceType>> GetAllWithCategory()
-        {
-            return await _context.ServiceTypes.Include(st => st.ServiceCategory).ToListAsync();
-        }
+            => await ApplySpecification(new ServiceTypeWithCategorySpecification()).ToListAsync();
 
         public async Task<ServiceType> GetByIdWithCategory(int id)
-        {
-            return await _context.ServiceTypes.Where(sc => sc.Id == id).Include(st => st.ServiceCategory).FirstOrDefaultAsync();
-        }
+            => await ApplySpecification(new ServiceTypeByIdWithCategorySpecification(st => st.Id == id)).FirstOrDefaultAsync();
     }
 }

@@ -1,5 +1,5 @@
 ﻿using DeToiServerData.Repositories;
-using DeToiServerData.Repositories.ServiceRepo;
+using DeToiServerData.Repositories.ServiceCategoryRepo;
 using DeToiServerData.Repositories.ServiceTypeRepo;
 using System.Transactions;
 
@@ -33,6 +33,18 @@ namespace DeToiServerData
             {
                 _serviceTypeRepo ??= new ServiceTypeRepo(_dataContext);
                 return _serviceTypeRepo;
+            }
+        }
+        #endregion
+
+        #region ServiceCategory
+        private IServiceCategoryRepo _serviceCategoryRepo;
+        public IServiceCategoryRepo ServiceCategoryRepo
+        {
+            get
+            {
+                _serviceCategoryRepo ??= new ServiceCategoryRepo(_dataContext);
+                return _serviceCategoryRepo;
             }
         }
         #endregion

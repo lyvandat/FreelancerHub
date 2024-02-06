@@ -1,4 +1,5 @@
 ﻿using DeToiServerCore.Models;
+using DeToiServerData.Specifications;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -75,6 +76,14 @@ namespace DeToiServerData.Repositories
                 var entity = GetById(id);
                 return _context.Remove(entity).Entity;
             });
+        }
+
+        protected IQueryable<TModel> ApplySpecification(
+            Specification<TModel> specification)
+        {
+            return SpecificationEvaluator.GetQuery(
+                _context.Set<TModel>(),
+                specification);
         }
     }
 }
