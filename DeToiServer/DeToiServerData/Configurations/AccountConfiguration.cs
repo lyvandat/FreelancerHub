@@ -8,8 +8,6 @@ namespace DeToiServerData.Configurations
     {
         protected override void OnConfigure(EntityTypeBuilder<Account> builder)
         {
-            builder.ToTable("Accounts");
-
             builder.HasKey(e => e.Id).HasName("pk_accounts");
 
             builder.Property(e => e.Email).HasMaxLength(255);
