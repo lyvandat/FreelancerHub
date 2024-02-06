@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos;
+using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.ServiceCategoryDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServerCore.Models.Accounts;
@@ -12,7 +13,8 @@ namespace DeToiServer.AutoMapper
         public MappingProfile()
         {
             #region Account
-            CreateMap<Account, AccountDto>().ReverseMap();
+            CreateMap<GetAccountDto, Account>().ReverseMap();
+            CreateMap<PutAccountDto, Account>().ReverseMap();
 
             #endregion
 

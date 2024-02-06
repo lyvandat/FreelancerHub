@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DeToiServer.Dtos.AccountDtos;
 using DeToiServerCore.Models.Accounts;
 using System.Linq.Expressions;
 
@@ -43,6 +44,20 @@ namespace DeToiServer.Services.AccountService
             await _unitOfWork.SaveChangesAsync();
 
             return updated;
+        }
+
+        public async Task<GetAccountDto> GetAccountDetailsById(int accountId)
+        {
+            var account = await _unitOfWork.AccountRepo.GetByIdAsync(accountId);
+
+            return _mapper.Map<GetAccountDto>(account);
+        }
+
+        public async Task BanAccount(int accountId)
+        {
+            var account = await _unitOfWork.AccountRepo.GetByIdAsync(accountId);
+            account.IsActive = false;
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

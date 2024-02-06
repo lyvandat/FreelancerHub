@@ -32,20 +32,6 @@ namespace DeToiServer.Controllers
             _socialSecret = socialSecret.Value ?? throw new ArgumentException(null, nameof(socialSecret));
         }
 
-        [HttpGet("detail")]
-        public async Task<ActionResult<AccountDto>> GetById(int id)
-        {
-            var user = await _accService.GetById(id);
-            return Ok(user);
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<AccountDto>>> GetAll()
-        {
-            var user = await _accService.GetAll();
-            return Ok(user);
-        }
-
         [HttpPost("register-customer")]
         public async Task<ActionResult<Account>> Register(RegisterDto request)
         {
@@ -252,6 +238,7 @@ namespace DeToiServer.Controllers
             {
                 new Claim(ClaimTypes.Name, acc.Email),
                 new Claim(ClaimTypes.Role, role),
+                new Claim(ClaimTypes.Sid, acc.Id.ToString())
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(

@@ -1,5 +1,5 @@
-﻿using DeToiServerCore.Models.Accounts;
-using DeToiServerData;
+﻿using DeToiServer.Dtos.AccountDtos;
+using DeToiServerCore.Models.Accounts;
 using System.Linq.Expressions;
 
 namespace DeToiServer.Services.AccountService
@@ -11,5 +11,7 @@ namespace DeToiServer.Services.AccountService
         Task<Account> GetByCondition(Expression<Func<Account, bool>> predicate);
         Task<Account> Add(Account acc);
         Task<Account> Update(Account acc);
+        Task<GetAccountDto> GetAccountDetailsById(int accountId);
+        Task BanAccount(int accountId);
     }
 }

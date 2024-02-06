@@ -15,5 +15,6 @@
         public DateTime ResetTokenExpires { get; set; } = DateTime.Now;
         public DateTime TokenCreated { get; set; }
         public DateTime TokenExpires { get; set; }
+        public bool IsActive { get; set; } = true;
     }
 }
