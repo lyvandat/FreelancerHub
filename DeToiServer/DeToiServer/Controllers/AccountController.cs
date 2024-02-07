@@ -1,7 +1,9 @@
 using AutoMapper;
+using DeToiServer.Dtos;
 using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Services.AccountService;
 using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Accounts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -106,48 +108,48 @@ namespace DeToiServer.Controllers
             return Ok(new { Message = "Cấm tài khoản thành công" });
         }
 
-        //[HttpGet("search"), Authorize(Roles = GlobalConstant.Admin)]
-        //public async Task<ActionResult<ResponseMessageDetails<int>>> SearchAccount(
-        //    [FromQuery] string name,
-        //    [FromQuery] string role,
-        //    [FromQuery] string gender,
-        //    [FromQuery] PagingDto pageDto,
-        //    [FromQuery] string sortingCol,
-        //    [FromQuery] string sortType
-        //)
-        //{
-        //    List<AccountInfoDto> result;
-        //    try
-        //    {
-        //        result = await _accountService.GetAllAccountInfo(new FilterAccountDto(name, role, gender, sortingCol, sortType));
-        //    }
-        //    catch (Microsoft.Data.SqlClient.SqlException exception)
-        //    {
-        //        return BadRequest(new
-        //        {
-        //            message = exception.Message
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(new
-        //        {
-        //            message = ex.Message
-        //        });
-        //    }
+        [HttpGet("search"), Authorize(Roles = GlobalConstant.Admin)]
+        public async Task<ActionResult<IEnumerable<GetAccountDto>>> SearchAccount(
+            [FromQuery] string name,
+            [FromQuery] string role,
+            [FromQuery] string gender,
+            [FromQuery] PagingDto pageDto,
+            [FromQuery] string sortingCol,
+            [FromQuery] string sortType
+        )
+        {
+            List<GetAccountDto> result;
+            try
+            {
+                result = await _accountService.GetAllAccountInfo(new FilterAccountDto(name, role, gender, sortingCol, sortType));
+            }
+            catch (Microsoft.Data.SqlClient.SqlException exception)
+            {
+                return BadRequest(new
+                {
+                    message = exception.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
 
-        //    var Accounts = PageList<AccountInfoDto>.ToPageList(result.AsQueryable(), pageDto.page_number, pageDto.page_size);
+            var Accounts = PageList<GetAccountDto>.ToPageList(result.AsQueryable(), pageDto.PageNumber, pageDto.PageSize);
 
-        //    return Ok(new
-        //    {
-        //        Accounts,
-        //        totalCount = Accounts.TotalCount,
-        //        pageSize = Accounts.PageSize,
-        //        currentPage = Accounts.CurrentPage,
-        //        totalPages = Accounts.TotalPages,
-        //        hasNext = Accounts.HasNext,
-        //        hasPrevious = Accounts.HasPrevious
-        //    });
-        //}
+            return Ok(new
+            {
+                Accounts,
+                totalCount = Accounts.TotalCount,
+                pageSize = Accounts.PageSize,
+                currentPage = Accounts.CurrentPage,
+                totalPages = Accounts.TotalPages,
+                hasNext = Accounts.HasNext,
+                hasPrevious = Accounts.HasPrevious
+            });
+        }
     }
 }

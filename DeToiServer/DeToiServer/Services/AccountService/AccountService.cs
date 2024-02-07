@@ -59,5 +59,10 @@ namespace DeToiServer.Services.AccountService
             account.IsActive = false;
             await _unitOfWork.SaveChangesAsync();
         }
+
+        public async Task<List<Account>> GetAllAccountInfo(FilterAccountDto searchAccount)
+        {
+            return await _unitOfWork.AccountRepo.GetAllAccountInfoAsync(searchAccount);
+        }
     }
 }

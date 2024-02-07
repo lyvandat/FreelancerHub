@@ -1,4 +1,4 @@
-using DeToiServer.Dtos;
+using DeToiServer.Dtos.AuthDtos;
 using DeToiServer.Services.AccountService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
