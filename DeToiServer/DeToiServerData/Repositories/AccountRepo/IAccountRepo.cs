@@ -5,5 +5,5 @@ namespace DeToiServerData.Repositories;
 
 public interface IAccountRepo : IRepository<Account>
 {
-    Task<IEnumerable<Account>> GetAllAccountInfoAsync(FilterAccountDto searchAccount);
+    Task<IEnumerable<Account>> GetAllAccountInfoAsync(FilterAccountQuery searchAccount);
 }

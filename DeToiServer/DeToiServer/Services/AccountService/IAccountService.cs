@@ -13,6 +13,6 @@ namespace DeToiServer.Services.AccountService
         Task<Account> Update(Account acc);
         Task<GetAccountDto> GetAccountDetailsById(int accountId);
         Task BanAccount(int accountId);
-        Task<List<GetAccountDto>> GetAllAccountInfo(FilterAccountDto searchAccount);
+        Task<IEnumerable<GetAccountDto>> GetAllAccountInfo(FilterAccountQuery searchAccount);
     }
 }

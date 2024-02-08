@@ -60,9 +60,11 @@ namespace DeToiServer.Services.AccountService
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<List<Account>> GetAllAccountInfo(FilterAccountDto searchAccount)
+        public async Task<IEnumerable<GetAccountDto>> GetAllAccountInfo(FilterAccountQuery searchAccount)
         {
-            return await _unitOfWork.AccountRepo.GetAllAccountInfoAsync(searchAccount);
+            var rawAccounts = await _unitOfWork.AccountRepo.GetAllAccountInfoAsync(searchAccount);
+
+            return rawAccounts.Select(_mapper.Map<GetAccountDto>);
         }
     }
 }

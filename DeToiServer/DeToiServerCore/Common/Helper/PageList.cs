@@ -1,6 +1,6 @@
 ﻿namespace DeToiServerCore.Common.Helper
 {
-    public class PageList<T> : List<T>
+    public class PageList<T>
     {
         public PageList(List<T> items, int count, int pageNum, int pageSize)
         {
@@ -9,8 +9,6 @@
             PageSize = pageSize;
             CurrentPage = pageNum;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-
-            AddRange(items);
         }
 
         public int CurrentPage { get; }
