@@ -33,6 +33,27 @@
         ];
     }
 
+    public static class CustomerRankConst
+    {
+        public const string Unranked = "Unranked";
+        public const string Bronze = "Bronze";
+
+        public static readonly List<string> Ranks = [
+            Bronze
+        ];
+    }
+
+    public static class DiscountTypeConst
+    {
+        public const string Direct = "Direct";
+        public const string Percentage = "Percentage";
+
+        public static readonly List<string> Types = [
+            Direct,
+            Percentage
+        ];
+    }
+
     public static class LoginProviders
     {
         public const string Google = "GOOGLE";

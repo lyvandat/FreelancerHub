@@ -8,14 +8,21 @@ namespace DeToiServerCore.Models
 {
     public class ContentBaseModel : ModelBase
     {
-        public string Content { get; set; }
+        public string Content { get; set; } = string.Empty;
+        public string Tilte { get; set; } = string.Empty;
+        public DateOnly PublishDate { get; set; }
     }
 
     public class TermOfService : ContentBaseModel
     {
-        public string Tilte { get; set; }
-        public string Image { get; set; }
-        public string Url { get; set; }
-        public DateOnly EffectiveDate { get; set; }
+        public string Url { get; set; } = string.Empty;
+    }
+
+    public class BlogPost : ContentBaseModel
+    {
+    }
+
+    public class FrequentlyAskedQuestion : ContentBaseModel
+    {
     }
 }

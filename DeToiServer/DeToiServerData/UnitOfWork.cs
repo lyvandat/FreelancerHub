@@ -1,4 +1,5 @@
 ﻿using DeToiServerData.Repositories;
+using DeToiServerData.Repositories.PromotionRepo;
 using DeToiServerData.Repositories.ServiceCategoryRepo;
 using DeToiServerData.Repositories.ServiceTypeRepo;
 using System.Transactions;
@@ -45,6 +46,18 @@ namespace DeToiServerData
             {
                 _serviceCategoryRepo ??= new ServiceCategoryRepo(_dataContext);
                 return _serviceCategoryRepo;
+            }
+        }
+        #endregion
+
+        #region Promotion
+        private IPromotionRepo _promotionRepo;
+        public IPromotionRepo PromotionRepo
+        {
+            get
+            {
+                _promotionRepo ??= new PromotionRepo(_dataContext);
+                return _promotionRepo;
             }
         }
         #endregion

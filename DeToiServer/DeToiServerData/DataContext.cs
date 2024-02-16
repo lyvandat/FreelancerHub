@@ -34,6 +34,9 @@ namespace DeToiServerData
             modelBuilder.ApplyConfiguration(new TermOfServiceConfiguration());
             modelBuilder.ApplyConfiguration(new FrequentlyAskedQuestionConfiguration());
             modelBuilder.ApplyConfiguration(new BlogPostConfiguration());
+
+            modelBuilder.ApplyConfiguration(new PromotionConfiguration());
+            modelBuilder.ApplyConfiguration(new CustomerPromotionConfiguration());
         }
 
         // Account related models
@@ -60,6 +63,11 @@ namespace DeToiServerData
         public DbSet<TermOfService> TermOfServices { get; set; }
         public DbSet<BlogPost> BlogPosts { get; set; }
         public DbSet<FrequentlyAskedQuestion> FrequentlyAskedQuestions { get; set; }
+        #endregion
+
+        #region Promotion_models
+        public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<CustomerPromotion> CustomerPromotions { get; set; }
         #endregion
     }
 }
