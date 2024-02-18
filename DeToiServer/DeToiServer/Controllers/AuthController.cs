@@ -23,13 +23,13 @@ namespace DeToiServer.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly IAccountService _accService;
-        private readonly ApplicationSecretSettings _socialSecret;
+        private readonly LoginSocialSecret _socialSecret;
 
-        public AuthController(IConfiguration configuration, IAccountService accService, IOptions<ApplicationSecretSettings> socialSecret)
+        public AuthController(IConfiguration configuration, IAccountService accService, IOptions<ApplicationSecretSettings> appSecret)
         {
             _configuration = configuration;
             _accService = accService;
-            _socialSecret = socialSecret.Value ?? throw new ArgumentException(null, nameof(socialSecret));
+            _socialSecret = (appSecret.Value ?? throw new ArgumentException(null, nameof(appSecret))).LoginSocial;
         }
 
         [HttpPost("register-customer")]

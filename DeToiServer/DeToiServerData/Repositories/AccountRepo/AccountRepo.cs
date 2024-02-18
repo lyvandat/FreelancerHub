@@ -10,7 +10,6 @@ public class AccountRepo : RepositoryBase<Account>, IAccountRepo
     private readonly DataContext _context;
 
     public AccountRepo(DataContext context) : base(context)
-    public AccountRepo(DataContext context) : base(context)
     {
         _context = context;
     }

@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		database_scalfold.txt = database_scalfold.txt
 	EndProjectSection
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{C5EC0C7D-DC86-4F98-8750-C9FA07A70D16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{D2A31301-EE81-4450-A7CC-A5F57A08A749}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2A31301-EE81-4450-A7CC-A5F57A08A749}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2A31301-EE81-4450-A7CC-A5F57A08A749}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5EC0C7D-DC86-4F98-8750-C9FA07A70D16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5EC0C7D-DC86-4F98-8750-C9FA07A70D16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5EC0C7D-DC86-4F98-8750-C9FA07A70D16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5EC0C7D-DC86-4F98-8750-C9FA07A70D16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
