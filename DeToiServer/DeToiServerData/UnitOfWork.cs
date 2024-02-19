@@ -1,4 +1,5 @@
 ﻿using DeToiServerData.Repositories;
+using DeToiServerData.Repositories.OrderRepo;
 using DeToiServerData.Repositories.PromotionRepo;
 using DeToiServerData.Repositories.ServiceCategoryRepo;
 using DeToiServerData.Repositories.ServiceTypeRepo;
@@ -58,6 +59,18 @@ namespace DeToiServerData
             {
                 _promotionRepo ??= new PromotionRepo(_dataContext);
                 return _promotionRepo;
+            }
+        }
+        #endregion
+
+        #region Order
+        private IOrderRepo _orderRepo;
+        public IOrderRepo OrderRepo
+        {
+            get
+            {
+                _orderRepo ??= new OrderRepo(_dataContext);
+                return _orderRepo;
             }
         }
         #endregion
