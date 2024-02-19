@@ -1,6 +1,9 @@
-﻿using DeToiServer.Dtos.ServiceTypeDtos;
+﻿using DeToiServer.Dtos.AccountDtos;
+using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Services.ServiceTypeService;
+using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Services;
+using DeToiServerCore.QueryModels.ServiceTypeQueryModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeToiServer.Controllers
@@ -62,6 +65,17 @@ namespace DeToiServer.Controllers
             await _service.Delete(id);
             await _uow.SaveChangesAsync();
             return NoContent();
+        }
+
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<GetServiceTypeDto>>> SearchService(
+            [FromQuery] FilterServiceTypeQuery query
+        )
+        {
+            var result = await _service.GetAllServiceInfo(query);
+            var accPage = PageList<GetServiceTypeDto>.ToPageList(result, query.Page, query.PageSize);
+
+            return Ok(accPage);
         }
     }
 }

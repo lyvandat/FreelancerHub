@@ -1,4 +1,5 @@
 ﻿using DeToiServerCore.Models.Services;
+using DeToiServerCore.QueryModels.ServiceTypeQueryModels;
 using DeToiServerData.Specifications.ServiceTypeSpecification;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,5 +19,17 @@ namespace DeToiServerData.Repositories.ServiceTypeRepo
 
         public async Task<ServiceType> GetByIdWithCategory(int id)
             => await ApplySpecification(new ServiceTypeByIdWithCategorySpecification(st => st.Id == id)).FirstOrDefaultAsync();
+
+        public async Task<IEnumerable<ServiceType>> GetAllServiceTypeInfoAsync(FilterServiceTypeQuery query)
+        {
+            var serviceQueryable = _context.ServiceTypes.AsQueryable();
+
+            if (!string.IsNullOrEmpty(query.Name))
+            {
+                serviceQueryable = serviceQueryable.Where((serviceType) => serviceType.Name.Contains(query.Name));
+            }
+
+            return await serviceQueryable.ToListAsync();
+        }
     }
 }

@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServerCore.Models.Services;
+using DeToiServerCore.QueryModels.ServiceTypeQueryModels;
+using DeToiServerData;
 
 namespace DeToiServer.Services.ServiceTypeService
 {
@@ -41,6 +44,13 @@ namespace DeToiServer.Services.ServiceTypeService
         public async Task Delete(int id)
         {
             await _uow.ServiceTypeRepo.DeleteAsync(id);
+        }
+
+        public async Task<IEnumerable<GetServiceTypeDto>> GetAllServiceInfo(FilterServiceTypeQuery query)
+        {
+            var rawAccounts = await _uow.ServiceTypeRepo.GetAllServiceTypeInfoAsync(query);
+
+            return rawAccounts.Select(_mapper.Map<GetServiceTypeDto>);
         }
     }
 }
