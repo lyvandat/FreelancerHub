@@ -6,12 +6,16 @@
         public required int AccountId { get; set; }
         public double Rating { get; set; }
         public double Balance { get; set; }
-        public string Address { get; set; } = string.Empty;
+        public int? AddressId { get; set; }
+        public Address? Address { get; set; }
 
+        //public string Address { get; set; } = string.Empty;
         //ward: string;
         //district: string;
         //province: string;
         //country: string;
+
+
         // orderCount tổng số đơn
         // description mô tả ngắn.
         // loveCount tổng yêu thích

@@ -8,13 +8,15 @@ namespace DeToiServerCore.Models.Accounts
 {
     public class Address : ModelBase
     {
-        public required CustomerAccount CustomerAccount { get; set; }
-        public required int CustomerAccountId { get; set; }
-        public string AddressLine { get; set; } = string.Empty; // thêm lat lon
+        public CustomerAccount? CustomerAccount { get; set; }
+        public int? CustomerAccountId { get; set; }
+        public FreelanceAccount? FreelanceAccount { get; set; }
+        public int? FreelanceAccountId { get; set; }
 
-            //ward: string;
-            //district: string;
-            //province: string;
-            //country: string;
+        public string AddressLine { get; set; } = string.Empty; // thêm lat lon
+        public string Ward { get; set; } = string.Empty;
+        public string District { get; set; } = string.Empty;
+        public string Province { get; set; } = string.Empty;
+        public string Country { get; set; } = string.Empty;
     }
 }

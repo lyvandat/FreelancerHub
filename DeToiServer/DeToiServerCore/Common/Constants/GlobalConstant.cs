@@ -13,7 +13,7 @@
             Admin
         ];
 
-        
+        public const string CustomerAvtMale = "https://detoivn.sirv.com/customer_avt/user-avt%20(2).png";
     }
 
     public static class StatusConst
