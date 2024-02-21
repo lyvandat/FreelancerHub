@@ -38,6 +38,8 @@ namespace DeToiServerData
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new AccountConfiguration());
+            modelBuilder.ApplyConfiguration(new AccountAddressConfiguration());
+
             modelBuilder.ApplyConfiguration(new FreelanceConfiguration());
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());

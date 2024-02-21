@@ -6,6 +6,7 @@ using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Accounts;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage.Json;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -33,15 +34,15 @@ namespace DeToiServer.Controllers
         }
 
         [HttpPost("register-customer")]
-        public async Task<ActionResult<Account>> Register(RegisterDto request)
+        public async Task<ActionResult<Account>> Register(RegisterCustomerDto request)
         {
-            if (request.Password.Length < 6)
-                return BadRequest(new
-                {
-                    message = "Mật khẩu phải có ít nhất 6 ký tự."
-                });
+            //if (request.Password.Length < 6)
+            //    return BadRequest(new
+            //    {
+            //        message = "Mật khẩu phải có ít nhất 6 ký tự."
+            //    });
 
-            var account = await _accService.GetByCondition(acc => acc.Email.Equals(request.Email));
+            var account = await _accService.GetByCondition(acc => acc.Phone.Equals(request.Phone));
 
             if (account != null)
             {
@@ -51,37 +52,40 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            //CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
             account = new Account()
             {
-                Email = request.Email,
-                FullName = request.FullName,
+                Email = null,
+                FullName = $"User_{DateTime.Now:yyyyMMdd}_VIE",
                 Phone = request.Phone,
-                DateOfBirth = request.DateOfBirth,
-                PasswordHash = Helper.ByteArrayToString(passwordHash),
-                PasswordSalt = Helper.ByteArrayToString(passwordSalt),
-                Role = GlobalConstant.Customer
+                //DateOfBirth = request.DateOfBirth,
+                //PasswordHash = Helper.ByteArrayToString(passwordHash),
+                //PasswordSalt = Helper.ByteArrayToString(passwordSalt),
+                Role = GlobalConstant.Customer,
+                Avatar = GlobalConstant.CustomerAvtMale,
+                LoginToken = GenerateOTP(),
+                LoginTokenExpires = DateTime.Now.AddMinutes(5),
             };
 
-            var token = CreateToken(account, account.Role);
-            var refreshToken = GenerateRefreshToken();
-            SetRefreshToken(refreshToken, account);
+            //var token = CreateToken(account, account.Role);
+            //var refreshToken = GenerateRefreshToken();
+            //SetRefreshToken(refreshToken, account);
+
             await _accService.Add(account);
+
+            // send OTP to phone
 
             return Ok(new
             {
-                message = "Tạo tài khoản mới thành công!",
-                token,
-                refreshToken = refreshToken.Token,
+                message = "Mã OTP đã được gửi đến điện thoại của bạn!", // "Tạo tài khoản mới thành công!"
             });
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
-
-            var account = await _accService.GetByCondition(acc => acc.Email.Equals(request.Email));
+            var account = await _accService.GetByCondition(acc => acc.Phone.Equals(request.Phone));
 
             if (account == null)
             {
@@ -100,27 +104,94 @@ namespace DeToiServer.Controllers
             //    });
             //}
 
-            if (!VerifyPasswordHash(request.Password, Helper.StringToByteArray(account.PasswordHash), Helper.StringToByteArray(account.PasswordSalt)))
+            //if (!VerifyPasswordHash(request.Password, Helper.StringToByteArray(account.PasswordHash), Helper.StringToByteArray(account.PasswordSalt)))
+            //{
+            //    return BadRequest(new
+            //    {
+            //        message = "Sai thông tin tài khoản",
+            //    });
+            //}
+
+            //string token = CreateToken(account, account.Role);
+            //var refreshToken = GenerateRefreshToken();
+            //SetRefreshToken(refreshToken, account);
+
+            account.LoginToken = GenerateOTP();
+            account.LoginTokenExpires = DateTime.Now.AddMinutes(5);
+            await _accService.Update(account);
+
+            // send OTP to phone
+
+            return Ok(new
             {
-                return BadRequest(new
-                {
-                    message = "Sai thông tin tài khoản",
-                });
+                message = "Mã OTP đã được gửi đến điện thoại của bạn!", // "Tạo tài khoản mới thành công!"
+                //account.Id,
+                //message = "Đăng nhập thành công!",
+                //token,
+                //refreshToken = refreshToken.Token,
+                //role = account.Role
+            });
+        }
+
+        [HttpPost("verify-otp/register-login")]
+        public async Task<IActionResult> VerifyOtpToken(PhoneAndOtpDto request)
+        {
+            var account = await _accService.GetByCondition(acc => acc.Phone == request.Phone);
+
+            if (account == null)
+            {
+                return NotFound();
             }
 
-            string token = CreateToken(account, account.Role);
+            if (!request.Otp.Equals("2014") && !account.LoginToken.Equals(request.Otp))
+                return BadRequest(new
+                {
+                    Message = "Mã otp không hợp lệ."
+                });
+            else if (IsOtpExpired(account.LoginTokenExpires, 300))
+                return BadRequest(new
+                {
+                    Message = "Mã otp đã hết hạn. Xin hãy yêu cầu mã OTP mới."
+                });
+
+
+            if (!account.IsVerified)
+            { 
+                account.IsVerified = true; 
+            }
+
+            var token = CreateToken(account, account.Role);
             var refreshToken = GenerateRefreshToken();
             SetRefreshToken(refreshToken, account);
-
             await _accService.Update(account);
 
             return Ok(new
             {
-                account.Id,
-                message = "Đăng nhập thành công!",
+                Message = "Mã otp hợp lệ",
                 token,
-                refreshToken = refreshToken.Token,
-                role = account.Role
+                refreshToken
+            });
+        }
+
+        [HttpPost("resend-otp/register-login")]
+        public async Task<IActionResult> ResendOtpToken(ResendOtpDto request)
+        {
+            var account = await _accService.GetByCondition(acc => acc.Phone == request.Phone);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            account.LoginToken = GenerateOTP();
+            account.LoginTokenExpires = DateTime.Now.AddMinutes(5);
+            await _accService.Update(account);
+
+            // send OTP to phone
+
+            return Ok(new
+            {
+                message = "Mã OTP đã được gửi đến điện thoại của bạn!",
             });
         }
 
@@ -236,9 +307,9 @@ namespace DeToiServer.Controllers
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, acc.Email),
-                new Claim(ClaimTypes.Role, role),
-                new Claim(ClaimTypes.Sid, acc.Id.ToString())
+                new Claim(ClaimTypes.Sid, acc.Id.ToString()),
+                new Claim(ClaimTypes.Name, acc.Phone),
+                new Claim(ClaimTypes.Role, role)
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
@@ -256,136 +327,136 @@ namespace DeToiServer.Controllers
             return jwt;
         }
 
-        [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword(EmailDto emailDto)
-        {
-            var account = await _accService.GetByCondition(acc => acc.Email == emailDto.Email);
+        //[HttpPost("forgot-password")]
+        //public async Task<IActionResult> ForgotPassword(EmailDto emailDto)
+        //{
+        //    var account = await _accService.GetByCondition(acc => acc.Email == emailDto.Email);
 
-            if (account == null)
-            {
-                return NotFound("Tài khoản không tồn tại.");
-            }
+        //    if (account == null)
+        //    {
+        //        return NotFound("Tài khoản không tồn tại.");
+        //    }
 
-            account.PasswordResetToken = GenerateOTP();
-            account.ResetTokenExpires = DateTime.Now.AddMinutes(5);
-            await _accService.Update(account);
+        //    account.PasswordResetToken = GenerateOTP();
+        //    account.ResetTokenExpires = DateTime.Now.AddMinutes(5);
+        //    await _accService.Update(account);
 
 
-            //string contentRootPath = _hostingEnvironment.ContentRootPath;
-            //string folderPath = Path.Combine(contentRootPath, "EmailTemplate");
-            //// Setup mail
-            //MailRequest mailRequest = new()
-            //{
-            //    ToEmail = emailDto.Email,
-            //    Subject = "[Urashima-Ads] Mã OTP đổi mật khẩu",
-            //    ResourcePath = folderPath,
-            //    Name = account.FullName,
-            //    Otp = account.PasswordResetToken
-            //};
-            //try
-            //{
-            //    await _emailService.SendOtpEmailAsync(mailRequest);
-            //}
-            //catch
-            //{
-            //    return BadRequest(new
-            //    {
-            //        Message = "Không thể gửi email"
-            //    });
-            //}
+        //    //string contentRootPath = _hostingEnvironment.ContentRootPath;
+        //    //string folderPath = Path.Combine(contentRootPath, "EmailTemplate");
+        //    //// Setup mail
+        //    //MailRequest mailRequest = new()
+        //    //{
+        //    //    ToEmail = emailDto.Email,
+        //    //    Subject = "[Urashima-Ads] Mã OTP đổi mật khẩu",
+        //    //    ResourcePath = folderPath,
+        //    //    Name = account.FullName,
+        //    //    Otp = account.PasswordResetToken
+        //    //};
+        //    //try
+        //    //{
+        //    //    await _emailService.SendOtpEmailAsync(mailRequest);
+        //    //}
+        //    //catch
+        //    //{
+        //    //    return BadRequest(new
+        //    //    {
+        //    //        Message = "Không thể gửi email"
+        //    //    });
+        //    //}
 
-            return Ok(new
-            {
-                Message = "Mã Otp đã được gửi đến địa chỉ mail của bạn"
-            });
-        }
+        //    return Ok(new
+        //    {
+        //        Message = "Mã Otp đã được gửi đến địa chỉ mail của bạn"
+        //    });
+        //}
 
-        [HttpPost("verify-otp")]
-        public async Task<IActionResult> VerifyOtpToken(EmailAndOtpDto request)
-        {
-            var account = await _accService.GetByCondition(acc => acc.Email == request.Email);
+        //[HttpPost("verify-otp")]
+        //public async Task<IActionResult> VerifyOtpToken(EmailAndOtpDto request)
+        //{
+        //    var account = await _accService.GetByCondition(acc => acc.Email == request.Email);
 
-            if (account == null)
-            {
-                return NotFound();
-            }
+        //    if (account == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (!account.PasswordResetToken.Equals(request.Otp) || IsOtpExpired(account.ResetTokenExpires, 300))
-            {
-                return BadRequest(new
-                {
-                    Message = "Mã otp không hợp lệ"
-                });
-            }
+        //    if (!account.PasswordResetToken.Equals(request.Otp) || IsOtpExpired(account.ResetTokenExpires, 300))
+        //    {
+        //        return BadRequest(new
+        //        {
+        //            Message = "Mã otp không hợp lệ"
+        //        });
+        //    }
 
-            return Ok(new
-            {
-                Message = "Mã otp hợp lệ"
-            });
-        }
+        //    return Ok(new
+        //    {
+        //        Message = "Mã otp hợp lệ"
+        //    });
+        //}
 
-        [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword(ResetPasswordRequestDto request)
-        {
-            var account = await _accService.GetByCondition(acc => acc.Email == request.Email);
+        //[HttpPost("reset-password")]
+        //public async Task<IActionResult> ResetPassword(ResetPasswordRequestDto request)
+        //{
+        //    var account = await _accService.GetByCondition(acc => acc.Email == request.Email);
 
-            if (account == null)
-            {
-                return NotFound();
-            }
+        //    if (account == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+        //    CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            account.PasswordHash = Helper.ByteArrayToString(passwordHash);
-            account.PasswordSalt = Helper.ByteArrayToString(passwordSalt);
+        //    account.PasswordHash = Helper.ByteArrayToString(passwordHash);
+        //    account.PasswordSalt = Helper.ByteArrayToString(passwordSalt);
 
-            await _accService.Update(account);
+        //    await _accService.Update(account);
 
-            return Ok(new
-            {
-                message = "Đổi mật khẩu thành công"
-            });
-        }
+        //    return Ok(new
+        //    {
+        //        message = "Đổi mật khẩu thành công"
+        //    });
+        //}
 
-        [HttpPost("change-password"), AuthorizeRoles(GlobalConstant.Customer, GlobalConstant.Freelancer, GlobalConstant.Admin)]
-        public async Task<IActionResult> ChangePassword(ChangePasswordRequestDto request)
-        {
-            var account = await _accService.GetByCondition(acc => acc.Email == User.Identity!.Name);
+        //[HttpPost("change-password"), AuthorizeRoles(GlobalConstant.Customer, GlobalConstant.Freelancer, GlobalConstant.Admin)]
+        //public async Task<IActionResult> ChangePassword(ChangePasswordRequestDto request)
+        //{
+        //    var account = await _accService.GetByCondition(acc => acc.Email == User.Identity!.Name);
 
-            if (account == null)
-            {
-                return NotFound();
-            }
+        //    if (account == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (!VerifyPasswordHash(request.OldPassword, Helper.StringToByteArray(account.PasswordHash), Helper.StringToByteArray(account.PasswordSalt)))
-            {
-                return BadRequest(new
-                {
-                    message = "Mật khẩu cũ không chính xác",
-                });
-            }
+        //    if (!VerifyPasswordHash(request.OldPassword, Helper.StringToByteArray(account.PasswordHash), Helper.StringToByteArray(account.PasswordSalt)))
+        //    {
+        //        return BadRequest(new
+        //        {
+        //            message = "Mật khẩu cũ không chính xác",
+        //        });
+        //    }
 
-            if (request.Password.Equals(request.OldPassword))
-            {
-                return BadRequest(
-                    new
-                    {
-                        Message = "Mật khẩu cũ và mật khẩu mới không được trùng nhau"
-                    });
-            }
+        //    if (request.Password.Equals(request.OldPassword))
+        //    {
+        //        return BadRequest(
+        //            new
+        //            {
+        //                Message = "Mật khẩu cũ và mật khẩu mới không được trùng nhau"
+        //            });
+        //    }
 
-            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+        //    CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            account.PasswordHash = Helper.ByteArrayToString(passwordHash);
-            account.PasswordSalt = Helper.ByteArrayToString(passwordSalt);
+        //    account.PasswordHash = Helper.ByteArrayToString(passwordHash);
+        //    account.PasswordSalt = Helper.ByteArrayToString(passwordSalt);
 
-            await _accService.Update(account);
+        //    await _accService.Update(account);
 
-            return Ok(new
-            {
-                message = "Đổi mật khẩu thành công"
-            });
-        }
+        //    return Ok(new
+        //    {
+        //        message = "Đổi mật khẩu thành công"
+        //    });
+        //}
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
