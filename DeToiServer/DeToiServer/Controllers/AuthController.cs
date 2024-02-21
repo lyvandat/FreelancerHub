@@ -82,17 +82,26 @@ namespace DeToiServer.Controllers
             });
         }
 
-        [HttpPost("login")]
+        [HttpPost("login/customer")]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
             var account = await _accService.GetByCondition(acc => acc.Phone.Equals(request.Phone));
 
             if (account == null)
             {
-                return NotFound(new
+                account = new Account()
                 {
-                    Message = "Tài khoản không tồn tại."
-                });
+                    Email = null,
+                    FullName = $"User_{DateTime.Now:yyyyMMdd}_VIE",
+                    Phone = request.Phone,
+                    //DateOfBirth = request.DateOfBirth,
+                    //PasswordHash = Helper.ByteArrayToString(passwordHash),
+                    //PasswordSalt = Helper.ByteArrayToString(passwordSalt),
+                    Role = GlobalConstant.Customer,
+                    Avatar = GlobalConstant.CustomerAvtMale
+                };
+
+                await _accService.Add(account);
             }
 
             //var hasOrigin = this.Request.Headers.TryGetValue("Origin", out var requestOrigin);
