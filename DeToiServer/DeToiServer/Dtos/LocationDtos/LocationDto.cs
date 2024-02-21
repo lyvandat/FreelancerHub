@@ -17,12 +17,12 @@ namespace DeToiServer.Dtos.LocationDtos
         public string? Road { get; set; }
         public string? Quarter { get; set; } // Phường
         public string? Village { get; set; } // Xã
+        public string? Town { get; set; }
         public string? Suburb { get; set; } // Quận
         public string? City_district { get; set; } // Quận
         public string? County { get; set; } // Quận
         public string? City { get; set; } // Thành phố
         public string? State { get; set; } // Thành phố
-        public string? Town { get; set; }
         [JsonPropertyName("ISO3166-2-lvl4")] public string? IsoCode { get; set; }
         public int? Postcode { get; set; }
         public string? Country { get; set; }

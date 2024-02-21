@@ -27,16 +27,13 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("reverse")]
-        public async Task<ActionResult<RevGeoCodeResponseDto>> GetRevGeoCodeInfo(
+        public async Task<ActionResult<RevGeoCodeResultDto>> GetRevGeoCodeInfo(
             [FromQuery, Required] double lat = 10.7625844,
             [FromQuery, Required] double lon = 106.68168516587875
         )
         {
             RevGeoCodeResponseDto? rawResult = null;
             RevGeoCodeResultDto? result = new();
-
-            lat = (double)10.7625844;
-            lon = (double)106.68168516587875;
 
             var handler = new HttpClientHandler();
             handler.ServerCertificateCustomValidationCallback +=
@@ -67,25 +64,27 @@ namespace DeToiServer.Controllers
                     string apiResponse = await response.Content.ReadAsStringAsync();
                     rawResult = JsonConvert.DeserializeObject<RevGeoCodeResponseDto>(apiResponse);
                     result = _mapper.Map<RevGeoCodeResultDto>(rawResult!.Address);
-                    result.Display_name = LocationHelper.ToVieLocation(rawResult!.Display_name!);
-                    //result.Latt = lat;
-                    //result.Longt = lon;
+                    result.Display_name = rawResult!.Display_name!;
+
+                    //result.Ward = LocationHelper.ToVieLocation(result.Ward); // Helper.ToVieLocUnit(result.Ward);
+                    //result.District = LocationHelper.ToVieLocation(result.District); // Helper.ToVieLocUnit(result.District);
+                    //result.Province = LocationHelper.ToVieLocation(result.Province); // Helper.ToVieLocUnit(result.Province);
+
+                    result.Lat = lat;
+                    result.Lon = lon;
                 }
             }
 
-            //if (result is null)
-            //{
-            //    return NotFound(new
-            //    {
-            //        message = "Không tìm thấy vị trí dựa trên tọa độ đã cung cấp."
-            //    });
-            //}
-
-            await Task.Delay(10);
+            if (result is null)
+            {
+                return NotFound(new
+                {
+                    message = "Không tìm thấy vị trí dựa trên tọa độ đã cung cấp."
+                });
+            }
 
             return Ok(new
             {
-                rawResult,
                 result
             });
         }
