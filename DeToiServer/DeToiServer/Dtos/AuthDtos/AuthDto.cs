@@ -67,4 +67,11 @@ namespace DeToiServer.Dtos.AuthDtos
         [Phone]
         public string Phone { get; set; } = string.Empty;
     }
+
+    public class TokenDto
+    {
+        public required string Value { get; set; }
+        public required DateTime Created { get; set; }
+        public required DateTime Expired { get; set; }
+    }
 }
