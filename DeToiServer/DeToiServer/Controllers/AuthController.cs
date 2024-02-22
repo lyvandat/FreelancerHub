@@ -257,9 +257,9 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            var acc = await _accService.GetByCondition(acc => acc.RefreshToken == refreshToken);
+            var account = await _accService.GetByCondition(acc => acc.RefreshToken == refreshToken);
 
-            if (acc == null)
+            if (account == null)
             {
                 return BadRequest(new
                 {
@@ -267,7 +267,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            if (acc.TokenExpires < DateTime.Now)
+            if (account.TokenExpires < DateTime.Now)
             {
                 return Unauthorized(new
                 {
@@ -275,10 +275,10 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            TokenDto token = CreateToken(acc, acc.Role);
+            TokenDto token = CreateToken(account, account.Role);
             var newRefreshToken = GenerateRefreshToken();
-            SetRefreshToken(newRefreshToken, acc);
-
+            SetRefreshToken(newRefreshToken, account);
+            await _accService.Update(account);
 
             return Ok(new
             {
@@ -293,7 +293,7 @@ namespace DeToiServer.Controllers
             var refreshToken = new RefreshToken
             {
                 Value = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expires = DateTime.Now.AddDays(7),
+                Expired = DateTime.Now.AddDays(7),
                 Created = DateTime.Now
             };
 
@@ -305,13 +305,13 @@ namespace DeToiServer.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Expires = newRefreshToken.Expires
+                Expires = newRefreshToken.Expired
             };
             Response.Cookies.Append("refreshToken", newRefreshToken.Value, cookieOptions);
 
             acc.RefreshToken = newRefreshToken.Value;
             acc.TokenCreated = newRefreshToken.Created;
-            acc.TokenExpires = newRefreshToken.Expires;
+            acc.TokenExpires = newRefreshToken.Expired;
         }
 
         private TokenDto CreateToken(Account acc, string role)
