@@ -91,6 +91,8 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.District, opt => opt.MapFrom<DistrictResolver>())
                 .ForMember(dest => dest.Province, opt => opt.MapFrom<ProvinceResolver>());
 
+            CreateMap<GeoCodeResponseDto, GeoCodeResultDto>();
+
             #endregion
         }
     }

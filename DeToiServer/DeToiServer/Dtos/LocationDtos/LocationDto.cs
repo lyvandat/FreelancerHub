@@ -52,4 +52,33 @@ namespace DeToiServer.Dtos.LocationDtos
         public string Province { get; set; } = string.Empty; // tỉnh - thành phố
         public string Country { get; set; } = string.Empty; // Quốc gia
     }
+
+    public class BoundingBox
+    {
+        
+    }
+
+    public class GeoCodeResponseDto
+    {
+        public required string Place_id { get; set; }
+        public required string Licence { get; set; }
+        public required string Osm_type { get; set; }
+        public required string Osm_id { get; set; }
+        public required List<double> Boundingbox { get; set; }
+        public required double Lat { get; set; }
+        public required double Lon { get; set; }
+        public required string Display_name { get; set; }
+        public required string Class { get; set; }
+        public required string Type { get; set; }
+        public required double Importance { get; set; }
+    }
+
+    public class GeoCodeResultDto
+    {
+        public required List<double> Boundingbox { get; set; }
+        public required double Lat { get; set; }
+        public required double Lon { get; set; }
+        public required string Display_name { get; set; }
+        public required double Importance { get; set; }
+    }
 }
