@@ -293,7 +293,7 @@ namespace DeToiServer.Controllers
             var refreshToken = new RefreshToken
             {
                 Value = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expired = DateTime.Now.AddDays(7),
+                Expires = DateTime.Now.AddDays(7),
                 Created = DateTime.Now
             };
 
@@ -305,13 +305,13 @@ namespace DeToiServer.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Expires = newRefreshToken.Expired
+                Expires = newRefreshToken.Expires
             };
             Response.Cookies.Append("refreshToken", newRefreshToken.Value, cookieOptions);
 
             acc.RefreshToken = newRefreshToken.Value;
             acc.TokenCreated = newRefreshToken.Created;
-            acc.TokenExpires = newRefreshToken.Expired;
+            acc.TokenExpires = newRefreshToken.Expires;
         }
 
         private TokenDto CreateToken(Account acc, string role)
@@ -332,12 +332,12 @@ namespace DeToiServer.Controllers
             {
                 Value = "",
                 Created = DateTime.Now,
-                Expired = DateTime.Now.AddDays(1),
+                Expires = DateTime.Now.AddDays(1),
             };
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: result.Expired,
+                expires: result.Expires,
                 signingCredentials: creds);
 
             result.Value = new JwtSecurityTokenHandler().WriteToken(token);

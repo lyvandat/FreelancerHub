@@ -72,6 +72,6 @@ namespace DeToiServer.Dtos.AuthDtos
     {
         public required string Value { get; set; }
         public required DateTime Created { get; set; }
-        public required DateTime Expired { get; set; }
+        public required DateTime Expires { get; set; }
     }
 }
