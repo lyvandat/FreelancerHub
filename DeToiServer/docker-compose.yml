@@ -29,5 +29,8 @@ services:
       - DB_HOST=detoidb
       - DB_NAME=DeToiVN
       - DB_SA_PASSWORD=Password@12345#
+    env_file:
+      - path: ./docker.env
+        required: true
     networks:
       - detoidockernetwork

@@ -2,8 +2,11 @@ global using DeToiServerCore.Models;
 global using DeToiServerData;
 using DeToiServer;
 using DeToiServer.AutoMapper;
+using DeToiServer.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -17,6 +20,7 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnCh
     .AddEnvironmentVariables();
 builder.Services.Configure<ApplicationSecretSettings>(builder.Configuration.GetSection("ApplicationSecrets"));
 
+builder.Services.AddLogging();
 builder.Services.AddControllers()
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -60,20 +64,38 @@ string myDockerConnectionString = $"Data Source={dbHost};Initial Catalog={dbName
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddServicesData();
 builder.Services.AddUnitOfWork(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("local_dat"))); //  builder.Configuration.GetConnectionString("local")
+    options.UseSqlServer(builder.Configuration.GetConnectionString("local"))); // builder.Configuration.GetConnectionString("local") myDockerConnectionString
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
 app.UseCors("NgOrigins");
 
+// Apply migrations (if there are none) during application startup
+using (var serviceScope = app.Services.CreateScope())
+{
+    var dbContext = serviceScope.ServiceProvider.GetRequiredService<DataContext>();
+
+    try
+    {
+        var databaseCreator = dbContext.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
+        if (!dbContext.Database.GetPendingMigrations().Any() || !databaseCreator!.CanConnect() || !databaseCreator!.HasTables())
+            dbContext.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+    }
+}
+
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+
+// Add other configurations
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
+
 
 app.Run();
