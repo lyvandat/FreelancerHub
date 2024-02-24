@@ -110,6 +110,18 @@ namespace DeToiServerData
         }
         #endregion
 
+        #region Service Info Repo
+        private IHomeInfoRepo _homeInfoRepo;
+        public IHomeInfoRepo HomeInfoRepo
+        {
+            get
+            {
+                _homeInfoRepo ??= new HomeInfoRepo(_dataContext);
+                return _homeInfoRepo;
+            }
+        }
+        #endregion
+
         public async Task<bool> SaveChangesAsync()
         {
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);

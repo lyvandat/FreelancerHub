@@ -3,6 +3,7 @@
     public class Service : ModelBase
     {
         public string Note { get; set; } = string.Empty;
+        public string AdditionalNote { get; set; } = string.Empty;
         public required Guid ServiceCategoryId {
             get
             {

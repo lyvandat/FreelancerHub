@@ -1,6 +1,6 @@
-﻿namespace DeToiServerCore.Models.Infos
+﻿namespace DeToiServer.Dtos.ServiceInfoDtos
 {
-    public class HomeInfo : ModelBase
+    public class GetHomeInfoDto
     {
         public string Name { get; set; } = string.Empty;
         public string Size { get; set; } = string.Empty;

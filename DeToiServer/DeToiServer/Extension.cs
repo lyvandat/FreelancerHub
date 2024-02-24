@@ -1,6 +1,7 @@
 ﻿using DeToiServer.Services.AccountService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.ServiceCategoryService;
+using DeToiServer.Services.ServiceInfoService;
 using DeToiServer.Services.ServiceTypeService;
 using DeToiServerData.Repositories;
 using DeToiServerData.Repositories.CleaningServiceRepo;
@@ -28,6 +29,7 @@ namespace DeToiServerData
             services.AddScoped<ICleaningServiceRepo, CleaningServiceRepo>();
             services.AddScoped<IRepairingServiceRepo, RepairingServiceRepo>();
             services.AddScoped<IShoppingServiceRepo, ShoppingServiceRepo>();
+            services.AddScoped<IHomeInfoRepo, HomeInfoRepo>();
             services.AddScoped<UnitOfWork>();
             return services;
         }
@@ -38,6 +40,7 @@ namespace DeToiServerData
             services.AddScoped<IServiceTypeService, ServiceTypeService>();
             services.AddScoped<IServiceCategoryService, ServiceCategoryService>();
             services.AddScoped<IOrderManagementService, OrderManagementService>();
+            services.AddScoped<IHomeInfoService, HomeInfoService>();
             return services;
         }
     }

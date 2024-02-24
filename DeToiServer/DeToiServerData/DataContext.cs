@@ -24,10 +24,13 @@ namespace DeToiServerData
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // Account
             modelBuilder.ApplyConfiguration(new AccountConfiguration());
             modelBuilder.ApplyConfiguration(new FreelanceConfiguration());
             modelBuilder.ApplyConfiguration(new AddressConfiguration());
 
+            // Service
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
             modelBuilder.ApplyConfiguration(new ServiceTypeConfiguration());
             modelBuilder.ApplyConfiguration(new ServiceCategoryConfiguration());
@@ -38,10 +41,15 @@ namespace DeToiServerData
             modelBuilder.ApplyConfiguration(new ShoppingServiceConfiguration());
             modelBuilder.ApplyConfiguration(new RepairingServiceConfiguration());
 
+            // Info
+            modelBuilder.ApplyConfiguration(new HomeInfoConfiguration());
+
+            // Blogs
             modelBuilder.ApplyConfiguration(new TermOfServiceConfiguration());
             modelBuilder.ApplyConfiguration(new FrequentlyAskedQuestionConfiguration());
             modelBuilder.ApplyConfiguration(new BlogPostConfiguration());
 
+            // Promotion
             modelBuilder.ApplyConfiguration(new PromotionConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerPromotionConfiguration());
         }

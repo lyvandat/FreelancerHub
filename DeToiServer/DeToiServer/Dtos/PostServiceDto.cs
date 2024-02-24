@@ -3,6 +3,6 @@
     public class PostServiceDto
     {
         public string Note { get; set; } = string.Empty;
-        public double Price { get; set; }
+        public string AdditionalNote { get; set; } = string.Empty;
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DeToiServerData.Migrations
 {
     /// <inheritdoc />
-    public partial class V1_GuidBasedIdAndModels : Migration
+    public partial class V1_GuidBasedModels : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -84,7 +84,8 @@ namespace DeToiServerData.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Size = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Size = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -225,6 +226,7 @@ namespace DeToiServerData.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AdditionalNote = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ServiceCategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: true)
                 },
@@ -384,10 +386,11 @@ namespace DeToiServerData.Migrations
                 {
                     CleaningServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     HomeInfoId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Price = table.Column<double>(type: "float", nullable: false),
                     Width = table.Column<double>(type: "float", nullable: false),
                     Height = table.Column<double>(type: "float", nullable: false),
                     Floor = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false)
+                    RoomNumber = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -477,6 +480,17 @@ namespace DeToiServerData.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "HomeInfo",
+                columns: new[] { "Id", "Image", "Name", "Size" },
+                values: new object[,]
+                {
+                    { new Guid("07231f29-50ae-477c-8a80-ea64e87ee025"), "image", "Nhà / Nhà phố", "30x30" },
+                    { new Guid("9b3f7cd4-dc78-4c68-acbf-d87f9af4106c"), "image", "Căn hộ chung cư", "40x40" },
+                    { new Guid("db67114e-9557-4fc3-9493-9d5af2939c8d"), "image", "Phòng trọ", "10x20" },
+                    { new Guid("e7052fa9-be37-490e-a3a7-91f7ceff651a"), "image", "Biệt thự", "200x200" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "ServiceCategories",
                 columns: new[] { "Id", "Description", "Image", "Name" },
                 values: new object[,]
@@ -491,9 +505,9 @@ namespace DeToiServerData.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
+                    { new Guid("2dc5d50c-a2f6-438b-a490-cf44aab409b0"), "Đã hoàn thành" },
                     { new Guid("8a9f22f1-3c67-49f7-bd84-ec290e4a37fd"), "Chờ xử lí" },
-                    { new Guid("a3d5ee96-0795-4808-a273-41cc8bd5fc15"), "Đã hoàn thành" },
-                    { new Guid("e2e05e3d-5e02-4ab5-bc95-98b0eef144c0"), "Đã tiếp nhận" }
+                    { new Guid("b940860d-b5a7-4dfc-aa9c-a0682294359a"), "Đã tiếp nhận" }
                 });
 
             migrationBuilder.InsertData(
@@ -501,27 +515,27 @@ namespace DeToiServerData.Migrations
                 columns: new[] { "Id", "BasePrice", "Description", "Name", "ServiceCategoryId" },
                 values: new object[,]
                 {
-                    { new Guid("01d977ec-6155-4253-a3d1-f3876dce6d5c"), 300000.0, "Mua sắm hộ siêu nhanh", "Đi mua giày camping", new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
-                    { new Guid("23d4275f-a2e3-4781-83f6-84d4fa38230c"), 40000.0, "Mua sắm hộ siêu nhanh", "Đi chợ hộ", new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
-                    { new Guid("2c9de999-8ff3-4ed2-a0db-a925dba90783"), 20000.0, "Mua sắm hộ siêu nhanh", "Đi mua vé xem phim", new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
-                    { new Guid("4edf3f7c-5446-424e-b09b-949a1a0ba48c"), 200000.0, "Sửa máy giặt", "Sửa máy giặt", new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
-                    { new Guid("51f31d45-5ad2-4d98-a396-d040ffef771e"), 150000.0, "Vệ sinh máy lạnh", "Vệ sinh máy lạnh", new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
-                    { new Guid("5470be5c-735f-4a29-980d-8e0d087f0cd5"), 50000000.0, "Hãy yên tâm không nổ đâu", "Sửa bình gas", new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
-                    { new Guid("57abdb99-a52d-4aaa-9fce-03271a8ad4a1"), 40000.0, "Hút bụi sạch", "Hút bụi", new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
-                    { new Guid("58b16854-c02f-4a7b-813e-9e3dace89eb5"), 50000.0, "Lau nhà sạch", "Lau nhà", new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
-                    { new Guid("643de3fe-cbf0-4dd0-a9cd-6ee64976f4c3"), 200000.0, "Hãy yên tâm không nổ đâu", "Sửa máy tính laptop", new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
-                    { new Guid("69b161a0-7483-440f-a604-3d1a50cda454"), 50000.0, "Mua sắm hộ siêu nhanh", "Đi siêu thị hộ", new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
-                    { new Guid("69f72467-a074-4719-a60d-709ef8371f50"), 100000.0, "Mua sắm hộ siêu nhanh", "Đi siêu thị sang trọng", new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
-                    { new Guid("6cc07cac-857d-49f0-922f-ea7e6fe3ab44"), 100000.0, "Giặt thảm sạch", "Giặt thảm", new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
-                    { new Guid("7d5d2a82-6c95-427e-b7d6-17510be81eb5"), 4000000.0, "Mua sắm hộ siêu nhanh", "Đi mua vé concert", new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
-                    { new Guid("86dc5f21-f072-4de1-be0d-dea60701ea2c"), 55000.0, "Quét nhà sạch", "Quét nhà", new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
-                    { new Guid("9ba572f1-37cb-49ed-8550-1716fa8a247d"), 30000.0, "Lau cửa kính sạch", "Lau cửa kính", new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
-                    { new Guid("9e1d5dd7-192b-42f3-8aa7-d6daeba64905"), 200000.0, "Sửa chữa để tôi lo", "Sửa máy lạnh", new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
-                    { new Guid("ab19b473-8b0e-4d0f-b4ad-79dd81a853a0"), 200000.0, "Sửa chữa để tôi lo", "Sửa tivi", new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
-                    { new Guid("ae0b09e5-8047-4bb6-9fdc-34f73e764f67"), 60000.0, "Mua sắm hộ siêu nhanh", "Đi mua quần áo", new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
-                    { new Guid("b87f2add-b45a-4b08-bf97-57ecce74a710"), 120000.0, "Giặt ga giường", "Giặt ga giường", new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
-                    { new Guid("bf4f8338-bd17-4115-a852-dc6e79f20088"), 200000.0, "Sửa chữa để tôi lo", "Sửa bàn ủi", new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
-                    { new Guid("c626e6a3-783d-479a-905a-268ad179c2c2"), 200000.0, "Sửa chữa để tôi lo", "Sửa ống nước", new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") }
+                    { new Guid("030e78e0-7aec-413c-a8ba-b7fb174869f7"), 200000.0, "Sửa chữa để tôi lo", "Sửa bàn ủi", new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
+                    { new Guid("0a8dfa53-6315-420c-ad19-5faaf3407619"), 4000000.0, "Mua sắm hộ siêu nhanh", "Đi mua vé concert", new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
+                    { new Guid("24b8a35e-0a74-4491-9fdb-359375f15471"), 200000.0, "Sửa chữa để tôi lo", "Sửa tivi", new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
+                    { new Guid("258b4d3e-2806-4f55-8ca3-15d62d054815"), 40000.0, "Mua sắm hộ siêu nhanh", "Đi chợ hộ", new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
+                    { new Guid("310c3cd9-a8f0-419e-801c-7d5ef1b413ad"), 50000.0, "Mua sắm hộ siêu nhanh", "Đi siêu thị hộ", new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
+                    { new Guid("44be22e4-9b10-4df2-ba37-df12489ae480"), 60000.0, "Mua sắm hộ siêu nhanh", "Đi mua quần áo", new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
+                    { new Guid("4fdbc5e5-4e49-4d14-a8a1-b9d2070ccd92"), 200000.0, "Sửa chữa để tôi lo", "Sửa máy lạnh", new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
+                    { new Guid("563ecc84-0a57-4a0c-adb4-49863521c366"), 30000.0, "Lau cửa kính sạch", "Lau cửa kính", new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
+                    { new Guid("5697cb08-617a-48a0-9398-25b091def508"), 100000.0, "Giặt thảm sạch", "Giặt thảm", new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
+                    { new Guid("905e12e5-afe0-4020-8db0-6fe3e76be37f"), 20000.0, "Mua sắm hộ siêu nhanh", "Đi mua vé xem phim", new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
+                    { new Guid("92419bdc-5aae-4b20-b763-6ca0881cd5f5"), 200000.0, "Hãy yên tâm không nổ đâu", "Sửa máy tính laptop", new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
+                    { new Guid("92e00def-6222-42c4-b972-7630a4503b46"), 200000.0, "Sửa máy giặt", "Sửa máy giặt", new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
+                    { new Guid("9cc11949-58d7-478f-8ef3-a7b907a50c17"), 40000.0, "Hút bụi sạch", "Hút bụi", new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
+                    { new Guid("9e459be0-06a7-46d3-accd-fd413093ba1b"), 50000.0, "Lau nhà sạch", "Lau nhà", new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
+                    { new Guid("a0905367-c749-487d-85c4-5ab3d847026d"), 300000.0, "Mua sắm hộ siêu nhanh", "Đi mua giày camping", new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
+                    { new Guid("a72f3465-c68f-43f6-9635-cc5127b0e544"), 120000.0, "Giặt ga giường", "Giặt ga giường", new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
+                    { new Guid("b51f1f99-0ce9-4f36-98e3-93bdce093cb0"), 200000.0, "Sửa chữa để tôi lo", "Sửa ống nước", new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
+                    { new Guid("b8dccc49-1186-4c27-92cc-3c17190f1ebf"), 150000.0, "Vệ sinh máy lạnh", "Vệ sinh máy lạnh", new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
+                    { new Guid("bd788a82-92d1-41f3-8f73-077bafde090e"), 55000.0, "Quét nhà sạch", "Quét nhà", new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
+                    { new Guid("d4461899-9a3f-4788-8c30-205c3b280c93"), 100000.0, "Mua sắm hộ siêu nhanh", "Đi siêu thị sang trọng", new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
+                    { new Guid("ea5d9e59-7599-432e-b9bf-40d9a6f85dd6"), 50000000.0, "Hãy yên tâm không nổ đâu", "Sửa bình gas", new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") }
                 });
 
             migrationBuilder.CreateIndex(
