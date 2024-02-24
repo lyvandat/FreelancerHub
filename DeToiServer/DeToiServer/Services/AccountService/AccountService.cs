@@ -20,7 +20,7 @@ namespace DeToiServer.Services.AccountService
             return await _unitOfWork.AccountRepo.GetAllAsync();
         }
 
-        public async Task<Account> GetById(int id)
+        public async Task<Account> GetById(Guid id)
         {
             return await _unitOfWork.AccountRepo.GetByIdAsync(id);
         }
@@ -46,14 +46,14 @@ namespace DeToiServer.Services.AccountService
             return updated;
         }
 
-        public async Task<GetAccountDto> GetAccountDetailsById(int accountId)
+        public async Task<GetAccountDto> GetAccountDetailsById(Guid accountId)
         {
             var account = await _unitOfWork.AccountRepo.GetByIdAsync(accountId);
 
             return _mapper.Map<GetAccountDto>(account);
         }
 
-        public async Task BanAccount(int accountId)
+        public async Task BanAccount(Guid accountId)
         {
             var account = await _unitOfWork.AccountRepo.GetByIdAsync(accountId);
             account.IsActive = false;

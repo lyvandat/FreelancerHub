@@ -1,5 +1,6 @@
-﻿using DeToiServerCore.Models.Accounts;
-using DeToiServerCore.Models.Services;
+﻿using DeToiServer.Dtos.CleaningServiceDtos;
+using DeToiServer.Dtos.RepairingServiceDtos;
+using DeToiServer.Dtos.ShoppingServiceDtos;
 
 namespace DeToiServer.Dtos.OrderDtos
 {
@@ -9,12 +10,10 @@ namespace DeToiServer.Dtos.OrderDtos
         public double EstimatedPrice { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime ScheduleTime { get; set; }
-        public DateTime CreatedTime { get; set; } = DateTime.Now;
-        public double Rating { get; set; } = 0;
-        public required int ServiceCategoryId { get; set; }
-        public required ServiceCategory ServiceCategory { get; set; }
-        public int ServiceStatusId { get; set; }
-        public ServiceStatus? ServiceStatus { get; set; }
-        public ICollection<OrderService>? OrderServices { get; set; }
+        public Guid? CustomerId { get; set; }
+        public Guid? FreelancerId { get; set; }
+        public PostCleaningServiceDto? CleaningService { get; set; }
+        public PostRepairingServiceDto? RepairingService { get; set; }
+        public PostShoppingServiceDto? ShoppingService { get; set; }
     }
 }

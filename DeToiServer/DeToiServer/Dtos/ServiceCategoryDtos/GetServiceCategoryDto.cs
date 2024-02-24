@@ -5,7 +5,7 @@ namespace DeToiServer.Dtos.ServiceCategoryDtos
 {
     public class GetServiceCategoryDto
     {
-        public int Id { get; set; }
+        public Guid id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -13,7 +13,7 @@ namespace DeToiServer.Dtos.ServiceCategoryDtos
 
     public class GetServiceCategoryWithChildDto
     {
-        public int Id { get; set; }
+        public Guid id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;

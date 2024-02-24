@@ -28,7 +28,7 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("detail")]
-        public async Task<ActionResult<GetServiceTypeDto>> GetServiceById(int id)
+        public async Task<ActionResult<GetServiceTypeDto>> GetServiceById(Guid id)
         {
             var serviceType = await _service.GetById(id);
 
@@ -60,7 +60,7 @@ namespace DeToiServer.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteService(int id)
+        public async Task<IActionResult> DeleteService(Guid id)
         {
             await _service.Delete(id);
             await _uow.SaveChangesAsync();

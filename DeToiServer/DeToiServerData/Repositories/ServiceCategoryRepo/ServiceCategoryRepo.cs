@@ -9,7 +9,7 @@ namespace DeToiServerData.Repositories.ServiceCategoryRepo
         public async Task<IEnumerable<ServiceCategory>> GetServiceCategoryWithChild()
             => await ApplySpecification(new ServiceCategoryWithChildSpecification()).ToListAsync();
 
-        public async Task<ServiceCategory> GetServiceCategoryByIdWithChild(int id)
+        public async Task<ServiceCategory> GetServiceCategoryByIdWithChild(Guid id)
             => await ApplySpecification(new ServiceCategoryByIdWithChildSpecification(sc => sc.Id == id)).FirstOrDefaultAsync();
     }
 }

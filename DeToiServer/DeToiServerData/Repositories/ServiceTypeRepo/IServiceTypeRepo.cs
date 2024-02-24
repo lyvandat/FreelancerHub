@@ -6,7 +6,7 @@ namespace DeToiServerData.Repositories.ServiceTypeRepo
     public interface IServiceTypeRepo : IRepository<ServiceType>
     {
         public Task<IEnumerable<ServiceType>> GetAllWithCategory();
-        public Task<ServiceType> GetByIdWithCategory(int id);
+        public Task<ServiceType> GetByIdWithCategory(Guid id);
         public Task<IEnumerable<ServiceType>> GetAllServiceTypeInfoAsync(FilterServiceTypeQuery query);
     }
 }

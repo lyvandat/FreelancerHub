@@ -20,9 +20,9 @@ namespace DeToiServerCore.Models
 
     public class CustomerPromotion
     {
-        public int CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
         public CustomerAccount? Customer { get; set; }
-        public int PromotionId { get; set; }
+        public Guid PromotionId { get; set; }
         public Promotion? Promotion { get; set; }
 
         public int Quantity { get; set; }
@@ -30,9 +30,9 @@ namespace DeToiServerCore.Models
 
     public class PromotionRedeemHistory
     {
-        public int CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
         public CustomerAccount? Customer { get; set; }
-        public int PromotionId { get; set; }
+        public Guid PromotionId { get; set; }
         public Promotion? Promotion { get; set; }
 
         public int Quantity { get; set; }

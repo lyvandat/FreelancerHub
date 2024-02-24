@@ -6,6 +6,6 @@ namespace DeToiServer.Dtos.ServiceTypeDtos
         public string Name { get; set; } = string.Empty;
         public double BasePrice { get; set; }
         public string? Description { get; set; }
-        public int? ServiceCategoryId { get; set; }
+        public Guid? ServiceCategoryId { get; set; }
     }
 }

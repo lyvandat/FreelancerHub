@@ -25,7 +25,7 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("detail")]
-        public async Task<ActionResult<GetServiceCategoryWithChildDto>> GetServiceCategoryDetail(int id)
+        public async Task<ActionResult<GetServiceCategoryWithChildDto>> GetServiceCategoryDetail(Guid id)
         {
             var serviceCategory = await _serviceCategory.GetServiceCategoryById(id);
 
@@ -57,7 +57,7 @@ namespace DeToiServer.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteServiceCategory(int id)
+        public async Task<IActionResult> DeleteServiceCategory(Guid id)
         {
             await _serviceCategory.DeleteServiceCategory(id);
             await _uow.SaveChangesAsync();

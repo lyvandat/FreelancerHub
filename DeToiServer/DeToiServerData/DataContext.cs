@@ -14,19 +14,6 @@ namespace DeToiServerData
         public DataContext(DbContextOptions<DataContext> options)
             : base(options)
         {
-            try
-            {
-                var databaseCreator = Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
-                if (databaseCreator != null)
-                {
-                    if (!databaseCreator.CanConnect()) databaseCreator.Create();
-                    if (!databaseCreator.HasTables()) databaseCreator.CreateTables();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -38,10 +25,13 @@ namespace DeToiServerData
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new AccountConfiguration());
-            modelBuilder.ApplyConfiguration(new AccountAddressConfiguration());
-
             modelBuilder.ApplyConfiguration(new FreelanceConfiguration());
+            modelBuilder.ApplyConfiguration(new AddressConfiguration());
+
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
+            modelBuilder.ApplyConfiguration(new ServiceTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new ServiceCategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new ServiceStatusConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
             modelBuilder.ApplyConfiguration(new OrderServiceConfiguration());
             modelBuilder.ApplyConfiguration(new CleaningServiceConfiguration());

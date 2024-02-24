@@ -33,7 +33,7 @@ public class AccountRepo : RepositoryBase<Account>, IAccountRepo
         if (searchAccount.SortType == "desc")
         {
             accountQueryable = accountQueryable.OrderByDescending(sortExpression);
-        } 
+        }
         else
         {
             accountQueryable = accountQueryable.OrderBy(sortExpression);

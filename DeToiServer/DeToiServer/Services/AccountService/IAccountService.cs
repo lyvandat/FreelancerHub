@@ -6,13 +6,13 @@ namespace DeToiServer.Services.AccountService
 {
     public interface IAccountService
     {
-        Task<Account> GetById(int id);
+        Task<Account> GetById(Guid id);
         Task<IEnumerable<Account>> GetAll();
         Task<Account> GetByCondition(Expression<Func<Account, bool>> predicate);
         Task<Account> Add(Account acc);
         Task<Account> Update(Account acc);
-        Task<GetAccountDto> GetAccountDetailsById(int accountId);
-        Task BanAccount(int accountId);
+        Task<GetAccountDto> GetAccountDetailsById(Guid accountId);
+        Task BanAccount(Guid accountId);
         Task<IEnumerable<GetAccountDto>> GetAllAccountInfo(FilterAccountQuery searchAccount);
     }
 }

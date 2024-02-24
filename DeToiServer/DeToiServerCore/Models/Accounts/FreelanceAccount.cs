@@ -3,11 +3,10 @@
     public class FreelanceAccount : ModelBase
     {
         public required Account Account { get; set; }
-        public required int AccountId { get; set; }
+        public required Guid AccountId { get; set; }
         public double Rating { get; set; }
         public double Balance { get; set; }
-        public int? AddressId { get; set; }
-        public Address? Address { get; set; }
+        public ICollection<Address>? Address { get; set; }
 
         //public string Address { get; set; } = string.Empty;
         //ward: string;

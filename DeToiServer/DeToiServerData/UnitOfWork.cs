@@ -1,8 +1,11 @@
 ﻿using DeToiServerData.Repositories;
+using DeToiServerData.Repositories.CleaningServiceRepo;
 using DeToiServerData.Repositories.OrderRepo;
 using DeToiServerData.Repositories.PromotionRepo;
+using DeToiServerData.Repositories.RepairingServiceRepo;
 using DeToiServerData.Repositories.ServiceCategoryRepo;
 using DeToiServerData.Repositories.ServiceTypeRepo;
+using DeToiServerData.Repositories.ShoppingServiceRepo;
 using System.Transactions;
 
 namespace DeToiServerData
@@ -71,6 +74,38 @@ namespace DeToiServerData
             {
                 _orderRepo ??= new OrderRepo(_dataContext);
                 return _orderRepo;
+            }
+        }
+        #endregion
+
+        #region Service Repo
+        private ICleaningServiceRepo _cleaningServiceRepo;
+        public ICleaningServiceRepo CleaningRepo
+        {
+            get
+            {
+                _cleaningServiceRepo ??= new CleaningServiceRepo(_dataContext);
+                return _cleaningServiceRepo;
+            }
+        }
+
+        private IShoppingServiceRepo _shoppingServiceRepo;
+        public IShoppingServiceRepo ShoppingRepo
+        {
+            get
+            {
+                _shoppingServiceRepo ??= new ShoppingServiceRepo(_dataContext);
+                return _shoppingServiceRepo;
+            }
+        }
+
+        private IRepairingServiceRepo _repairingServiceRepo;
+        public IRepairingServiceRepo RepairingRepo
+        {
+            get
+            {
+                _repairingServiceRepo ??= new RepairingServiceRepo(_dataContext);
+                return _repairingServiceRepo;
             }
         }
         #endregion

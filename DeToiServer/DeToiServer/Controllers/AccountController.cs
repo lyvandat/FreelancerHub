@@ -23,7 +23,7 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("detail")]
-        public async Task<ActionResult<GetAccountDto>> GetById(int id)
+        public async Task<ActionResult<GetAccountDto>> GetById(Guid id)
         {
             var user = await _accountService.GetById(id);
 
@@ -47,7 +47,7 @@ namespace DeToiServer.Controllers
         [HttpGet("current-account"), Authorize]
         public async Task<ActionResult<GetAccountDto>> GetCurrentAccount()
         {
-            int.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out int accountId);
+            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
             var result = await _accountService.GetAccountDetailsById(accountId);
 
             if (result is null)
@@ -62,7 +62,7 @@ namespace DeToiServer.Controllers
         [HttpPut(""), Authorize]
         public async Task<ActionResult<int>> UpdateAccount(PutAccountDto putAccountDto)
         {
-            int.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out int accountId);
+            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
             var account = await _accountService.GetById(accountId);
 
             if (account is null)
@@ -92,7 +92,7 @@ namespace DeToiServer.Controllers
         [HttpPut("ban"), Authorize(Roles = GlobalConstant.Admin)]
         public async Task<IActionResult> BanAccount(BanAccountDto acc)
         {
-            int.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out int accountId);
+            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
 
             if (acc.Id == accountId)
             {

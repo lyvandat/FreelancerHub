@@ -21,7 +21,7 @@ namespace DeToiServer.Services.ServiceCategoryService
             return rawServiceCategories.Select(sc => _mapper.Map<GetServiceCategoryWithChildDto>(sc)).ToList();
         }
 
-        public async Task<GetServiceCategoryWithChildDto> GetServiceCategoryById(int id)
+        public async Task<GetServiceCategoryWithChildDto> GetServiceCategoryById(Guid id)
         {
             var serviceCategory = await _uow.ServiceCategoryRepo.GetServiceCategoryByIdWithChild(id);
 
@@ -40,7 +40,7 @@ namespace DeToiServer.Services.ServiceCategoryService
             await _uow.ServiceCategoryRepo.UpdateAsync(serviceCategory);
         }
 
-        public async Task DeleteServiceCategory(int id)
+        public async Task DeleteServiceCategory(Guid id)
         {
             await _uow.ServiceCategoryRepo.DeleteAsync(id);
         }

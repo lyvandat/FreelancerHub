@@ -8,8 +8,6 @@ namespace DeToiServerData.Configurations
     {
         protected override void OnConfigure(EntityTypeBuilder<Account> builder)
         {
-            builder.HasKey(e => e.Id).HasName("pk_accounts");
-
             builder.Property(e => e.Email).HasMaxLength(255);
             builder.Property(e => e.FullName).HasMaxLength(255);
             //builder.Property(e => e.PasswordHash).HasMaxLength(512);
@@ -31,7 +29,7 @@ namespace DeToiServerData.Configurations
         }
     }
 
-    internal class AccountAddressConfiguration : EntityTypeConfigurationBase<Address>
+    internal class AddressConfiguration : EntityTypeConfigurationBase<Address>
     {
         protected override void OnConfigure(EntityTypeBuilder<Address> builder)
         {
@@ -40,9 +38,9 @@ namespace DeToiServerData.Configurations
                 .HasForeignKey(ad => ad.CustomerAccountId)
                 .IsRequired(false);
 
-            builder.HasOne<FreelanceAccount>(ad => ad.FreelanceAccount)
-                .WithOne(frl => frl.Address)
-                .HasForeignKey<Address>(ad => ad.FreelanceAccountId)
+            builder.HasOne(ad => ad.FreelanceAccount)
+                .WithMany(frl => frl.Address)
+                .HasForeignKey(ad => ad.FreelanceAccountId)
                 .IsRequired(false);
         }
     }

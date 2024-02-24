@@ -1,7 +1,6 @@
-﻿using DeToiServer.Dtos.AuthDtos;
+﻿using AutoMapper;
 using DeToiServer.Dtos.OrderDtos;
-using DeToiServer.Services.OrderService;
-using DeToiServerCore.Models.Services;
+using DeToiServer.Services.OrderManagementService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeToiServer.Controllers
@@ -11,20 +10,34 @@ namespace DeToiServer.Controllers
     public class OrderController : Controller
     {
         private readonly UnitOfWork _uow;
-        private readonly IOrderService _orderService;
+        private readonly IOrderManagementService _orderService;
+        private readonly IMapper _mapper;
 
-        public OrderController(UnitOfWork uow, IOrderService orderService)
+        public OrderController(UnitOfWork uow, IOrderManagementService orderService, IMapper mapper)
         {
             _uow = uow;
             _orderService = orderService;
+            _mapper = mapper;
         }
 
+        /// <summary>
+        /// Lưu ý để id mặc định cho service status trong order model
+        /// </summary>
+        /// <param name="postOrder"></param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> PostOrder(PostOrderDto order)
+        public async Task<ActionResult<Order>> PostOrder(PostOrderDto postOrder)
         {
-            var serviceType = await _orderService.Add(order);
-            await _uow.SaveChangesAsync();
-            return Ok();
+            var order = await _orderService.Add(postOrder);
+            
+            if (order is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Tạo đơn đặt hàng không thành công"
+                });
+            }
+            return Ok(order);
         }
     }
 }

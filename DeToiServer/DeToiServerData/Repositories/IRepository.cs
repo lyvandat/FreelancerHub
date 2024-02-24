@@ -7,8 +7,8 @@ namespace DeToiServerData.Repositories
     {
         IQueryable<TModel> Query { get; }
 
-        TModel GetById(int id);
-        Task<TModel> GetByIdAsync(int id);
+        TModel GetById(Guid id);
+        Task<TModel> GetByIdAsync(Guid id);
 
         TModel GetByConditions(Expression<Func<TModel, bool>> predicate);
         Task<TModel> GetByConditionsAsync(Expression<Func<TModel, bool>> predicate);
@@ -23,7 +23,7 @@ namespace DeToiServerData.Repositories
         TModel Update(TModel entity);
         Task<TModel> UpdateAsync(TModel entity);
 
-        TModel Delete(int id);
-        Task<TModel> DeleteAsync(int id);
+        TModel Delete(Guid id);
+        Task<TModel> DeleteAsync(Guid id);
     }
 }

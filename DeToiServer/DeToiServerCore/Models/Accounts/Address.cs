@@ -9,9 +9,9 @@ namespace DeToiServerCore.Models.Accounts
     public class Address : ModelBase
     {
         public CustomerAccount? CustomerAccount { get; set; }
-        public int? CustomerAccountId { get; set; }
+        public Guid? CustomerAccountId { get; set; }
         public FreelanceAccount? FreelanceAccount { get; set; }
-        public int? FreelanceAccountId { get; set; }
+        public Guid? FreelanceAccountId { get; set; }
 
         public string AddressLine { get; set; } = string.Empty; // thêm lat lon
         public string Ward { get; set; } = string.Empty;

@@ -15,11 +15,11 @@ namespace DeToiServerData.Repositories
             _context = dbContext;
         }
 
-        public TModel GetById(int id)
+        public TModel GetById(Guid id)
         {
             return _context.Set<TModel>().Find(id);
         }
-        public virtual async Task<TModel> GetByIdAsync(int id)
+        public virtual async Task<TModel> GetByIdAsync(Guid id)
         {
             return await _context.Set<TModel>().FindAsync(id);
         }
@@ -64,12 +64,12 @@ namespace DeToiServerData.Repositories
             });
         }
 
-        public TModel Delete(int id)
+        public TModel Delete(Guid id)
         {
             var entity = GetById(id);
             return _context.Remove(entity).Entity;
         }
-        public virtual async Task<TModel> DeleteAsync(int id)
+        public virtual async Task<TModel> DeleteAsync(Guid id)
         {
             return await Task.Run(() =>
             {

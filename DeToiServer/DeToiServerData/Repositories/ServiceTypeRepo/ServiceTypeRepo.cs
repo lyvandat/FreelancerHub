@@ -17,7 +17,7 @@ namespace DeToiServerData.Repositories.ServiceTypeRepo
         public async Task<IEnumerable<ServiceType>> GetAllWithCategory()
             => await ApplySpecification(new ServiceTypeWithCategorySpecification()).ToListAsync();
 
-        public async Task<ServiceType> GetByIdWithCategory(int id)
+        public async Task<ServiceType> GetByIdWithCategory(Guid id)
             => await ApplySpecification(new ServiceTypeByIdWithCategorySpecification(st => st.Id == id)).FirstOrDefaultAsync();
 
         public async Task<IEnumerable<ServiceType>> GetAllServiceTypeInfoAsync(FilterServiceTypeQuery query)

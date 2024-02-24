@@ -60,7 +60,7 @@ string myDockerConnectionString = $"Data Source={dbHost};Initial Catalog={dbName
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddServicesData();
 builder.Services.AddUnitOfWork(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("local"))); //  builder.Configuration.GetConnectionString("local") myDockerConnectionString
+    options.UseSqlServer(builder.Configuration.GetConnectionString("local_dat"))); //  builder.Configuration.GetConnectionString("local")
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();

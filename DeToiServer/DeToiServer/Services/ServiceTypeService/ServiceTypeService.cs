@@ -25,7 +25,7 @@ namespace DeToiServer.Services.ServiceTypeService
             return serviceTypeRaw.Select(st => _mapper.Map<GetServiceTypeDto>(st)).ToList();
         }
 
-        public async Task<GetServiceTypeDto> GetById(int id)
+        public async Task<GetServiceTypeDto> GetById(Guid id)
             => _mapper.Map<GetServiceTypeDto>(await _uow.ServiceTypeRepo.GetByIdWithCategory(id));
 
         public async Task<ServiceType> Add(PostServiceTypeDto postServiceDto)
@@ -41,7 +41,7 @@ namespace DeToiServer.Services.ServiceTypeService
             await _uow.ServiceTypeRepo.UpdateAsync(serviceType);
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(Guid id)
         {
             await _uow.ServiceTypeRepo.DeleteAsync(id);
         }

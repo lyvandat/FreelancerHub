@@ -24,11 +24,9 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("DeToiServerCore.Models.Accounts.Account", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Avatar")
                         .IsRequired()
@@ -80,19 +78,16 @@ namespace DeToiServerData.Migrations
                     b.Property<DateTime>("TokenExpires")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id")
-                        .HasName("pk_accounts");
+                    b.HasKey("Id");
 
                     b.ToTable("Accounts");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Accounts.Address", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AddressLine")
                         .IsRequired()
@@ -102,15 +97,15 @@ namespace DeToiServerData.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CustomerAccountId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("CustomerAccountId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("District")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("FreelanceAccountId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("FreelanceAccountId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Province")
                         .IsRequired()
@@ -124,23 +119,19 @@ namespace DeToiServerData.Migrations
 
                     b.HasIndex("CustomerAccountId");
 
-                    b.HasIndex("FreelanceAccountId")
-                        .IsUnique()
-                        .HasFilter("[FreelanceAccountId] IS NOT NULL");
+                    b.HasIndex("FreelanceAccountId");
 
                     b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Accounts.CustomerAccount", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AccountId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CustomerRank")
                         .IsRequired()
@@ -158,17 +149,12 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("DeToiServerCore.Models.Accounts.FreelanceAccount", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AccountId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("AddressId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("Balance")
                         .HasColumnType("float");
@@ -192,11 +178,9 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("DeToiServerCore.Models.Accounts.Skill", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -213,11 +197,9 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("DeToiServerCore.Models.BlogPost", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -237,11 +219,11 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("DeToiServerCore.Models.CustomerPromotion", b =>
                 {
-                    b.Property<int>("PromotionId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("PromotionId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -255,11 +237,9 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("DeToiServerCore.Models.FrequentlyAskedQuestion", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -279,11 +259,9 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("DeToiServerCore.Models.Infos.DeviceInfo", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -300,11 +278,9 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("DeToiServerCore.Models.Infos.HomeInfo", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -321,11 +297,9 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("DeToiServerCore.Models.Infos.ShoppingInfo", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -338,11 +312,9 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("DeToiServerCore.Models.Order", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -351,14 +323,14 @@ namespace DeToiServerData.Migrations
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("EstimatedPrice")
                         .HasColumnType("float");
 
-                    b.Property<int>("FreelancerId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("FreelancerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("Rating")
                         .HasColumnType("float");
@@ -366,11 +338,11 @@ namespace DeToiServerData.Migrations
                     b.Property<DateTime>("ScheduleTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ServiceCategoryId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("ServiceCategoryId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ServiceStatusId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ServiceStatusId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
@@ -390,11 +362,9 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("DeToiServerCore.Models.Promotion", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -435,11 +405,9 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("DeToiServerCore.Models.ServiceCategory", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -455,15 +423,38 @@ namespace DeToiServerData.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ServiceCategories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e"),
+                            Description = "Bao gồm lau nhà, quét nhà, hút bụi, và nhiều dịch vụ khác",
+                            Image = "image",
+                            Name = "Dọn dẹp"
+                        },
+                        new
+                        {
+                            Id = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f"),
+                            Description = "Bao gồm đi chợ, siêu thị, nhà sách, và nhiều dịch vụ khác",
+                            Image = "image",
+                            Name = "Mua sắm"
+                        },
+                        new
+                        {
+                            Id = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a"),
+                            Description = "Bao gồm sửa máy lạnh, tủ lạnh, và nhiều dịch vụ khác",
+                            Image = "image",
+                            Name = "Sửa chữa"
+                        });
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Services.OrderService", b =>
                 {
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("OrderId", "ServiceId");
 
@@ -474,11 +465,9 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("DeToiServerCore.Models.Services.Service", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Discriminator")
                         .HasMaxLength(21)
@@ -488,12 +477,12 @@ namespace DeToiServerData.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ServiceTypeId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ServiceCategoryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ServiceTypeId");
+                    b.HasIndex("ServiceCategoryId");
 
                     b.ToTable("Services");
 
@@ -502,11 +491,9 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("DeToiServerCore.Models.Services.ServiceStatus", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -515,15 +502,30 @@ namespace DeToiServerData.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ServiceStatuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("8a9f22f1-3c67-49f7-bd84-ec290e4a37fd"),
+                            Name = "Chờ xử lí"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2e05e3d-5e02-4ab5-bc95-98b0eef144c0"),
+                            Name = "Đã tiếp nhận"
+                        },
+                        new
+                        {
+                            Id = new Guid("a3d5ee96-0795-4808-a273-41cc8bd5fc15"),
+                            Name = "Đã hoàn thành"
+                        });
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Services.ServiceType", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("BasePrice")
                         .HasColumnType("float");
@@ -535,23 +537,191 @@ namespace DeToiServerData.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ServiceCategoryId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("ServiceCategoryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ServiceCategoryId");
 
                     b.ToTable("ServiceTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("58b16854-c02f-4a7b-813e-9e3dace89eb5"),
+                            BasePrice = 50000.0,
+                            Description = "Lau nhà sạch",
+                            Name = "Lau nhà",
+                            ServiceCategoryId = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e")
+                        },
+                        new
+                        {
+                            Id = new Guid("86dc5f21-f072-4de1-be0d-dea60701ea2c"),
+                            BasePrice = 55000.0,
+                            Description = "Quét nhà sạch",
+                            Name = "Quét nhà",
+                            ServiceCategoryId = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e")
+                        },
+                        new
+                        {
+                            Id = new Guid("57abdb99-a52d-4aaa-9fce-03271a8ad4a1"),
+                            BasePrice = 40000.0,
+                            Description = "Hút bụi sạch",
+                            Name = "Hút bụi",
+                            ServiceCategoryId = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e")
+                        },
+                        new
+                        {
+                            Id = new Guid("9ba572f1-37cb-49ed-8550-1716fa8a247d"),
+                            BasePrice = 30000.0,
+                            Description = "Lau cửa kính sạch",
+                            Name = "Lau cửa kính",
+                            ServiceCategoryId = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e")
+                        },
+                        new
+                        {
+                            Id = new Guid("6cc07cac-857d-49f0-922f-ea7e6fe3ab44"),
+                            BasePrice = 100000.0,
+                            Description = "Giặt thảm sạch",
+                            Name = "Giặt thảm",
+                            ServiceCategoryId = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e")
+                        },
+                        new
+                        {
+                            Id = new Guid("b87f2add-b45a-4b08-bf97-57ecce74a710"),
+                            BasePrice = 120000.0,
+                            Description = "Giặt ga giường",
+                            Name = "Giặt ga giường",
+                            ServiceCategoryId = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e")
+                        },
+                        new
+                        {
+                            Id = new Guid("51f31d45-5ad2-4d98-a396-d040ffef771e"),
+                            BasePrice = 150000.0,
+                            Description = "Vệ sinh máy lạnh",
+                            Name = "Vệ sinh máy lạnh",
+                            ServiceCategoryId = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e")
+                        },
+                        new
+                        {
+                            Id = new Guid("23d4275f-a2e3-4781-83f6-84d4fa38230c"),
+                            BasePrice = 40000.0,
+                            Description = "Mua sắm hộ siêu nhanh",
+                            Name = "Đi chợ hộ",
+                            ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f")
+                        },
+                        new
+                        {
+                            Id = new Guid("69b161a0-7483-440f-a604-3d1a50cda454"),
+                            BasePrice = 50000.0,
+                            Description = "Mua sắm hộ siêu nhanh",
+                            Name = "Đi siêu thị hộ",
+                            ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f")
+                        },
+                        new
+                        {
+                            Id = new Guid("69f72467-a074-4719-a60d-709ef8371f50"),
+                            BasePrice = 100000.0,
+                            Description = "Mua sắm hộ siêu nhanh",
+                            Name = "Đi siêu thị sang trọng",
+                            ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f")
+                        },
+                        new
+                        {
+                            Id = new Guid("ae0b09e5-8047-4bb6-9fdc-34f73e764f67"),
+                            BasePrice = 60000.0,
+                            Description = "Mua sắm hộ siêu nhanh",
+                            Name = "Đi mua quần áo",
+                            ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f")
+                        },
+                        new
+                        {
+                            Id = new Guid("01d977ec-6155-4253-a3d1-f3876dce6d5c"),
+                            BasePrice = 300000.0,
+                            Description = "Mua sắm hộ siêu nhanh",
+                            Name = "Đi mua giày camping",
+                            ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f")
+                        },
+                        new
+                        {
+                            Id = new Guid("7d5d2a82-6c95-427e-b7d6-17510be81eb5"),
+                            BasePrice = 4000000.0,
+                            Description = "Mua sắm hộ siêu nhanh",
+                            Name = "Đi mua vé concert",
+                            ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f")
+                        },
+                        new
+                        {
+                            Id = new Guid("2c9de999-8ff3-4ed2-a0db-a925dba90783"),
+                            BasePrice = 20000.0,
+                            Description = "Mua sắm hộ siêu nhanh",
+                            Name = "Đi mua vé xem phim",
+                            ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f")
+                        },
+                        new
+                        {
+                            Id = new Guid("4edf3f7c-5446-424e-b09b-949a1a0ba48c"),
+                            BasePrice = 200000.0,
+                            Description = "Sửa máy giặt",
+                            Name = "Sửa máy giặt",
+                            ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a")
+                        },
+                        new
+                        {
+                            Id = new Guid("9e1d5dd7-192b-42f3-8aa7-d6daeba64905"),
+                            BasePrice = 200000.0,
+                            Description = "Sửa chữa để tôi lo",
+                            Name = "Sửa máy lạnh",
+                            ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a")
+                        },
+                        new
+                        {
+                            Id = new Guid("bf4f8338-bd17-4115-a852-dc6e79f20088"),
+                            BasePrice = 200000.0,
+                            Description = "Sửa chữa để tôi lo",
+                            Name = "Sửa bàn ủi",
+                            ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a")
+                        },
+                        new
+                        {
+                            Id = new Guid("ab19b473-8b0e-4d0f-b4ad-79dd81a853a0"),
+                            BasePrice = 200000.0,
+                            Description = "Sửa chữa để tôi lo",
+                            Name = "Sửa tivi",
+                            ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a")
+                        },
+                        new
+                        {
+                            Id = new Guid("c626e6a3-783d-479a-905a-268ad179c2c2"),
+                            BasePrice = 200000.0,
+                            Description = "Sửa chữa để tôi lo",
+                            Name = "Sửa ống nước",
+                            ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a")
+                        },
+                        new
+                        {
+                            Id = new Guid("5470be5c-735f-4a29-980d-8e0d087f0cd5"),
+                            BasePrice = 50000000.0,
+                            Description = "Hãy yên tâm không nổ đâu",
+                            Name = "Sửa bình gas",
+                            ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a")
+                        },
+                        new
+                        {
+                            Id = new Guid("643de3fe-cbf0-4dd0-a9cd-6ee64976f4c3"),
+                            BasePrice = 200000.0,
+                            Description = "Hãy yên tâm không nổ đâu",
+                            Name = "Sửa máy tính laptop",
+                            ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a")
+                        });
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.TermOfService", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -575,11 +745,11 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("FreelanceAccountSkill", b =>
                 {
-                    b.Property<int>("FreelancersId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("FreelancersId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("SkillsId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("SkillsId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("FreelancersId", "SkillsId");
 
@@ -598,8 +768,8 @@ namespace DeToiServerData.Migrations
                     b.Property<double>("Height")
                         .HasColumnType("float");
 
-                    b.Property<int?>("HomeInfoId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("HomeInfoId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -622,8 +792,8 @@ namespace DeToiServerData.Migrations
                 {
                     b.HasBaseType("DeToiServerCore.Models.Services.Service");
 
-                    b.Property<int?>("DeviceInfoId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("DeviceInfoId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -649,8 +819,8 @@ namespace DeToiServerData.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int?>("ShoppingInfoId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("ShoppingInfoId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasIndex("ShoppingInfoId");
 
@@ -670,8 +840,8 @@ namespace DeToiServerData.Migrations
                         .HasForeignKey("CustomerAccountId");
 
                     b.HasOne("DeToiServerCore.Models.Accounts.FreelanceAccount", "FreelanceAccount")
-                        .WithOne("Address")
-                        .HasForeignKey("DeToiServerCore.Models.Accounts.Address", "FreelanceAccountId");
+                        .WithMany("Address")
+                        .HasForeignKey("FreelanceAccountId");
 
                     b.Navigation("CustomerAccount");
 
@@ -723,21 +893,16 @@ namespace DeToiServerData.Migrations
                 {
                     b.HasOne("DeToiServerCore.Models.Accounts.CustomerAccount", "Customer")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CustomerId");
 
                     b.HasOne("DeToiServerCore.Models.Accounts.FreelanceAccount", "Freelance")
                         .WithMany("Orders")
                         .HasForeignKey("FreelancerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("DeToiServerCore.Models.ServiceCategory", "ServiceCategory")
+                    b.HasOne("DeToiServerCore.Models.ServiceCategory", null)
                         .WithMany("Orders")
-                        .HasForeignKey("ServiceCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ServiceCategoryId");
 
                     b.HasOne("DeToiServerCore.Models.Services.ServiceStatus", "ServiceStatus")
                         .WithMany("Orders")
@@ -748,8 +913,6 @@ namespace DeToiServerData.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Freelance");
-
-                    b.Navigation("ServiceCategory");
 
                     b.Navigation("ServiceStatus");
                 });
@@ -775,13 +938,13 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("DeToiServerCore.Models.Services.Service", b =>
                 {
-                    b.HasOne("DeToiServerCore.Models.Services.ServiceType", "ServiceType")
+                    b.HasOne("DeToiServerCore.Models.ServiceCategory", "ServiceCategory")
                         .WithMany("Services")
-                        .HasForeignKey("ServiceTypeId")
+                        .HasForeignKey("ServiceCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ServiceType");
+                    b.Navigation("ServiceCategory");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Services.ServiceType", b =>
@@ -884,6 +1047,8 @@ namespace DeToiServerData.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("ServiceTypes");
+
+                    b.Navigation("Services");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Services.Service", b =>
@@ -894,11 +1059,6 @@ namespace DeToiServerData.Migrations
             modelBuilder.Entity("DeToiServerCore.Models.Services.ServiceStatus", b =>
                 {
                     b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.Services.ServiceType", b =>
-                {
-                    b.Navigation("Services");
                 });
 #pragma warning restore 612, 618
         }
