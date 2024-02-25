@@ -24,21 +24,12 @@ namespace DeToiServerCore.Common.Helper
             return bytes;
         }
 
-        public static IEnumerable<KeyValuePair<string, object>> GetKeyValuePairs(object obj)
+        public static string GetDockerConnectionString()
         {
-            Type type = obj.GetType();
-
-            PropertyInfo[] properties = type.GetProperties();
-
-            // Iterate through properties and get key-value pairs
-            foreach (var property in properties)
-            {
-                // Get the value of the property with null-check
-                object value = property.GetValue(obj) ?? DBNull.Value;
-
-                var kvp = new KeyValuePair<string, object>(property.Name, value);
-                yield return kvp;
-            }
+            var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "detoidb";
+            var dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "DeToiVN";
+            var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD") ?? "Password@12345#";
+            return $"Data Source={dbHost};Initial Catalog={dbName};User ID=sa;Password={dbPassword};TrustServerCertificate=True;";
         }
     }
 }
