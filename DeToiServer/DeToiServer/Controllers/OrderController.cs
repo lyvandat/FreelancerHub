@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Services.OrderManagementService;
+using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Common.CustomAttribute;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace DeToiServer.Controllers
 {
@@ -20,14 +23,11 @@ namespace DeToiServer.Controllers
             _mapper = mapper;
         }
 
-        /// <summary>
-        /// Lưu ý để id mặc định cho service status trong order model
-        /// </summary>
-        /// <param name="postOrder"></param>
-        /// <returns></returns>
-        [HttpPost]
+        [HttpPost, AuthorizeRoles(GlobalConstant.Customer)]
         public async Task<ActionResult<Order>> PostOrder(PostOrderDto postOrder)
         {
+            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid customerId);
+            postOrder.CustomerId = customerId;
             var order = await _orderService.Add(postOrder);
             
             if (order is null)

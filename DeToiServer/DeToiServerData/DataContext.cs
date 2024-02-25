@@ -43,6 +43,7 @@ namespace DeToiServerData
 
             // Info
             modelBuilder.ApplyConfiguration(new HomeInfoConfiguration());
+            modelBuilder.ApplyConfiguration(new ShoppingInfoConfiguration());
 
             // Blogs
             modelBuilder.ApplyConfiguration(new TermOfServiceConfiguration());

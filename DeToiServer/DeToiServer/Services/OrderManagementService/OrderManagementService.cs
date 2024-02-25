@@ -2,7 +2,6 @@
 using DeToiServer.Dtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServerCore.Models.Services;
-using System.Transactions;
 
 namespace DeToiServer.Services.OrderManagementService
 {

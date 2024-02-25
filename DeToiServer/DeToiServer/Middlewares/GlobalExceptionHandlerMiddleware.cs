@@ -22,7 +22,7 @@ namespace DeToiServer.Middlewares
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unhandled exception occurred during the request pipeline.");
+                _logger.LogError(ex, ex.Message);
                 await HandleExceptionAsync(context, ex);
             }
         }
@@ -35,7 +35,7 @@ namespace DeToiServer.Middlewares
             var errorDetails = new ErrorDetails()
             {
                 StatusCode = context.Response.StatusCode,
-                Message = "Internal Server Error"
+                Message = exception.Message
             };
 
             await context.Response.WriteAsync(errorDetails.ToString());
