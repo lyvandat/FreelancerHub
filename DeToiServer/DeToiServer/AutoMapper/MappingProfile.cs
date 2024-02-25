@@ -13,6 +13,51 @@ using DeToiServerCore.Models.Services;
 
 namespace DeToiServer.AutoMapper
 {
+    #region Location Mapper Resolver
+    public class WardResolver : IValueResolver<AddressResultDto, RevGeoCodeResultDto, string>
+    {
+        public string Resolve(AddressResultDto source, RevGeoCodeResultDto destination, string destMember, ResolutionContext context)
+        {
+            if (!string.IsNullOrEmpty(source.Quarter))
+                return source.Quarter;
+            if (!string.IsNullOrEmpty(source.Town))
+                return source.Town;
+            if (!string.IsNullOrEmpty(source.Village))
+                return source.Village;
+
+            return string.Empty; // or throw an exception, depending on your logic
+        }
+    }
+
+    public class DistrictResolver : IValueResolver<AddressResultDto, RevGeoCodeResultDto, string>
+    {
+        public string Resolve(AddressResultDto source, RevGeoCodeResultDto destination, string destMember, ResolutionContext context)
+        {
+            if (!string.IsNullOrEmpty(source.Suburb))
+                return source.Suburb;
+            if (!string.IsNullOrEmpty(source.County))
+                return source.County;
+            if (!string.IsNullOrEmpty(source.City_district))
+                return source.City_district;
+
+            return string.Empty; // or throw an exception, depending on your logic
+        }
+    }
+
+    public class ProvinceResolver : IValueResolver<AddressResultDto, RevGeoCodeResultDto, string>
+    {
+        public string Resolve(AddressResultDto source, RevGeoCodeResultDto destination, string destMember, ResolutionContext context)
+        {
+            if (!string.IsNullOrEmpty(source.City))
+                return source.City;
+            if (!string.IsNullOrEmpty(source.State))
+                return source.State;
+
+            return string.Empty; // or throw an exception, depending on your logic
+        }
+    }
+    #endregion
+
     public class MappingProfile : Profile
     {
         public MappingProfile()
@@ -41,7 +86,13 @@ namespace DeToiServer.AutoMapper
             #endregion
 
             #region GeoCoding
-            CreateMap<AddressResultDto, RevGeoCodeResultDto> ().ReverseMap();
+            CreateMap<AddressResultDto, RevGeoCodeResultDto>()
+                .ForMember(dest => dest.Ward, opt => opt.MapFrom<WardResolver>())
+                .ForMember(dest => dest.District, opt => opt.MapFrom<DistrictResolver>())
+                .ForMember(dest => dest.Province, opt => opt.MapFrom<ProvinceResolver>());
+
+            CreateMap<GeoCodeResponseDto, GeoCodeResultDto>();
+
             #endregion
         }
     }

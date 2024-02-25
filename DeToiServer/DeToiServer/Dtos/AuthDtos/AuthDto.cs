@@ -17,6 +17,7 @@ namespace DeToiServer.Dtos.AuthDtos
         //[EmailAddress]
         //public string Email { get; set; } = string.Empty;
         //public string Password { get; set; } = string.Empty;
+        [Phone]
         public string Phone { get; set; } = string.Empty;
     }
 
@@ -65,5 +66,12 @@ namespace DeToiServer.Dtos.AuthDtos
     {
         [Phone]
         public string Phone { get; set; } = string.Empty;
+    }
+
+    public class TokenDto
+    {
+        public required string Value { get; set; }
+        public required DateTime Created { get; set; }
+        public required DateTime Expires { get; set; }
     }
 }

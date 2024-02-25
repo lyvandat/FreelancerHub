@@ -17,12 +17,12 @@ namespace DeToiServer.Dtos.LocationDtos
         public string? Road { get; set; }
         public string? Quarter { get; set; } // Phường
         public string? Village { get; set; } // Xã
+        public string? Town { get; set; }
         public string? Suburb { get; set; } // Quận
         public string? City_district { get; set; } // Quận
         public string? County { get; set; } // Quận
         public string? City { get; set; } // Thành phố
         public string? State { get; set; } // Thành phố
-        public string? Town { get; set; }
         [JsonPropertyName("ISO3166-2-lvl4")] public string? IsoCode { get; set; }
         public int? Postcode { get; set; }
         public string? Country { get; set; }
@@ -51,5 +51,34 @@ namespace DeToiServer.Dtos.LocationDtos
         public string District { get; set; } = string.Empty; // Quận - Huyện
         public string Province { get; set; } = string.Empty; // tỉnh - thành phố
         public string Country { get; set; } = string.Empty; // Quốc gia
+    }
+
+    public class BoundingBox
+    {
+        
+    }
+
+    public class GeoCodeResponseDto
+    {
+        public required string Place_id { get; set; }
+        public required string Licence { get; set; }
+        public required string Osm_type { get; set; }
+        public required string Osm_id { get; set; }
+        public required List<double> Boundingbox { get; set; }
+        public required double Lat { get; set; }
+        public required double Lon { get; set; }
+        public required string Display_name { get; set; }
+        public required string Class { get; set; }
+        public required string Type { get; set; }
+        public required double Importance { get; set; }
+    }
+
+    public class GeoCodeResultDto
+    {
+        public required List<double> Boundingbox { get; set; }
+        public required double Lat { get; set; }
+        public required double Lon { get; set; }
+        public required string Display_name { get; set; }
+        public required double Importance { get; set; }
     }
 }

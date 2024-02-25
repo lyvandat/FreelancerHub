@@ -33,66 +33,75 @@ namespace DeToiServer.Controllers
             _socialSecret = (appSecret.Value ?? throw new ArgumentException(null, nameof(appSecret))).LoginSocial;
         }
 
-        [HttpPost("register-customer")]
-        public async Task<ActionResult<Account>> Register(RegisterCustomerDto request)
-        {
-            //if (request.Password.Length < 6)
-            //    return BadRequest(new
-            //    {
-            //        message = "Mật khẩu phải có ít nhất 6 ký tự."
-            //    });
+        //[HttpPost("register-customer")]
+        //public async Task<ActionResult<Account>> Register(RegisterCustomerDto request)
+        //{
+        //    //if (request.Password.Length < 6)
+        //    //    return BadRequest(new
+        //    //    {
+        //    //        message = "Mật khẩu phải có ít nhất 6 ký tự."
+        //    //    });
 
-            var account = await _accService.GetByCondition(acc => acc.Phone.Equals(request.Phone));
+        //    var account = await _accService.GetByCondition(acc => acc.Phone.Equals(request.Phone));
 
-            if (account != null)
-            {
-                return BadRequest(new
-                {
-                    message = "Tài khoản đã tồn tại!"
-                });
-            }
+        //    if (account != null)
+        //    {
+        //        return BadRequest(new
+        //        {
+        //            message = "Tài khoản đã tồn tại!"
+        //        });
+        //    }
 
-            //CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+        //    //CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            account = new Account()
-            {
-                Email = null,
-                FullName = $"User_{DateTime.Now:yyyyMMdd}_VIE",
-                Phone = request.Phone,
-                //DateOfBirth = request.DateOfBirth,
-                //PasswordHash = Helper.ByteArrayToString(passwordHash),
-                //PasswordSalt = Helper.ByteArrayToString(passwordSalt),
-                Role = GlobalConstant.Customer,
-                Avatar = GlobalConstant.CustomerAvtMale,
-                LoginToken = GenerateOTP(),
-                LoginTokenExpires = DateTime.Now.AddMinutes(5),
-            };
+        //    account = new Account()
+        //    {
+        //        Email = null,
+        //        FullName = $"User_{DateTime.Now:yyyyMMdd}_VIE",
+        //        Phone = request.Phone,
+        //        //DateOfBirth = request.DateOfBirth,
+        //        //PasswordHash = Helper.ByteArrayToString(passwordHash),
+        //        //PasswordSalt = Helper.ByteArrayToString(passwordSalt),
+        //        Role = GlobalConstant.Customer,
+        //        Avatar = GlobalConstant.CustomerAvtMale,
+        //        LoginToken = GenerateOTP(),
+        //        LoginTokenExpires = DateTime.Now.AddMinutes(5),
+        //    };
 
-            //var token = CreateToken(account, account.Role);
-            //var refreshToken = GenerateRefreshToken();
-            //SetRefreshToken(refreshToken, account);
+        //    //var token = CreateToken(account, account.Role);
+        //    //var refreshToken = GenerateRefreshToken();
+        //    //SetRefreshToken(refreshToken, account);
 
-            await _accService.Add(account);
+        //    await _accService.Add(account);
 
-            // send OTP to phone
+        //    // send OTP to phone
 
-            return Ok(new
-            {
-                message = "Mã OTP đã được gửi đến điện thoại của bạn!", // "Tạo tài khoản mới thành công!"
-            });
-        }
+        //    return Ok(new
+        //    {
+        //        message = "Mã OTP đã được gửi đến điện thoại của bạn!", // "Tạo tài khoản mới thành công!"
+        //    });
+        //}
 
-        [HttpPost("login")]
+        [HttpPost("login/customer")]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
             var account = await _accService.GetByCondition(acc => acc.Phone.Equals(request.Phone));
 
             if (account == null)
             {
-                return NotFound(new
+                account = new Account()
                 {
-                    Message = "Tài khoản không tồn tại."
-                });
+                    Email = null,
+                    FullName = $"User_{DateTime.Now:yyyyMMdd}_VIE",
+                    Phone = request.Phone,
+                    //DateOfBirth = request.DateOfBirth,
+                    //PasswordHash = Helper.ByteArrayToString(passwordHash),
+                    //PasswordSalt = Helper.ByteArrayToString(passwordSalt),
+                    Role = GlobalConstant.Customer,
+                    Avatar = GlobalConstant.CustomerAvtMale
+                };
+
+                await _accService.Add(account);
             }
 
             //var hasOrigin = this.Request.Headers.TryGetValue("Origin", out var requestOrigin);
@@ -248,9 +257,9 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            var acc = await _accService.GetByCondition(acc => acc.RefreshToken == refreshToken);
+            var account = await _accService.GetByCondition(acc => acc.RefreshToken == refreshToken);
 
-            if (acc == null)
+            if (account == null)
             {
                 return BadRequest(new
                 {
@@ -258,7 +267,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            if (acc.TokenExpires < DateTime.Now)
+            if (account.TokenExpires < DateTime.Now)
             {
                 return Unauthorized(new
                 {
@@ -266,14 +275,16 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            string token = CreateToken(acc, acc.Role);
+            TokenDto token = CreateToken(account, account.Role);
             var newRefreshToken = GenerateRefreshToken();
-            SetRefreshToken(newRefreshToken, acc);
+            SetRefreshToken(newRefreshToken, account);
+            await _accService.Update(account);
+
             return Ok(new
             {
                 message = "Lấy Refresh token thành công",
                 token,
-                refreshToken = newRefreshToken.Token,
+                refreshToken = newRefreshToken,
             });
         }
 
@@ -281,7 +292,7 @@ namespace DeToiServer.Controllers
         {
             var refreshToken = new RefreshToken
             {
-                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Value = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
                 Expires = DateTime.Now.AddDays(7),
                 Created = DateTime.Now
             };
@@ -296,14 +307,14 @@ namespace DeToiServer.Controllers
                 HttpOnly = true,
                 Expires = newRefreshToken.Expires
             };
-            Response.Cookies.Append("refreshToken", newRefreshToken.Token, cookieOptions);
+            Response.Cookies.Append("refreshToken", newRefreshToken.Value, cookieOptions);
 
-            acc.RefreshToken = newRefreshToken.Token;
+            acc.RefreshToken = newRefreshToken.Value;
             acc.TokenCreated = newRefreshToken.Created;
             acc.TokenExpires = newRefreshToken.Expires;
         }
 
-        private string CreateToken(Account acc, string role)
+        private TokenDto CreateToken(Account acc, string role)
         {
             List<Claim> claims = new List<Claim>
             {
@@ -317,14 +328,21 @@ namespace DeToiServer.Controllers
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
+            var result = new TokenDto
+            {
+                Value = "",
+                Created = DateTime.Now,
+                Expires = DateTime.Now.AddDays(1),
+            };
+
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddDays(1),
+                expires: result.Expires,
                 signingCredentials: creds);
 
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            result.Value = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return jwt;
+            return result;
         }
 
         //[HttpPost("forgot-password")]
