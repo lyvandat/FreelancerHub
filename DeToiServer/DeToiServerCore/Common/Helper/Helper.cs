@@ -28,5 +28,10 @@ namespace DeToiServerCore.Common.Helper
             var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD") ?? "Password@12345#";
             return $"Data Source={dbHost};Initial Catalog={dbName};User ID=sa;Password={dbPassword};TrustServerCertificate=True;";
         }
+
+        public static bool IsInAcceptableZone(string customerAddress, string freelanceAddress)
+        {
+            return true;
+        }
     }
 }

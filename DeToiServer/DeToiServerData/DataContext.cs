@@ -1,4 +1,5 @@
-﻿using DeToiServerCore.Models;
+﻿using DeToiServer.Models;
+using DeToiServerCore.Models;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Infos;
 using DeToiServerCore.Models.Services;
@@ -84,6 +85,11 @@ namespace DeToiServerData
         #region Promotion_models
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<CustomerPromotion> CustomerPromotions { get; set; }
+        #endregion
+
+        #region Realtime
+        public DbSet<User> Users { get; set; }
+        public DbSet<Connection> Connections { get; set; }
         #endregion
     }
 }
