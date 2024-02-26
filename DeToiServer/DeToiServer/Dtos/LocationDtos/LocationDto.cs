@@ -10,7 +10,7 @@ namespace DeToiServer.Dtos.LocationDtos
         public double Longitude { get; set; }
     }
 
-    public class AddressResultDto
+    public class LocationAddressResultDto
     {
         public string? Amenity { get; set; }
         public string? House_number { get; set; }
@@ -34,7 +34,7 @@ namespace DeToiServer.Dtos.LocationDtos
         public double? Lat { get; set; }
         public double? Lon { get; set; }
         public string? Display_name { get; set; }
-        public AddressResultDto? Address { get; set; }
+        public LocationAddressResultDto? Address { get; set; }
     }
 
     public class RevGeoCodeResultDto

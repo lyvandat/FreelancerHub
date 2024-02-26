@@ -19,7 +19,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6855D48D-0EC0-4A2B-8DC9-82F982AD279C}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		..\.gitignore = ..\.gitignore
 		database_scalfold.txt = database_scalfold.txt
+		docker.env = docker.env
 	EndProjectSection
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{C5EC0C7D-DC86-4F98-8750-C9FA07A70D16}"

@@ -1,12 +1,12 @@
+using AutoMapper;
 using DeToiServer.Dtos.AuthDtos;
 using DeToiServer.Services.AccountService;
+using DeToiServer.Services.CustomerAccountService;
+using DeToiServer.Services.FreelanceAccountService;
 using DeToiServerCore.Common.Constants;
-using DeToiServerCore.Common.CustomAttribute;
-using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Accounts;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Storage.Json;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -24,13 +24,19 @@ namespace DeToiServer.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly IAccountService _accService;
+        private readonly ICustomerAccountService _customerAccService;
+        private readonly IFreelanceAccountService _freelanceAccService;
         private readonly LoginSocialSecret _socialSecret;
+        private readonly IMapper _mapper;
 
-        public AuthController(IConfiguration configuration, IAccountService accService, IOptions<ApplicationSecretSettings> appSecret)
+        public AuthController(IConfiguration configuration, IAccountService accService, ICustomerAccountService customerAccountService, IFreelanceAccountService freelanceAccountService, IOptions<ApplicationSecretSettings> appSecret, IMapper mapper)
         {
             _configuration = configuration;
             _accService = accService;
+            _customerAccService = customerAccountService;
+            _freelanceAccService = freelanceAccountService;
             _socialSecret = (appSecret.Value ?? throw new ArgumentException(null, nameof(appSecret))).LoginSocial;
+            _mapper = mapper;
         }
 
         //[HttpPost("register-customer")]
@@ -82,26 +88,83 @@ namespace DeToiServer.Controllers
         //    });
         //}
 
+        [HttpPost("register-freelance")]
+        public async Task<ActionResult<Account>> RegisterFreelance(RegisterFreelanceDto request)
+        {
+            var freelance = await _freelanceAccService
+                .GetByCondition(flc => flc.Account.Phone.Equals(request.Phone));
+
+            if (freelance != null)
+            {
+                return BadRequest(new
+                {
+                    message = $"Tài khoản với số điện thoại {request.Phone} đã tồn tại!"
+                });
+            }
+
+            var account = new Account() 
+            {
+                Email = null,
+                FullName = request.FullName ?? $"Freelancer_{DateTime.Now:yyyyMMdd}_VIE",
+                DateOfBirth = request.DateOfBirth,
+                Phone = request.Phone,
+                Role = GlobalConstant.Freelancer,
+                Avatar = GlobalConstant.CustomerAvtMale
+            };
+
+            freelance = new FreelanceAccount()
+            {
+                Account = account,
+                AccountId = account.Id,
+                IdentityNumber = request.IdentityNumber,
+                IsTeam = request.IsTeam,
+                Address = _mapper.Map<List<Address>>(request.Address),
+                Skills = _mapper.Map<List<Skill>>(request.Skills),
+            };
+
+            if (request.Address != null)
+            {
+                foreach (var item in freelance.Address)
+                {
+                    item.FreelanceAccountId = freelance.Id;
+                }
+            }
+
+            await _freelanceAccService.Add(freelance);
+
+            return Ok(new
+            {
+                message = "Tạo tài khoản Freelancer mới thành công!"
+            });
+        }
+
         [HttpPost("login/customer")]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
-            var account = await _accService.GetByCondition(acc => acc.Phone.Equals(request.Phone));
+            var customer = await _customerAccService
+                .GetByCondition(cus => cus.Account.Phone.Equals(request.Phone));
 
-            if (account == null)
+            if (customer == null)
             {
-                account = new Account()
+                var account = new Account()
                 {
                     Email = null,
-                    FullName = $"User_{DateTime.Now:yyyyMMdd}_VIE",
+                    FullName = $"Customer_{DateTime.Now:yyyyMMdd}_VIE",
                     Phone = request.Phone,
                     //DateOfBirth = request.DateOfBirth,
                     //PasswordHash = Helper.ByteArrayToString(passwordHash),
                     //PasswordSalt = Helper.ByteArrayToString(passwordSalt),
                     Role = GlobalConstant.Customer,
                     Avatar = GlobalConstant.CustomerAvtMale
+            };
+
+                customer = new CustomerAccount()
+                {
+                    Account = account,
+                    AccountId = account.Id
                 };
 
-                await _accService.Add(account);
+                await _customerAccService.Add(customer);
             }
 
             //var hasOrigin = this.Request.Headers.TryGetValue("Origin", out var requestOrigin);
@@ -125,9 +188,9 @@ namespace DeToiServer.Controllers
             //var refreshToken = GenerateRefreshToken();
             //SetRefreshToken(refreshToken, account);
 
-            account.LoginToken = GenerateOTP();
-            account.LoginTokenExpires = DateTime.Now.AddMinutes(5);
-            await _accService.Update(account);
+            customer.Account.LoginToken = GenerateOTP();
+            customer.Account.LoginTokenExpires = DateTime.Now.AddMinutes(5);
+            await _accService.Update(customer.Account);
 
             // send OTP to phone
 

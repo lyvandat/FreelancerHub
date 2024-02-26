@@ -1,9 +1,13 @@
 ﻿using DeToiServer.Services.AccountService;
+using DeToiServer.Services.CustomerAccountService;
+using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.ServiceCategoryService;
 using DeToiServer.Services.ServiceInfoService;
 using DeToiServer.Services.ServiceTypeService;
 using DeToiServerData.Repositories;
+using DeToiServerData.Repositories.AccountCustomerRepo;
+using DeToiServerData.Repositories.AccountFreelanceRepo;
 using DeToiServerData.Repositories.CleaningServiceRepo;
 using DeToiServerData.Repositories.OrderRepo;
 using DeToiServerData.Repositories.PromotionRepo;
@@ -61,6 +65,8 @@ namespace DeToiServerData
         {
             services.AddDbContext<DataContext>(optionsAction);
             services.AddScoped<IAccountRepo, AccountRepo>();
+            services.AddScoped<ICustomerAccountRepo, CustomerAccountRepo>();
+            services.AddScoped<IFreelanceAccountRepo, FreelanceAccountRepo>();
             services.AddScoped<IServiceTypeRepo, ServiceTypeRepo>();
             services.AddScoped<IServiceCategoryRepo, ServiceCategoryRepo>();
             services.AddScoped<IPromotionRepo, PromotionRepo>();
@@ -76,6 +82,8 @@ namespace DeToiServerData
         public static IServiceCollection AddServicesData(this IServiceCollection services)
         {
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IFreelanceAccountService, FreelanceAccountService>();
+            services.AddScoped<ICustomerAccountService, CustomerAccountService>();
             services.AddScoped<IServiceTypeService, ServiceTypeService>();
             services.AddScoped<IServiceCategoryService, ServiceCategoryService>();
             services.AddScoped<IOrderManagementService, OrderManagementService>();

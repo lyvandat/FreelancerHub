@@ -1,4 +1,6 @@
 ﻿using DeToiServerData.Repositories;
+using DeToiServerData.Repositories.AccountCustomerRepo;
+using DeToiServerData.Repositories.AccountFreelanceRepo;
 using DeToiServerData.Repositories.CleaningServiceRepo;
 using DeToiServerData.Repositories.OrderRepo;
 using DeToiServerData.Repositories.PromotionRepo;
@@ -26,6 +28,30 @@ namespace DeToiServerData
             {
                 _accountRepo ??= new AccountRepo(_dataContext);
                 return _accountRepo;
+            }
+        }
+        #endregion
+
+        #region CustomerAccount
+        private ICustomerAccountRepo _customerAccountRepo;
+        public ICustomerAccountRepo CustomerAccountRepo
+        {
+            get
+            {
+                _customerAccountRepo ??= new CustomerAccountRepo(_dataContext);
+                return _customerAccountRepo;
+            }
+        }
+        #endregion
+
+        #region FreelanceAccount
+        private IFreelanceAccountRepo _freelanceAccountRepo;
+        public IFreelanceAccountRepo FreelanceAccountRepo
+        {
+            get
+            {
+                _freelanceAccountRepo ??= new FreelanceAccountRepo(_dataContext);
+                return _freelanceAccountRepo;
             }
         }
         #endregion
