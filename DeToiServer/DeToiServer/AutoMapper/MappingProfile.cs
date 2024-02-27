@@ -2,6 +2,7 @@
 using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.CleaningServiceDtos;
+using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.LocationDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.RepairingServiceDtos;
@@ -70,15 +71,16 @@ namespace DeToiServer.AutoMapper
             #endregion
 
             #region Address
-
             CreateMap<Address, AddressDto>().ReverseMap();
-
             #endregion
 
             #region Skill
-
             CreateMap<Skill, SkillDto>().ReverseMap();
+            #endregion
 
+            #region Freelance
+            CreateMap<FreelanceAccount, GetFreelanceDto>()
+                .ForMember(dest => dest.Address, opt => opt.Ignore());
             #endregion
 
             #region ServiceType and ServiceCategory

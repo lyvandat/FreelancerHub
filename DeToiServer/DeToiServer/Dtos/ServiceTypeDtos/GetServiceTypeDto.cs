@@ -4,7 +4,7 @@ namespace DeToiServer.Dtos.ServiceTypeDtos
 {
     public class GetServiceTypeDto
     {
-        public Guid id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public double BasePrice { get; set; }
         public string? Description { get; set; }

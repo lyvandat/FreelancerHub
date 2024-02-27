@@ -45,5 +45,10 @@ namespace DeToiServer.Services.FreelanceAccountService
 
             return updated;
         }
+
+        public async Task<FreelanceAccount> GetByAccId(Guid id)
+        {
+            return await _unitOfWork.FreelanceAccountRepo.GetByAccId(id);
+        }
     }
 }

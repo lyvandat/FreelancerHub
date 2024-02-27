@@ -486,10 +486,10 @@ namespace DeToiServerData.Migrations
                 columns: new[] { "Id", "Image", "Name", "Size" },
                 values: new object[,]
                 {
-                    { new Guid("6996af11-7ba4-4b03-a396-0d110f948a43"), "image", "Phòng trọ", "10x20" },
-                    { new Guid("c69b68d0-eb6f-4f96-8614-e4b5fbe4501b"), "image", "Biệt thự", "200x200" },
-                    { new Guid("dd68702e-5cbf-45c9-af9f-8209a85bf6e3"), "image", "Nhà / Nhà phố", "30x30" },
-                    { new Guid("e72de283-6c95-4c42-b53e-0608bbac1281"), "image", "Căn hộ chung cư", "40x40" }
+                    { new Guid("6996af11-7ba4-4b03-a396-0d110f948a43"), "https://detoivn.sirv.com/services/dondep/phongtro.png", "Phòng trọ", "10x20" },
+                    { new Guid("c69b68d0-eb6f-4f96-8614-e4b5fbe4501b"), "https://detoivn.sirv.com/services/dondep/bietthu.png", "Biệt thự", "200x200" },
+                    { new Guid("dd68702e-5cbf-45c9-af9f-8209a85bf6e3"), "https://detoivn.sirv.com/services/dondep/n%C3%A2-nhapho.png", "Nhà / Nhà phố", "30x30" },
+                    { new Guid("e72de283-6c95-4c42-b53e-0608bbac1281"), "https://detoivn.sirv.com/services/dondep/chungcu.jpg", "Căn hộ chung cư", "40x40" }
                 });
 
             migrationBuilder.InsertData(
@@ -497,9 +497,9 @@ namespace DeToiServerData.Migrations
                 columns: new[] { "Id", "Description", "Image", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f"), "Bao gồm đi chợ, siêu thị, nhà sách, và nhiều dịch vụ khác", "image", "Mua sắm" },
-                    { new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a"), "Bao gồm sửa máy lạnh, tủ lạnh, và nhiều dịch vụ khác", "image", "Sửa chữa" },
-                    { new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e"), "Bao gồm lau nhà, quét nhà, hút bụi, và nhiều dịch vụ khác", "image", "Dọn dẹp" }
+                    { new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f"), "Bao gồm đi chợ, siêu thị, nhà sách, và nhiều dịch vụ khác", "https://detoivn.sirv.com/services/dicho/category.png", "Mua sắm" },
+                    { new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a"), "Bao gồm sửa máy lạnh, tủ lạnh, và nhiều dịch vụ khác", "https://detoivn.sirv.com/services/suachua/category.png", "Sửa chữa" },
+                    { new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e"), "Bao gồm lau nhà, quét nhà, hút bụi, và nhiều dịch vụ khác", "https://detoivn.sirv.com/services/dondep/category.png", "Dọn dẹp" }
                 });
 
             migrationBuilder.InsertData(

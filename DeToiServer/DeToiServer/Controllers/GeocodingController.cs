@@ -24,7 +24,7 @@ namespace DeToiServer.Controllers
         {
             _uow = uow;
             _mapper = mapper;
-            _apiKey = (appSecret.Value ?? throw new ArgumentException(null, nameof(appSecret))).GeoCoding.ApiKey;
+            _apiKey = appSecret.Value.GeoCoding == null ? "658dac28274ce196615546rej6e920c" : appSecret.Value.GeoCoding.ApiKey;
         }
 
         [HttpGet("reverse")]
@@ -84,10 +84,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            return Ok(new
-            {
-                result
-            });
+            return Ok(result);
         }
 
         [HttpGet("forward")]
@@ -141,10 +138,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            return Ok(new
-            {
-                result
-            });
+            return Ok(result);
         }
     }
 }

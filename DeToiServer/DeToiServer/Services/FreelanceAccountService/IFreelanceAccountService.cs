@@ -10,5 +10,6 @@ namespace DeToiServer.Services.FreelanceAccountService
         Task<FreelanceAccount> GetByCondition(Expression<Func<FreelanceAccount, bool>> predicate);
         Task<FreelanceAccount> Add(FreelanceAccount acc);
         Task<FreelanceAccount> Update(FreelanceAccount acc);
+        Task<FreelanceAccount> GetByAccId(Guid id);
     }
 }

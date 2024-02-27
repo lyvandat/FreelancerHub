@@ -2,7 +2,7 @@
 {
     public class GetAccountDto
     {
-        public Guid id { get; set; }
+        public Guid Id { get; set; }
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public DateOnly? DateOfBirth { get; set; }
