@@ -5,6 +5,7 @@ using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.ServiceCategoryService;
 using DeToiServer.Services.ServiceInfoService;
 using DeToiServer.Services.ServiceTypeService;
+using DeToiServer.Services.UIElementService;
 using DeToiServerData.Repositories;
 using DeToiServerData.Repositories.AccountCustomerRepo;
 using DeToiServerData.Repositories.AccountFreelanceRepo;
@@ -15,11 +16,11 @@ using DeToiServerData.Repositories.RepairingServiceRepo;
 using DeToiServerData.Repositories.ServiceCategoryRepo;
 using DeToiServerData.Repositories.ServiceTypeRepo;
 using DeToiServerData.Repositories.ShoppingServiceRepo;
+using DeToiServerData.Repositories.UIElementServiceRequirementRepo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -74,7 +75,11 @@ namespace DeToiServerData
             services.AddScoped<ICleaningServiceRepo, CleaningServiceRepo>();
             services.AddScoped<IRepairingServiceRepo, RepairingServiceRepo>();
             services.AddScoped<IShoppingServiceRepo, ShoppingServiceRepo>();
-            services.AddScoped<IHomeInfoRepo, HomeInfoRepo>();
+            //services.AddScoped<IHomeInfoRepo, HomeInfoRepo>();
+            
+            services.AddScoped<IUIElementServiceRequirementRepo, UIElementServiceRequirementRepo>();
+            services.AddScoped<IUIElementAdditionServiceRequirementRepo, UIElementAdditionServiceRequirementRepo>();
+
             services.AddScoped<UnitOfWork>();
             return services;
         }
@@ -87,7 +92,9 @@ namespace DeToiServerData
             services.AddScoped<IServiceTypeService, ServiceTypeService>();
             services.AddScoped<IServiceCategoryService, ServiceCategoryService>();
             services.AddScoped<IOrderManagementService, OrderManagementService>();
-            services.AddScoped<IHomeInfoService, HomeInfoService>();
+            //services.AddScoped<IHomeInfoService, HomeInfoService>();
+
+            services.AddScoped<IUIElementServiceRequirementService, UIElementServiceRequirementService>();
             return services;
         }
 

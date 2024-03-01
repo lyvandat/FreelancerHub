@@ -52,5 +52,12 @@ namespace DeToiServer.Services.ServiceTypeService
 
             return rawAccounts.Select(_mapper.Map<GetServiceTypeDto>);
         }
+
+        public async Task<GetServiceTypeDetailDto> GetServiceTypeDetailWithRequirements(Guid id)
+        {
+            var rawDetail = await _uow.ServiceTypeRepo.GetServiceTypeDetailWithRequirements(id);
+
+            return _mapper.Map<GetServiceTypeDetailDto>(rawDetail);
+        }
     }
 }

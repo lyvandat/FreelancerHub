@@ -19,7 +19,7 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GetServiceCategoryWithChildDto>>> GetServiceCategories()
+        public async Task<ActionResult<IEnumerable<GetServiceCategoryDto>>> GetServiceCategories()
         {
             return Ok(await _serviceCategory.GetServiceCategories());
         }

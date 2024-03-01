@@ -17,10 +17,10 @@ namespace DeToiServer.Controllers
             _uow = uow;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<HomeInfo>>> GetHomeInfos()
-        {
-            return Ok(await _service.GetAll());
-        }
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<HomeInfo>>> GetHomeInfos()
+        //{
+        //    return Ok(await _service.GetAll());
+        //}
     }
 }

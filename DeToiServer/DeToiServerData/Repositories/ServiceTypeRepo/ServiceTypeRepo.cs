@@ -31,5 +31,26 @@ namespace DeToiServerData.Repositories.ServiceTypeRepo
 
             return await serviceQueryable.ToListAsync();
         }
+
+        public async Task<ServiceType> GetServiceTypeDetailWithRequirements(Guid id)
+        {
+            var query = _context.ServiceTypes.AsSplitQuery(); // perfomance
+            var result = await query
+                .Include(st => st.Requirements)
+                    .ThenInclude(req => req.InputMethod)
+                        .ThenInclude(im => im.Validation)
+                .Include(st => st.Requirements)
+                    .ThenInclude(req => req.InputMethod)
+                        .ThenInclude(im => im.Method)
+                            .ThenInclude(med => med.Options)
+                .Include(st => st.AdditionalRequirements)
+                .FirstOrDefaultAsync(st => st.Id.Equals(id));
+
+            //var test = await ApplySpecification(new ServiceTypeDetailWithRequirementsSpecification(st => st.Id == id))
+            //    .AsSplitQuery()
+            //    .FirstOrDefaultAsync();
+
+            return result;
+        }
     }
 }

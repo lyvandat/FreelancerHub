@@ -9,6 +9,6 @@ namespace DeToiServer.Services.ServiceInfoService
 {
     public interface IHomeInfoService
     {
-        public Task<IEnumerable<HomeInfo>> GetAll();
+        //public Task<IEnumerable<HomeInfo>> GetAll();
     }
 }
