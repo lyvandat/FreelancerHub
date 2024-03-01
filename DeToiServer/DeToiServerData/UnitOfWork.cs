@@ -8,6 +8,7 @@ using DeToiServerData.Repositories.RepairingServiceRepo;
 using DeToiServerData.Repositories.ServiceCategoryRepo;
 using DeToiServerData.Repositories.ServiceTypeRepo;
 using DeToiServerData.Repositories.ShoppingServiceRepo;
+using DeToiServerData.Repositories.UIElementServiceRequirementRepo;
 using System.Transactions;
 
 namespace DeToiServerData
@@ -137,13 +138,35 @@ namespace DeToiServerData
         #endregion
 
         #region Service Info Repo
-        private IHomeInfoRepo _homeInfoRepo;
-        public IHomeInfoRepo HomeInfoRepo
+        //private IHomeInfoRepo _homeInfoRepo;
+        //public IHomeInfoRepo HomeInfoRepo
+        //{
+        //    get
+        //    {
+        //        _homeInfoRepo ??= new HomeInfoRepo(_dataContext);
+        //        return _homeInfoRepo;
+        //    }
+        //}
+        #endregion
+
+        #region UI Element Repo
+        private IUIElementServiceRequirementRepo _uIElementServiceRequirementRepo;
+        public IUIElementServiceRequirementRepo UIElementServiceRequirementRepo
         {
             get
             {
-                _homeInfoRepo ??= new HomeInfoRepo(_dataContext);
-                return _homeInfoRepo;
+                _uIElementServiceRequirementRepo ??= new UIElementServiceRequirementRepo(_dataContext);
+                return _uIElementServiceRequirementRepo;
+            }
+        }
+
+        private IUIElementAdditionServiceRequirementRepo _uIElementAdditionServiceRequirementRepo;
+        public IUIElementAdditionServiceRequirementRepo UIElementAdditionServiceRequirementRepo
+        {
+            get
+            {
+                _uIElementAdditionServiceRequirementRepo ??= new UIElementAdditionServiceRequirementRepo(_dataContext);
+                return _uIElementAdditionServiceRequirementRepo;
             }
         }
         #endregion

@@ -3,6 +3,7 @@ using DeToiServerCore.Models;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Infos;
 using DeToiServerCore.Models.Services;
+using DeToiServerCore.Models.SevicesUIElement;
 using DeToiServerData.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -43,8 +44,8 @@ namespace DeToiServerData
             modelBuilder.ApplyConfiguration(new RepairingServiceConfiguration());
 
             // Info
-            modelBuilder.ApplyConfiguration(new HomeInfoConfiguration());
-            modelBuilder.ApplyConfiguration(new ShoppingInfoConfiguration());
+            //modelBuilder.ApplyConfiguration(new HomeInfoConfiguration());
+            //modelBuilder.ApplyConfiguration(new ShoppingInfoConfiguration());
 
             // Blogs
             modelBuilder.ApplyConfiguration(new TermOfServiceConfiguration());
@@ -54,6 +55,15 @@ namespace DeToiServerData
             // Promotion
             modelBuilder.ApplyConfiguration(new PromotionConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerPromotionConfiguration());
+
+            #region UI_Element_Config
+            modelBuilder.ApplyConfiguration(new UIElementInputMethodTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new UIElementInputOptionConfiguration());
+            modelBuilder.ApplyConfiguration(new UIElementServiceRequirementInputMethodConfiguration());
+            modelBuilder.ApplyConfiguration(new UIElementValidationTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new UIElementServiceRequirementConfiguration());
+            modelBuilder.ApplyConfiguration(new UIElementAdditionServiceRequirementConfiguration());
+            #endregion
         }
 
         // Account related models
@@ -72,9 +82,18 @@ namespace DeToiServerData
         public DbSet<RepairingService> RepairingServices { get; set; }
         public DbSet<ShoppingService> ShoppingServices { get; set; }
         public DbSet<ServiceCategory> ServiceCategories { get; set; }
-        public DbSet<HomeInfo> HomeInfo { get; set; }
-        public DbSet<DeviceInfo> DeviceInfo { get; set; }
-        public DbSet<ShoppingInfo> ShoppingInfo { get; set; }
+        //public DbSet<HomeInfo> HomeInfo { get; set; }
+        //public DbSet<DeviceInfo> DeviceInfo { get; set; }
+        //public DbSet<ShoppingInfo> ShoppingInfo { get; set; }
+
+        #region Service_UI_Element
+        public DbSet<UIElementValidationType> UIElementValidationTypes { get; set; }
+        public DbSet<UIElementInputOption> UIElementInputOptions { get; set; }
+        public DbSet<UIElementInputMethodType> UIElementInputMethodTypes { get; set; }
+        public DbSet<UIElementServiceRequirementInputMethod> UIElementServiceRequirementInputMethods { get; set; }
+        public DbSet<UIElementServiceRequirement> UIElementServiceRequirements { get; set; }
+        public DbSet<UIElementAdditionServiceRequirement> UIElementAdditionServiceRequirements { get; set; }
+        #endregion
 
         #region Content_related_models
         public DbSet<TermOfService> TermOfServices { get; set; }

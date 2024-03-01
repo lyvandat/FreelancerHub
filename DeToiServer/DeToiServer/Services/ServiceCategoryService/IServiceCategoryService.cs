@@ -4,7 +4,7 @@ namespace DeToiServer.Services.ServiceCategoryService
 {
     public interface IServiceCategoryService
     {
-        Task<IEnumerable<GetServiceCategoryWithChildDto>> GetServiceCategories();
+        Task<IEnumerable<GetServiceCategoryDto>> GetServiceCategories();
         Task<GetServiceCategoryWithChildDto> GetServiceCategoryById(Guid id);
         Task<ServiceCategory> CreateServiceCategory(PostServiceCategoryDto postServiceCategoryDto);
         Task UpdateServiceCategory(PutServiceCategoryDto putServiceCategoryDto);

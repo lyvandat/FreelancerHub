@@ -4,6 +4,6 @@ using DeToiServerCore.Models.Infos;
 
 namespace DeToiServerData.Repositories;
 
-public interface IHomeInfoRepo : IRepository<HomeInfo>
-{
-}
+//public interface IHomeInfoRepo : IRepository<HomeInfo>
+//{
+//}

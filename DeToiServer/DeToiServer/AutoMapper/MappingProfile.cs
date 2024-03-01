@@ -10,8 +10,10 @@ using DeToiServer.Dtos.ServiceCategoryDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Dtos.ShoppingServiceDtos;
 using DeToiServer.Dtos.SkillDtos;
+using DeToiServer.Dtos.UIElementDtos;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
+using DeToiServerCore.Models.SevicesUIElement;
 
 namespace DeToiServer.AutoMapper
 {
@@ -84,8 +86,9 @@ namespace DeToiServer.AutoMapper
             #endregion
 
             #region ServiceType and ServiceCategory
-            CreateMap<PostServiceTypeDto, ServiceType>().ReverseMap();
             CreateMap<GetServiceTypeDto, ServiceType>().ReverseMap();
+            CreateMap<GetServiceTypeDetailDto, ServiceType>().ReverseMap();
+            CreateMap<PostServiceTypeDto, ServiceType>().ReverseMap();
             CreateMap<PutServiceTypeDto, ServiceType>().ReverseMap();
             CreateMap<GetServiceCategoryDto, ServiceCategory>().ReverseMap();
             CreateMap<GetServiceCategoryWithChildDto, ServiceCategory>().ReverseMap();
@@ -108,6 +111,15 @@ namespace DeToiServer.AutoMapper
 
             CreateMap<GeoCodeResponseDto, GeoCodeResultDto>();
 
+            #endregion
+
+            #region UI Element requirement and additional requirement
+            CreateMap<UIElementValidationType, UIElementValidationTypeDto>().ReverseMap();
+            CreateMap<UIElementInputOption, UIElementInputOptionDto>().ReverseMap();
+            CreateMap<UIElementInputMethodType, UIElementInputMethodTypeDto>().ReverseMap();
+            CreateMap<UIElementServiceRequirementInputMethod, UIElementServiceRequirementInputMethodDto>().ReverseMap();
+            CreateMap<UIElementServiceRequirement, UIElementServiceRequirementDto>().ReverseMap();
+            CreateMap<UIElementAdditionServiceRequirement, UIElementAdditionServiceRequirementDto>().ReverseMap();
             #endregion
         }
     }

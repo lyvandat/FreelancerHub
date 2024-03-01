@@ -14,11 +14,11 @@ namespace DeToiServer.Services.ServiceCategoryService
             _uow = uow;
         }
 
-        public async Task<IEnumerable<GetServiceCategoryWithChildDto>> GetServiceCategories()
+        public async Task<IEnumerable<GetServiceCategoryDto>> GetServiceCategories()
         {
-            var rawServiceCategories = await _uow.ServiceCategoryRepo.GetServiceCategoryWithChild();
+            var rawServiceCategories = await _uow.ServiceCategoryRepo.GetAllAsync();
 
-            return rawServiceCategories.Select(sc => _mapper.Map<GetServiceCategoryWithChildDto>(sc)).ToList();
+            return _mapper.Map<IEnumerable<GetServiceCategoryDto>>(rawServiceCategories);
         }
 
         public async Task<GetServiceCategoryWithChildDto> GetServiceCategoryById(Guid id)

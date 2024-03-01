@@ -4,6 +4,7 @@ using DeToiServerData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeToiServerData.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240227161744_V1.1_UpdateServiceType")]
+    partial class V11_UpdateServiceType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -324,6 +327,44 @@ namespace DeToiServerData.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ShoppingInfo");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("1a7e166a-1011-4189-8c2b-50b907c0f580"),
+                            Image = "image",
+                            Name = "Đi chợ truyền thống"
+                        },
+                        new
+                        {
+                            Id = new Guid("e5493f23-c4f3-484b-99c0-05dc3a81ea7f"),
+                            Image = "image",
+                            Name = "Đi siêu thị"
+                        },
+                        new
+                        {
+                            Id = new Guid("09f1d165-c519-4648-a8a9-9515ab17076c"),
+                            Image = "image",
+                            Name = "Đi siêu thị sang trọng"
+                        },
+                        new
+                        {
+                            Id = new Guid("e90018d5-ca82-44a6-8805-86e3e80842c7"),
+                            Image = "image",
+                            Name = "Đi mua quần áo"
+                        },
+                        new
+                        {
+                            Id = new Guid("bce91a34-b766-4ec8-a90d-f565d4485b89"),
+                            Image = "image",
+                            Name = "Đi mua giày camping"
+                        },
+                        new
+                        {
+                            Id = new Guid("6bf12a04-053a-4899-bda3-b8f470001c23"),
+                            Image = "image",
+                            Name = "Đi mua vé xem phim"
+                        });
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Order", b =>
@@ -531,12 +572,12 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("47156bda-6077-4d2e-bc06-825e48c7f9ea"),
+                            Id = new Guid("4676cc5a-d402-4239-97bc-69650d1ad84e"),
                             Name = "Đã tiếp nhận"
                         },
                         new
                         {
-                            Id = new Guid("d3480359-9cb9-447f-b0d3-78f153f21d19"),
+                            Id = new Guid("31ae4781-3b0f-4d1f-947c-5a4e38301c84"),
                             Name = "Đã hoàn thành"
                         });
                 });
@@ -572,7 +613,7 @@ namespace DeToiServerData.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603"),
+                            Id = new Guid("c18d08b7-f578-4fc5-9c82-4f15e7a6c301"),
                             BasePrice = 30000.0,
                             Description = "Dọn dẹp Phòng trọ",
                             Image = "https://detoivn.sirv.com/services/dondep/phongtro.png",
@@ -581,7 +622,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("49a42267-d9dc-4e11-87a5-36525d4254d9"),
+                            Id = new Guid("017e2302-f69c-4e56-ae80-48b1143cb9d3"),
                             BasePrice = 55000.0,
                             Description = "Dọn dẹp Biệt thự",
                             Image = "https://detoivn.sirv.com/services/dondep/bietthu.png",
@@ -590,7 +631,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("ef2632f0-47bd-4bbe-a46f-628a28f03d8b"),
+                            Id = new Guid("7164452a-8848-4c4a-8a35-7ffc8b0c2aa1"),
                             BasePrice = 50000.0,
                             Description = "Dọn dẹp Nhà / Nhà phố",
                             Image = "https://detoivn.sirv.com/services/dondep/n%C3%A2-nhapho.png",
@@ -599,7 +640,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("dbb78597-043d-47c1-8810-93d392fd09ba"),
+                            Id = new Guid("9267f1b4-ebc5-40cf-b745-4f624fd6f00f"),
                             BasePrice = 40000.0,
                             Description = "Dọn dẹp Căn hộ chung cư",
                             Image = "https://detoivn.sirv.com/services/dondep/chungcu.jpg",
@@ -608,7 +649,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d77cea99-d611-41c8-b959-4913c65edb53"),
+                            Id = new Guid("97d291e4-3817-490a-a75b-f79d013272ac"),
                             BasePrice = 40000.0,
                             Description = "Mua sắm hộ siêu nhanh",
                             Name = "Đi chợ hộ",
@@ -616,7 +657,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("7aedca00-7d84-4528-98c9-8afde075d269"),
+                            Id = new Guid("f7783d57-5b1b-46a9-b40c-d3f35ee8307d"),
                             BasePrice = 50000.0,
                             Description = "Mua sắm hộ siêu nhanh",
                             Name = "Đi siêu thị hộ",
@@ -624,7 +665,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("faf7cbb1-0ad7-4fa7-9869-442ea2ba125c"),
+                            Id = new Guid("a8fe689e-c10a-44b7-b9e2-b3ffa2d95836"),
                             BasePrice = 100000.0,
                             Description = "Mua sắm hộ siêu nhanh",
                             Name = "Đi siêu thị sang trọng",
@@ -632,7 +673,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("129554a2-2dfb-4b6c-9664-1c5653e07215"),
+                            Id = new Guid("26780a58-f18a-4549-b2a1-39a1da8940f4"),
                             BasePrice = 60000.0,
                             Description = "Mua sắm hộ siêu nhanh",
                             Name = "Đi mua quần áo",
@@ -640,7 +681,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("903bbd65-7822-45ac-8202-ee87279debce"),
+                            Id = new Guid("fce9d49c-c240-4a2c-a1cb-517bb66c76db"),
                             BasePrice = 300000.0,
                             Description = "Mua sắm hộ siêu nhanh",
                             Name = "Đi mua giày camping",
@@ -648,7 +689,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("89bec0c6-6cf0-4382-95ba-8727aa7a5dc3"),
+                            Id = new Guid("fce5008f-0d78-4bea-b3be-9cd17ddad3a4"),
                             BasePrice = 4000000.0,
                             Description = "Mua sắm hộ siêu nhanh",
                             Name = "Đi mua vé concert",
@@ -656,7 +697,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("4df80075-0f53-46f3-8337-470e655abe18"),
+                            Id = new Guid("e4ba8f37-6455-415e-ac62-8c6f42576e44"),
                             BasePrice = 20000.0,
                             Description = "Mua sắm hộ siêu nhanh",
                             Name = "Đi mua vé xem phim",
@@ -664,7 +705,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("19dce9ec-7ffa-4f7e-a417-b09290069f0c"),
+                            Id = new Guid("cb9f48c1-69c3-4ddd-8af9-26553b026c28"),
                             BasePrice = 200000.0,
                             Description = "Sửa máy giặt",
                             Name = "Sửa máy giặt",
@@ -672,7 +713,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("fcac5651-2dab-469d-8c89-fdd953199014"),
+                            Id = new Guid("fd1c1368-b365-43e9-a016-7f946f4ba66d"),
                             BasePrice = 200000.0,
                             Description = "Sửa chữa để tôi lo",
                             Name = "Sửa máy lạnh",
@@ -680,7 +721,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("27d058d1-e0c4-4778-8631-741ce8f177c0"),
+                            Id = new Guid("948893e1-c7b0-4947-b60c-ebef235a5453"),
                             BasePrice = 200000.0,
                             Description = "Sửa chữa để tôi lo",
                             Name = "Sửa bàn ủi",
@@ -688,7 +729,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("6e972095-8216-4f93-9e97-912be32b0a65"),
+                            Id = new Guid("85d09f60-3472-48cb-89eb-22bed6cfed38"),
                             BasePrice = 200000.0,
                             Description = "Sửa chữa để tôi lo",
                             Name = "Sửa tivi",
@@ -696,7 +737,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("468d1faf-e9a1-471a-86ff-5a35c37042f7"),
+                            Id = new Guid("f3292f56-4ecb-4b56-99c7-96a6681c0db1"),
                             BasePrice = 200000.0,
                             Description = "Sửa chữa để tôi lo",
                             Name = "Sửa ống nước",
@@ -704,7 +745,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f8372e31-72f4-427d-857a-f28401693c8e"),
+                            Id = new Guid("1b56cfc1-689d-4e39-b1fd-697b22f75e4c"),
                             BasePrice = 50000000.0,
                             Description = "Hãy yên tâm không nổ đâu",
                             Name = "Sửa bình gas",
@@ -712,317 +753,11 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("37e0d9ee-db46-46c5-86af-e63fe52836c7"),
+                            Id = new Guid("963b12f2-9046-4521-b723-4cc7be5b63f9"),
                             BasePrice = 200000.0,
                             Description = "Hãy yên tâm không nổ đâu",
                             Name = "Sửa máy tính laptop",
                             ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a")
-                        });
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.SevicesUIElement.UIElementAdditionServiceRequirement", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("AutoSelect")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Icon")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Label")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ServiceTypeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ServiceTypeId");
-
-                    b.ToTable("UIElementAdditionServiceRequirements");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("ab6c1954-ead6-4ab7-9184-7d07937da97a"),
-                            AutoSelect = true,
-                            Icon = "faDog",
-                            Label = "Nhà có thú cưng",
-                            ServiceTypeId = new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603")
-                        },
-                        new
-                        {
-                            Id = new Guid("aab3c1d7-a8e0-4c3c-b090-445dc0f4a587"),
-                            AutoSelect = false,
-                            Icon = "faComputer",
-                            Label = "Nhà có nhiều đồ điện tử",
-                            ServiceTypeId = new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603")
-                        },
-                        new
-                        {
-                            Id = new Guid("5aa24b79-0091-4e68-90e8-81e77d1725b7"),
-                            AutoSelect = false,
-                            Icon = "faBroom",
-                            Label = "Nhân viên tự mang theo dụng cụ",
-                            ServiceTypeId = new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603")
-                        });
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.SevicesUIElement.UIElementInputMethodType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UIElementInputMethodTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("7bb50f83-c17c-48e2-a755-d51c397e06f4"),
-                            Name = "input"
-                        },
-                        new
-                        {
-                            Id = new Guid("49affbf6-08cb-4de7-a78c-b7ef741862ed"),
-                            Name = "input"
-                        },
-                        new
-                        {
-                            Id = new Guid("89e6f2f5-15cc-470c-a363-427ee8646609"),
-                            Name = "select"
-                        });
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.SevicesUIElement.UIElementInputOption", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("InputMethodTypeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InputMethodTypeId");
-
-                    b.ToTable("UIElementInputOptions");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("b6ed9cad-1754-41b5-92c9-cfe600800d15"),
-                            Description = "Tất cả dịch vụ, dọn toàn bộ nhà / phòng",
-                            InputMethodTypeId = new Guid("89e6f2f5-15cc-470c-a363-427ee8646609"),
-                            Name = "Dọn trọn gói"
-                        },
-                        new
-                        {
-                            Id = new Guid("9bae1e0a-f3c5-4354-8946-01e41f3e976c"),
-                            Description = "Trung bình 50.000đ / phòng, tiết kiệm và nhanh chóng",
-                            InputMethodTypeId = new Guid("89e6f2f5-15cc-470c-a363-427ee8646609"),
-                            Name = "Dọn theo phòng"
-                        });
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.SevicesUIElement.UIElementServiceRequirement", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("InputMethodId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Label")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LabelIcon")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Placeholder")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ServiceTypeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InputMethodId");
-
-                    b.HasIndex("ServiceTypeId");
-
-                    b.ToTable("UIElementServiceRequirements");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("f63cf964-bba0-4c92-9d0a-706cdaf630c7"),
-                            InputMethodId = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
-                            Label = "Số nhà, số phòng, hẻm (ngõ)",
-                            Placeholder = "Ví dụ: 257/43 Phòng 2014 Căn hộ Sunrise Continent",
-                            ServiceTypeId = new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603")
-                        },
-                        new
-                        {
-                            Id = new Guid("f79d7980-26db-4ba1-b87d-6b6700f49000"),
-                            InputMethodId = new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"),
-                            Label = "Bạn muốn chúng tôi dọn như thế nào?",
-                            LabelIcon = "faFlag",
-                            Placeholder = "Giúp nhân viên biết thêm về công việc cần làm",
-                            ServiceTypeId = new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603")
-                        },
-                        new
-                        {
-                            Id = new Guid("e390b90d-8e55-4f1a-ae2d-6ea443470487"),
-                            InputMethodId = new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"),
-                            Label = "Số lượng phòng",
-                            LabelIcon = "faPersonShelter",
-                            Placeholder = "Lưu ý: Nếu bạn chọn dịch vụ dọn theo phòng, vui lòng bổ sung số phòng cần dọn ở đây",
-                            ServiceTypeId = new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603")
-                        });
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.SevicesUIElement.UIElementServiceRequirementInputMethod", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("DataType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("MethodId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MethodId");
-
-                    b.ToTable("UIElementServiceRequirementInputMethods");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
-                            DataType = "text",
-                            MethodId = new Guid("7bb50f83-c17c-48e2-a755-d51c397e06f4")
-                        },
-                        new
-                        {
-                            Id = new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"),
-                            DataType = "text",
-                            MethodId = new Guid("89e6f2f5-15cc-470c-a363-427ee8646609")
-                        },
-                        new
-                        {
-                            Id = new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"),
-                            DataType = "number",
-                            MethodId = new Guid("7bb50f83-c17c-48e2-a755-d51c397e06f4")
-                        });
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.SevicesUIElement.UIElementValidationType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("InputMethodId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InputMethodId");
-
-                    b.ToTable("UIElementValidationTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("81ad9402-004b-4106-8a4f-a3ec5ceab98d"),
-                            InputMethodId = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
-                            Message = "Thông báo valid input 1 custom 1.",
-                            Name = "required"
-                        },
-                        new
-                        {
-                            Id = new Guid("adf2c237-9068-4f03-bb49-379180b1827a"),
-                            InputMethodId = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
-                            Message = "Thông báo valid input 1 custom 2.",
-                            Name = "min",
-                            Value = "0"
-                        },
-                        new
-                        {
-                            Id = new Guid("204b86c4-a178-443d-b05a-c75cd532e53e"),
-                            InputMethodId = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
-                            Message = "Thông báo valid input 1 custom 3.",
-                            Name = "max",
-                            Value = "255"
-                        },
-                        new
-                        {
-                            Id = new Guid("409e0b53-e8ba-42ae-a40c-dfb51e3c1803"),
-                            InputMethodId = new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"),
-                            Message = "Thông báo valid input 2 custom 1.",
-                            Name = "required"
-                        },
-                        new
-                        {
-                            Id = new Guid("36409e48-bf21-400c-a9e2-c0252bda9cdb"),
-                            InputMethodId = new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"),
-                            Message = "Thông báo valid input 3 custom 1.",
-                            Name = "required"
-                        },
-                        new
-                        {
-                            Id = new Guid("ecc1a51f-a913-4a39-9c7b-ca71617620be"),
-                            InputMethodId = new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"),
-                            Message = "Thông báo valid input 3 custom 2.",
-                            Name = "min",
-                            Value = "0"
-                        },
-                        new
-                        {
-                            Id = new Guid("0a201374-c3e7-4084-8ca0-32b93518d2af"),
-                            InputMethodId = new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"),
-                            Message = "Thông báo valid input 3 custom 3.",
-                            Name = "max",
-                            Value = "10"
                         });
                 });
 
@@ -1274,69 +1009,6 @@ namespace DeToiServerData.Migrations
                     b.Navigation("ServiceCategory");
                 });
 
-            modelBuilder.Entity("DeToiServerCore.Models.SevicesUIElement.UIElementAdditionServiceRequirement", b =>
-                {
-                    b.HasOne("DeToiServerCore.Models.Services.ServiceType", "ServiceType")
-                        .WithMany("AdditionalRequirements")
-                        .HasForeignKey("ServiceTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ServiceType");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.SevicesUIElement.UIElementInputOption", b =>
-                {
-                    b.HasOne("DeToiServerCore.Models.SevicesUIElement.UIElementInputMethodType", "InputMethodType")
-                        .WithMany("Options")
-                        .HasForeignKey("InputMethodTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("InputMethodType");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.SevicesUIElement.UIElementServiceRequirement", b =>
-                {
-                    b.HasOne("DeToiServerCore.Models.SevicesUIElement.UIElementServiceRequirementInputMethod", "InputMethod")
-                        .WithMany("ServiceRequirements")
-                        .HasForeignKey("InputMethodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DeToiServerCore.Models.Services.ServiceType", "ServiceType")
-                        .WithMany("Requirements")
-                        .HasForeignKey("ServiceTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("InputMethod");
-
-                    b.Navigation("ServiceType");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.SevicesUIElement.UIElementServiceRequirementInputMethod", b =>
-                {
-                    b.HasOne("DeToiServerCore.Models.SevicesUIElement.UIElementInputMethodType", "Method")
-                        .WithMany("InputMethods")
-                        .HasForeignKey("MethodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Method");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.SevicesUIElement.UIElementValidationType", b =>
-                {
-                    b.HasOne("DeToiServerCore.Models.SevicesUIElement.UIElementServiceRequirementInputMethod", "InputMethod")
-                        .WithMany("Validation")
-                        .HasForeignKey("InputMethodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("InputMethod");
-                });
-
             modelBuilder.Entity("FreelanceAccountSkill", b =>
                 {
                     b.HasOne("DeToiServerCore.Models.Accounts.FreelanceAccount", null)
@@ -1439,27 +1111,6 @@ namespace DeToiServerData.Migrations
             modelBuilder.Entity("DeToiServerCore.Models.Services.ServiceStatus", b =>
                 {
                     b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.Services.ServiceType", b =>
-                {
-                    b.Navigation("AdditionalRequirements");
-
-                    b.Navigation("Requirements");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.SevicesUIElement.UIElementInputMethodType", b =>
-                {
-                    b.Navigation("InputMethods");
-
-                    b.Navigation("Options");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.SevicesUIElement.UIElementServiceRequirementInputMethod", b =>
-                {
-                    b.Navigation("ServiceRequirements");
-
-                    b.Navigation("Validation");
                 });
 #pragma warning restore 612, 618
         }

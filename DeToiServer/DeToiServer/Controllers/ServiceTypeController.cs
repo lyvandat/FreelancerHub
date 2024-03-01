@@ -28,9 +28,9 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("detail")]
-        public async Task<ActionResult<GetServiceTypeDto>> GetServiceById(Guid id)
+        public async Task<ActionResult<GetServiceTypeDetailDto>> GetServiceById(Guid id)
         {
-            var serviceType = await _service.GetById(id);
+            var serviceType = await _service.GetServiceTypeDetailWithRequirements(id);
 
             if (serviceType is null)
             {
