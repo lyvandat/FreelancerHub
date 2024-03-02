@@ -1,8 +1,7 @@
-﻿using DeToiServer.Dtos.AccountDtos;
+﻿using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Models;
 using DeToiServerCore.Common.Helper;
-using DeToiServerCore.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +16,7 @@ namespace DeToiServer.RealTime
             _context = context;
         }
 
-        public async Task SendMessageToFreelancer(string region, PostOrderDto order)
+        public async Task SendMessageToFreelancer(PostOrderDto order)
         {
             // Get freelance accounts that are in the acceptable zone.
             var freelanceAccounts = await _context.Freelancers
@@ -26,7 +25,7 @@ namespace DeToiServer.RealTime
                 .ToListAsync();
 
             freelanceAccounts = freelanceAccounts
-                    .Where(acc => Helper.IsInAcceptableZone(region, region))
+                    .Where(acc => Helper.IsInAcceptableZone(order.Address, order.Address))
                     .ToList();
 
             // Online users that are connecting to SignalR
@@ -46,8 +45,7 @@ namespace DeToiServer.RealTime
                         {
                             foreach (var connection in user.Connections)
                             {
-                                await Clients.Client(connection.ConnectionId)
-                                    .SendOrder(order);
+                                await Clients.Client(connection.ConnectionId).ReceiveCustomerOrder(order);
                             }
                         }
                     }
@@ -55,18 +53,18 @@ namespace DeToiServer.RealTime
             }
         }
 
-        public async Task SendMessageToCustomer(GetFreelanceAccountDto freelance, double price)
+        public async Task SendMessageToCustomer(GetFreelanceMatchingDto matchingFreelancer)
         {
             var user = await _context.Users
                 .AsNoTracking()
                 .Include(u => u.Connections)
-                .FirstOrDefaultAsync(user => user.Phone.Equals(freelance.Account.Phone));
+                .FirstOrDefaultAsync(user => user.Phone.Equals(matchingFreelancer.Account.Phone));
 
             if (user?.Connections != null)
             {
                 foreach (var connection in user.Connections)
                 {
-                    await Clients.Client(connection.ConnectionId).ReceiveFreelanceResponse(freelance, price);
+                    await Clients.Client(connection.ConnectionId).ReceiveFreelancerResponse(matchingFreelancer);
                 }
             }
         }
@@ -118,6 +116,22 @@ namespace DeToiServer.RealTime
             if (connection != null)
             {
                 _context.Connections.Remove(connection);
+
+                // remove the user(phone) that doesn't have any connection.
+                var connectionCount = _context.Connections.Where(con => con.UserPhone == connection.UserPhone).Count();
+
+                if (connectionCount == 1)
+                {
+                    var userWithLastConnection = _context.Users.Find(connection.UserPhone);
+
+                    // Check if the entity exists
+                    if (userWithLastConnection != null)
+                    {
+                        // Remove the entity from the context
+                        _context.Users.Remove(userWithLastConnection);
+                    }
+                }
+
             }
 
             // Remove guests from the guests group

@@ -6,19 +6,38 @@ namespace DeToiServer.Dtos.FreelanceDtos
 {
     public class GetFreelanceDto
     {
-        public required Guid Id { get; set; }
+        public Guid Id { get; set; }
         public required Account Account { get; set; }
-        public required Guid AccountId { get; set; }
+        public Guid AccountId { get; set; }
         public double Rating { get; set; }
         public double Balance { get; set; }
         public int OrderCount { get; set; } // orderCount tổng số đơn
         public int LoveCount { get; set; } // loveCount tổng yêu thích
         public int PositiveReviewCount { get; set; } // positiveReviewCount tổng đánh giá ôk.
         public AddressDto? Address { get; set; }
-        public required string IdentityNumber { get; set; }
+        public string IdentityNumber { get; set; } = string.Empty;
         public bool IsTeam { get; set; } = false;
         public ICollection<SkillDto>? Skills { get; set; }
-        public required string Description  { get; set; } // mô tả ngắn.
+        public string Description  { get; set; } = string.Empty; // mô tả ngắn.
+        // serviceProven: IServiceProven[];
+    }
+
+    public class GetFreelanceMatchingDto
+    {
+        public Guid Id { get; set; }
+        public required Account Account { get; set; }
+        public Guid AccountId { get; set; }
+        public double Rating { get; set; }
+        public double Balance { get; set; }
+        public int OrderCount { get; set; } // orderCount tổng số đơn
+        public int LoveCount { get; set; } // loveCount tổng yêu thích
+        public int PositiveReviewCount { get; set; } // positiveReviewCount tổng đánh giá ôk.
+        public AddressDto? Address { get; set; }
+        public string IdentityNumber { get; set; } = string.Empty;
+        public bool IsTeam { get; set; } = false;
+        public ICollection<SkillDto>? Skills { get; set; }
+        public string Description { get; set; } = string.Empty; // mô tả ngắn.
+        public double PreviewPrice { get; set; }
         // serviceProven: IServiceProven[];
     }
 }

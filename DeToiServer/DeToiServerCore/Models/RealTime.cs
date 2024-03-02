@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DeToiServerCore.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace DeToiServer.Models
 {
@@ -14,5 +15,7 @@ namespace DeToiServer.Models
         public string ConnectionId { get; set; } = string.Empty;
         public string? UserAgent { get; set; } = string.Empty;
         public bool Connected { get; set; }
+        public User? User { get; set; }
+        public string UserPhone { get; set; } = string.Empty;
     }
 }

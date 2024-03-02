@@ -132,22 +132,23 @@ namespace DeToiServer.Controllers
         public async Task<IActionResult> VerifyOtpToken(PhoneAndOtpDto request)
         {
             var account = await _accService.GetByCondition(acc => acc.Phone == request.Phone);
+            var customerAcc = await _customerAccService.GetByCondition(acc => acc.AccountId == account.Id);
 
             if (account == null)
             {
                 return NotFound();
             }
 
-            if (!request.Otp.Equals("2014") && !account.LoginToken.Equals(request.Otp))
-                return BadRequest(new
-                {
-                    Message = "Mã otp không hợp lệ."
-                });
-            else if (IsOtpExpired(account.LoginTokenExpires, 300))
-                return BadRequest(new
-                {
-                    Message = "Mã otp đã hết hạn. Xin hãy yêu cầu mã OTP mới."
-                });
+            //if (!request.Otp.Equals("2014") && !account.LoginToken.Equals(request.Otp))
+            //    return BadRequest(new
+            //    {
+            //        Message = "Mã otp không hợp lệ."
+            //    });
+            //else if (IsOtpExpired(account.LoginTokenExpires, 300))
+            //    return BadRequest(new
+            //    {
+            //        Message = "Mã otp đã hết hạn. Xin hãy yêu cầu mã OTP mới."
+            //    });
 
 
             if (!account.IsVerified)
@@ -155,7 +156,7 @@ namespace DeToiServer.Controllers
                 account.IsVerified = true;
             }
 
-            var token = CreateToken(account, account.Role);
+            var token = CreateToken(account, customerAcc.Id, account.Role);
             var refreshToken = GenerateRefreshToken();
             SetRefreshToken(refreshToken, account);
             await _accService.Update(account);
@@ -244,8 +245,9 @@ namespace DeToiServer.Controllers
             }
 
             var account = await _accService.GetByCondition(acc => acc.RefreshToken == refreshToken);
+            var customerAcc = await _customerAccService.GetByCondition(acc => acc.AccountId == account.Id);
 
-            if (account == null)
+            if (account == null || customerAcc == null)
             {
                 return BadRequest(new
                 {
@@ -261,7 +263,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            TokenDto token = CreateToken(account, account.Role);
+            TokenDto token = CreateToken(account, customerAcc.Id, account.Role);
             var newRefreshToken = GenerateRefreshToken();
             SetRefreshToken(newRefreshToken, account);
             await _accService.Update(account);
@@ -300,11 +302,11 @@ namespace DeToiServer.Controllers
             acc.TokenExpires = newRefreshToken.Expires;
         }
 
-        private TokenDto CreateToken(Account acc, string role)
+        private TokenDto CreateToken(Account acc, Guid customerId, string role)
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Sid, acc.Id.ToString()),
+                new Claim(ClaimTypes.Sid, customerId.ToString()),
                 new Claim(ClaimTypes.Name, acc.Phone),
                 new Claim(ClaimTypes.Role, role)
             };

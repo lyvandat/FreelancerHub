@@ -64,6 +64,10 @@ namespace DeToiServerData
             modelBuilder.ApplyConfiguration(new UIElementServiceRequirementConfiguration());
             modelBuilder.ApplyConfiguration(new UIElementAdditionServiceRequirementConfiguration());
             #endregion
+
+            #region Realtime config
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            #endregion
         }
 
         // Account related models

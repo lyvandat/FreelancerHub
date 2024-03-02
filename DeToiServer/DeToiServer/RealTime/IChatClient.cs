@@ -1,11 +1,12 @@
 ﻿using DeToiServer.Dtos.AccountDtos;
+using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.OrderDtos;
 
 namespace DeToiServer.RealTime
 {
     public interface IChatClient
     {
-        Task SendOrder(PostOrderDto postOrder);
-        Task ReceiveFreelanceResponse(GetFreelanceAccountDto freelance, double price);
+        Task ReceiveCustomerOrder(PostOrderDto postOrder);
+        Task ReceiveFreelancerResponse(GetFreelanceMatchingDto matchingFreelancer);
     }
 }

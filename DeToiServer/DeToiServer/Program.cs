@@ -3,6 +3,7 @@ global using DeToiServerData;
 using DeToiServer;
 using DeToiServer.AutoMapper;
 using DeToiServer.Middlewares;
+using DeToiServer.RealTime;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -24,14 +25,16 @@ builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
     policy =>
     {
         policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        policy.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
     })
 );
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddServicesData();
 builder.Services.AddUnitOfWork(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("local"))); // builder.Configuration.GetConnectionString("local") | Helper.GetDockerConnectionString()
+    options.UseSqlServer(builder.Configuration.GetConnectionString("local_dat"))); // builder.Configuration.GetConnectionString("local") | Helper.GetDockerConnectionString()
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 app.UseSwagger();
@@ -42,6 +45,7 @@ app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 // Add other configurations
 app.UseHttpsRedirection();
+app.MapHub<ChatHub>("chat-hub");
 app.UseAuthorization();
 app.MapControllers();
 
