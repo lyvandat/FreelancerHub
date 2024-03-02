@@ -9,5 +9,6 @@ namespace DeToiServer.Services.ServiceCategoryService
         Task<ServiceCategory> CreateServiceCategory(PostServiceCategoryDto postServiceCategoryDto);
         Task UpdateServiceCategory(PutServiceCategoryDto putServiceCategoryDto);
         Task DeleteServiceCategory(Guid id);
+        Task<IEnumerable<GetServiceCategoryDto>> GetServiceCategoriesLimit(int limit);
     }
 }

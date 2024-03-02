@@ -21,6 +21,13 @@ namespace DeToiServer.Services.ServiceCategoryService
             return _mapper.Map<IEnumerable<GetServiceCategoryDto>>(rawServiceCategories);
         }
 
+        public async Task<IEnumerable<GetServiceCategoryDto>> GetServiceCategoriesLimit(int limit)
+        {
+            var rawServiceCategories = await _uow.ServiceCategoryRepo.GetServiceCategoriesWithLimit(limit);
+
+            return _mapper.Map<IEnumerable<GetServiceCategoryDto>>(rawServiceCategories);
+        }
+
         public async Task<GetServiceCategoryWithChildDto> GetServiceCategoryById(Guid id)
         {
             var serviceCategory = await _uow.ServiceCategoryRepo.GetServiceCategoryByIdWithChild(id);
