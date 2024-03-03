@@ -26,6 +26,11 @@ namespace DeToiServerData.Configurations
             builder.HasMany(fl => fl.Skills)
                 .WithMany(s => s.Freelancers)
                 .UsingEntity(j => j.ToTable("FreelanceSkills")); // name of the join table
+
+            builder.HasMany(fl => fl.ServiceProven)
+                .WithOne(sp => sp.Freelancer)
+                .HasForeignKey(sp => sp.FreelancerId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 

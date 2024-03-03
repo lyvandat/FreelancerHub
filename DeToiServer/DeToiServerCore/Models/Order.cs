@@ -10,7 +10,6 @@ namespace DeToiServerCore.Models
         public DateTime StartTime { get; set; }
         public DateTime ScheduleTime { get; set; }
         public DateTime CreatedTime { get; set; } = DateTime.Now;
-
         public Guid? FreelancerId { get; set; }
         public FreelanceAccount? Freelance { get; set; }
         public Guid? CustomerId { get; set; }
@@ -19,5 +18,7 @@ namespace DeToiServerCore.Models
         public Guid ServiceStatusId { get; set; } = new Guid("8a9f22f1-3c67-49f7-bd84-ec290e4a37fd");
         public ServiceStatus? ServiceStatus { get; set; }
         public ICollection<OrderService>? OrderServices { get; set; }
+        public ICollection<ServiceType>? ServiceTypes { get; set; }
+        public ICollection<ServiceProven>? ServiceProven { get; set; }
     }
 }

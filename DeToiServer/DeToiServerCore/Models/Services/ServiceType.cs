@@ -10,7 +10,9 @@ namespace DeToiServerCore.Models.Services
         public string? Image { get; set; }
         public Guid? ServiceCategoryId { get; set; }
         public ServiceCategory? ServiceCategory { get; set; }
-
+        public ICollection<Order>? Orders { get; set; }
+        public ICollection<Service>? Services { get; set; }
+        public ICollection<ServiceProven>? ServiceProven { get; set; }
         public ICollection<UIElementServiceRequirement>? Requirements { get; set; }
         public ICollection<UIElementAdditionServiceRequirement>? AdditionalRequirements { get; set; }
     }

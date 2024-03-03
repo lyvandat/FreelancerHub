@@ -10,15 +10,9 @@ namespace DeToiServerData.Configurations
     {
         protected override void OnConfigure(EntityTypeBuilder<Service> builder)
         {
-            builder.HasOne(s => s.ServiceCategory)
-                .WithMany(sc => sc.Services)
-                .HasForeignKey(s => s.ServiceCategoryId);
-
-            // Configure the inheritance hierarchy using the Discriminator column
-            builder.HasDiscriminator<string>("Discriminator")
-                .HasValue<CleaningService>("CleaningService")
-                .HasValue<RepairingService>("RepairingService")
-                .HasValue<ShoppingService>("ShoppingService");
+            builder.HasOne(s => s.ServiceType)
+                .WithMany(st => st.Services)
+                .HasForeignKey(s => s.ServiceTypeId);
         }
     }
 
@@ -38,6 +32,14 @@ namespace DeToiServerData.Configurations
             builder.HasOne(o => o.ServiceStatus)
                 .WithMany(ss => ss.Orders)
                 .HasForeignKey(o => o.ServiceStatusId);
+
+            builder.HasMany(o => o.ServiceProven)
+                .WithOne(sp => sp.Order)
+                .HasForeignKey(sp => sp.OrderId);
+
+            builder.HasMany(o => o.ServiceTypes)
+                .WithMany(st => st.Orders)
+                .UsingEntity(j => j.ToTable("OrderServiceType"));
         }
     }
 
@@ -128,6 +130,11 @@ namespace DeToiServerData.Configurations
     {
         protected override void OnConfigure(EntityTypeBuilder<ServiceType> builder)
         {
+            builder.HasMany(st => st.ServiceProven)
+                .WithOne(sp => sp.ServiceType)
+                .HasForeignKey(sp => sp.ServiceTypeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.HasData(
                 new List<ServiceType>
                 {

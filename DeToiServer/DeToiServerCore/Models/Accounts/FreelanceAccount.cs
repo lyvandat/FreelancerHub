@@ -1,4 +1,6 @@
-﻿namespace DeToiServerCore.Models.Accounts
+﻿using DeToiServerCore.Models.Services;
+
+namespace DeToiServerCore.Models.Accounts
 {
     public class FreelanceAccount : ModelBase
     {
@@ -23,5 +25,6 @@
         public bool IsTeam { get; set; } = false;
         public ICollection<Skill>? Skills { get; set; }
         public ICollection<Order>? Orders { get; set; }
+        public ICollection<ServiceProven>? ServiceProven { get; set; }
     }
 }
