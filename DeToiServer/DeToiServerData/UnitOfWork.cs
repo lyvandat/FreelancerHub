@@ -171,6 +171,18 @@ namespace DeToiServerData
         }
         #endregion
 
+        #region Service Proven Repo
+        private IServiceProvenRepo _serviceProvenRepo;
+        public IServiceProvenRepo ServiceProvenRepo
+        {
+            get
+            {
+                _serviceProvenRepo ??= new ServiceProvenRepo(_dataContext);
+                return _serviceProvenRepo;
+            }
+        }
+        #endregion
+
         public async Task<bool> SaveChangesAsync()
         {
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
