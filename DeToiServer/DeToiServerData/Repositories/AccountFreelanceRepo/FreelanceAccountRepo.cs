@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,5 +26,13 @@ public class FreelanceAccountRepo : RepositoryBase<FreelanceAccount>, IFreelance
             .Include(fl => fl.Address)
             .Include(fl => fl.Skills)
             .FirstOrDefaultAsync();
+    }
+
+    public new async Task<FreelanceAccount> GetByConditionsAsync(Expression<Func<FreelanceAccount, bool>> predicate)
+    {
+        return await _context.Freelancers
+            .Include(c => c.Account)
+            .Include(c => c.Address)
+            .FirstOrDefaultAsync(predicate);
     }
 }

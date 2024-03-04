@@ -2,19 +2,19 @@
 
 namespace DeToiServerCore.Models.SevicesUIElement
 {
-    public class RequirementDataDto
-    {
-        public required string DataType { get; set; }
-        public required string Name { get; set; }
-        public string? Value { get; set; }
-    }
+    //public class RequirementDataDto
+    //{
+    //    public required string DataType { get; set; }
+    //    public required string Name { get; set; }
+    //    public string? Value { get; set; }
+    //}
 
     // ===============================================
 
     public class UIElementValidationType : ModelBase
     {
         public required string Name { get; set; }
-        public string? Value { get; set; }
+        public int? Value { get; set; } // This field need review - update later
         public required string Message { get; set; }
         public required Guid InputMethodId { get; set; }
         public required UIElementServiceRequirementInputMethod InputMethod { get; set; }
@@ -52,6 +52,7 @@ namespace DeToiServerCore.Models.SevicesUIElement
     {
         public required Guid InputMethodId { get; set; }
         public required UIElementServiceRequirementInputMethod InputMethod { get; set; }
+        public required string Key { get; set; }
         public required string Label { get; set; }
         public string? LabelIcon { get; set; }
         public string Placeholder { get; set; } = String.Empty;
@@ -62,6 +63,7 @@ namespace DeToiServerCore.Models.SevicesUIElement
 
     public class UIElementAdditionServiceRequirement : ModelBase
     {
+        public required string Key { get; set; }
         public required string Icon { get; set; }
         public required string Label { get; set; }
         public bool AutoSelect { get; set; }

@@ -32,6 +32,8 @@ namespace DeToiServer.Controllers
         {
             var serviceType = await _service.GetServiceTypeDetailWithRequirements(id);
 
+
+
             if (serviceType is null)
             {
                 return BadRequest(new

@@ -14,6 +14,7 @@ using DeToiServer.Dtos.UIElementDtos;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
 using DeToiServerCore.Models.SevicesUIElement;
+using System.Collections.Generic;
 
 namespace DeToiServer.AutoMapper
 {
@@ -114,10 +115,15 @@ namespace DeToiServer.AutoMapper
             #endregion
 
             #region UI Element requirement and additional requirement
+
+            #region Map UIElementValidationType
             CreateMap<UIElementValidationType, UIElementValidationTypeDto>().ReverseMap();
+
+            #endregion
+            CreateMap<UIElementServiceRequirementInputMethod, UIElementServiceRequirementInputMethodDto>().ReverseMap();
+
             CreateMap<UIElementInputOption, UIElementInputOptionDto>().ReverseMap();
             CreateMap<UIElementInputMethodType, UIElementInputMethodTypeDto>().ReverseMap();
-            CreateMap<UIElementServiceRequirementInputMethod, UIElementServiceRequirementInputMethodDto>().ReverseMap();
             CreateMap<UIElementServiceRequirement, UIElementServiceRequirementDto>().ReverseMap();
             CreateMap<UIElementAdditionServiceRequirement, UIElementAdditionServiceRequirementDto>().ReverseMap();
             #endregion
