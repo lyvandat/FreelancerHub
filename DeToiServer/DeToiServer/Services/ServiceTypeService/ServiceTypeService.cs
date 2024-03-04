@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
+using DeToiServer.Dtos.UIElementDtos;
 using DeToiServerCore.Models.Services;
+using DeToiServerCore.Models.SevicesUIElement;
 using DeToiServerCore.QueryModels.ServiceTypeQueryModels;
 using DeToiServerData;
 
@@ -57,7 +59,8 @@ namespace DeToiServer.Services.ServiceTypeService
         {
             var rawDetail = await _uow.ServiceTypeRepo.GetServiceTypeDetailWithRequirements(id);
 
-            return _mapper.Map<GetServiceTypeDetailDto>(rawDetail);
+            var result = _mapper.Map<GetServiceTypeDetailDto>(rawDetail);
+            return result;
         }
     }
 }

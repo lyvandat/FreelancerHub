@@ -6,5 +6,6 @@ namespace DeToiServer.Services.OrderManagementService
     public interface IOrderManagementService
     {
         Task<Order?> Add(PostOrderDto service);
+        Task<Order?> AddClone(PostTestOrderDto postOrderDto);
     }
 }

@@ -1,15 +1,12 @@
-﻿using DeToiServerCore.Models.Infos;
-
-namespace DeToiServerCore.Models.Services
+﻿namespace DeToiServerCore.Models.Services
 {
     public class CleaningService : Service
     {
-        //public Guid? HomeInfoId { get; set; }
-        //public HomeInfo? HomeInfo { get; set; }
-        public double Price { get; set; }
-        public double Width { get; set; }
-        public double Height { get; set; }
-        public int Floor { get; set; }
-        public double RoomNumber { get; set; }
+        public string AddressLine { get; set; } = string.Empty;
+        public string CleanningType { get; set; } = string.Empty;
+        public int RoomNumber { get; set; }
+        public bool HasPets { get; set; }
+        public bool HasElectronics { get; set; }
+        public bool FreelancerBringTools { get; set; }
     }
 }

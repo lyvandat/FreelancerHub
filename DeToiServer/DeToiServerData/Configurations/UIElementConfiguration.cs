@@ -205,6 +205,7 @@ namespace DeToiServerData.Configurations
                     Id = Guid.NewGuid(),
                     InputMethodId = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
                     InputMethod = null!,
+                    Key = "addressLine",
                     Label = "Số nhà, số phòng, hẻm (ngõ)",
                     LabelIcon = null,
                     Placeholder = "Ví dụ: 257/43 Phòng 2014 Căn hộ Sunrise Continent",
@@ -216,6 +217,7 @@ namespace DeToiServerData.Configurations
                     Id = Guid.NewGuid(),
                     InputMethodId = new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"),
                     InputMethod = null!,
+                    Key = "cleanningType",
                     Label = "Bạn muốn chúng tôi dọn như thế nào?",
                     LabelIcon = "faFlag",
                     Placeholder = "Giúp nhân viên biết thêm về công việc cần làm",
@@ -227,6 +229,7 @@ namespace DeToiServerData.Configurations
                     Id = Guid.NewGuid(),
                     InputMethodId = new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"),
                     InputMethod = null!,
+                    Key = "roomNumber",
                     Label = "Số lượng phòng",
                     LabelIcon = "faPersonShelter",
                     Placeholder = "Lưu ý: Nếu bạn chọn dịch vụ dọn theo phòng, vui lòng bổ sung số phòng cần dọn ở đây",
@@ -251,6 +254,7 @@ namespace DeToiServerData.Configurations
                 new()
                 {
                     Id = Guid.NewGuid(),
+                    Key = "hasPets",
                     Icon = "faDog",
                     Label = "Nhà có thú cưng",
                     AutoSelect = true,
@@ -260,6 +264,7 @@ namespace DeToiServerData.Configurations
                 new()
                 {
                     Id = Guid.NewGuid(),
+                    Key = "hasElectronics",
                     Icon = "faComputer",
                     Label = "Nhà có nhiều đồ điện tử",
                     AutoSelect = false,
@@ -269,6 +274,7 @@ namespace DeToiServerData.Configurations
                 new()
                 {
                     Id = Guid.NewGuid(),
+                    Key = "freelancerBringTools",
                     Icon = "faBroom",
                     Label = "Nhân viên tự mang theo dụng cụ",
                     AutoSelect = false,

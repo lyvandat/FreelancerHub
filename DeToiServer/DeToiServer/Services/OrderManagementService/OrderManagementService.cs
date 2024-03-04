@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos;
+using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.OrderDtos;
+using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
 
 namespace DeToiServer.Services.OrderManagementService
@@ -30,9 +32,37 @@ namespace DeToiServer.Services.OrderManagementService
             return service;
         }
 
+        public async Task<Order?> AddClone(PostTestOrderDto postOrderDto)
+        {
+            var rawOrder = _mapper.Map<Order>(postOrderDto);
+            var searchAddress = await _uow.AddressRepo.GetByIdAsync(postOrderDto.Address.AddressId);
+            if (searchAddress == null)
+                rawOrder.Address = _mapper.Map<Address>(rawOrder.Address);
+            else
+                rawOrder.AddressId = postOrderDto.Address.AddressId ?? Guid.Empty;
+
+            await _uow.OrderRepo.CreateAsync(rawOrder);
+
+            // Add services related to the order
+            var cleaningService = AddService<CleaningService>(postOrderDto.CleaningService, rawOrder.Id);
+            //var repairingService = AddService<RepairingService>(postOrderDto.RepairingService, rawOrder.Id);
+            //var shoppingService = AddService<ShoppingService>(postOrderDto.ShoppingService, rawOrder.Id);
+
+            // Create records for each service
+            await _uow.CleaningRepo.CreateAsync(cleaningService);
+            //await _uow.RepairingRepo.CreateAsync(repairingService);
+            //await _uow.ShoppingRepo.CreateAsync(shoppingService);
+
+            // Save changes within the transaction scope
+            if (!await _uow.SaveChangesAsync()) return null;
+
+            return rawOrder;
+        }
+
         public async Task<Order?> Add(PostOrderDto postOrderDto)
         {
             var rawOrder = _mapper.Map<Order>(postOrderDto);
+
             await _uow.OrderRepo.CreateAsync(rawOrder);
 
             // Add services related to the order
