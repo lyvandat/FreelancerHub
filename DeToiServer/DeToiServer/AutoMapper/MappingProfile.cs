@@ -101,8 +101,6 @@ namespace DeToiServer.AutoMapper
             #region services for an order
             CreateMap<PostOrderDto, Order>().ReverseMap();
             CreateMap<PostCleaningServiceDto, CleaningService>().ReverseMap();
-            CreateMap<PostRepairingServiceDto, RepairingService>().ReverseMap();
-            CreateMap<PostShoppingServiceDto, ShoppingService>().ReverseMap();
             CreateMap<PostServiceProvenDto, ServiceProven>().ReverseMap();
             CreateMap<ServiceProven, GetServiceProvenDto>()
                 .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.Order != null ? src.Order.StartTime : default(DateTime)))
