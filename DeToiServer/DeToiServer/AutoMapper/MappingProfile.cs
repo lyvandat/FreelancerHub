@@ -5,16 +5,14 @@ using DeToiServer.Dtos.CleaningServiceDtos;
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.LocationDtos;
 using DeToiServer.Dtos.OrderDtos;
-using DeToiServer.Dtos.RepairingServiceDtos;
 using DeToiServer.Dtos.ServiceCategoryDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
-using DeToiServer.Dtos.ShoppingServiceDtos;
 using DeToiServer.Dtos.SkillDtos;
 using DeToiServer.Dtos.UIElementDtos;
+using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
 using DeToiServerCore.Models.SevicesUIElement;
-using System.Collections.Generic;
 
 namespace DeToiServer.AutoMapper
 {
@@ -75,6 +73,8 @@ namespace DeToiServer.AutoMapper
 
             #region Address
             CreateMap<Address, AddressDto>().ReverseMap();
+            CreateMap<Address, PostOrderAddressDto>().ReverseMap();
+            CreateMap<PostTestOrderDto, Order>().ReverseMap();
             #endregion
 
             #region Skill
@@ -100,8 +100,6 @@ namespace DeToiServer.AutoMapper
             #region services for an order
             CreateMap<PostOrderDto, Order>().ReverseMap();
             CreateMap<PostCleaningServiceDto, CleaningService>().ReverseMap();
-            CreateMap<PostRepairingServiceDto, RepairingService>().ReverseMap();
-            CreateMap<PostShoppingServiceDto, ShoppingService>().ReverseMap();
             #endregion
 
             #region GeoCoding
@@ -117,7 +115,8 @@ namespace DeToiServer.AutoMapper
             #region UI Element requirement and additional requirement
 
             #region Map UIElementValidationType
-            CreateMap<UIElementValidationType, UIElementValidationTypeDto>().ReverseMap();
+            CreateMap<UIElementValidationType, UIElementValidationTypeDto>()
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => Helper.StringToNum(src.Value)));
 
             #endregion
             CreateMap<UIElementServiceRequirementInputMethod, UIElementServiceRequirementInputMethodDto>().ReverseMap();

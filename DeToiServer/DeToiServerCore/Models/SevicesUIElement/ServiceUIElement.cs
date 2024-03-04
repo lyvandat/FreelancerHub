@@ -14,7 +14,7 @@ namespace DeToiServerCore.Models.SevicesUIElement
     public class UIElementValidationType : ModelBase
     {
         public required string Name { get; set; }
-        public int? Value { get; set; } // This field need review - update later
+        public string? Value { get; set; } // This field need review - update later
         public required string Message { get; set; }
         public required Guid InputMethodId { get; set; }
         public required UIElementServiceRequirementInputMethod InputMethod { get; set; }

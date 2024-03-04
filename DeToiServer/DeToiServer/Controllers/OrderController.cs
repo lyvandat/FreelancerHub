@@ -24,11 +24,11 @@ namespace DeToiServer.Controllers
         }
 
         [HttpPost, AuthorizeRoles(GlobalConstant.Customer)]
-        public async Task<ActionResult<Order>> PostOrder(PostOrderDto postOrder)
+        public async Task<ActionResult<Order>> PostOrder(PostTestOrderDto postOrder)
         {
             Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid customerId);
             postOrder.CustomerId = customerId;
-            var order = await _orderService.Add(postOrder);
+            var order = await _orderService.AddClone(postOrder);
             
             if (order is null)
             {

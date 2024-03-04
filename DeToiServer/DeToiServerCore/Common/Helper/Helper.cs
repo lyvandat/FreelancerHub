@@ -33,5 +33,19 @@ namespace DeToiServerCore.Common.Helper
         {
             return true;
         }
+
+        public static dynamic? StringToNum(string? value)
+        {
+            if (int.TryParse(value, out int result))
+            {
+                return result;
+            }
+            return value;
+        }
+
+        public static string? DynamicToString(dynamic? value)
+        {
+            return value?.ToString();
+        }
     }
 }

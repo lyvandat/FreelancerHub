@@ -1,6 +1,7 @@
 ﻿using DeToiServerData.Repositories;
 using DeToiServerData.Repositories.AccountCustomerRepo;
 using DeToiServerData.Repositories.AccountFreelanceRepo;
+using DeToiServerData.Repositories.AddressRepo;
 using DeToiServerData.Repositories.CleaningServiceRepo;
 using DeToiServerData.Repositories.OrderRepo;
 using DeToiServerData.Repositories.PromotionRepo;
@@ -137,18 +138,6 @@ namespace DeToiServerData
         }
         #endregion
 
-        #region Service Info Repo
-        //private IHomeInfoRepo _homeInfoRepo;
-        //public IHomeInfoRepo HomeInfoRepo
-        //{
-        //    get
-        //    {
-        //        _homeInfoRepo ??= new HomeInfoRepo(_dataContext);
-        //        return _homeInfoRepo;
-        //    }
-        //}
-        #endregion
-
         #region UI Element Repo
         private IUIElementServiceRequirementRepo _uIElementServiceRequirementRepo;
         public IUIElementServiceRequirementRepo UIElementServiceRequirementRepo
@@ -179,6 +168,18 @@ namespace DeToiServerData
             {
                 _serviceProvenRepo ??= new ServiceProvenRepo(_dataContext);
                 return _serviceProvenRepo;
+            }
+        }
+        #endregion
+
+        #region Address Repo
+        private IAddressRepo _addressRepo;
+        public IAddressRepo AddressRepo
+        {
+            get
+            {
+                _addressRepo ??= new AddressRepo(_dataContext);
+                return _addressRepo;
             }
         }
         #endregion

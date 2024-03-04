@@ -1,13 +1,10 @@
 ﻿using DeToiServer.Models;
 using DeToiServerCore.Models;
 using DeToiServerCore.Models.Accounts;
-using DeToiServerCore.Models.Infos;
 using DeToiServerCore.Models.Services;
 using DeToiServerCore.Models.SevicesUIElement;
 using DeToiServerData.Configurations;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace DeToiServerData
 {
@@ -42,10 +39,6 @@ namespace DeToiServerData
             modelBuilder.ApplyConfiguration(new CleaningServiceConfiguration());
             modelBuilder.ApplyConfiguration(new ShoppingServiceConfiguration());
             modelBuilder.ApplyConfiguration(new RepairingServiceConfiguration());
-
-            // Info
-            //modelBuilder.ApplyConfiguration(new HomeInfoConfiguration());
-            //modelBuilder.ApplyConfiguration(new ShoppingInfoConfiguration());
 
             // Blogs
             modelBuilder.ApplyConfiguration(new TermOfServiceConfiguration());
@@ -86,9 +79,6 @@ namespace DeToiServerData
         public DbSet<RepairingService> RepairingServices { get; set; }
         public DbSet<ShoppingService> ShoppingServices { get; set; }
         public DbSet<ServiceCategory> ServiceCategories { get; set; }
-        //public DbSet<HomeInfo> HomeInfo { get; set; }
-        //public DbSet<DeviceInfo> DeviceInfo { get; set; }
-        //public DbSet<ShoppingInfo> ShoppingInfo { get; set; }
 
         #region Service_UI_Element
         public DbSet<UIElementValidationType> UIElementValidationTypes { get; set; }

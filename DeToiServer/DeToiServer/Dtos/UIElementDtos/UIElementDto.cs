@@ -5,7 +5,7 @@
         public required Guid Id { get; set; }
         public required string Name { get; set; }
         public required string Message { get; set; }
-        public int? Value { get; set; } // Change made here
+        public dynamic? Value { get; set; }
     }
 
     public class UIElementInputOptionDto

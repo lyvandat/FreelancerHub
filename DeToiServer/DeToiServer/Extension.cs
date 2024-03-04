@@ -3,13 +3,13 @@ using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.ServiceCategoryService;
-using DeToiServer.Services.ServiceInfoService;
 using DeToiServer.Services.ServiceProvenService;
 using DeToiServer.Services.ServiceTypeService;
 using DeToiServer.Services.UIElementService;
 using DeToiServerData.Repositories;
 using DeToiServerData.Repositories.AccountCustomerRepo;
 using DeToiServerData.Repositories.AccountFreelanceRepo;
+using DeToiServerData.Repositories.AddressRepo;
 using DeToiServerData.Repositories.CleaningServiceRepo;
 using DeToiServerData.Repositories.OrderRepo;
 using DeToiServerData.Repositories.PromotionRepo;
@@ -77,10 +77,12 @@ namespace DeToiServerData
             services.AddScoped<ICleaningServiceRepo, CleaningServiceRepo>();
             services.AddScoped<IRepairingServiceRepo, RepairingServiceRepo>();
             services.AddScoped<IShoppingServiceRepo, ShoppingServiceRepo>();
-            //services.AddScoped<IHomeInfoRepo, HomeInfoRepo>();
 
             services.AddScoped<IUIElementServiceRequirementRepo, UIElementServiceRequirementRepo>();
             services.AddScoped<IUIElementAdditionServiceRequirementRepo, UIElementAdditionServiceRequirementRepo>();
+            
+            services.AddScoped<IAddressRepo, AddressRepo>();
+
 
             services.AddScoped<UnitOfWork>();
             return services;
@@ -95,7 +97,6 @@ namespace DeToiServerData
             services.AddScoped<IServiceCategoryService, ServiceCategoryService>();
             services.AddScoped<IServiceProvenService, ServiceProvenService>();
             services.AddScoped<IOrderManagementService, OrderManagementService>();
-            //services.AddScoped<IHomeInfoService, HomeInfoService>();
 
             services.AddScoped<IUIElementServiceRequirementService, UIElementServiceRequirementService>();
             return services;

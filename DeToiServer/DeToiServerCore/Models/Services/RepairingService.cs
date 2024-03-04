@@ -1,11 +1,9 @@
-﻿using DeToiServerCore.Models.Infos;
-
-namespace DeToiServerCore.Models.Services
+﻿namespace DeToiServerCore.Models.Services
 {
     public class RepairingService : Service
     {
-        public Guid? DeviceInfoId { get; set; }
-        public DeviceInfo? DeviceInfo { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Size { get; set; } = string.Empty;
         public int Quantity { get; set; }
         public double Price { get; set; }
     }

@@ -28,5 +28,13 @@ namespace DeToiServer.Controllers
 
             return raw.Select(item => _mapper.Map<UIElementServiceRequirementDto>(item)).ToList();
         }
+
+        [HttpPost("test2")]
+        public async Task<PostUIElementValidationTypeDto> Test2(PostUIElementValidationTypeDto input)
+        {
+            await Task.Delay(10);
+
+            return input;
+        }
     }
 }

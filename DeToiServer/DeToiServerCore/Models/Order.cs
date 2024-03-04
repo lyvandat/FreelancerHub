@@ -5,7 +5,8 @@ namespace DeToiServerCore.Models
 {
     public class Order : ModelBase
     {
-        public string Address { get; set; } = string.Empty;
+        public required Guid AddressId { get; set; }
+        public required Address Address { get; set; }
         public double EstimatedPrice { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime ScheduleTime { get; set; }
