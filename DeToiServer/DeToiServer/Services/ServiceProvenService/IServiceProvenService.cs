@@ -5,8 +5,8 @@ namespace DeToiServer.Services.ServiceProvenService
 {
     public interface IServiceProvenService
     {
-        public Task<IEnumerable<ServiceProven>> GetAll();
-        public Task<ServiceProven> GetById(Guid id);
+        public Task<IEnumerable<GetServiceProvenDto>> GetAll();
+        public Task<GetServiceProvenDto> GetById(Guid id);
         public Task<ServiceProven> Add(PostServiceProvenDto serviceProven);
     }
 }

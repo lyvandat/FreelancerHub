@@ -18,10 +18,14 @@ namespace DeToiServer.Services.ServiceProvenService
         public async Task<ServiceProven> Add(PostServiceProvenDto serviceProven)
             => await _uow.ServiceProvenRepo.CreateAsync(_mapper.Map<ServiceProven>(serviceProven));
 
-        public async Task<IEnumerable<ServiceProven>> GetAll()
-            => await _uow.ServiceProvenRepo.GetAllAsync();
+        public async Task<IEnumerable<GetServiceProvenDto>> GetAll()
+        {
+            var serviceProven = await _uow.ServiceProvenRepo.GetAllWithInfo();
 
-        public async Task<ServiceProven> GetById(Guid id)
-            => await _uow.ServiceProvenRepo.GetByIdAsync(id);
+            return serviceProven.Select(_mapper.Map<GetServiceProvenDto>);
+        }
+
+        public async Task<GetServiceProvenDto> GetById(Guid id)
+            => _mapper.Map<GetServiceProvenDto>(await _uow.ServiceProvenRepo.GetByIdWithInfo(id));
     }
 }

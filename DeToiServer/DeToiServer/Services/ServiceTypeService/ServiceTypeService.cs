@@ -59,8 +59,7 @@ namespace DeToiServer.Services.ServiceTypeService
         {
             var rawDetail = await _uow.ServiceTypeRepo.GetServiceTypeDetailWithRequirements(id);
 
-            var result = _mapper.Map<GetServiceTypeDetailDto>(rawDetail);
-            return result;
+            return _mapper.Map<GetServiceTypeDetailDto>(rawDetail);
         }
     }
 }

@@ -6,6 +6,7 @@ using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.LocationDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.ServiceCategoryDtos;
+using DeToiServer.Dtos.ServiceProvenDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Dtos.SkillDtos;
 using DeToiServer.Dtos.UIElementDtos;
@@ -100,6 +101,13 @@ namespace DeToiServer.AutoMapper
             #region services for an order
             CreateMap<PostOrderDto, Order>().ReverseMap();
             CreateMap<PostCleaningServiceDto, CleaningService>().ReverseMap();
+            CreateMap<PostRepairingServiceDto, RepairingService>().ReverseMap();
+            CreateMap<PostShoppingServiceDto, ShoppingService>().ReverseMap();
+            CreateMap<PostServiceProvenDto, ServiceProven>().ReverseMap();
+            CreateMap<ServiceProven, GetServiceProvenDto>()
+                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.Order != null ? src.Order.StartTime : default(DateTime)))
+                .ForMember(dest => dest.EstimatedPrice, opt => opt.MapFrom(src => src.Order != null ? src.Order.EstimatedPrice : 0))
+                .ForMember(dest => dest.ServiceType, opt => opt.MapFrom(src => src.ServiceType != null ? src.ServiceType.Name : "Dịch vụ DeToi"));
             #endregion
 
             #region GeoCoding

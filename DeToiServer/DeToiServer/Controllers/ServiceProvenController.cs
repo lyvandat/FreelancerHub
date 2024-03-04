@@ -20,19 +20,19 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ServiceProven>>> GetServiceProven()
+        public async Task<ActionResult<IEnumerable<GetServiceProvenDto>>> GetServiceProven()
         {
             return Ok(await _serviceProven.GetAll());
         }
 
         [HttpGet("detail")]
-        public async Task<ActionResult<ServiceProven>> GetServiceProvenDetail(Guid id)
+        public async Task<ActionResult<GetServiceProvenDto>> GetServiceProvenDetail(Guid id)
         {
             return Ok(await _serviceProven.GetById(id));
         }
 
         [HttpPost]
-        public async Task<ActionResult<ServiceProven>> PostServiceProven(PostServiceProvenDto postServiceProven)
+        public async Task<ActionResult<GetServiceProvenDto>> PostServiceProven(PostServiceProvenDto postServiceProven)
         {
             var serviceProven = await _serviceProven.Add(postServiceProven);
             await _uow.SaveChangesAsync();
