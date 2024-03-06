@@ -7,22 +7,15 @@ namespace DeToiServerCore.Models.Accounts
         public required Account Account { get; set; }
         public required Guid AccountId { get; set; }
         public double Rating { get; set; }
+        public double TotalReviewCount { get; set; }
         public double Balance { get; set; }
+        public int OrderCount { get; set; }
+        public int LoveCount { get; set; }
+        public int PositiveReviewCount { get; set; }
         public ICollection<Address>? Address { get; set; }
-
-        //public string Address { get; set; } = string.Empty;
-        //ward: string;
-        //district: string;
-        //province: string;
-        //country: string;
-
-
-        // orderCount tổng số đơn
-        // description mô tả ngắn.
-        // loveCount tổng yêu thích
-        // positiveReviewCount tổng đánh giá ôk.
         public string IdentityNumber { get; set; } = string.Empty;
         public bool IsTeam { get; set; } = false;
+        public string Description { get; set; } = string.Empty;
         public ICollection<Skill>? Skills { get; set; }
         public ICollection<Order>? Orders { get; set; }
         public ICollection<ServiceProven>? ServiceProven { get; set; }

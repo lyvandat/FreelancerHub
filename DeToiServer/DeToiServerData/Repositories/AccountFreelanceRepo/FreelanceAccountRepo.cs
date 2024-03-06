@@ -25,6 +25,10 @@ public class FreelanceAccountRepo : RepositoryBase<FreelanceAccount>, IFreelance
             .Include(fl => fl.Account)
             .Include(fl => fl.Address)
             .Include(fl => fl.Skills)
+            .Include(fl => fl.ServiceProven)
+                .ThenInclude(sp => sp.ServiceType)
+            .Include(fl => fl.ServiceProven)
+                .ThenInclude(sp => sp.Order)
             .FirstOrDefaultAsync();
     }
 

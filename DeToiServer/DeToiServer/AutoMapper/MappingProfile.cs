@@ -104,8 +104,9 @@ namespace DeToiServer.AutoMapper
             CreateMap<PostServiceProvenDto, ServiceProven>().ReverseMap();
             CreateMap<ServiceProven, GetServiceProvenDto>()
                 .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.Order != null ? src.Order.StartTime : default(DateTime)))
+                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.Order != null ? src.Order.FinishTime : default(DateTime)))
                 .ForMember(dest => dest.EstimatedPrice, opt => opt.MapFrom(src => src.Order != null ? src.Order.EstimatedPrice : 0))
-                .ForMember(dest => dest.ServiceType, opt => opt.MapFrom(src => src.ServiceType != null ? src.ServiceType.Name : "Dịch vụ DeToi"));
+                .ForMember(dest => dest.ServiceType, opt => opt.MapFrom(src => src.ServiceType != null ? src.ServiceType.Description : "Dịch vụ DeToi"));
             #endregion
 
             #region GeoCoding

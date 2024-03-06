@@ -1,4 +1,5 @@
 ﻿using DeToiServer.Dtos.AddressDtos;
+using DeToiServer.Dtos.ServiceProvenDtos;
 using DeToiServer.Dtos.SkillDtos;
 using DeToiServerCore.Models.Accounts;
 
@@ -17,9 +18,9 @@ namespace DeToiServer.Dtos.FreelanceDtos
         public AddressDto? Address { get; set; }
         public string IdentityNumber { get; set; } = string.Empty;
         public bool IsTeam { get; set; } = false;
-        public ICollection<SkillDto>? Skills { get; set; }
         public string Description  { get; set; } = string.Empty; // mô tả ngắn.
-        // serviceProven: IServiceProven[];
+        public ICollection<SkillDto>? Skills { get; set; }
+        public ICollection<GetServiceProvenDto>? ServiceProven { get; set; }
     }
 
     public class GetFreelanceMatchingDto
@@ -35,9 +36,9 @@ namespace DeToiServer.Dtos.FreelanceDtos
         public AddressDto? Address { get; set; }
         public string IdentityNumber { get; set; } = string.Empty;
         public bool IsTeam { get; set; } = false;
-        public ICollection<SkillDto>? Skills { get; set; }
         public string Description { get; set; } = string.Empty; // mô tả ngắn.
         public double PreviewPrice { get; set; }
-        // serviceProven: IServiceProven[];
+        public ICollection<SkillDto>? Skills { get; set; }
+        public ICollection<GetServiceProvenDto>? ServiceProven { get; set; }
     }
 }

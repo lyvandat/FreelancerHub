@@ -39,12 +39,11 @@ namespace DeToiServer.Controllers
                 });
             }
             var result = _mapper.Map<GetFreelanceDto>(freelance);
-            result.Address = _mapper.Map<AddressDto>(freelance.Address!.FirstOrDefault());
+            result.Address = _mapper.Map<AddressDto>(freelance.Address?.FirstOrDefault());
 
             return Ok(new
             {
-                result,
-                freelance
+                result
             });
         }
     }

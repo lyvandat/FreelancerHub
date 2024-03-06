@@ -13,6 +13,7 @@ namespace DeToiServer.Dtos.AuthDtos
         public DateOnly DateOfBirth { get; set; }
         public string Phone { get; set; } = string.Empty;
         public bool IsTeam { get; set; } = false;
+        public string Description { get; set; } = string.Empty;
         public ICollection<AddressDto>? Address { get; set; }
         public ICollection<SkillDto>? Skills { get; set; }
     }
