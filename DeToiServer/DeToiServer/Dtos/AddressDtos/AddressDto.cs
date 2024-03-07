@@ -2,6 +2,7 @@
 {
     public class AddressDto
     {
+        public Guid Id { get; set; }
         public double Lat { get; set; }
         public double Lon { get; set; }
         public string AddressLine { get; set; } = string.Empty; // thêm lat lon
@@ -13,7 +14,7 @@
 
     public class PostOrderAddressDto
     {
-        public Guid? AddressId { get; set; }
+        public Guid? Id { get; set; }
         public double Lat { get; set; }
         public double Lon { get; set; }
         public string AddressLine { get; set; } = string.Empty; // thêm lat lon
