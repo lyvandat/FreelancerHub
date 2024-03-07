@@ -22,11 +22,29 @@ namespace DeToiServer.RealTime
             var freelanceAccounts = await _context.Freelancers
                 .AsNoTracking()
                 .Include(fl => fl.Account)
+                .Include(fl => fl.Address)
                 .ToListAsync();
 
             freelanceAccounts = freelanceAccounts
-                    .Where(acc => Helper.IsInAcceptableZone(order.Address, order.Address))
-                    .ToList();
+                    .Where(acc => {
+                        if (acc.Address != null && acc.Address.Count > 0)
+                        {
+                            var freelanceAddress = acc.Address.First();
+
+                            return Helper.IsInAcceptableZone(
+                                new Coordination()
+                                {
+                                    Lat = order.Address.Lat,
+                                    Lon = order.Address.Lon
+                                },
+                                new Coordination()
+                                {
+                                    Lat = freelanceAddress.Lat,
+                                    Lon = freelanceAddress.Lon
+                                }); 
+                        }
+                        return false;
+                    }).ToList();
 
             // Online users that are connecting to SignalR
             var users = await _context.Users

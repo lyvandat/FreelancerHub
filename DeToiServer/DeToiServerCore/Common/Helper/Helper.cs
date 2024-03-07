@@ -1,4 +1,5 @@
 ﻿using DeToiServerCore.Common.Constants;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace DeToiServerCore.Common.Helper
@@ -36,9 +37,9 @@ namespace DeToiServerCore.Common.Helper
             return $"Data Source={dbHost};Initial Catalog={dbName};User ID=sa;Password={dbPassword};TrustServerCertificate=True;";
         }
 
-        public static bool IsInAcceptableZone(string customerAddress, string freelanceAddress)
+        public static bool IsInAcceptableZone(Coordination customerAddress, Coordination freelanceAddress, int defaultDistance = 5)
         {
-            return true;
+            return !(GeoCalculator.CalculateDistance(customerAddress, freelanceAddress) > defaultDistance); // (km)
         }
 
         public static dynamic? StringToNum(string? value)
