@@ -1,5 +1,4 @@
 ﻿using DeToiServer.Dtos.OrderDtos;
-using DeToiServerCore.Models.Services;
 
 namespace DeToiServer.Services.OrderManagementService
 {
@@ -7,5 +6,6 @@ namespace DeToiServer.Services.OrderManagementService
     {
         Task<Order?> Add(PostOrderDto service);
         Task<IEnumerable<Order>> GetFreelancerMatchingOrders(Guid freelancerId);
+        Task<Order?> GetById(Guid orderId);
     }
 }

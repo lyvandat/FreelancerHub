@@ -54,6 +54,45 @@ namespace DeToiServer.Controllers
                     Message = "Lấy đơn đặt hàng không thành công"
                 });
             }
+
+            return Ok(order);
+        }
+
+        [HttpPut("order-price"), AuthorizeRoles(GlobalConstant.Customer)]
+        public async Task<ActionResult<Order>> UpdateOrderActualPriceAndFreelancer(PutOrderPriceAndFreelancerDto putOrder)
+        {
+            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid customerId);
+            var order = await _orderService.GetById(putOrder.OrderId);
+
+            if (order == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Cập nhật đơn đặt hàng không thành công"
+                });
+            }
+
+            if (order.CustomerId != customerId)
+            {
+                return BadRequest(new
+                {
+                    Message = "Bạn không có quyền cập nhật đơn đặt hàng này"
+                });
+            }
+
+            order.EstimatedPrice = putOrder.ActualPrice;
+            order.FreelancerId = putOrder.FreelancerId;
+
+            var saveResult = await _uow.SaveChangesAsync();
+
+            if (!saveResult)
+            {
+                return BadRequest(new
+                {
+                    Message = "Cập nhật đơn đặt hàng không thành công"
+                });
+            }
+
             return Ok(order);
         }
     }

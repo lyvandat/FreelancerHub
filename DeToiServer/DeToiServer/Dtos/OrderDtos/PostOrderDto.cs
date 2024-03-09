@@ -14,4 +14,11 @@ namespace DeToiServer.Dtos.OrderDtos
         //public PostRepairingServiceDto? RepairingService { get; set; }
         //public PostShoppingServiceDto? ShoppingService { get; set; }
     }
+
+    public class PutOrderPriceAndFreelancerDto
+    {
+        public Guid OrderId { get; set; }
+        public Guid FreelancerId { get; set; }
+        public double ActualPrice { get; set; }
+    }
 }

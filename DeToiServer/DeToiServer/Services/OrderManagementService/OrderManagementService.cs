@@ -77,5 +77,8 @@ namespace DeToiServer.Services.OrderManagementService
 
             return result;
         }
+
+        public async Task<Order?> GetById(Guid orderId)
+            => await _uow.OrderRepo.GetByIdAsync(orderId);
     }
 }
