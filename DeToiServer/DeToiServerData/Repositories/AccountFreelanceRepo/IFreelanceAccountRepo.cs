@@ -5,4 +5,5 @@ namespace DeToiServerData.Repositories.AccountFreelanceRepo;
 public interface IFreelanceAccountRepo : IRepository<FreelanceAccount>
 {
     Task<FreelanceAccount> GetByAccId(Guid id);
+    Task<FreelanceAccount> GetDetailByIdWithStatistic(Guid id);
 }

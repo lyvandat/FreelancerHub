@@ -1,12 +1,14 @@
-﻿using DeToiServerCore.Models.Accounts;
+﻿using DeToiServer.Dtos.AddressDtos;
+using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
 
-namespace DeToiServerCore.Models
+namespace DeToiServer.Dtos.OrderDtos
 {
-    public class Order : ModelBase
+    public class GetOrderDto
     {
-        public Guid AddressId { get; set; }
-        public Address? Address { get; set; }
+        public Guid Id { get; set; }
+        //public Guid AddressId { get; set; }
+        public AddressDto? Address { get; set; }
         public double EstimatedPrice { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime FinishTime { get; set; }
@@ -16,7 +18,6 @@ namespace DeToiServerCore.Models
         public Guid? CustomerId { get; set; }
         public CustomerAccount? Customer { get; set; }
         public double Rating { get; set; }
-        public string? Comment { get; set; }
         public Guid ServiceStatusId { get; set; } = new Guid("8a9f22f1-3c67-49f7-bd84-ec290e4a37fd");
         public ServiceStatus? ServiceStatus { get; set; }
         public ICollection<OrderService>? OrderServices { get; set; }

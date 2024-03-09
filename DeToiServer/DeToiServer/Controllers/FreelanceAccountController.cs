@@ -31,6 +31,22 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("detail"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult<GetFreelanceMatchingDto>> GetFreelancerDetail(Guid id)
+        {
+            var freelance = await _freelanceAccService.GetDetailWithStatistic(id);
+
+            if (freelance is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không tìm thấy tài khoản!"
+                });
+            }
+
+            return Ok(freelance);
+        }
+
+        [HttpGet("current"), AuthorizeRoles(GlobalConstant.Freelancer)]
         public async Task<ActionResult<GetFreelanceDto>> GetCurrentFreelancerDetail()
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerId);

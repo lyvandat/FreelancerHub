@@ -20,5 +20,6 @@ namespace DeToiServerCore.Models.Accounts
         public ICollection<Skill>? Skills { get; set; }
         public ICollection<Order>? Orders { get; set; }
         public ICollection<ServiceProven>? ServiceProven { get; set; }
+        public ICollection<Favorite>? FavoriteBy { get; set; }
     }
 }

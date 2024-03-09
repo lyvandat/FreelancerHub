@@ -36,6 +36,7 @@ namespace DeToiServer.Dtos.FreelanceDtos
         public AddressDto? Address { get; set; }
         public string IdentityNumber { get; set; } = string.Empty;
         public bool IsTeam { get; set; } = false;
+        public int TeamMemberCount { get; set; }
         public string Description { get; set; } = string.Empty; // mô tả ngắn.
         public double PreviewPrice { get; set; }
         public ICollection<SkillDto>? Skills { get; set; }

@@ -29,6 +29,8 @@ namespace DeToiServerData
             modelBuilder.ApplyConfiguration(new FreelanceConfiguration());
             modelBuilder.ApplyConfiguration(new AddressConfiguration());
 
+            modelBuilder.ApplyConfiguration(new FavoriteConfiguration());
+
             // Service
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
             modelBuilder.ApplyConfiguration(new ServiceTypeConfiguration());

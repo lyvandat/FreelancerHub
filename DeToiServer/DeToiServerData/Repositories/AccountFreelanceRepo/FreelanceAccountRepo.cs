@@ -39,4 +39,18 @@ public class FreelanceAccountRepo : RepositoryBase<FreelanceAccount>, IFreelance
             .Include(c => c.Address)
             .FirstOrDefaultAsync(predicate);
     }
+
+    public async Task<FreelanceAccount> GetDetailByIdWithStatistic(Guid id)
+    {
+        var query = _context.Freelancers.AsSplitQuery().AsNoTracking(); // perfomance
+        return await query.Where(fl => fl.AccountId.Equals(id) || fl.Id.Equals(id))
+            .Include(fl => fl.Account)
+            .Include(fl => fl.Address)
+            .Include(fl => fl.Skills)
+            .Include(fl => fl.ServiceProven)
+                .ThenInclude(sp => sp.ServiceType)
+            .Include(fl => fl.Orders)
+            .Include(fl => fl.FavoriteBy)
+            .FirstOrDefaultAsync();
+    }
 }

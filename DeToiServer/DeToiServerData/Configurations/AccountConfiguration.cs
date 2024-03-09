@@ -1,4 +1,5 @@
-﻿using DeToiServerCore.Models.Accounts;
+﻿using DeToiServerCore.Models;
+using DeToiServerCore.Models.Accounts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -47,6 +48,26 @@ namespace DeToiServerData.Configurations
                 .WithMany(frl => frl.Address)
                 .HasForeignKey(ad => ad.FreelanceAccountId)
                 .IsRequired(false);
+        }
+    }
+
+    internal class FavoriteConfiguration : EntityTypeConfigurationBaseClass<Favorite>
+    {
+        protected override void OnConfigure(EntityTypeBuilder<Favorite> builder)
+        {
+            builder.HasKey(fv => new { fv.FreelancerId, fv.CustomerId });
+
+            builder.HasOne(fv => fv.Freelance)
+                .WithMany(fl => fl.FavoriteBy)
+                .HasForeignKey(fv => fv.FreelancerId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(fv => fv.Customer)
+                .WithMany(c => c.Favorites)
+                .HasForeignKey(fv => fv.CustomerId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.ToTable("Favorites");
         }
     }
 }
