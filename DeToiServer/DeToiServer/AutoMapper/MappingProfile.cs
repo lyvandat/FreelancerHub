@@ -75,7 +75,6 @@ namespace DeToiServer.AutoMapper
             #region Address
             CreateMap<Address, AddressDto>().ReverseMap();
             CreateMap<Address, PostOrderAddressDto>().ReverseMap();
-            CreateMap<PostTestOrderDto, Order>().ReverseMap();
             #endregion
 
             #region Skill
@@ -99,7 +98,10 @@ namespace DeToiServer.AutoMapper
             #endregion
 
             #region services for an order
-            CreateMap<PostOrderDto, Order>().ReverseMap();
+            CreateMap<PostOrderDto, Order>()
+                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartDate.ToDateTime(src.StartTime)));
+            
+            //CreateMap<PostOrderDto, Order>().ReverseMap();
             CreateMap<PostCleaningServiceDto, CleaningService>().ReverseMap();
             CreateMap<PostServiceProvenDto, ServiceProven>().ReverseMap();
             CreateMap<ServiceProven, GetServiceProvenDto>()

@@ -46,11 +46,21 @@ namespace DeToiServerData.Repositories.ServiceTypeRepo
                 .Include(st => st.AdditionalRequirements)
                 .FirstOrDefaultAsync(st => st.Id.Equals(id));
 
-            //var test = await ApplySpecification(new ServiceTypeDetailWithRequirementsSpecification(st => st.Id == id))
-            //    .AsSplitQuery()
-            //    .FirstOrDefaultAsync();
-
             return result;
+        }
+
+        public async Task<ServiceType> AddOrderServiceType(Guid serviceTypeId, Guid orderId)
+        {
+            var serviceType = await _context.ServiceTypes.FindAsync(serviceTypeId);
+
+            var orderServiceTypes = serviceType.OrderServiceTypes ??= new List<OrderServiceType>();
+            orderServiceTypes.Add(new OrderServiceType
+            {
+                OrderId = orderId,
+                ServiceTypeId = serviceTypeId
+            });
+
+            return serviceType;
         }
     }
 }

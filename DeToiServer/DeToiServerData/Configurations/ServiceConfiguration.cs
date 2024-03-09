@@ -41,10 +41,6 @@ namespace DeToiServerData.Configurations
                 .WithMany(a => a.Orders)
                 .HasForeignKey(o => o.AddressId)
                 .OnDelete(DeleteBehavior.NoAction);
-
-            builder.HasMany(o => o.ServiceTypes)
-                .WithMany(st => st.Orders)
-                .UsingEntity(j => j.ToTable("OrderServiceType"));
         }
     }
 
@@ -69,13 +65,34 @@ namespace DeToiServerData.Configurations
         }
     }
 
+    internal class OrderServiceTypeConfiguration : EntityTypeConfigurationBaseClass<OrderServiceType>
+    {
+        protected override void OnConfigure(EntityTypeBuilder<OrderServiceType> builder)
+        {
+            builder.HasKey(os => new { os.OrderId, os.ServiceTypeId });
+
+            builder.HasOne(os => os.Order)
+                .WithMany(o => o.OrderServiceTypes)
+                .HasForeignKey(os => os.OrderId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(os => os.ServiceType)
+                .WithMany(st => st.OrderServiceTypes)
+                .HasForeignKey(os => os.ServiceTypeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Optionally, set the table name for the joint table
+            builder.ToTable("OrderServiceType");
+        }
+    }
+
     internal class CleaningServiceConfiguration : EntityTypeConfigurationBaseClass<CleaningService>
     {
         protected override void OnConfigure(EntityTypeBuilder<CleaningService> builder)
         {
             builder.ToTable(
-                    "CleaningServices",
-                    tableBuilder => tableBuilder.Property(cat => cat.Id).HasColumnName("CleaningServiceId"));
+                    "CleaningServices");
+            //, tableBuilder => tableBuilder.Property(cat => cat.Id).HasColumnName("CleaningServiceId"));
         }
     }
 
@@ -84,8 +101,8 @@ namespace DeToiServerData.Configurations
         protected override void OnConfigure(EntityTypeBuilder<RepairingService> builder)
         {
             builder.ToTable(
-                    "RepairingServices",
-                    tableBuilder => tableBuilder.Property(cat => cat.Id).HasColumnName("RepairingServiceId"));
+                    "RepairingServices");
+            //, tableBuilder => tableBuilder.Property(cat => cat.Id).HasColumnName("RepairingServiceId"));
         }
     }
 
@@ -94,8 +111,8 @@ namespace DeToiServerData.Configurations
         protected override void OnConfigure(EntityTypeBuilder<ShoppingService> builder)
         {
             builder.ToTable(
-                    "ShoppingServices",
-                    tableBuilder => tableBuilder.Property(cat => cat.Id).HasColumnName("ShoppingServiceId"));
+                    "ShoppingServices");
+            //, tableBuilder => tableBuilder.Property(cat => cat.Id).HasColumnName("ShoppingServiceId"));
         }
     }
 

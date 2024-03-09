@@ -60,7 +60,8 @@ namespace DeToiServer.Controllers
                 DateOfBirth = request.DateOfBirth,
                 Phone = request.Phone,
                 Role = GlobalConstant.Freelancer,
-                Avatar = GlobalConstant.CustomerAvtMale
+                Avatar = GlobalConstant.CustomerAvtMale,
+                IsVerified = true,
             };
 
             freelance = new FreelanceAccount()

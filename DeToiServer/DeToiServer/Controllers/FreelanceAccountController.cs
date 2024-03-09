@@ -5,9 +5,13 @@ using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Services.AccountService;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
+using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Common.CustomAttribute;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace DeToiServer.Controllers
 {
@@ -26,10 +30,34 @@ namespace DeToiServer.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("detail")]
-        public async Task<ActionResult<GetFreelanceDto>> GetById(Guid id)
+        [HttpGet("detail"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult<GetFreelanceDto>> GetCurrentFreelancerDetail()
         {
-            var freelance = await _freelanceAccService.GetByAccId(id);
+            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerId);
+            var freelance = await _freelanceAccService.GetByAccId(freelancerId);
+
+            if (freelance is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không tìm thấy tài khoản!"
+                });
+            }
+            var result = _mapper.Map<GetFreelanceDto>(freelance);
+            result.Address = _mapper.Map<AddressDto>(freelance.Address!.FirstOrDefault());
+
+            return Ok(new
+            {
+                result,
+                freelance
+            });
+        }
+
+        [HttpGet("orders"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult<GetFreelanceDto>> GetCurrentFreelancerMatchingOrders()
+        {
+            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerId);
+            var freelance = await _freelanceAccService.GetByAccId(freelancerId);
 
             if (freelance is null)
             {

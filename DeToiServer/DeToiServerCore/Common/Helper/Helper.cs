@@ -1,7 +1,15 @@
-﻿using System.Text;
+﻿using DeToiServerCore.Common.Constants;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace DeToiServerCore.Common.Helper
 {
+    public class Coordination
+    {
+        public double Lat { get; set; }
+        public double Lon { get; set; }
+    }
+
     public static class Helper
     {
         public static string ByteArrayToString(byte[] ba)
@@ -29,9 +37,9 @@ namespace DeToiServerCore.Common.Helper
             return $"Data Source={dbHost};Initial Catalog={dbName};User ID=sa;Password={dbPassword};TrustServerCertificate=True;";
         }
 
-        public static bool IsInAcceptableZone(string customerAddress, string freelanceAddress)
+        public static bool IsInAcceptableZone(Coordination customerAddress, Coordination freelanceAddress, int defaultDistance = 5)
         {
-            return true;
+            return !(GeoCalculator.CalculateDistance(customerAddress, freelanceAddress) > defaultDistance); // (km)
         }
 
         public static dynamic? StringToNum(string? value)
@@ -46,6 +54,31 @@ namespace DeToiServerCore.Common.Helper
         public static string? DynamicToString(dynamic? value)
         {
             return value?.ToString();
+        }
+
+        public static class GeoCalculator
+        {
+            private const double EarthRadiusKm = 6371.0;
+
+            public static double CalculateDistance(Coordination from, Coordination to, int calUnit = GlobalConstant.InKilometers)
+            {
+                var dLat = ToRadians(to.Lat - from.Lat);
+                var dLon = ToRadians(to.Lon - from.Lon);
+
+                var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                        Math.Cos(ToRadians(to.Lat)) * Math.Cos(ToRadians(from.Lat)) *
+                        Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+
+                var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+
+                var distance = EarthRadiusKm * c * calUnit;
+                return distance; // (km)
+            }
+
+            private static double ToRadians(double angle)
+            {
+                return Math.PI * angle / 180.0;
+            }
         }
     }
 }

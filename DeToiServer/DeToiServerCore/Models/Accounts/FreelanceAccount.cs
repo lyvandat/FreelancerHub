@@ -1,4 +1,4 @@
-﻿using DeToiServerCore.Models.Services;
+using DeToiServerCore.Models.Services;
 
 namespace DeToiServerCore.Models.Accounts
 {
@@ -16,6 +16,7 @@ namespace DeToiServerCore.Models.Accounts
         public string IdentityNumber { get; set; } = string.Empty;
         public bool IsTeam { get; set; } = false;
         public string Description { get; set; } = string.Empty;
+        public int TeamMemberCount { get; set; } = 1;
         public ICollection<Skill>? Skills { get; set; }
         public ICollection<Order>? Orders { get; set; }
         public ICollection<ServiceProven>? ServiceProven { get; set; }

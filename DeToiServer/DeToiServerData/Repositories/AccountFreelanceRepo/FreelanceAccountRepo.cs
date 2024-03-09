@@ -21,7 +21,7 @@ public class FreelanceAccountRepo : RepositoryBase<FreelanceAccount>, IFreelance
     public async Task<FreelanceAccount> GetByAccId(Guid id)
     {
         var query = _context.Freelancers.AsSplitQuery(); // perfomance
-        return await query.Where(fl => fl.AccountId == id)
+        return await query.Where(fl => fl.AccountId.Equals(id) || fl.Id.Equals(id))
             .Include(fl => fl.Account)
             .Include(fl => fl.Address)
             .Include(fl => fl.Skills)

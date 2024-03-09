@@ -36,6 +36,9 @@ namespace DeToiServerData
             modelBuilder.ApplyConfiguration(new ServiceStatusConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
             modelBuilder.ApplyConfiguration(new OrderServiceConfiguration());
+
+            modelBuilder.ApplyConfiguration(new OrderServiceTypeConfiguration());
+
             modelBuilder.ApplyConfiguration(new CleaningServiceConfiguration());
             modelBuilder.ApplyConfiguration(new ShoppingServiceConfiguration());
             modelBuilder.ApplyConfiguration(new RepairingServiceConfiguration());
