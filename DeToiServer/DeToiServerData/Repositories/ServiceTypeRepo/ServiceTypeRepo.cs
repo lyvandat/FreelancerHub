@@ -48,19 +48,5 @@ namespace DeToiServerData.Repositories.ServiceTypeRepo
 
             return result;
         }
-
-        public async Task<ServiceType> AddOrderServiceType(Guid serviceTypeId, Guid orderId)
-        {
-            var serviceType = await _context.ServiceTypes.FindAsync(serviceTypeId);
-
-            var orderServiceTypes = serviceType.OrderServiceTypes ??= new List<OrderServiceType>();
-            orderServiceTypes.Add(new OrderServiceType
-            {
-                OrderId = orderId,
-                ServiceTypeId = serviceTypeId
-            });
-
-            return serviceType;
-        }
     }
 }

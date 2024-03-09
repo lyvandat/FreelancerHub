@@ -69,17 +69,17 @@ namespace DeToiServerData.Configurations
     {
         protected override void OnConfigure(EntityTypeBuilder<OrderServiceType> builder)
         {
-            builder.HasKey(os => new { os.OrderId, os.ServiceTypeId });
+            builder.HasKey(ost => new { ost.OrderId, ost.ServiceTypeId });
 
-            builder.HasOne(os => os.Order)
+            builder.HasOne(ost => ost.Order)
                 .WithMany(o => o.OrderServiceTypes)
                 .HasForeignKey(os => os.OrderId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(os => os.ServiceType)
+            builder.HasOne(ost => ost.ServiceType)
                 .WithMany(st => st.OrderServiceTypes)
-                .HasForeignKey(os => os.ServiceTypeId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey(ost => ost.ServiceTypeId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Optionally, set the table name for the joint table
             builder.ToTable("OrderServiceType");

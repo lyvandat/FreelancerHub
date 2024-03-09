@@ -11,6 +11,7 @@ namespace DeToiServer.Services.OrderManagementService
     {
         private readonly UnitOfWork _uow;
         private readonly IMapper _mapper;
+        private const int MAX_SERVICE = 50;
 
         public OrderManagementService(UnitOfWork uow, IMapper mapper)
         {
@@ -18,17 +19,31 @@ namespace DeToiServer.Services.OrderManagementService
             _mapper = mapper;
         }
 
-        public T? AddService<T>(PostServiceDto? postService, Guid orderId, Guid serviceTypeId) 
+        public T? AddService<T>(PostServiceDto? postService, Guid orderId, Order order) 
             where T : Service
         {
             if (postService == null) return null;
             var service = _mapper.Map<T>(postService);
-            service.ServiceTypeId = serviceTypeId;
 
-            var orderServiceList = new List<OrderService>
+            // Add service relationship
+            var orderServiceList = new List<OrderService>(1)
             {
-                new OrderService() { OrderId = orderId, ServiceId = service.Id, Service = service }
+                new OrderService() { OrderId = orderId }
             };
+
+            // Add service type relationship
+            var newOrderServiceType = new OrderServiceType() { OrderId = orderId, ServiceTypeId = service.ServiceTypeId };
+            if (order.OrderServiceTypes == null)
+            {
+                order.OrderServiceTypes = new List<OrderServiceType>(MAX_SERVICE)
+                {
+                    newOrderServiceType
+                };
+            }
+            else
+            {
+                order.OrderServiceTypes.Add(newOrderServiceType);
+            }
 
             service.OrderServices = orderServiceList;
             return service;
@@ -37,6 +52,7 @@ namespace DeToiServer.Services.OrderManagementService
         public async Task<Order?> Add(PostOrderDto postOrderDto)
         {
             var rawOrder = _mapper.Map<Order>(postOrderDto);
+            rawOrder.Id = Guid.NewGuid();
             var searchAddress = await _uow.AddressRepo.GetByIdAsync(postOrderDto.Address.Id);
             if (searchAddress == null)
             {
@@ -46,21 +62,14 @@ namespace DeToiServer.Services.OrderManagementService
             else
                 rawOrder.AddressId = postOrderDto.Address.Id ?? Guid.Empty;
 
-            //rawOrder.
-            await _uow.OrderRepo.CreateAsync(rawOrder);
-            rawOrder.OrderServiceTypes ??= new List<OrderServiceType>()
-            {
-                new() { ServiceTypeId = postOrderDto.ServiceId }
-            };
-
             // Add services related to the order
-            // await _uow.ServiceTypeRepo.AddOrderServiceType(postOrderDto.ServiceId, rawOrder.Id);
-            var cleaningService = AddService<CleaningService>(postOrderDto.CleaningService, rawOrder.Id, postOrderDto.ServiceId);
+            var cleaningService = AddService<CleaningService>(postOrderDto.CleaningService, rawOrder.Id, rawOrder);
 
             //var repairingService = AddService<RepairingService>(postOrderDto.RepairingService, rawOrder.Id);
             //var shoppingService = AddService<ShoppingService>(postOrderDto.ShoppingService, rawOrder.Id);
 
             // Create records for each service
+            await _uow.OrderRepo.CreateAsync(rawOrder);
             await _uow.CleaningRepo.CreateAsync(cleaningService);
             //await _uow.RepairingRepo.CreateAsync(repairingService);
             //await _uow.ShoppingRepo.CreateAsync(shoppingService);
