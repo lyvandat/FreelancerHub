@@ -39,5 +39,22 @@ namespace DeToiServer.Controllers
             }
             return Ok(order);
         }
+
+        [HttpGet("all")]
+        public async Task<ActionResult<Order>> GetAllOrders()
+        {
+            //Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid customerId);
+            //postOrder.CustomerId = customerId;
+            var order = await _orderService.GetFreelancerMatchingOrders(Guid.Empty);
+
+            if (order is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Lấy đơn đặt hàng không thành công"
+                });
+            }
+            return Ok(order);
+        }
     }
 }

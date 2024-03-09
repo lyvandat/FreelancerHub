@@ -84,6 +84,9 @@ namespace DeToiServer.AutoMapper
             #region Freelance
             CreateMap<FreelanceAccount, GetFreelanceDto>()
                 .ForMember(dest => dest.Address, opt => opt.Ignore());
+
+            CreateMap<FreelanceAccount, GetFreelanceMatchingDto>()
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault() ));
             #endregion
 
             #region ServiceType and ServiceCategory

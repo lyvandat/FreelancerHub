@@ -9,7 +9,8 @@ namespace DeToiServerCore.Models.Services
 {
     public class ServiceProven : ModelBase
     {
-        public string Image { get; set; } = string.Empty;
+        public string ImageBefore { get; set; } = string.Empty;
+        public string ImageAfter { get; set; } = string.Empty;
         public Guid OrderId { get; set; }
         public Order? Order { get; set; }
         public Guid FreelancerId { get; set; }

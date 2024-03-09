@@ -16,7 +16,21 @@ namespace DeToiServerData.Repositories.OrderRepo
             _context = context;
         }
 
-        public async Task<IEnumerable<Order>> GetAllAccountInfoAsync(FilterOrderQuery searchOrder)
+        public async Task<IEnumerable<Order>> GetAllOrderAsync()
+        {
+            var ordersQuery = _context.Orders.AsSplitQuery();
+
+            var result = await ordersQuery
+                .Include(o => o.Address)
+                .Include(o => o.ServiceStatus)
+                .Include(o => o.OrderServiceTypes)
+                .Include(o => o.OrderServices)
+                .ToListAsync();
+
+            return result;
+        }
+
+        public async Task<IEnumerable<Order>> GetOrdersWithFiltersAsync(FilterOrderQuery searchOrder)
         {
             var ordersQuery = _context.Orders.AsSplitQuery();
 

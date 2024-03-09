@@ -18,5 +18,6 @@ namespace DeToiServerCore.Models.Accounts
         public string CustomerRank { get; set; } = CustomerRankConst.Unranked;
         public int MemberPoint { get; set; } = 0;
         public ICollection<CustomerPromotion>? CustomerPromotions { get; set; }
+        public ICollection<Favorite>? Favorites { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using DeToiServerCore.Models.Accounts;
+﻿using DeToiServer.Dtos.FreelanceDtos;
+using DeToiServerCore.Models.Accounts;
 using System.Linq.Expressions;
 
 namespace DeToiServer.Services.FreelanceAccountService
@@ -11,5 +12,6 @@ namespace DeToiServer.Services.FreelanceAccountService
         Task<FreelanceAccount> Add(FreelanceAccount acc);
         Task<FreelanceAccount> Update(FreelanceAccount acc);
         Task<FreelanceAccount> GetByAccId(Guid id);
+        Task<GetFreelanceMatchingDto> GetDetailWithStatistic(Guid id);
     }
 }

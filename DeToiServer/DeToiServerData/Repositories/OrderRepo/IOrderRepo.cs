@@ -4,5 +4,6 @@ namespace DeToiServerData.Repositories.OrderRepo
 {
     public interface IOrderRepo : IRepository<Order>
     {
+        Task<IEnumerable<Order>> GetAllOrderAsync();
     }
 }

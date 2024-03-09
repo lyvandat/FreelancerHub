@@ -71,11 +71,11 @@ namespace DeToiServer.Services.OrderManagementService
             return rawOrder;
         }
 
-        public async Task<IEnumerable<Order>?> GetFreelancerMatchingOrders(Guid freelancerId)
+        public async Task<IEnumerable<Order>> GetFreelancerMatchingOrders(Guid freelancerId)
         {
-            await Task.Delay(10);
+            var result = await _uow.OrderRepo.GetAllOrderAsync();
 
-            return null;
+            return result;
         }
     }
 }
