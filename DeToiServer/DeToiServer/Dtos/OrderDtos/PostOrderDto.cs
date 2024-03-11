@@ -21,4 +21,9 @@ namespace DeToiServer.Dtos.OrderDtos
         public Guid FreelancerId { get; set; }
         public double ActualPrice { get; set; }
     }
+
+    public class PutOrderStatus
+    {
+        public Guid OrderId { get; set; }
+    }
 }

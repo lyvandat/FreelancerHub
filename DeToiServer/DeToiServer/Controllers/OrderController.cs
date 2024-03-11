@@ -96,6 +96,56 @@ namespace DeToiServer.Controllers
             return Ok(order);
         }
 
+        [HttpPut("order-moving-status"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult> UpdateOrderMovingStatus(PutOrderStatus putOrderStatus)
+        {
+            return await UpdateOrderStatus(putOrderStatus, StatusConst.OnMoving);
+        }
+
+        [HttpPut("order-doing-status"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult> UpdateOrderDoingStatus(PutOrderStatus putOrderStatus)
+        {
+            return await UpdateOrderStatus(putOrderStatus, StatusConst.OnDoingService);
+        }
+
+        [HttpPut("order-finished-status"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult> UpdateOrderFinishedStatus(PutOrderStatus putOrderStatus)
+        {
+            return await UpdateOrderStatus(putOrderStatus, StatusConst.Completed);
+        }
+
+        private async Task<ActionResult> UpdateOrderStatus(PutOrderStatus putOrderStatus, Guid orderStatus)
+        {
+            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var freelancer = await _uow.FreelanceAccountRepo.GetByAccId(accountId);
+
+            if (freelancer is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Tài khoản freelancer không hợp lệ"
+                });
+            }
+
+            var order = await _orderService.GetById(putOrderStatus.OrderId);
+
+            if (order is null || order.FreelancerId != freelancer.Id)
+            {
+                return BadRequest(new
+                {
+                    Message = "Cập nhật trạng thái đơn hàng thất bại"
+                });
+            }
+
+            order.ServiceStatusId = orderStatus;
+            await _uow.SaveChangesAsync();
+
+            return Ok(new
+            {
+                Message = "Cập nhật trạng thái thành công"
+            });
+        }
+
         [HttpGet("detail")]
         public async Task<ActionResult<GetOrderDto>> GetOrderDetail(Guid id)
         {

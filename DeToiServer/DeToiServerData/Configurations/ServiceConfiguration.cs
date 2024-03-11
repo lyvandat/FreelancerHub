@@ -123,9 +123,10 @@ namespace DeToiServerData.Configurations
             builder.HasData(
                 new List<ServiceStatus>
                 {
-                    new ServiceStatus { Id = Guid.Parse("8a9f22f1-3c67-49f7-bd84-ec290e4a37fd"), Name = "Chờ xử lí" },
-                    new ServiceStatus { Id = Guid.NewGuid(), Name = "Đã tiếp nhận" },
-                    new ServiceStatus { Id = Guid.NewGuid(), Name = "Đã hoàn thành" },
+                    new ServiceStatus { Id = Guid.Parse("8a9f22f1-3c67-49f7-bd84-ec290e4a37fd"), Name = "Chưa đến giờ hoạt động" },
+                    new ServiceStatus { Id = Guid.Parse("0815e9cf-98c7-4a6a-b27b-43d9b8d1f5a2"), Name = "Đang di chuyển, hãy kiên nhẫn" },
+                    new ServiceStatus { Id = Guid.Parse("3f98b502-7245-4e86-b7b4-7db05357a1f8"), Name = "Đang làm việc" },
+                    new ServiceStatus { Id = Guid.Parse("a7d1f0e8-2a6f-4b9d-aa1c-10f58a1d5d32"), Name = "Đã hoàn thành nhiệm vụ" },
                 }
             );
         }

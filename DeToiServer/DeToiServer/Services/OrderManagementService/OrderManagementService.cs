@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos;
 using DeToiServer.Dtos.OrderDtos;
-using DeToiServer.Dtos.ServiceRequirementDtos;
-using DeToiServerCore.Common.Helper;
+using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
-using System.Reflection;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DeToiServer.Services.OrderManagementService
 {

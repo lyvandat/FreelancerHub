@@ -71,6 +71,7 @@ namespace DeToiServer.AutoMapper
             CreateMap<GetAccountDto, Account>().ReverseMap();
             CreateMap<PutAccountDto, Account>().ReverseMap();
             CreateMap<GetFreelanceAccountDto, Account>().ReverseMap();
+            CreateMap<GetFreelanceAccountInOrderDto, Account>().ReverseMap();
             #endregion
 
             #region Address

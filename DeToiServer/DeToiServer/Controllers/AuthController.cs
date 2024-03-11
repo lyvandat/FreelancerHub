@@ -133,7 +133,6 @@ namespace DeToiServer.Controllers
         public async Task<IActionResult> VerifyOtpToken(PhoneAndOtpDto request)
         {
             var account = await _accService.GetByCondition(acc => acc.Phone == request.Phone);
-            var customerAcc = await _customerAccService.GetByCondition(acc => acc.AccountId == account.Id);
 
             if (account == null)
             {
@@ -157,7 +156,7 @@ namespace DeToiServer.Controllers
                 account.IsVerified = true;
             }
 
-            var token = CreateToken(account, customerAcc.Id, account.Role);
+            var token = CreateToken(account, account.Role);
             var refreshToken = GenerateRefreshToken();
             SetRefreshToken(refreshToken, account);
             await _accService.Update(account);
@@ -246,9 +245,8 @@ namespace DeToiServer.Controllers
             }
 
             var account = await _accService.GetByCondition(acc => acc.RefreshToken == refreshToken);
-            var customerAcc = await _customerAccService.GetByCondition(acc => acc.AccountId == account.Id);
 
-            if (account == null || customerAcc == null)
+            if (account == null)
             {
                 return BadRequest(new
                 {
@@ -264,7 +262,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            TokenDto token = CreateToken(account, customerAcc.Id, account.Role);
+            TokenDto token = CreateToken(account, account.Role);
             var newRefreshToken = GenerateRefreshToken();
             SetRefreshToken(newRefreshToken, account);
             await _accService.Update(account);
@@ -303,11 +301,11 @@ namespace DeToiServer.Controllers
             acc.TokenExpires = newRefreshToken.Expires;
         }
 
-        private TokenDto CreateToken(Account acc, Guid customerId, string role)
+        private TokenDto CreateToken(Account acc, string role)
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Sid, customerId.ToString()),
+                new Claim(ClaimTypes.Sid, acc.Id.ToString()),
                 new Claim(ClaimTypes.Name, acc.Phone),
                 new Claim(ClaimTypes.Role, role)
             };
