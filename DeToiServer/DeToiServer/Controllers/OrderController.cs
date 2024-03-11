@@ -95,5 +95,23 @@ namespace DeToiServer.Controllers
 
             return Ok(order);
         }
+
+        [HttpGet("detail")]
+        public async Task<ActionResult<GetOrderDto>> GetOrderDetail(Guid id)
+        {
+            //Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid customerId);
+            //postOrder.CustomerId = customerId;
+            var order = await _orderService.GetOrderDetailById(id);
+
+            if (order is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Lấy đơn đặt hàng không thành công"
+                });
+            }
+
+            return Ok(order);
+        }
     }
 }

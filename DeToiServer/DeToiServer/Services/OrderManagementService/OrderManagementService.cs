@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos;
-using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.ServiceRequirementDtos;
 using DeToiServerCore.Common.Helper;
@@ -114,5 +113,15 @@ namespace DeToiServer.Services.OrderManagementService
 
         public async Task<Order?> GetById(Guid orderId)
             => await _uow.OrderRepo.GetByIdAsync(orderId);
+
+        public async Task<GetOrderDto?> GetOrderDetailById(Guid id)
+        {
+            var rawOrder = await _uow.OrderRepo.GetOrderDetailByIdAsync(id);
+            var order = _mapper.Map<GetOrderDto>(rawOrder);
+
+            order.ServiceTypes = rawOrder.OrderServiceTypes?.Select(ost => _mapper.Map<GetServiceTypeDto>(ost.ServiceType)).ToList();
+
+            return order;
+        }
     }
 }

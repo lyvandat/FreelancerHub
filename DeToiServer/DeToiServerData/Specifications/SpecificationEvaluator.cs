@@ -1,12 +1,5 @@
-﻿using DeToiServerCore.Common.Constants;
-using DeToiServerCore.Models;
+﻿using DeToiServerCore.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeToiServerData.Specifications
 {

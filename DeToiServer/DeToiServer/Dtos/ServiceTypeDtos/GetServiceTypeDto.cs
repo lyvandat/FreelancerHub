@@ -1,5 +1,4 @@
-﻿using DeToiServer.Dtos.ServiceCategoryDtos;
-using DeToiServer.Dtos.UIElementDtos;
+﻿using DeToiServer.Dtos.UIElementDtos;
 
 namespace DeToiServer.Dtos.ServiceTypeDtos
 {
@@ -10,7 +9,6 @@ namespace DeToiServer.Dtos.ServiceTypeDtos
         public double BasePrice { get; set; }
         public string? Description { get; set; }
         public string? Image { get; set; }
-        // public GetServiceCategoryDto? ServiceCategory { get; set; }
     }
 
     public class GetServiceTypeDetailDto

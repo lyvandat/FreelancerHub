@@ -1,6 +1,4 @@
-using DeToiServer.Dtos.AccountDtos;
 using DeToiServerCore.Models;
-using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.QueryModels.OrderQueryModels;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -55,5 +53,20 @@ namespace DeToiServerData.Repositories.OrderRepo
             "estimatedprice" => ord => ord.EstimatedPrice,
             _ => ord => ord.Id,
         };
+
+        public async Task<Order> GetOrderDetailByIdAsync(Guid id)
+        {
+            var orderDetail = _context.Orders
+                .AsNoTracking()
+                .Where(o => o.Id == id)
+                .Include(o => o.OrderServiceTypes)
+                    .ThenInclude(ost => ost.ServiceType)
+                .Include(o => o.Freelance)
+                    .ThenInclude(f => f.Account)
+                .Include(o => o.ServiceStatus)
+                .Include(o => o.Address);
+
+            return await orderDetail.FirstOrDefaultAsync();
+        }
     }
 }

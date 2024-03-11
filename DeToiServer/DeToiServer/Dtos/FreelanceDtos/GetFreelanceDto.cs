@@ -42,4 +42,12 @@ namespace DeToiServer.Dtos.FreelanceDtos
         public ICollection<SkillDto>? Skills { get; set; }
         public ICollection<GetServiceProvenDto>? ServiceProven { get; set; }
     }
+
+    public class GetFreelanceAccountInOrderDto
+    {
+        public Guid Id { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public string Avatar { get; set; } = string.Empty;
+        public double Rating { get; set; }
+    }
 }
