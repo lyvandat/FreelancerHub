@@ -7,6 +7,7 @@ namespace DeToiServerCore.Models
         public string Name { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
         public string? Description { get; set; }
+        public required string ServiceClassName { get; set; }
         public ICollection<ServiceType>? ServiceTypes { get; set; }
     }
 }

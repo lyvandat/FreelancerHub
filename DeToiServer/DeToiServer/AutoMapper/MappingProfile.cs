@@ -7,6 +7,7 @@ using DeToiServer.Dtos.LocationDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.ServiceCategoryDtos;
 using DeToiServer.Dtos.ServiceProvenDtos;
+using DeToiServer.Dtos.ServiceRequirementDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Dtos.SkillDtos;
 using DeToiServer.Dtos.UIElementDtos;
@@ -103,9 +104,14 @@ namespace DeToiServer.AutoMapper
             #region services for an order
             CreateMap<PostOrderDto, Order>()
                 .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartDate.ToDateTime(src.StartTime)));
-            
+
             //CreateMap<PostOrderDto, Order>().ReverseMap();
-            CreateMap<PostCleaningServiceDto, CleaningService>().ReverseMap();
+            CreateMap<PostServiceRequirementDto, CleaningService>();
+            CreateMap<PostServiceRequirementDto, RepairingService>();
+            CreateMap<PostServiceRequirementDto, ShoppingService>();
+
+            //CreateMap<PostCleaningServiceDto, CleaningService>().ReverseMap();
+
             CreateMap<PostServiceProvenDto, ServiceProven>().ReverseMap();
             CreateMap<ServiceProven, GetServiceProvenDto>()
                 .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.Order != null ? src.Order.StartTime : default(DateTime)))

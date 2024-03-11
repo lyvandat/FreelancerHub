@@ -9,5 +9,6 @@ namespace DeToiServerData.Repositories.ServiceTypeRepo
         public Task<ServiceType> GetByIdWithCategory(Guid id);
         public Task<IEnumerable<ServiceType>> GetAllServiceTypeInfoAsync(FilterServiceTypeQuery query);
         public Task<ServiceType> GetServiceTypeDetailWithRequirements(Guid id);
+        public Task<string> GetServiceCategoryNameByTypeId(Guid id);
     }
 }

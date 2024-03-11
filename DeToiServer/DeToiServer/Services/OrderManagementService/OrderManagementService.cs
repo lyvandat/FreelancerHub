@@ -2,8 +2,12 @@
 using DeToiServer.Dtos;
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.OrderDtos;
+using DeToiServer.Dtos.ServiceRequirementDtos;
+using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
+using System.Reflection;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DeToiServer.Services.OrderManagementService
 {
@@ -60,19 +64,40 @@ namespace DeToiServer.Services.OrderManagementService
                 rawOrder.Address.CustomerAccountId = postOrderDto.CustomerId;
             }
             else
+            {
                 rawOrder.AddressId = postOrderDto.Address.Id ?? Guid.Empty;
+                rawOrder.Address = null;
+            }
 
-            // Add services related to the order
-            var cleaningService = AddService<CleaningService>(postOrderDto.CleaningService, rawOrder.Id, rawOrder);
-
-            //var repairingService = AddService<RepairingService>(postOrderDto.RepairingService, rawOrder.Id);
-            //var shoppingService = AddService<ShoppingService>(postOrderDto.ShoppingService, rawOrder.Id);
-
-            // Create records for each service
             await _uow.OrderRepo.CreateAsync(rawOrder);
-            await _uow.CleaningRepo.CreateAsync(cleaningService);
-            //await _uow.RepairingRepo.CreateAsync(repairingService);
-            //await _uow.ShoppingRepo.CreateAsync(shoppingService);
+
+            var serviceName = await _uow.ServiceTypeRepo.GetServiceCategoryNameByTypeId(postOrderDto.Requirements!.ServiceTypeId);
+            if (string.IsNullOrEmpty(serviceName))
+                Console.WriteLine("Looix");
+            Console.WriteLine(serviceName);
+
+            switch (serviceName)
+            {
+                case "CleaningService":
+                    var cleaningService = AddService<CleaningService>(postOrderDto.Requirements, rawOrder.Id, rawOrder);
+                    await _uow.CleaningRepo.CreateAsync(cleaningService);
+                    break;
+
+                case "RepairingService":
+                    var repairingService = AddService<RepairingService>(postOrderDto.Requirements, rawOrder.Id, rawOrder);
+                    await _uow.RepairingRepo.CreateAsync(repairingService);
+                    break;
+
+                case "ShoppingService":
+                    var shoppingService = AddService<ShoppingService>(postOrderDto.Requirements, rawOrder.Id, rawOrder);
+                    await _uow.ShoppingRepo.CreateAsync(shoppingService);
+                    break;
+
+                default:
+                    Console.WriteLine("Dịch vụ chưa hỗ trợ.");
+
+                    break;
+            }
 
             // Save changes within the transaction scope
             if (!await _uow.SaveChangesAsync()) return null;

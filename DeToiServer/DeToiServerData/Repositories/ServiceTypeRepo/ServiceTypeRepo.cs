@@ -48,5 +48,16 @@ namespace DeToiServerData.Repositories.ServiceTypeRepo
 
             return result;
         }
+
+        public async Task<string> GetServiceCategoryNameByTypeId(Guid id)
+        {
+            var serviceType = await _context.ServiceTypes.FindAsync(id);
+            if (serviceType == null) return string.Empty;
+
+            var serviceCategory = await _context.ServiceCategories.FindAsync(serviceType.ServiceCategoryId);
+            
+            if (serviceCategory == null) return string.Empty;
+            return serviceCategory.ServiceClassName;
+        }
     }
 }
