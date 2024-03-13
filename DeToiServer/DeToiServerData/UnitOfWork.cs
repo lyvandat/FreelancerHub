@@ -7,6 +7,7 @@ using DeToiServerData.Repositories.OrderRepo;
 using DeToiServerData.Repositories.PromotionRepo;
 using DeToiServerData.Repositories.RepairingServiceRepo;
 using DeToiServerData.Repositories.ServiceCategoryRepo;
+using DeToiServerData.Repositories.ServiceStatusRepo;
 using DeToiServerData.Repositories.ServiceTypeRepo;
 using DeToiServerData.Repositories.ShoppingServiceRepo;
 using DeToiServerData.Repositories.UIElementServiceRequirementRepo;
@@ -183,6 +184,16 @@ namespace DeToiServerData
             }
         }
         #endregion
+
+        private IServiceStatusRepo _serviceStatusRepo;
+        public IServiceStatusRepo ServiceStatusRepo
+        {
+            get
+            {
+                _serviceStatusRepo ??= new ServiceStatusRepo(_dataContext);
+                return _serviceStatusRepo;
+            }
+        }
 
         public async Task<bool> SaveChangesAsync()
         {

@@ -20,6 +20,18 @@
         public string Image { get; set; } = string.Empty;
         // public double Price { get; set; }
         public string ShoppingItems { get; set; } = string.Empty;
-        
+        //public string Floor { get; set; } = string.Empty;
+        //public string HaHaSize { get; set; } = string.Empty;
+        //public int Quantity { get; set; }
+        //public double Price { get; set; }
+
+    }
+
+    public class PostCuttingGlassDto : PostServiceDto
+    {
+        public string Floor { get; set; } = string.Empty;
+        public string HaHaSize { get; set; } = string.Empty;
+        public int Quantity { get; set; }
+        public double Price { get; set; }
     }
 }

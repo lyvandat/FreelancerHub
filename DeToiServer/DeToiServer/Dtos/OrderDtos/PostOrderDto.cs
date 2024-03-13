@@ -1,5 +1,4 @@
 ﻿using DeToiServer.Dtos.AddressDtos;
-using DeToiServer.Dtos.CleaningServiceDtos;
 using DeToiServer.Dtos.ServiceRequirementDtos;
 
 namespace DeToiServer.Dtos.OrderDtos
