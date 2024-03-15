@@ -68,5 +68,22 @@ namespace DeToiServerData.Repositories.OrderRepo
 
             return await orderDetail.FirstOrDefaultAsync();
         }
+
+        public async Task<IEnumerable<Order>> GetCustomerOrders(Guid customerId)
+        {
+
+            var result = await _context.Orders
+                .AsNoTracking()
+                .Where(o => o.CustomerId == customerId)
+                .Include(o => o.OrderServiceTypes)
+                    .ThenInclude(ost => ost.ServiceType)
+                .Include(o => o.Freelance)
+                    .ThenInclude(f => f.Account)
+                .Include(o => o.ServiceStatus)
+                .Include(o => o.Address)
+                .ToListAsync();
+
+            return result;
+        }
     }
 }

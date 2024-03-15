@@ -45,5 +45,8 @@ namespace DeToiServer.Services.CustomerAccountService
 
             return updated;
         }
+
+        public async Task<CustomerAccount> GetByAccId(Guid accId)
+            => await _unitOfWork.CustomerAccountRepo.GetByConditionsAsync(customer => customer.AccountId == accId);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos.OrderDtos;
+using DeToiServer.Services.AccountService;
+using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
@@ -14,12 +16,14 @@ namespace DeToiServer.Controllers
     {
         private readonly UnitOfWork _uow;
         private readonly IOrderManagementService _orderService;
+        private readonly ICustomerAccountService _customerAcc;
         private readonly IMapper _mapper;
 
-        public OrderController(UnitOfWork uow, IOrderManagementService orderService, IMapper mapper)
+        public OrderController(UnitOfWork uow, IOrderManagementService orderService, ICustomerAccountService customerAcc, IMapper mapper)
         {
             _uow = uow;
             _orderService = orderService;
+            _customerAcc = customerAcc;
             _mapper = mapper;
         }
 
@@ -149,8 +153,6 @@ namespace DeToiServer.Controllers
         [HttpGet("detail")]
         public async Task<ActionResult<GetOrderDto>> GetOrderDetail(Guid id)
         {
-            //Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid customerId);
-            //postOrder.CustomerId = customerId;
             var order = await _orderService.GetOrderDetailById(id);
 
             if (order is null)
@@ -160,6 +162,25 @@ namespace DeToiServer.Controllers
                     Message = "Lấy đơn đặt hàng không thành công"
                 });
             }
+
+            return Ok(order);
+        }
+
+        [HttpGet("customer-all"), AuthorizeRoles(GlobalConstant.Customer)]
+        public async Task<ActionResult<GetOrderDto>> GetCustomerOrders()
+        {
+            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var customer = await _customerAcc.GetByAccId(accountId);
+
+            if (customer is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không thể xem danh sách đơn hàng, hãy đăng nhập để thử lại"
+                });
+            }
+
+            var order = await _orderService.GetAllCustomerOrders(customer.Id);
 
             return Ok(order);
         }

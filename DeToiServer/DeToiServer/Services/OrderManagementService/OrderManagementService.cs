@@ -100,5 +100,20 @@ namespace DeToiServer.Services.OrderManagementService
 
             return order;
         }
+
+        public async Task<IEnumerable<GetOrderDto>> GetAllCustomerOrders(Guid customerId)
+        {
+            var rawOrders = await _uow.OrderRepo.GetCustomerOrders(customerId);
+
+            var result = new List<GetOrderDto>();
+            foreach (var rawOrder in rawOrders)
+            {
+                var order = _mapper.Map<GetOrderDto>(rawOrder);
+                order.ServiceTypes = rawOrder.OrderServiceTypes?.Select(ost => _mapper.Map<GetServiceTypeDto>(ost.ServiceType)).ToList();
+                result.Add(order);
+            }
+
+            return result;
+        }
     }
 }
