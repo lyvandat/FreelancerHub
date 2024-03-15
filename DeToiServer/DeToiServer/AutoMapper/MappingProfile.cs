@@ -115,7 +115,6 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.StartTime)))
                 .ForMember(dest => dest.FinishTime, opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.FinishTime)))
                 .ForMember(dest => dest.FinishDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.FinishTime)))
-                .ForMember(dest => dest.AddressLine, opt => opt.MapFrom(src => src.Address != null ? src.Address.AddressLine : string.Empty))
                 .ForMember(dest => dest.Freelance, opt => opt.MapFrom(src => src.Freelance != null ? src.Freelance.Account : null))
                 .ForMember(dest => dest.ServiceStatus, opt => opt.MapFrom(src => src.ServiceStatus != null ? src.ServiceStatus.Name : "Chờ xử lí"));
             CreateMap<OrderServiceType, GetOrderServiceTypeDto>();

@@ -1,11 +1,12 @@
-﻿using DeToiServer.Dtos.FreelanceDtos;
+﻿using DeToiServer.Dtos.AddressDtos;
+using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 
 namespace DeToiServer.Dtos.OrderDtos
 {
     public class GetOrderDto
     {
-        public string AddressLine { get; set; } = string.Empty;
+        public AddressDto? Address { get; set; }
         public double EstimatedPrice { get; set; }
         public TimeOnly StartTime { get; set; }
         public DateOnly StartDate { get; set; }
