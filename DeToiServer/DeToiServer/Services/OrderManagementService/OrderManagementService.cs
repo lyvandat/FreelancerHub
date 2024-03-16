@@ -4,6 +4,7 @@ using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
+using System.Collections.Generic;
 
 namespace DeToiServer.Services.OrderManagementService
 {
@@ -81,9 +82,9 @@ namespace DeToiServer.Services.OrderManagementService
             return rawOrder;
         }
 
-        public async Task<IEnumerable<Order>> GetFreelancerMatchingOrders(Guid freelancerId)
+        public async Task<IEnumerable<Order>> GetFreelancerSuitableOrders(Guid freelancerId)
         {
-            var result = await _uow.OrderRepo.GetAllOrderAsync();
+            var result = await _uow.OrderRepo.GetFreelancerSuitableOrders(freelancerId);
 
             return result;
         }
@@ -113,6 +114,17 @@ namespace DeToiServer.Services.OrderManagementService
                 result.Add(order);
             }
 
+            return result;
+        }
+
+        public async Task<GetOrderDto> GetLatestCustomerOrders(Guid customerId)
+        {
+            var rawOrder = await _uow.OrderRepo.GetLatestCustomerOrders(customerId);
+
+            var result = new GetOrderDto();
+            var order = _mapper.Map<GetOrderDto>(rawOrder);
+            order.ServiceTypes = rawOrder.OrderServiceTypes?.Select(ost => _mapper.Map<GetServiceTypeDto>(ost.ServiceType)).ToList();
+            
             return result;
         }
     }

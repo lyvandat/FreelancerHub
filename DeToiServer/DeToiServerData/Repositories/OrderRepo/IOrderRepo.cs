@@ -7,5 +7,7 @@ namespace DeToiServerData.Repositories.OrderRepo
         Task<IEnumerable<Order>> GetAllOrderAsync();
         Task<Order> GetOrderDetailByIdAsync(Guid id);
         Task<IEnumerable<Order>> GetCustomerOrders(Guid customerId);
+        Task<IEnumerable<Order>> GetFreelancerSuitableOrders(Guid freelancerId);
+        Task<Order> GetLatestCustomerOrders(Guid customerId);
     }
 }

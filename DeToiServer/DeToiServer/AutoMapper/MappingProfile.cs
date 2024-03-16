@@ -80,14 +80,28 @@ namespace DeToiServer.AutoMapper
             #endregion
 
             #region Skill
+            CreateMap<FreelanceSkill, Skill>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.SkillId))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Skill.Name))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Skill.Description))
+                .ForMember(dest => dest.SkillCategory, opt => opt.MapFrom(src => src.Skill.SkillCategory));
+
+            CreateMap<FreelanceSkill, SkillDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.SkillId))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Skill.Name))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Skill.Description))
+                .ForMember(dest => dest.SkillCategory, opt => opt.MapFrom(src => src.Skill.SkillCategory));
+
             CreateMap<Skill, SkillDto>().ReverseMap();
             #endregion
 
             #region Freelance
             CreateMap<FreelanceAccount, GetFreelanceDto>()
-                .ForMember(dest => dest.Address, opt => opt.Ignore());
+                .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()));
 
             CreateMap<FreelanceAccount, GetFreelanceMatchingDto>()
+                .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault() ));
             #endregion
 

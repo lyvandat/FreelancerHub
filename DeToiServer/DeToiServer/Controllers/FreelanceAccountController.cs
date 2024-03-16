@@ -5,6 +5,7 @@ using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Services.AccountService;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
+using DeToiServer.Services.OrderManagementService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
 using Microsoft.AspNetCore.Http;
@@ -21,13 +22,22 @@ namespace DeToiServer.Controllers
     {
         private readonly IAccountService _accService;
         private readonly IFreelanceAccountService _freelanceAccService;
+        private readonly IOrderManagementService _orderService;
         private readonly IMapper _mapper;
 
-        public FreelanceAccountController(IAccountService accService, IFreelanceAccountService freelanceAccountService, IMapper mapper)
+        public FreelanceAccountController(IAccountService accService, IFreelanceAccountService freelanceAccountService, IOrderManagementService orderService, IMapper mapper)
         {
             _accService = accService;
             _freelanceAccService = freelanceAccountService;
+            _orderService = orderService;
             _mapper = mapper;
+        }
+
+        [HttpGet("all")]
+        public async Task<ActionResult<GetFreelanceMatchingDto>> GetAllFreelancer()
+        {
+            var freelance = await _freelanceAccService.GetAllFreelanceDetail();
+            return Ok(freelance);
         }
 
         [HttpGet("detail"), AuthorizeRoles(GlobalConstant.Freelancer)]
@@ -70,7 +80,7 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("orders"), AuthorizeRoles(GlobalConstant.Freelancer)]
-        public async Task<ActionResult<GetFreelanceDto>> GetCurrentFreelancerMatchingOrders()
+        public async Task<ActionResult<IEnumerable<Order>>> GetCurrentFreelancerMatchingOrders()
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerId);
             var freelance = await _freelanceAccService.GetByAccId(freelancerId);
@@ -82,8 +92,8 @@ namespace DeToiServer.Controllers
                     Message = "Không tìm thấy tài khoản!"
                 });
             }
-            var result = _mapper.Map<GetFreelanceDto>(freelance);
-            result.Address = _mapper.Map<AddressDto>(freelance.Address?.FirstOrDefault());
+
+            var result = await _orderService.GetFreelancerSuitableOrders(freelance.Id);
 
             return Ok(result);
         }

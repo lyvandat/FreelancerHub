@@ -73,5 +73,11 @@ namespace DeToiServer.Services.FreelanceAccountService
 
             return _mapper.Map<GetFreelanceMatchingDto>(rawResult);
         }
+
+        public async Task<IEnumerable<GetFreelanceMatchingDto>> GetAllFreelanceDetail()
+        {
+            var result = await _unitOfWork.FreelanceAccountRepo.GetAllDetail();
+            return _mapper.Map<List<GetFreelanceMatchingDto>>(result);
+        }
     }
 }

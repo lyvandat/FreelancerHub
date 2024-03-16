@@ -11,6 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Dtos\CleaningServiceDtos\**" />
+    <Content Remove="Dtos\CleaningServiceDtos\**" />
+    <EmbeddedResource Remove="Dtos\CleaningServiceDtos\**" />
+    <None Remove="Dtos\CleaningServiceDtos\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Google.Apis.Auth" Version="1.66.0" />
@@ -28,10 +35,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DeToiServerData\DeToiServerData.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Dtos\CleaningServiceDtos\" />
   </ItemGroup>
 
 </Project>

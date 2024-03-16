@@ -24,10 +24,6 @@ namespace DeToiServerData.Configurations
     {
         protected override void OnConfigure(EntityTypeBuilder<FreelanceAccount> builder)
         {
-            builder.HasMany(fl => fl.Skills)
-                .WithMany(s => s.Freelancers)
-                .UsingEntity(j => j.ToTable("FreelanceSkills")); // name of the join table
-
             builder.HasMany(fl => fl.ServiceProven)
                 .WithOne(sp => sp.Freelancer)
                 .HasForeignKey(sp => sp.FreelancerId)
@@ -57,7 +53,7 @@ namespace DeToiServerData.Configurations
         {
             builder.HasKey(fv => new { fv.FreelancerId, fv.CustomerId });
 
-            builder.HasOne(fv => fv.Freelance)
+            builder.HasOne(fv => fv.Freelancer)
                 .WithMany(fl => fl.FavoriteBy)
                 .HasForeignKey(fv => fv.FreelancerId)
                 .OnDelete(DeleteBehavior.NoAction);
@@ -68,6 +64,26 @@ namespace DeToiServerData.Configurations
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.ToTable("Favorites");
+        }
+    }
+
+    internal class FreelancerSkillConfiguration : EntityTypeConfigurationBaseClass<FreelanceSkill>
+    {
+        protected override void OnConfigure(EntityTypeBuilder<FreelanceSkill> builder)
+        {
+            builder.HasKey(fv => new { fv.FreelancerId, fv.SkillId });
+
+            builder.HasOne(fv => fv.Freelancer)
+                .WithMany(fl => fl.FreelanceSkills)
+                .HasForeignKey(fv => fv.FreelancerId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(fv => fv.Skill)
+                .WithMany(c => c.FreelanceSkills)
+                .HasForeignKey(fv => fv.SkillId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.ToTable("FreelanceSkills");
         }
     }
 }

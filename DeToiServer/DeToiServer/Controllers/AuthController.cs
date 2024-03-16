@@ -71,7 +71,7 @@ namespace DeToiServer.Controllers
                 IdentityNumber = request.IdentityNumber,
                 IsTeam = request.IsTeam,
                 Address = _mapper.Map<List<Address>>(request.Address),
-                Skills = _mapper.Map<List<Skill>>(request.Skills),
+                //Skills = _mapper.Map<List<Skill>>(request.Skills),
             };
 
             // TODO: maybe this is unnecessary
@@ -88,6 +88,30 @@ namespace DeToiServer.Controllers
             return Ok(new
             {
                 message = "Tạo tài khoản Freelancer mới thành công!"
+            });
+        }
+
+        [HttpPost("login/freelancer")]
+        public async Task<ActionResult<string>> LoginFreelancer(LoginDto request)
+        {
+            var freelance = await _freelanceAccService
+                .GetByCondition(cus => cus.Account.Phone.Equals(request.Phone));
+
+            if (freelance == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Tài khoản Freelancer không tồn tại.",
+                });
+            }
+
+            freelance.Account.LoginToken = GenerateOTP();
+            freelance.Account.LoginTokenExpires = DateTime.Now.AddMinutes(5);
+            await _accService.Update(freelance.Account);
+
+            return Ok(new
+            {
+                message = "Mã OTP đã được gửi đến điện thoại của bạn!", // "Tạo tài khoản mới thành công!"
             });
         }
 

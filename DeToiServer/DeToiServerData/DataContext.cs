@@ -32,6 +32,7 @@ namespace DeToiServerData
 
             modelBuilder.ApplyConfiguration(new FavoriteConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentConfiguration());
+            modelBuilder.ApplyConfiguration(new FreelancerSkillConfiguration());
 
             // Service
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());

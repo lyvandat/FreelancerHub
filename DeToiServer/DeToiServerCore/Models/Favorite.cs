@@ -9,9 +9,9 @@ namespace DeToiServerCore.Models
 {
     public class Favorite
     {
-        public required Guid FreelancerId { get; set; }
-        public required FreelanceAccount Freelance { get; set; }
-        public required Guid CustomerId { get; set; }
-        public required CustomerAccount Customer { get; set; }
+        public Guid FreelancerId { get; set; }
+        public FreelanceAccount? Freelancer { get; set; }
+        public Guid CustomerId { get; set; }
+        public CustomerAccount? Customer { get; set; }
     }
 }

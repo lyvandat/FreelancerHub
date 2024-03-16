@@ -1,6 +1,8 @@
 ﻿using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Services.ServiceTypeService;
+using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Common.CustomAttribute;
 using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Services;
 using DeToiServerCore.QueryModels.ServiceTypeQueryModels;
@@ -21,7 +23,7 @@ namespace DeToiServer.Controllers
             _uow = uow;
         }
 
-        [HttpGet]
+        [HttpGet] // , AuthorizeRoles(GlobalConstant.Customer, GlobalConstant.Freelancer, GlobalConstant.Admin)
         public async Task<ActionResult<IEnumerable<GetServiceTypeDto>>> GetServices()
         {
             return Ok(await _service.GetAll());

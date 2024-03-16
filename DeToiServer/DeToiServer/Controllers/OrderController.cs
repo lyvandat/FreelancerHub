@@ -44,23 +44,23 @@ namespace DeToiServer.Controllers
             return Ok(order);
         }
 
-        [HttpGet("all")]
-        public async Task<ActionResult<Order>> GetAllOrders()
-        {
-            //Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid customerId);
-            //postOrder.CustomerId = customerId;
-            var order = await _orderService.GetFreelancerMatchingOrders(Guid.Empty);
+        //[HttpGet("all")]
+        //public async Task<ActionResult<Order>> GetAllOrders()
+        //{
+        //    //Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid customerId);
+        //    //postOrder.CustomerId = customerId;
+        //    var order = await _orderService.Ge(Guid.Empty);
 
-            if (order is null)
-            {
-                return BadRequest(new
-                {
-                    Message = "Lấy đơn đặt hàng không thành công"
-                });
-            }
+        //    if (order is null)
+        //    {
+        //        return BadRequest(new
+        //        {
+        //            Message = "Lấy đơn đặt hàng không thành công"
+        //        });
+        //    }
 
-            return Ok(order);
-        }
+        //    return Ok(order);
+        //}
 
         [HttpPut("order-price"), AuthorizeRoles(GlobalConstant.Customer)]
         public async Task<ActionResult<Order>> UpdateOrderActualPriceAndFreelancer(PutOrderPriceAndFreelancerDto putOrder)
@@ -181,6 +181,25 @@ namespace DeToiServer.Controllers
             }
 
             var order = await _orderService.GetAllCustomerOrders(customer.Id);
+
+            return Ok(order);
+        }
+
+        [HttpGet("customer-latest"), AuthorizeRoles(GlobalConstant.Customer)]
+        public async Task<ActionResult<GetOrderDto>> GetCustomerLatestOrders()
+        {
+            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var customer = await _customerAcc.GetByAccId(accountId);
+
+            if (customer is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không thể xem danh sách đơn hàng, hãy đăng nhập để thử lại"
+                });
+            }
+
+            var order = await _orderService.GetLatestCustomerOrders(customer.Id);
 
             return Ok(order);
         }

@@ -10,6 +10,7 @@ namespace DeToiServerCore.Models.Accounts
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public ICollection<FreelanceAccount>? Freelancers { get; set; }
+        public string SkillCategory { get; set; } = string.Empty;
+        public ICollection<FreelanceSkill>? FreelanceSkills { get; set; }
     }
 }
