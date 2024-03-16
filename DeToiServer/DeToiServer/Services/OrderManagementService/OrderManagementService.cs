@@ -117,15 +117,19 @@ namespace DeToiServer.Services.OrderManagementService
             return result;
         }
 
-        public async Task<GetOrderDto> GetLatestCustomerOrders(Guid customerId)
+        public async Task<GetOrderDto?> GetLatestCustomerOrders(Guid customerId)
         {
             var rawOrder = await _uow.OrderRepo.GetLatestCustomerOrders(customerId);
 
-            var result = new GetOrderDto();
+            if (rawOrder is null)
+            {
+                return null;
+            }
+
             var order = _mapper.Map<GetOrderDto>(rawOrder);
             order.ServiceTypes = rawOrder.OrderServiceTypes?.Select(ost => _mapper.Map<GetServiceTypeDto>(ost.ServiceType)).ToList();
             
-            return result;
+            return order;
         }
     }
 }

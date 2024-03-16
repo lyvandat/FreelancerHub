@@ -127,18 +127,18 @@ namespace DeToiServerData.Repositories.OrderRepo
 
         public async Task<Order> GetLatestCustomerOrders(Guid customerId)
         {
-
+            //&& !((DateTime.Now - o.CreatedTime) > TimeSpan.FromMinutes(5))
             var result = await _context.Orders
                 .AsNoTracking()
-                .Where(o => o.CustomerId == customerId)
+                .Where(o => o.CustomerId == customerId && o.FreelancerId == null)
                 .Include(o => o.OrderServiceTypes)
                     .ThenInclude(ost => ost.ServiceType)
                 .Include(o => o.Freelance)
                     .ThenInclude(f => f.Account)
                 .Include(o => o.ServiceStatus)
                 .Include(o => o.Address)
-                .FirstOrDefaultAsync(o => o.FreelancerId == null 
-                    && !((DateTime.Now - o.CreatedTime) > TimeSpan.FromMinutes(5)));
+                .OrderByDescending(o => o.CreatedTime)
+                .FirstOrDefaultAsync();
 
             return result;
         }

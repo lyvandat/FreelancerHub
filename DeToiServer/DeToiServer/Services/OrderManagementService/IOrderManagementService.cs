@@ -9,6 +9,6 @@ namespace DeToiServer.Services.OrderManagementService
         Task<Order?> GetById(Guid orderId);
         Task<GetOrderDto?> GetOrderDetailById(Guid id);
         Task<IEnumerable<GetOrderDto>> GetAllCustomerOrders(Guid customerid);
-        Task<GetOrderDto> GetLatestCustomerOrders(Guid customerId);
+        Task<GetOrderDto?> GetLatestCustomerOrders(Guid customerId);
     }
 }
