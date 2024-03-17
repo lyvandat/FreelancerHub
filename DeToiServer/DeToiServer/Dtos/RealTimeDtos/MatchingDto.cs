@@ -1,8 +1,17 @@
-﻿namespace DeToiServer.Dtos.RealTimeDtos
+﻿using DeToiServer.Dtos.AddressDtos;
+using DeToiServer.Dtos.ServiceStatusDtos;
+
+namespace DeToiServer.Dtos.RealTimeDtos
 {
-    public class MatchingDto
+    public class UpdateOnMovingOrderStatusDto
     {
-        public Guid FreelanceId { get; set; }
-        public double TeamSize { get; set; }
+        public AddressDto? Address { get; set; }
+        public Guid ServiceStatusId { get; set; } 
+    }
+
+    public class UpdateOrderStatusDto
+    {
+        public Guid FreelancerAccountId { get; set; }
+        public GetServiceStatusDto? ServiceStatus { get; set; }
     }
 }

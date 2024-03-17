@@ -8,7 +8,7 @@ namespace DeToiServerData.Specifications
         public static IQueryable<TEntity> GetQuery<TEntity>(
             IQueryable<TEntity> inputQueryable,
             Specification<TEntity> specification)
-            where TEntity : ModelBase
+            where TEntity : class
         {
             IQueryable<TEntity> queryable = inputQueryable;
 

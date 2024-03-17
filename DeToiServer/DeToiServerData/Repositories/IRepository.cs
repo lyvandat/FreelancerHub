@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace DeToiServerData.Repositories
 {
-    public interface IRepository<TModel> where TModel : ModelBase
+    public interface IRepository<TModel> where TModel : class
     {
         IQueryable<TModel> Query { get; }
 

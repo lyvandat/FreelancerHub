@@ -13,7 +13,7 @@ namespace DeToiServerCore.Models
         public DateTime CreatedTime { get; set; } = DateTime.Now;
         public Guid? FreelancerId { get; set; }
         public FreelanceAccount? Freelance { get; set; }
-        public Guid? CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
         public CustomerAccount? Customer { get; set; }
         public double Rating { get; set; }
         public string? Comment { get; set; }

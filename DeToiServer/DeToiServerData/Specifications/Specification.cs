@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 namespace DeToiServerData.Specifications
 {
     public abstract class Specification<TEntity>
-        where TEntity : ModelBase
+        where TEntity : class
     {
         protected Specification() { }
 

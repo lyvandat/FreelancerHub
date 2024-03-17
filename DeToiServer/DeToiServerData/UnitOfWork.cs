@@ -11,6 +11,7 @@ using DeToiServerData.Repositories.ServiceStatusRepo;
 using DeToiServerData.Repositories.ServiceTypeRepo;
 using DeToiServerData.Repositories.ShoppingServiceRepo;
 using DeToiServerData.Repositories.UIElementServiceRequirementRepo;
+using DeToiServerData.Repositories.UserRepo;
 using System.Transactions;
 
 namespace DeToiServerData
@@ -55,6 +56,18 @@ namespace DeToiServerData
             {
                 _freelanceAccountRepo ??= new FreelanceAccountRepo(_dataContext);
                 return _freelanceAccountRepo;
+            }
+        }
+        #endregion
+
+        #region User
+        private IUserRepo _userRepo;
+        public IUserRepo UserRepo
+        {
+            get
+            {
+                _userRepo ??= new UserRepo(_dataContext);
+                return _userRepo;
             }
         }
         #endregion

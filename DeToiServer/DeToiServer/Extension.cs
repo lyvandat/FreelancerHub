@@ -7,6 +7,7 @@ using DeToiServer.Services.ServiceProvenService;
 using DeToiServer.Services.ServiceStatusService;
 using DeToiServer.Services.ServiceTypeService;
 using DeToiServer.Services.UIElementService;
+using DeToiServer.Services.UserService;
 using DeToiServerData.Repositories;
 using DeToiServerData.Repositories.AccountCustomerRepo;
 using DeToiServerData.Repositories.AccountFreelanceRepo;
@@ -20,6 +21,7 @@ using DeToiServerData.Repositories.ServiceStatusRepo;
 using DeToiServerData.Repositories.ServiceTypeRepo;
 using DeToiServerData.Repositories.ShoppingServiceRepo;
 using DeToiServerData.Repositories.UIElementServiceRequirementRepo;
+using DeToiServerData.Repositories.UserRepo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -80,6 +82,7 @@ namespace DeToiServerData
             services.AddScoped<ICleaningServiceRepo, CleaningServiceRepo>();
             services.AddScoped<IRepairingServiceRepo, RepairingServiceRepo>();
             services.AddScoped<IShoppingServiceRepo, ShoppingServiceRepo>();
+            services.AddScoped<IUserRepo, UserRepo>();
 
             services.AddScoped<IUIElementServiceRequirementRepo, UIElementServiceRequirementRepo>();
             services.AddScoped<IUIElementAdditionServiceRequirementRepo, UIElementAdditionServiceRequirementRepo>();
@@ -101,6 +104,7 @@ namespace DeToiServerData
             services.AddScoped<IServiceCategoryService, ServiceCategoryService>();
             services.AddScoped<IServiceProvenService, ServiceProvenService>();
             services.AddScoped<IOrderManagementService, OrderManagementService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IUIElementServiceRequirementService, UIElementServiceRequirementService>();
             return services;

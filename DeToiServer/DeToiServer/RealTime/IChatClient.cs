@@ -1,6 +1,6 @@
-﻿using DeToiServer.Dtos.AccountDtos;
-using DeToiServer.Dtos.FreelanceDtos;
+﻿using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.OrderDtos;
+using DeToiServer.Dtos.RealTimeDtos;
 
 namespace DeToiServer.RealTime
 {
@@ -8,5 +8,6 @@ namespace DeToiServer.RealTime
     {
         Task ReceiveCustomerOrder(PostOrderDto postOrder);
         Task ReceiveFreelancerResponse(GetFreelanceMatchingDto matchingFreelancer);
+        Task ReceiveFreelancerOnMovingResponse(UpdateOnMovingOrderStatusDto onMovingStatusDto);
     }
 }

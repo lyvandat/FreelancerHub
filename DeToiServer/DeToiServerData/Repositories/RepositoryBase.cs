@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace DeToiServerData.Repositories
 {
-    public abstract class RepositoryBase<TModel> : IRepository<TModel> where TModel : ModelBase
+    public abstract class RepositoryBase<TModel> : IRepository<TModel> where TModel : class
     {
         public IQueryable<TModel> Query => _context.Set<TModel>().AsQueryable();
         private readonly DataContext _context;

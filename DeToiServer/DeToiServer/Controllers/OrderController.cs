@@ -1,11 +1,16 @@
 ﻿using AutoMapper;
+using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.OrderDtos;
+using DeToiServer.Dtos.RealTimeDtos;
+using DeToiServer.RealTime;
 using DeToiServer.Services.AccountService;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.OrderManagementService;
+using DeToiServer.Services.UserService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 
 namespace DeToiServer.Controllers
@@ -17,13 +22,23 @@ namespace DeToiServer.Controllers
         private readonly UnitOfWork _uow;
         private readonly IOrderManagementService _orderService;
         private readonly ICustomerAccountService _customerAcc;
+        private readonly IUserService _userService;
+        private readonly IHubContext<ChatHub, IChatClient> _chatHubContext;
         private readonly IMapper _mapper;
 
-        public OrderController(UnitOfWork uow, IOrderManagementService orderService, ICustomerAccountService customerAcc, IMapper mapper)
+        public OrderController(
+            UnitOfWork uow, 
+            IOrderManagementService orderService, 
+            ICustomerAccountService customerAcc, 
+            IUserService userService,
+            IHubContext<ChatHub, IChatClient> chatHubContext,
+            IMapper mapper)
         {
             _uow = uow;
             _orderService = orderService;
             _customerAcc = customerAcc;
+            _userService = userService;
+            _chatHubContext = chatHubContext;
             _mapper = mapper;
         }
 
@@ -143,6 +158,22 @@ namespace DeToiServer.Controllers
 
             order.ServiceStatusId = orderStatus;
             await _uow.SaveChangesAsync();
+
+            // Handle real time - freelancers send update status message to customers.
+            var customer = await _customerAcc.GetByCondition(c => c.Id == order.CustomerId);
+            var user = await _userService.GetUserByPhone(customer.Account.Phone);
+
+            if (user?.Connections != null)
+            {
+                foreach (var connection in user.Connections)
+                {
+                    await _chatHubContext.Clients.Client(connection.ConnectionId).ReceiveFreelancerOnMovingResponse(new UpdateOnMovingOrderStatusDto
+                    {
+                        Address = _mapper.Map<AddressDto>(freelancer.Address),
+                        ServiceStatusId = orderStatus
+                    });
+                }
+            }
 
             return Ok(new
             {

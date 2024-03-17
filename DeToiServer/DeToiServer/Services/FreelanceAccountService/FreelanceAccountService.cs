@@ -57,7 +57,7 @@ namespace DeToiServer.Services.FreelanceAccountService
             var rawResult = await _unitOfWork.FreelanceAccountRepo.GetDetailByIdWithStatistic(id);
 
             var orders = rawResult.Orders;
-            if (orders != null)
+            if (orders != null && orders.Any())
             {
                 rawResult.Rating = orders.Average(o => o.Rating);
                 rawResult.TotalReviewCount = orders.Where(o => o.Comment != null).ToList().Count;
