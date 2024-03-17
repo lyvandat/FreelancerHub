@@ -21,6 +21,11 @@
         {
             public static readonly string CoD = "CoD";
         }
+
+        public static class SqlFiles
+        {
+            public static readonly string DataFile = "insert_data.sql";
+        }
     }
 
     public static class StatusConst

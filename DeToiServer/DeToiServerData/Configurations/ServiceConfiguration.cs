@@ -22,7 +22,8 @@ namespace DeToiServerData.Configurations
         {
             builder.HasOne(o => o.Customer)
                 .WithMany(c => c.Orders)
-                .HasForeignKey(o => o.CustomerId);
+                .HasForeignKey(o => o.CustomerId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(o => o.Freelance)
                 .WithMany(c => c.Orders)
@@ -196,7 +197,7 @@ namespace DeToiServerData.Configurations
                     new ServiceType { Id = new Guid("ef2632f0-47bd-4bbe-a46f-628a28f03d8b"), Name = "Nhà / Nhà phố", BasePrice = 50000, Description = "Dọn dẹp Nhà / Nhà phố", Image="https://detoivn.sirv.com/services/dondep/n%C3%A2-nhapho.png", ServiceCategoryId = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
                     new ServiceType { Id = new Guid("dbb78597-043d-47c1-8810-93d392fd09ba"), Name = "Căn hộ chung cư", BasePrice = 40000, Description = "Dọn dẹp Căn hộ chung cư", Image="https://detoivn.sirv.com/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
 
-                    new ServiceType { Id = Guid.NewGuid(), Name = "Đi chợ hộ", BasePrice = 40000, Description = "Mua sắm hộ siêu nhanh", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
+                    new ServiceType { Id = new Guid("C82954A1-39D4-4012-86B3-6CAD42C2B399"), Name = "Đi chợ hộ", BasePrice = 40000, Description = "Mua sắm hộ siêu nhanh", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
                     new ServiceType { Id = Guid.NewGuid(), Name = "Đi siêu thị hộ", BasePrice = 50000, Description = "Mua sắm hộ siêu nhanh", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
                     new ServiceType { Id = Guid.NewGuid(), Name = "Đi siêu thị sang trọng", BasePrice = 100000, Description = "Mua sắm hộ siêu nhanh", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
                     new ServiceType { Id = Guid.NewGuid(), Name = "Đi mua quần áo", BasePrice = 60000, Description = "Mua sắm hộ siêu nhanh", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },

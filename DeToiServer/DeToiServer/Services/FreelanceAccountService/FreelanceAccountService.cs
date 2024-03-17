@@ -62,7 +62,7 @@ namespace DeToiServer.Services.FreelanceAccountService
                 rawResult.Rating = orders.Average(o => o.Rating);
                 rawResult.TotalReviewCount = orders.Where(o => o.Comment != null).ToList().Count;
                 rawResult.OrderCount = orders.Count;
-                rawResult.PositiveReviewCount = orders.Where(o => o.Rating > 3.0).ToList().Count;
+                rawResult.PositiveReviewCount = orders.Where(o => o.Rating > 4.0).ToList().Count;
             }
 
             var favoriteBy = rawResult.FavoriteBy;
