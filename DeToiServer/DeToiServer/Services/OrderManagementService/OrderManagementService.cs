@@ -71,10 +71,10 @@ namespace DeToiServer.Services.OrderManagementService
             var cleaningService = AddService<CleaningService>(postOrderDto.CleaningService, rawOrder.Id, rawOrder);
             var repairingService = AddService<RepairingService>(postOrderDto.RepairingService, rawOrder.Id, rawOrder);
             var shoppingService = AddService<ShoppingService>(postOrderDto.ShoppingService, rawOrder.Id, rawOrder);
-            
-            await _uow.CleaningRepo.CreateAsync(cleaningService);
-            await _uow.RepairingRepo.CreateAsync(repairingService);
-            await _uow.ShoppingRepo.CreateAsync(shoppingService);
+
+            if (cleaningService != null) await _uow.CleaningRepo.CreateAsync(cleaningService);
+            if (repairingService != null) await _uow.RepairingRepo.CreateAsync(repairingService);
+            if (shoppingService != null) await _uow.ShoppingRepo.CreateAsync(shoppingService);
 
             // Save changes within the transaction scope
             if (!await _uow.SaveChangesAsync()) return null;

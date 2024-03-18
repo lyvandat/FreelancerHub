@@ -7,11 +7,11 @@ namespace DeToiServerCore.Models.Accounts
         public required Account Account { get; set; }
         public required Guid AccountId { get; set; }
         public double Rating { get; set; }
-        public double TotalReviewCount { get; set; }
         public double Balance { get; set; }
         public int OrderCount { get; set; }
         public int LoveCount { get; set; }
         public int PositiveReviewCount { get; set; }
+        public int TotalReviewCount { get; set; }
         public ICollection<Address>? Address { get; set; }
         public string IdentityNumber { get; set; } = string.Empty;
         public bool IsTeam { get; set; } = false;

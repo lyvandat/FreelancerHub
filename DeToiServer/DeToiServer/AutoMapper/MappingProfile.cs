@@ -11,7 +11,9 @@ using DeToiServer.Dtos.ServiceStatusDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Dtos.SkillDtos;
 using DeToiServer.Dtos.UIElementDtos;
+using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.Helper;
+using DeToiServerCore.Models;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
 using DeToiServerCore.Models.SevicesUIElement;
@@ -95,13 +97,20 @@ namespace DeToiServer.AutoMapper
             #endregion
 
             #region Freelance
+            CreateMap<Order, GetFreelanceReviewDto>()
+                .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Customer!.Account.Avatar ?? GlobalConstant.DefaultCommentAvt))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Customer!.Account.FullName ?? "Người dùng"))
+                .ForMember(dest => dest.Comment, opt => opt.MapFrom(src => src.Comment ?? GlobalConstant.DefaultCommentContent));
+
             CreateMap<FreelanceAccount, GetFreelanceDto>()
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
-                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()));
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
+                .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders)); 
 
             CreateMap<FreelanceAccount, GetFreelanceMatchingDto>()
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
-                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault() ));
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault() ))
+                .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders));
             #endregion
 
             #region ServiceType and ServiceCategory
@@ -149,12 +158,11 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.District, opt => opt.MapFrom<DistrictResolver>())
                 .ForMember(dest => dest.Province, opt => opt.MapFrom<ProvinceResolver>());
 
-            CreateMap<GeoCodeResponseDto, GeoCodeResultDto>();
-            CreateMap<GeoCodeResponseDto, RevGeoCodeResultDto>()
-                .ForMember(dest => dest.Country, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 0)))
-                .ForMember(dest => dest.Province, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 1)))
-                .ForMember(dest => dest.District, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 2)))
-                .ForMember(dest => dest.Ward, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 3)))
+            CreateMap<GeoCodeResponseDto, GeoCodeResultDto>()
+                .ForMember(dest => dest.Country, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 0) ?? GlobalConstant.GeoCodeDefault))
+                .ForMember(dest => dest.Province, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 1) ?? GlobalConstant.GeoCodeDefault))
+                .ForMember(dest => dest.District, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 2) ?? GlobalConstant.GeoCodeDefault))
+                .ForMember(dest => dest.Ward, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 3) ?? GlobalConstant.GeoCodeDefault))
                 .ForMember(dest => dest.Road, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 4)))
                 .ForMember(dest => dest.House_number, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 5)))
                 .ForMember(dest => dest.Amenity, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 6)));

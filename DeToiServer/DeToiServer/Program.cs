@@ -41,7 +41,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseCors("NgOrigins");
-app.ApplyDatabaseMigrations();
+app.ApplyDatabaseMigrations(app.Environment);
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 // Add other configurations

@@ -67,10 +67,6 @@ namespace DeToiServer.Controllers
                     result = _mapper.Map<RevGeoCodeResultDto>(rawResult!.Address);
                     result.Display_name = rawResult!.Display_name!;
 
-                    //result.Ward = LocationHelper.ToVieLocation(result.Ward); // Helper.ToVieLocUnit(result.Ward);
-                    //result.District = LocationHelper.ToVieLocation(result.District); // Helper.ToVieLocUnit(result.District);
-                    //result.Province = LocationHelper.ToVieLocation(result.Province); // Helper.ToVieLocUnit(result.Province);
-
                     result.Lat = lat;
                     result.Lon = lon;
                 }
@@ -93,7 +89,7 @@ namespace DeToiServer.Controllers
         )
         {
             List<GeoCodeResponseDto>? rawResult = null;
-            List<RevGeoCodeResultDto>? result = [];
+            List<GeoCodeResultDto>? result = [];
 
             var handler = new HttpClientHandler();
             handler.ServerCertificateCustomValidationCallback +=
@@ -125,7 +121,7 @@ namespace DeToiServer.Controllers
                     rawResult = JsonConvert.DeserializeObject<List<GeoCodeResponseDto>>(apiResponse);
                     foreach (var item in rawResult!)
                     {
-                        result.Add(_mapper.Map<RevGeoCodeResultDto>(item));
+                        result.Add(_mapper.Map<GeoCodeResultDto>(item));
                     }
                 }
             }

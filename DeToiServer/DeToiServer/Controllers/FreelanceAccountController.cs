@@ -40,7 +40,7 @@ namespace DeToiServer.Controllers
             return Ok(freelance);
         }
 
-        [HttpGet("detail"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        [HttpGet("detail")] // , AuthorizeRoles(GlobalConstant.Freelancer)
         public async Task<ActionResult<GetFreelanceMatchingDto>> GetFreelancerDetail(Guid id)
         {
             var freelance = await _freelanceAccService.GetDetailWithStatistic(id);
