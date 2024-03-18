@@ -122,7 +122,7 @@ namespace DeToiServerData
                 try
                 {
                     var databaseCreator = dbContext.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
-                    if (!dbContext.Database.GetPendingMigrations().Any() || !databaseCreator!.CanConnect() || !databaseCreator!.HasTables())
+                    if (dbContext.Database.GetPendingMigrations().Any() || !databaseCreator!.CanConnect() || !databaseCreator!.HasTables())
                     {
                         dbContext.Database.Migrate();
                         ExecuteSqlFromFile(dbContext, filePath);
