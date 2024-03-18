@@ -118,13 +118,15 @@ namespace DeToiServer.AutoMapper
             CreateMap<GetServiceTypeDetailDto, ServiceType>().ReverseMap();
             CreateMap<PostServiceTypeDto, ServiceType>().ReverseMap();
             CreateMap<PutServiceTypeDto, ServiceType>().ReverseMap();
-            CreateMap<GetServiceCategoryDto, ServiceCategory>().ReverseMap();
-            CreateMap<GetServiceCategoryWithChildDto, ServiceCategory>().ReverseMap();
+
+            CreateMap<ServiceCategory, GetServiceCategoryDto>()
+                .ForMember(dest => dest.ServiceClassName, opt => opt.MapFrom(src => Char.ToLowerInvariant(src.ServiceClassName[0]) + src.ServiceClassName.Substring(1)));
+            CreateMap<ServiceCategory, GetServiceCategoryWithChildDto>()
+                .ForMember(dest => dest.ServiceClassName, opt => opt.MapFrom(src => Char.ToLowerInvariant(src.ServiceClassName[0]) + src.ServiceClassName.Substring(1)));
+
             CreateMap<PostServiceCategoryDto, ServiceCategory>().ReverseMap();
             CreateMap<PutServiceCategoryDto, ServiceCategory>().ReverseMap();
-            #endregion
 
-            #region ServiceType and ServiceCategory
             CreateMap<GetServiceStatusDto, ServiceStatus>().ReverseMap();
             #endregion
 
