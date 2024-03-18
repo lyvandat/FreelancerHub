@@ -16,6 +16,12 @@ namespace DeToiServer.Dtos.OrderDtos
         //public PostMovingServiceDto? MovingService { get; set; }
     }
 
+    public class PostOrderResultDto
+    {
+        public Guid Id { get; set; }
+        public string Message { get; set; } = string.Empty;
+    }
+
     public class PutOrderPriceAndFreelancerDto
     {
         public Guid OrderId { get; set; }

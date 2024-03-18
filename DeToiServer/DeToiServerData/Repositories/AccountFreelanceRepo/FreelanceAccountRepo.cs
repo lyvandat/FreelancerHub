@@ -52,6 +52,8 @@ public class FreelanceAccountRepo : RepositoryBase<FreelanceAccount>, IFreelance
             .Include(fl => fl.ServiceProven)
                 .ThenInclude(sp => sp.ServiceType)
             .Include(fl => fl.Orders)
+                .ThenInclude(o => o.Customer)
+                        .ThenInclude(cus => cus.Account)
             .Include(fl => fl.FavoriteBy)
             .FirstOrDefaultAsync();
     }
@@ -67,6 +69,8 @@ public class FreelanceAccountRepo : RepositoryBase<FreelanceAccount>, IFreelance
             .Include(fl => fl.ServiceProven)
                 .ThenInclude(sp => sp.ServiceType)
             .Include(fl => fl.Orders)
+                .ThenInclude(o => o.Customer)
+                    .ThenInclude(cus => cus.Account)
             .Include(fl => fl.FavoriteBy)
             .ToListAsync();
     }

@@ -13,6 +13,7 @@ using DeToiServer.Dtos.SkillDtos;
 using DeToiServer.Dtos.UIElementDtos;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.Helper;
+using DeToiServerCore.Models;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
 using DeToiServerCore.Models.SevicesUIElement;
@@ -96,13 +97,20 @@ namespace DeToiServer.AutoMapper
             #endregion
 
             #region Freelance
+            CreateMap<Order, GetFreelanceReviewDto>()
+                .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Customer!.Account.Avatar ?? GlobalConstant.DefaultCommentAvt))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Customer!.Account.FullName ?? "Người dùng"))
+                .ForMember(dest => dest.Comment, opt => opt.MapFrom(src => src.Comment ?? GlobalConstant.DefaultCommentContent));
+
             CreateMap<FreelanceAccount, GetFreelanceDto>()
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
-                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()));
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
+                .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders)); 
 
             CreateMap<FreelanceAccount, GetFreelanceMatchingDto>()
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
-                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault() ));
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault() ))
+                .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders));
             #endregion
 
             #region ServiceType and ServiceCategory

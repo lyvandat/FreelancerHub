@@ -22,6 +22,7 @@ namespace DeToiServer.Dtos.FreelanceDtos
         public string Description  { get; set; } = string.Empty; // mô tả ngắn.
         public ICollection<SkillDto>? Skills { get; set; }
         public ICollection<GetServiceProvenDto>? ServiceProven { get; set; }
+        public ICollection<GetFreelanceReviewDto>? Reviews { get; set; }
     }
 
     public class GetFreelanceMatchingDto
@@ -42,6 +43,7 @@ namespace DeToiServer.Dtos.FreelanceDtos
         public double PreviewPrice { get; set; }
         public ICollection<SkillDto>? Skills { get; set; }
         public ICollection<GetServiceProvenDto>? ServiceProven { get; set; }
+        public ICollection<GetFreelanceReviewDto>? Reviews { get; set; }
     }
 
     public class GetFreelanceAccountInOrderDto

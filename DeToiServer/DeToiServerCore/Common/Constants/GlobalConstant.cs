@@ -14,6 +14,8 @@
         ];
 
         public const string CustomerAvtMale = "https://detoivn.sirv.com/customer_avt/user-avt%20(2).png";
+        public const string DefaultCommentAvt = "https://detoivn.sirv.com/customer_avt/user-avt%20(2).png";
+        public const string DefaultCommentContent = "Người dùng không nhận xét.";
         public const int InMeters = 1000;
         public const int InKilometers = 1;
         public const string GeoCodeDefault = "Dữ liệu bản đồ chưa có.";
