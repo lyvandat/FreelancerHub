@@ -11,6 +11,7 @@ using DeToiServer.Dtos.ServiceStatusDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Dtos.SkillDtos;
 using DeToiServer.Dtos.UIElementDtos;
+using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
@@ -149,12 +150,11 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.District, opt => opt.MapFrom<DistrictResolver>())
                 .ForMember(dest => dest.Province, opt => opt.MapFrom<ProvinceResolver>());
 
-            CreateMap<GeoCodeResponseDto, GeoCodeResultDto>();
-            CreateMap<GeoCodeResponseDto, RevGeoCodeResultDto>()
-                .ForMember(dest => dest.Country, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 0)))
-                .ForMember(dest => dest.Province, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 1)))
-                .ForMember(dest => dest.District, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 2)))
-                .ForMember(dest => dest.Ward, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 3)))
+            CreateMap<GeoCodeResponseDto, GeoCodeResultDto>()
+                .ForMember(dest => dest.Country, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 0) ?? GlobalConstant.GeoCodeDefault))
+                .ForMember(dest => dest.Province, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 1) ?? GlobalConstant.GeoCodeDefault))
+                .ForMember(dest => dest.District, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 2) ?? GlobalConstant.GeoCodeDefault))
+                .ForMember(dest => dest.Ward, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 3) ?? GlobalConstant.GeoCodeDefault))
                 .ForMember(dest => dest.Road, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 4)))
                 .ForMember(dest => dest.House_number, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 5)))
                 .ForMember(dest => dest.Amenity, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 6)));
