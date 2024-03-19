@@ -1,6 +1,7 @@
 ﻿using DeToiServer.Services.AccountService;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
+using DeToiServer.Services.MessageQueueService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.ServiceCategoryService;
 using DeToiServer.Services.ServiceProvenService;
@@ -105,6 +106,7 @@ namespace DeToiServerData
             services.AddScoped<IServiceProvenService, ServiceProvenService>();
             services.AddScoped<IOrderManagementService, OrderManagementService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IMessageQueueService, MessageQueueService>();
 
             services.AddScoped<IUIElementServiceRequirementService, UIElementServiceRequirementService>();
             return services;
