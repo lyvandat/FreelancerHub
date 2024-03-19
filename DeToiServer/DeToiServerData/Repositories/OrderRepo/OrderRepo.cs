@@ -99,15 +99,22 @@ namespace DeToiServerData.Repositories.OrderRepo
 
             if (freelance == null) return Enumerable.Empty<Order>();
 
-            var query = _context.Orders
+            // Materialize the suitable skill categories
+            var suitableSkillCategories = freelance.FreelanceSkills
+                .Select(fl_sk => fl_sk.Skill.SkillCategory)
+                .Distinct()
+                .ToList();
+
+            var result = await _context.Orders
                 .AsNoTracking().AsSplitQuery()
                 .Include(o => o.OrderServiceTypes)
                     .ThenInclude(ost => ost.ServiceType)
                         .ThenInclude(svt => svt.ServiceCategory)
                 .Include(o => o.Address)
-                .Where(order => FilterFreelancerSuitableOrders(order, freelance));
-
-            var result = await query.ToListAsync();
+                .Where(order => order.OrderServiceTypes.All(type =>
+                    suitableSkillCategories.Contains(type.ServiceType.ServiceCategory.ServiceClassName))
+                    && order.FreelancerId == null)
+                .ToListAsync();
 
             return result;
         }

@@ -43,7 +43,7 @@ namespace DeToiServer.Controllers
         }
 
         [HttpPost, AuthorizeRoles(GlobalConstant.Customer)]
-        public async Task<ActionResult<Order>> PostOrder(PostOrderDto postOrder)
+        public async Task<ActionResult<PostOrderResultDto>> PostOrder(PostOrderDto postOrder)
         {
             Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid customerId);
             postOrder.CustomerId = customerId;
@@ -56,7 +56,11 @@ namespace DeToiServer.Controllers
                     Message = "Tạo đơn đặt hàng không thành công"
                 });
             }
-            return Ok(order);
+            return Ok(new PostOrderResultDto()
+            {
+                Id = order.Id,
+                Message = "Tạo đơn đặt hàng thành công"
+            });
         }
 
         //[HttpGet("all")]

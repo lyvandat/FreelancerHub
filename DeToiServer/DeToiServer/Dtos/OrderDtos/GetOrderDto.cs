@@ -1,6 +1,7 @@
 ﻿using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
+using System.Text.Json.Serialization;
 
 namespace DeToiServer.Dtos.OrderDtos
 {
@@ -12,6 +13,7 @@ namespace DeToiServer.Dtos.OrderDtos
         public DateOnly StartDate { get; set; }
         public TimeOnly FinishTime { get; set; }
         public DateOnly FinishDate { get; set; }
+        [JsonPropertyName("freelancer")]
         public GetFreelanceAccountInOrderDto? Freelance { get; set; }
         public string ServiceStatus { get; set; } = string.Empty;
         public ICollection<GetServiceTypeDto>? ServiceTypes { get; set; }

@@ -9,6 +9,7 @@ using DeToiServer.Services.ServiceStatusService;
 using DeToiServer.Services.ServiceTypeService;
 using DeToiServer.Services.UIElementService;
 using DeToiServer.Services.UserService;
+using DeToiServerCore.Common.Constants;
 using DeToiServerData.Repositories;
 using DeToiServerData.Repositories.AccountCustomerRepo;
 using DeToiServerData.Repositories.AccountFreelanceRepo;
@@ -112,8 +113,10 @@ namespace DeToiServerData
             return services;
         }
 
-        public static void ApplyDatabaseMigrations(this IApplicationBuilder app)
+        public static void ApplyDatabaseMigrations(this IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var filePath = Path.Combine(env.ContentRootPath, GlobalConstant.SqlFiles.DataFile);
+
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var dbContext = serviceScope.ServiceProvider.GetRequiredService<DataContext>();
@@ -121,14 +124,23 @@ namespace DeToiServerData
                 try
                 {
                     var databaseCreator = dbContext.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
-                    if (!dbContext.Database.GetPendingMigrations().Any() || !databaseCreator!.CanConnect() || !databaseCreator!.HasTables())
+                    if (dbContext.Database.GetPendingMigrations().Any() || !databaseCreator!.CanConnect() || !databaseCreator!.HasTables())
+                    {
                         dbContext.Database.Migrate();
+                        ExecuteSqlFromFile(dbContext, filePath);
+                    }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
             }
+        }
+
+        private static void ExecuteSqlFromFile(DataContext dbContext, string filePath)
+        {
+            var sql = System.IO.File.ReadAllText(filePath);
+            dbContext.Database.ExecuteSqlRaw(sql);
         }
     }
 }

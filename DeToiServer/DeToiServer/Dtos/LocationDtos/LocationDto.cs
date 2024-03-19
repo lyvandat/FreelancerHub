@@ -79,6 +79,14 @@ namespace DeToiServer.Dtos.LocationDtos
         public required double Lat { get; set; }
         public required double Lon { get; set; }
         public required string Display_name { get; set; }
+        public string? Amenity { get; set; }
+        public string? House_number { get; set; }
+        public string? Road { get; set; }
+
+        public string Ward { get; set; } = string.Empty; // Phường - Xã, thị trấn
+        public string District { get; set; } = string.Empty; // Quận - Huyện
+        public string Province { get; set; } = string.Empty; // tỉnh - thành phố
+        public string Country { get; set; } = string.Empty; // Quốc gia
         public required double Importance { get; set; }
     }
 }
