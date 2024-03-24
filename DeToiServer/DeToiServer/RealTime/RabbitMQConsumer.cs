@@ -4,6 +4,7 @@ using System.Text;
 using DeToiServer.Dtos.OrderDtos;
 using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;
+using DeToiServer.Dtos.RealTimeDtos;
 
 namespace DeToiServer.RealTime
 {
@@ -51,6 +52,51 @@ namespace DeToiServer.RealTime
                     }
 
                     channel.BasicConsume("order", true, eventConsumer);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ex.Message} | {ex.StackTrace}");
+            }
+        }
+
+        public void ReceiveOrderStatusFromQ()
+        {
+            try
+            {
+                var factory = new ConnectionFactory()
+                {
+                    HostName = "localhost",
+                    UserName = "user",
+                    Password = "mypass",
+                };
+
+                using (var connection = factory.CreateConnection())
+                using (var channel = connection.CreateModel())
+                {
+                    Connect().Wait();
+
+                    channel.QueueDeclare(queue: "order-status",
+                                         durable: false,
+                                         exclusive: false,
+                                         autoDelete: false,
+                                         arguments: null);
+                    var eventConsumer = new EventingBasicConsumer(channel);
+
+                    eventConsumer.Received += EventConsumer_Received;
+
+                    void EventConsumer_Received(object? sender, BasicDeliverEventArgs e)
+                    {
+                        var body = e.Body.ToArray();
+                        var data = Encoding.UTF8.GetString(body);
+
+                        // Add signalR real time handling here if we want asynchronous realtime communication
+                        UpdateOnMovingOrderStatusRealTimeDto? orderStatus = JsonConvert.DeserializeObject<UpdateOnMovingOrderStatusRealTimeDto>(data);
+                        _connectionSignalR?.InvokeAsync("SendOrderStatusToCustomer", orderStatus);
+                    }
+
+                    channel.BasicConsume("order-status", true, eventConsumer);
                 }
 
             }

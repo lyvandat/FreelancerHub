@@ -8,6 +8,6 @@ namespace DeToiServer.RealTime
     {
         Task ReceiveCustomerOrder(PostOrderDto postOrder);
         Task ReceiveFreelancerResponse(GetFreelanceMatchingDto matchingFreelancer);
-        Task ReceiveFreelancerOnMovingResponse(UpdateOnMovingOrderStatusDto onMovingStatusDto);
+        Task ReceiveFreelancerStatusResponse(UpdateOnMovingOrderStatusDto onMovingStatusDto);
     }
 }

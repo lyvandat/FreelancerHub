@@ -21,6 +21,7 @@ namespace DeToiServer.Middlewares
             {
                 // If it's a SignalR request, do not execute further middleware
                 _listener.ReceiveMessageFromQ();
+                _listener.ReceiveOrderStatusFromQ();
             }
         }
     }

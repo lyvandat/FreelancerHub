@@ -1,5 +1,7 @@
-﻿using DeToiServer.Dtos.FreelanceDtos;
+﻿using DeToiServer.Dtos.AddressDtos;
+using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.OrderDtos;
+using DeToiServer.Dtos.RealTimeDtos;
 using DeToiServer.Models;
 using DeToiServerCore.Common.Helper;
 using Microsoft.AspNetCore.SignalR;
@@ -83,6 +85,26 @@ namespace DeToiServer.RealTime
                 foreach (var connection in user.Connections)
                 {
                     await Clients.Client(connection.ConnectionId).ReceiveFreelancerResponse(matchingFreelancer);
+                }
+            }
+        }
+
+        public async Task SendOrderStatusToCustomer(UpdateOnMovingOrderStatusRealTimeDto orderStatus)
+        {
+            var user = await _context.Users
+                .AsNoTracking()
+                .Include(u => u.Connections)
+                .FirstOrDefaultAsync(user => user.Phone.Equals(orderStatus.CustomerPhone));
+
+            if (user?.Connections != null)
+            {
+                foreach (var connection in user.Connections)
+                {
+                    await Clients.Client(connection.ConnectionId).ReceiveFreelancerStatusResponse(new UpdateOnMovingOrderStatusDto()
+                    {
+                        ServiceStatusId = orderStatus.ServiceStatusId,
+                        Address = orderStatus.Address
+                    });
                 }
             }
         }

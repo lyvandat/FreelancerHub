@@ -9,9 +9,10 @@ namespace DeToiServer.Dtos.RealTimeDtos
         public Guid ServiceStatusId { get; set; } 
     }
 
-    public class UpdateOrderStatusDto
+    public class UpdateOnMovingOrderStatusRealTimeDto
     {
-        public Guid FreelancerAccountId { get; set; }
-        public GetServiceStatusDto? ServiceStatus { get; set; }
+        public AddressDto? Address { get; set; }
+        public Guid ServiceStatusId { get; set; }
+        public string CustomerPhone { get; set; } = string.Empty;
     }
 }

@@ -25,6 +25,11 @@ namespace DeToiServer.Services.CustomerAccountService
             return await _unitOfWork.CustomerAccountRepo.GetByIdAsync(id);
         }
 
+        public async Task<CustomerAccount> GetByIdWithAccount(Guid id)
+        {
+            return await _unitOfWork.CustomerAccountRepo.GetByIdAsync(id);
+        }
+
         public async Task<CustomerAccount> GetByCondition(Expression<Func<CustomerAccount, bool>> predicate)
         {
             return await _unitOfWork.CustomerAccountRepo.GetByConditionsAsync(predicate);

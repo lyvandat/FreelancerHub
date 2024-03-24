@@ -171,20 +171,13 @@ namespace DeToiServer.Controllers
             await _uow.SaveChangesAsync();
 
             // Handle real time - freelancers send update status message to customers.
-            var customer = await _customerAcc.GetByCondition(c => c.Id == order.CustomerId);
-            var user = await _userService.GetUserByPhone(customer.Account.Phone);
-
-            if (user?.Connections != null)
+            var customer = await _customerAcc.GetByCondition(cus => cus.Id == order.CustomerId);
+            _rabbitMQProducer.PushOrderStatusToQ(new UpdateOnMovingOrderStatusRealTimeDto
             {
-                foreach (var connection in user.Connections)
-                {
-                    await _chatHubContext.Clients.Client(connection.ConnectionId).ReceiveFreelancerOnMovingResponse(new UpdateOnMovingOrderStatusDto
-                    {
-                        Address = _mapper.Map<AddressDto>(freelancer.Address),
-                        ServiceStatusId = orderStatus
-                    });
-                }
-            }
+                CustomerPhone = customer.Account.Phone,
+                Address = _mapper.Map<AddressDto>(freelancer.Address?.FirstOrDefault()),
+                ServiceStatusId = orderStatus
+            });
 
             return Ok(new
             {
