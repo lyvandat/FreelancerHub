@@ -1,11 +1,12 @@
 ﻿using DeToiServer.Dtos.OrderDtos;
+using DeToiServerCore.QueryModels.OrderQueryModels;
 
 namespace DeToiServer.Services.OrderManagementService
 {
     public interface IOrderManagementService
     {
         Task<Order?> Add(PostOrderDto service);
-        Task<IEnumerable<Order>> GetFreelancerSuitableOrders(Guid freelancerId);
+        Task<IEnumerable<GetOrderDto>> GetFreelancerSuitableOrders(Guid freelancerId, FilterFreelancerOrderQuery filterQuery);
         Task<Order?> GetById(Guid orderId);
         Task<GetOrderDto?> GetOrderDetailById(Guid id);
         Task<IEnumerable<GetOrderDto>> GetAllCustomerOrders(Guid customerid);

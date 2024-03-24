@@ -5,6 +5,7 @@ using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
+using DeToiServerCore.QueryModels.OrderQueryModels;
 
 namespace DeToiServer.Services.OrderManagementService
 {
@@ -77,11 +78,11 @@ namespace DeToiServer.Services.OrderManagementService
             return rawOrder;
         }
 
-        public async Task<IEnumerable<Order>> GetFreelancerSuitableOrders(Guid freelancerId)
+        public async Task<IEnumerable<GetOrderDto>> GetFreelancerSuitableOrders(Guid freelancerId, FilterFreelancerOrderQuery filterQuery)
         {
-            var result = await _uow.OrderRepo.GetFreelancerSuitableOrders(freelancerId);
-
-            return result;
+            var result = await _uow.OrderRepo.GetFreelancerSuitableOrders(freelancerId, filterQuery);
+            
+            return result.Select(_mapper.Map<GetOrderDto>);
         }
 
         public async Task<Order?> GetById(Guid orderId)

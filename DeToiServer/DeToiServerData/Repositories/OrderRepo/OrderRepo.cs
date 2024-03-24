@@ -97,7 +97,15 @@ namespace DeToiServerData.Repositories.OrderRepo
             return result;
         }
 
-        public async Task<IEnumerable<Order>> GetFreelancerSuitableOrders(Guid freelancerId)
+        private Expression<Func<Order, object>> GetFreelancerOrderSortExpression(FilterFreelancerOrderQuery filterQuery)
+        => filterQuery.SortingCol?.ToLower() switch
+        {
+            "date" => ord => ord.CreatedTime,
+            "distance" => ord => ord.CreatedTime,
+            _ => ord => ord.Id,
+        };
+
+        public async Task<IEnumerable<Order>> GetFreelancerSuitableOrders(Guid freelancerId, FilterFreelancerOrderQuery filterQuery)
         {
             var freelance = await _context.Freelancers
                 .AsNoTracking().AsSplitQuery()
@@ -114,7 +122,7 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Distinct()
                 .ToList();
 
-            var result = await _context.Orders
+            var query = _context.Orders
                 .AsNoTracking().AsSplitQuery()
                 .Include(o => o.OrderServiceTypes)
                     .ThenInclude(ost => ost.ServiceType)
@@ -126,10 +134,20 @@ namespace DeToiServerData.Repositories.OrderRepo
                     !order.ServiceStatusId.Equals(StatusConst.Canceled)
                     && order.OrderServiceTypes.All(type => suitableSkillCategories
                         .Contains(type.ServiceType.ServiceCategory.ServiceClassName))
-                    && order.FreelancerId == null)
-                .ToListAsync();
+                    && order.FreelancerId == null);
 
-            return result;
+            var sortExpression = GetFreelancerOrderSortExpression(filterQuery);
+
+            if (filterQuery.SortType == "desc")
+            {
+                query = query.OrderByDescending(sortExpression);
+            }
+            else
+            {
+                query = query.OrderBy(sortExpression);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<Order> GetLatestCustomerOrders(Guid customerId)

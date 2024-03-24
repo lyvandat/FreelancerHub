@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.FreelanceDtos;
+using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Services.AccountService;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
+using DeToiServerCore.Common.Helper;
+using DeToiServerCore.QueryModels.OrderQueryModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -51,6 +54,22 @@ namespace DeToiServer.Controllers
             return Ok(freelance);
         }
 
+        [HttpGet("short-detail"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult<GetFreelanceAccountShortDetailDto>> GetFreelancerShortDetail()
+        {
+            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerAccountId);
+            var freelancer = await _freelanceAccService.GetByAccId(freelancerAccountId);
+            if (freelancer is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không tìm thấy tài khoản!"
+                });
+            }
+
+            return Ok(_mapper.Map<GetFreelanceAccountShortDetailDto>(freelancer));
+        }
+
         [HttpGet("current"), AuthorizeRoles(GlobalConstant.Freelancer)]
         public async Task<ActionResult<GetFreelanceDto>> GetCurrentFreelancerDetail()
         {
@@ -75,7 +94,7 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("orders"), AuthorizeRoles(GlobalConstant.Freelancer)]
-        public async Task<ActionResult<IEnumerable<Order>>> GetCurrentFreelancerMatchingOrders()
+        public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetCurrentFreelancerMatchingOrders(FilterFreelancerOrderQuery filterQuery)
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerId);
             var freelance = await _freelanceAccService.GetByAccId(freelancerId);
@@ -88,7 +107,8 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            var result = await _orderService.GetFreelancerSuitableOrders(freelance.Id);
+            var result = await _orderService.GetFreelancerSuitableOrders(freelance.Id, filterQuery);
+            var orderPage = PageList<GetOrderDto>.ToPageList(result.AsQueryable(), filterQuery.Page, filterQuery.PageSize);
 
             return Ok(result);
         }

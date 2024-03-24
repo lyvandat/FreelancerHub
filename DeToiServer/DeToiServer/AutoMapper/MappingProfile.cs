@@ -113,6 +113,10 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault() ))
                 .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders));
+
+            CreateMap<FreelanceAccount, GetFreelanceAccountShortDetailDto>()
+                .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Account.Avatar ?? GlobalConstant.DefaultCommentAvt))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Account.FullName ?? "Người dùng"));
             #endregion
 
             #region ServiceType and ServiceCategory
