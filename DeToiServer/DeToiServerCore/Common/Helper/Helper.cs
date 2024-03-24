@@ -39,16 +39,14 @@ namespace DeToiServerCore.Common.Helper
 
         public static string GetMessageQueueConnectionString()
         {
-            var mqHost = Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost";
-            return mqHost;
+            return Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost";
         }
 
         public static string GetDockerHostUrl()
         {
-            var url = Environment.GetEnvironmentVariable("MQ_HOST") != null 
+            return Environment.GetEnvironmentVariable("MQ_HOST") != null 
                 ? "http://localhost:8080/chat-hub"
                 : "https://localhost:7140/chat-hub";
-            return url;
         }
 
         public static bool IsInAcceptableZone(Coordination customerAddress, Coordination freelanceAddress, int defaultDistance = 5)

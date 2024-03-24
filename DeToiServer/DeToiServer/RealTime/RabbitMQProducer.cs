@@ -1,5 +1,6 @@
 ﻿using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.RealTimeDtos;
+using DeToiServerCore.Common.Helper;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -19,7 +20,7 @@ namespace DeToiServer.RealTime
             {
                 var factory = new ConnectionFactory()
                 {
-                    HostName = "localhost:5672",
+                    HostName = Helper.GetMessageQueueConnectionString(),
                     UserName = "user",
                     Password = "mypass",
                 };
@@ -56,7 +57,7 @@ namespace DeToiServer.RealTime
             {
                 var factory = new ConnectionFactory()
                 {
-                    HostName = "localhost",
+                    HostName = Helper.GetMessageQueueConnectionString(),
                     UserName = "user",
                     Password = "mypass",
                 };
