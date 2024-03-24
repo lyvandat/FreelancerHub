@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DeToiServer.RealTime;
+using Newtonsoft.Json;
 using System.Net;
 
 namespace DeToiServer.Middlewares
@@ -8,7 +9,7 @@ namespace DeToiServer.Middlewares
         private readonly RequestDelegate _next;
         private readonly ILogger<GlobalExceptionHandlerMiddleware> _logger;
 
-        public GlobalExceptionHandlerMiddleware(RequestDelegate next, ILogger<GlobalExceptionHandlerMiddleware> logger)
+        public GlobalExceptionHandlerMiddleware(RequestDelegate next, ILogger<GlobalExceptionHandlerMiddleware> logger, RabbitMQConsumer consumer)
         {
             _next = next;
             _logger = logger;

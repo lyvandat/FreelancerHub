@@ -33,9 +33,11 @@ builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddServicesData();
 builder.Services.AddUnitOfWork(options => 
-    options.UseSqlServer(Helper.GetDockerConnectionString())); // builder.Configuration.GetConnectionString("local") | Helper.GetDockerConnectionString()
+    options.UseSqlServer(builder.Configuration.GetConnectionString("local_dat"))); // builder.Configuration.GetConnectionString("local") | Helper.GetDockerConnectionString()
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<RabbitMQProducer>();
+builder.Services.AddSingleton<RabbitMQConsumer>();
 var app = builder.Build();
 
 app.UseSwagger();
@@ -43,10 +45,12 @@ app.UseSwaggerUI();
 app.UseCors("NgOrigins");
 app.ApplyDatabaseMigrations(app.Environment);
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+app.UseMiddleware<RabbitMQListenerMiddleware>();
 
 // Add other configurations
 app.UseHttpsRedirection();
 app.MapHub<ChatHub>("chat-hub");
+//app.UseRabbitMQListener();
 app.UseAuthorization();
 app.MapControllers();
 

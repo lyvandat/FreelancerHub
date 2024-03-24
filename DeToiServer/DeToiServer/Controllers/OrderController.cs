@@ -5,6 +5,7 @@ using DeToiServer.Dtos.RealTimeDtos;
 using DeToiServer.RealTime;
 using DeToiServer.Services.AccountService;
 using DeToiServer.Services.CustomerAccountService;
+using DeToiServer.Services.MessageQueueService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.UserService;
 using DeToiServerCore.Common.Constants;
@@ -23,6 +24,7 @@ namespace DeToiServer.Controllers
         private readonly IOrderManagementService _orderService;
         private readonly ICustomerAccountService _customerAcc;
         private readonly IUserService _userService;
+        private readonly RabbitMQProducer _rabbitMQProducer;
         private readonly IHubContext<ChatHub, IChatClient> _chatHubContext;
         private readonly IMapper _mapper;
 
@@ -31,6 +33,7 @@ namespace DeToiServer.Controllers
             IOrderManagementService orderService, 
             ICustomerAccountService customerAcc, 
             IUserService userService,
+            RabbitMQProducer rabbitMQProducer,
             IHubContext<ChatHub, IChatClient> chatHubContext,
             IMapper mapper)
         {
@@ -38,6 +41,7 @@ namespace DeToiServer.Controllers
             _orderService = orderService;
             _customerAcc = customerAcc;
             _userService = userService;
+            _rabbitMQProducer = rabbitMQProducer;
             _chatHubContext = chatHubContext;
             _mapper = mapper;
         }
@@ -58,6 +62,9 @@ namespace DeToiServer.Controllers
                     Message = "Tạo đơn đặt hàng không thành công"
                 });
             }
+
+            _rabbitMQProducer.PushMessageToQ(postOrder);
+
             return Ok(new PostOrderResultDto()
             {
                 Id = order.Id,
