@@ -4,6 +4,7 @@ using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
 using DeToiServerCore.QueryModels.OrderQueryModels;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace DeToiServerData.Repositories.OrderRepo
@@ -168,6 +169,32 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Include(o => o.Address)
                 .OrderByDescending(o => o.CreatedTime)
                 .FirstOrDefaultAsync();
+
+            return result;
+        }
+
+        public async Task<IEnumerable<Order>> GetFreelancerIncomingOrdersAsync(Guid freelancerId)
+        {
+            var statusList = new List<Guid>()
+            {
+                StatusConst.Waiting,
+                StatusConst.OnMoving,
+                StatusConst.OnDoingService,
+            };
+
+            var result = await _context.Orders
+                .AsNoTracking().AsSplitQuery()
+                .Include(o => o.OrderServiceTypes)
+                    .ThenInclude(ost => ost.ServiceType)
+                        .ThenInclude(svt => svt.ServiceCategory)
+                .Include(o => o.OrderServices)
+                    .ThenInclude(ost => ost.Service)
+                .Include(o => o.Address)
+                .Where(order =>
+                    statusList.Contains(order.ServiceStatusId)
+                    && order.FreelancerId.Equals(freelancerId))
+                .OrderByDescending(o => o.CreatedTime)
+                .ToListAsync();
 
             return result;
         }

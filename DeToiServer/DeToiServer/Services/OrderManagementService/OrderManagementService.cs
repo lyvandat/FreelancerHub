@@ -94,7 +94,7 @@ namespace DeToiServer.Services.OrderManagementService
             if (rawOrder == null) return null;
 
             var order = _mapper.Map<GetOrderDto>(rawOrder);
-            order.ServiceTypes = rawOrder.OrderServiceTypes?.Select(ost => _mapper.Map<GetServiceTypeDto>(ost.ServiceType)).ToList();
+            //order.ServiceTypes = rawOrder.OrderServiceTypes?.Select(ost => _mapper.Map<GetServiceTypeDto>(ost.ServiceType)).ToList();
 
             return order;
         }
@@ -107,7 +107,7 @@ namespace DeToiServer.Services.OrderManagementService
             foreach (var rawOrder in rawOrders)
             {
                 var order = _mapper.Map<GetOrderDto>(rawOrder);
-                order.ServiceTypes = rawOrder.OrderServiceTypes?.Select(ost => _mapper.Map<GetServiceTypeDto>(ost.ServiceType)).ToList();
+                //order.ServiceTypes = rawOrder.OrderServiceTypes?.Select(ost => _mapper.Map<GetServiceTypeDto>(ost.ServiceType)).ToList();
                 result.Add(order);
             }
 
@@ -196,6 +196,13 @@ namespace DeToiServer.Services.OrderManagementService
                 Order = orderNew,
                 Message = "Hủy đơn hàng thành công"
             };
+        }
+
+        public async Task<IEnumerable<GetOrderDto>> GetFreelancerIncomingOrders(Guid freelancerId)
+        {
+            var res = await _uow.OrderRepo.GetFreelancerIncomingOrdersAsync(freelancerId);
+
+            return _mapper.Map<IEnumerable<GetOrderDto>>(res);
         }
     }
 }

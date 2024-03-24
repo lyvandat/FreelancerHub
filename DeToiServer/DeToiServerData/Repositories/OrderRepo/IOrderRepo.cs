@@ -10,5 +10,6 @@ namespace DeToiServerData.Repositories.OrderRepo
         Task<IEnumerable<Order>> GetCustomerOrders(Guid customerId);
         Task<IEnumerable<Order>> GetFreelancerSuitableOrders(Guid freelancerId, FilterFreelancerOrderQuery filterQuery);
         Task<Order> GetLatestCustomerOrders(Guid customerId);
+        Task<IEnumerable<Order>> GetFreelancerIncomingOrdersAsync(Guid freelancerId);
     }
 }

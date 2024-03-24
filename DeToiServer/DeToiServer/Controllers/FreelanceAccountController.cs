@@ -113,6 +113,25 @@ namespace DeToiServer.Controllers
             return Ok(result);
         }
 
+        [HttpGet("orders/incoming"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetFreelancerIncomingOrders()
+        {
+            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerId);
+            var freelance = await _freelanceAccService.GetByAccId(freelancerId);
+
+            if (freelance is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không tìm thấy tài khoản, hãy đăng nhập để thử lại"
+                });
+            }
+
+            var result = await _orderService.GetFreelancerIncomingOrders(freelance.Id);
+
+            return Ok(result);
+        }
+
         [HttpGet("existed-and-added-skills")]
         public async Task<ActionResult<bool>> IsFreelancerExistedAndHaveSkills(
             [FromQuery] string phoneNumber
