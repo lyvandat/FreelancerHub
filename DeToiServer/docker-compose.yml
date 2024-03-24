@@ -19,7 +19,6 @@ services:
       test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-Usa", "-PPassword@12345#", "-Q", "select 1"]
       interval: 1s
       retries: 20
-
   detoiserver:
     container_name: detoi-server-container
     image: ${DOCKER_REGISTRY-}detoiserver
@@ -36,6 +35,7 @@ services:
       - DB_HOST=detoidb
       - DB_NAME=DeToiVN
       - DB_SA_PASSWORD=Password@12345#
+      - MQ_HOST=rabbitmq
     networks:
       - detoidockernetwork
   rabbitmq:

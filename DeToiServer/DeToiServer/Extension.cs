@@ -136,15 +136,16 @@ namespace DeToiServerData
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.Message, ex.StackTrace);
                 }
             }
         }
 
         private static void ExecuteSqlFromFile(DataContext dbContext, string filePath)
         {
-            var sql = System.IO.File.ReadAllText(filePath);
-            dbContext.Database.ExecuteSqlRaw(sql);
+            FileInfo file = new(filePath);
+            string script = file.OpenText().ReadToEnd();
+            dbContext.Database.ExecuteSqlInterpolated($"Execute({script});");
         }
     }
 }

@@ -6,6 +6,7 @@ using DeToiServerCore.Models.SevicesUIElement;
 using DeToiServerData.Repositories.UIElementServiceRequirementRepo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace DeToiServer.Controllers
@@ -62,5 +63,24 @@ namespace DeToiServer.Controllers
 
             return Ok(res);
         }
+        [HttpPost("test5")]
+        public async Task<ActionResult<string>> Test5(string input)
+        {
+            // var res = await _requirementService.AddServiceClone(input);
+
+            var res = JsonConvert.DeserializeObject<IEnumerable<RequirementDataDto>>(input);
+            if (res == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Lỗi"
+                });
+            }
+            // await 
+            await Task.Delay(10);
+
+            return Ok(res);
+        }
+
     }
 }

@@ -19,7 +19,7 @@ namespace DeToiServer.RealTime
             {
                 var factory = new ConnectionFactory()
                 {
-                    HostName = "localhost",
+                    HostName = "localhost:5672",
                     UserName = "user",
                     Password = "mypass",
                 };

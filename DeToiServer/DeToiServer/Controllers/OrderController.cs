@@ -12,6 +12,7 @@ using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 using System.Security.Claims;
 
 namespace DeToiServer.Controllers
@@ -53,6 +54,7 @@ namespace DeToiServer.Controllers
             var customer = await _customerAcc.GetByAccId(accountId);
 
             postOrder.CustomerId = customer.Id;
+            var my_str = JsonConvert.SerializeObject(postOrder.Services.Requirement);
             var order = await _orderService.Add(postOrder);
             
             if (order is null)

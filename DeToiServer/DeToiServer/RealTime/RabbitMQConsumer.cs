@@ -5,6 +5,7 @@ using DeToiServer.Dtos.OrderDtos;
 using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;
 using DeToiServer.Dtos.RealTimeDtos;
+using DeToiServerCore.Common.Helper;
 
 namespace DeToiServer.RealTime
 {
@@ -21,7 +22,7 @@ namespace DeToiServer.RealTime
             try
             {
                 var factory = new ConnectionFactory() {
-                    HostName = "localhost",
+                    HostName = Helper.GetMessageQueueConnectionString(),
                     UserName = "user",
                     Password = "mypass",
                 };
@@ -67,7 +68,7 @@ namespace DeToiServer.RealTime
             {
                 var factory = new ConnectionFactory()
                 {
-                    HostName = "localhost",
+                    HostName = Helper.GetMessageQueueConnectionString(),
                     UserName = "user",
                     Password = "mypass",
                 };
@@ -109,7 +110,7 @@ namespace DeToiServer.RealTime
         public static async Task Connect()
         {
             _connectionSignalR = new HubConnectionBuilder()
-               .WithUrl("https://localhost:7140/chat-hub")
+               .WithUrl(Helper.GetDockerHostUrl())
                .Build();
             await _connectionSignalR.StartAsync();
         }
