@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos.QuizDtos;
+using DeToiServerCore.Models.FreelanceQuiz;
 
 namespace DeToiServer.Services.FreelanceQuizService
 {
@@ -22,6 +23,29 @@ namespace DeToiServer.Services.FreelanceQuizService
         public async Task<IEnumerable<FreelanceQuizResultDto>> GetAllQuizResult()
         {
             return _mapper.Map<IEnumerable<FreelanceQuizResultDto>>(await _uow.FreelanceQuizRepo.GetAllQuizResultAsync());
+        }
+
+        public async Task<FreelanceQuizResultDto> GetLatestQuizResult(Guid freelancerId)
+        {
+            var rawData = await _uow.FreelanceQuizRepo.GetLatestQuizResultAsync(freelancerId);
+            return _mapper.Map<FreelanceQuizResultDto>(rawData);
+        }
+
+        public async Task<GetPreDefinedQuizDto> GetRandomPreDefinedQuiz()
+        {
+            var quizzes = _mapper.Map<IEnumerable<GetPreDefinedQuizDto>>(await _uow.FreelanceQuizRepo.GetPreDefinedQuizzesAsync());
+            var random = new Random();
+
+            return quizzes.ElementAt(random.Next(quizzes.Count()));
+        }
+
+        public async Task<FreelanceQuizResult> PostFreelanceQuizResult(PostFreelanceQuizResultDto data)
+        {
+            var toAdd = _mapper.Map<FreelanceQuizResult>(data);
+            toAdd.TotalCorrect = toAdd.CorrectQuestions.Count;
+            var afterAdd = await _uow.FreelanceQuizRepo.AddFreelanceQuizResultAsync(toAdd);
+
+            return afterAdd;
         }
     }
 }

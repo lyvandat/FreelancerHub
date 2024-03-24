@@ -6,5 +6,7 @@ namespace DeToiServerData.Repositories.FreelancerQuizRepo
     {
         Task<IEnumerable<FreelanceQuiz>> GetPreDefinedQuizzesAsync();
         Task<IEnumerable<FreelanceQuizResult>> GetAllQuizResultAsync();
+        Task<FreelanceQuizResult> GetLatestQuizResultAsync(Guid freelancerId);
+        Task<FreelanceQuizResult> AddFreelanceQuizResultAsync(FreelanceQuizResult data);
     }
 }

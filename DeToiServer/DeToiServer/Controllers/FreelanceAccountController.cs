@@ -1,21 +1,12 @@
 ﻿using AutoMapper;
-using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.FreelanceDtos;
-using DeToiServer.Dtos.QuizDtos;
 using DeToiServer.Services.AccountService;
-using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
-using DeToiServer.Services.FreelanceQuizService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
-using DeToiServerCore.Models.FreelanceQuiz;
-using DeToiServerData.Repositories.FreelancerQuizRepo;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
 namespace DeToiServer.Controllers
@@ -28,15 +19,13 @@ namespace DeToiServer.Controllers
         private readonly IFreelanceAccountService _freelanceAccService;
         private readonly IOrderManagementService _orderService;
         private readonly IMapper _mapper;
-        private readonly IFreelanceQuizService _quizService;
 
-        public FreelanceAccountController(IAccountService accService, IFreelanceAccountService freelanceAccountService, IOrderManagementService orderService, IMapper mapper, IFreelanceQuizService quizService)
+        public FreelanceAccountController(IAccountService accService, IFreelanceAccountService freelanceAccountService, IOrderManagementService orderService, IMapper mapper)
         {
             _accService = accService;
             _freelanceAccService = freelanceAccountService;
             _orderService = orderService;
             _mapper = mapper;
-            _quizService = quizService;
         }
 
         [HttpGet("all")]
@@ -55,7 +44,7 @@ namespace DeToiServer.Controllers
             {
                 return BadRequest(new
                 {
-                    Message = "Không tìm thấy tài khoản!"
+                    Message = "Không tìm thấy tài khoản Freelancer"
                 });
             }
 
@@ -72,7 +61,7 @@ namespace DeToiServer.Controllers
             {
                 return BadRequest(new
                 {
-                    Message = "Không tìm thấy tài khoản!"
+                    Message = "Không tìm thấy tài khoản, hãy đăng nhập để thử lại"
                 });
             }
             var result = _mapper.Map<GetFreelanceDto>(freelance);
@@ -95,7 +84,7 @@ namespace DeToiServer.Controllers
             {
                 return BadRequest(new
                 {
-                    Message = "Không tìm thấy tài khoản!"
+                    Message = "Không tìm thấy tài khoản, hãy đăng nhập để thử lại"
                 });
             }
 
@@ -150,22 +139,6 @@ namespace DeToiServer.Controllers
             {
                 Message = "Freelancer đã có ít nhất 1 Kỹ năng trong profile"
             });
-        }
-
-        [HttpGet("quiz/all")]
-        public async Task<ActionResult<IEnumerable<GetPreDefinedQuizDto>>> GetAllFreelanceQuiz()
-        {
-            var res = await _quizService.GetAllPreDefinedQuiz();
-
-            return Ok(res);
-        }
-
-        [HttpGet("quiz/result/all")]
-        public async Task<ActionResult<IEnumerable<FreelanceQuizResultDto>>> GetAllFreelanceQuizResult()
-        {
-            var res = await _quizService.GetAllQuizResult();
-
-            return Ok(res);
         }
     }
 }

@@ -33,8 +33,21 @@ namespace DeToiServer.Dtos.QuizDtos
         public Guid Id { get; set; }
         public DateTime CompletedAt { get; set; }
         public int TotalCorrect { get; set; }
-        public required Guid FreelanceId { get; set; }
-        public required FreelanceAccount Freelance { get; set; }
         public required ICollection<FreelanceQuizQuestionDto> CorrectQuestions { get; set; }
+        public required GetPreDefinedQuizDto Quiz { get; set; }
+    }
+
+    public class PostCorrectQuizQuestionDto
+    {
+        public required Guid QuestionId { get; set; }
+    }
+
+    public class PostFreelanceQuizResultDto // Kết quả kiểm tra
+    {
+        public Guid QuizId { get; set; }
+        public Guid FreelancerId { get; set; }
+        public DateTime CompletedAt { get; set; }
+        public int TotalCorrect { get; set; }
+        public required ICollection<PostCorrectQuizQuestionDto> CorrectQuestions { get; set; }
     }
 }

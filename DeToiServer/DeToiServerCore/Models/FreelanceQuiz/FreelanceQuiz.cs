@@ -37,6 +37,7 @@ namespace DeToiServerCore.Models.FreelanceQuiz
         public int TotalTime { get; set; }
         public int TotalQuestion { get; set; }
         public required ICollection<QuizQuestion> QuizQuestions { get; set; }
+        public required ICollection<FreelanceQuizResult> FreelanceQuizResults { get; set; }
     }
 
     public class FreelanceCorrectQuestion // Chi tiết kết quả kiểm tra
@@ -54,7 +55,10 @@ namespace DeToiServerCore.Models.FreelanceQuiz
         public int TotalCorrect { get; set; }
         public required ICollection<FreelanceCorrectQuestion> CorrectQuestions { get; set; }
 
-        public required Guid FreelanceId { get; set; }
-        public required FreelanceAccount Freelance { get; set; }
+        public required Guid FreelancerId { get; set; }
+        public required FreelanceAccount Freelancer { get; set; }
+
+        public required Guid QuizId { get; set; }
+        public required FreelanceQuiz Quiz { get; set; }
     }
 }

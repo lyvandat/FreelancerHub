@@ -228,6 +228,9 @@ namespace DeToiServer.AutoMapper
 
             CreateMap<FreelanceQuiz, GetPreDefinedQuizDto>();
             CreateMap<FreelanceQuizResult, FreelanceQuizResultDto>();
+
+            CreateMap<PostFreelanceQuizResultDto, FreelanceQuizResult>();
+            CreateMap<PostCorrectQuizQuestionDto, FreelanceCorrectQuestion>();
             #endregion
         }
     }

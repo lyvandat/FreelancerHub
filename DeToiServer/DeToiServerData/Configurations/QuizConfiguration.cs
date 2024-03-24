@@ -73,9 +73,9 @@ namespace DeToiServerData.Configurations
     {
         protected override void OnConfigure(EntityTypeBuilder<FreelanceQuizResult> builder)
         {
-            builder.HasOne(qr => qr.Freelance)
+            builder.HasOne(qr => qr.Freelancer)
                 .WithMany(fl => fl.QuizHistory)
-                .HasForeignKey(qr => qr.FreelanceId)
+                .HasForeignKey(qr => qr.FreelancerId)
                 .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
