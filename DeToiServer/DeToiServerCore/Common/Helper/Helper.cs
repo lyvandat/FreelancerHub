@@ -49,6 +49,14 @@ namespace DeToiServerCore.Common.Helper
                 : "https://localhost:7140/chat-hub";
         }
 
+        public static int GetDockerDelayPeriod()
+        {
+            var timeString = Environment.GetEnvironmentVariable("DELAY_TIME_MS");
+            var canParse = int.TryParse(timeString, out int time);
+
+            return canParse ? time : GlobalConstant.DefaultDelayTime;
+        }
+
         public static bool IsInAcceptableZone(Coordination customerAddress, Coordination freelanceAddress, int defaultDistance = 5)
         {
             return !(GeoCalculator.CalculateDistance(customerAddress, freelanceAddress) > defaultDistance); // (km)

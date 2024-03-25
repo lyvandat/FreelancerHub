@@ -19,6 +19,7 @@
         public const int InMeters = 1000;
         public const int InKilometers = 1;
         public const string GeoCodeDefault = "Dữ liệu bản đồ chưa có.";
+        public const int DefaultDelayTime = 1000;
 
         public static class Payment
         {

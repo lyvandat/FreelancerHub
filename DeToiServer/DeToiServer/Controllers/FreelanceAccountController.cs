@@ -94,7 +94,7 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("orders"), AuthorizeRoles(GlobalConstant.Freelancer)]
-        public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetCurrentFreelancerMatchingOrders(FilterFreelancerOrderQuery filterQuery)
+        public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetCurrentFreelancerMatchingOrders([FromQuery] FilterFreelancerOrderQuery filterQuery)
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerId);
             var freelance = await _freelanceAccService.GetByAccId(freelancerId);

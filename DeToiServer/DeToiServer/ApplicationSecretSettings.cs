@@ -22,5 +22,6 @@
     {
         public LoginSocialSecret LoginSocial { get; set; }
         public GeoCodingSecret GeoCoding { get; set; }
+        public string DelayTime { get; set; }
     }
 }
