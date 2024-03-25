@@ -1,4 +1,4 @@
-using DeToiServerCore.Models.FreelanceQuiz;
+using DeToiServerCore.Models.Quiz;
 using DeToiServerCore.Models.Services;
 
 namespace DeToiServerCore.Models.Accounts
@@ -22,6 +22,6 @@ namespace DeToiServerCore.Models.Accounts
         public ICollection<Order>? Orders { get; set; }
         public ICollection<ServiceProven>? ServiceProven { get; set; }
         public ICollection<Favorite>? FavoriteBy { get; set; }
-        public ICollection<FreelanceQuizResult>? QuizHistory { get; set; }
+        public ICollection<FreelanceQuiz>? QuizCollection { get; set; }
     }
 }

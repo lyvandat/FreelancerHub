@@ -326,129 +326,6 @@ namespace DeToiServerData.Migrations
                     b.ToTable("Favorites", (string)null);
                 });
 
-            modelBuilder.Entity("DeToiServerCore.Models.FreelanceQuiz.FreelanceCorrectQuestion", b =>
-                {
-                    b.Property<Guid>("ResultId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("QuestionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ResultId", "QuestionId");
-
-                    b.HasIndex("QuestionId");
-
-                    b.ToTable("FreelanceCorrectQuestions");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.FreelanceQuiz.FreelanceQuiz", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("TotalQuestion")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TotalTime")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FreelanceQuizzes");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.FreelanceQuiz.FreelanceQuizAnswer", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Answer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsCorrect")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("QuestionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.ToTable("FreelanceQuizAnswers");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.FreelanceQuiz.FreelanceQuizQuestion", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("OfSkills")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Point")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Question")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FreelanceQuizQuestions");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.FreelanceQuiz.FreelanceQuizResult", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CompletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("FreelancerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("QuizId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("TotalCorrect")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FreelancerId");
-
-                    b.HasIndex("QuizId");
-
-                    b.ToTable("FreelanceQuizResults");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.FreelanceQuiz.QuizQuestion", b =>
-                {
-                    b.Property<Guid>("QuizId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("QuestionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("QuizId", "QuestionId");
-
-                    b.HasIndex("QuestionId");
-
-                    b.ToTable("QuizQuestions", (string)null);
-                });
-
             modelBuilder.Entity("DeToiServerCore.Models.FrequentlyAskedQuestion", b =>
                 {
                     b.Property<Guid>("Id")
@@ -589,6 +466,129 @@ namespace DeToiServerData.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Promotions");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.Quiz.FreelanceCorrectQuestion", b =>
+                {
+                    b.Property<Guid>("ResultId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ResultId", "QuestionId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("FreelanceCorrectQuestions");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.Quiz.FreelanceQuiz", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FreelancerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("TotalQuestion")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalTime")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FreelancerId");
+
+                    b.ToTable("FreelanceQuizzes");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.Quiz.FreelanceQuizAnswer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Answer")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("FreelanceQuizAnswers");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.Quiz.FreelanceQuizQuestion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("OfSkills")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Point")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Question")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FreelanceQuizQuestions");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.Quiz.FreelanceQuizResult", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("QuizId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("TotalCorrect")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuizId");
+
+                    b.ToTable("FreelanceQuizResults");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.Quiz.QuizQuestion", b =>
+                {
+                    b.Property<Guid>("QuizId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("QuizId", "QuestionId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("QuizQuestions", (string)null);
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.ServiceCategory", b =>
@@ -1015,7 +1015,7 @@ namespace DeToiServerData.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3125d91d-6514-4b2f-8659-30053bfbd817"),
+                            Id = new Guid("d7571ef5-f696-4ff6-a1f2-5af0cc4518fe"),
                             AutoSelect = true,
                             Icon = "faDog",
                             Key = "hasPets",
@@ -1024,7 +1024,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("9b26abee-0a58-42ab-ab54-513f426efa58"),
+                            Id = new Guid("589580f5-7943-44a7-b9dd-54d78e90fdda"),
                             AutoSelect = false,
                             Icon = "faComputer",
                             Key = "hasElectronics",
@@ -1033,7 +1033,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e0fffebe-561b-4cc5-ba40-24b1ecbd32a8"),
+                            Id = new Guid("0bbbc3d6-4c7f-4b6d-bd8f-35e3b66b9df6"),
                             AutoSelect = false,
                             Icon = "faBroom",
                             Key = "freelancerBringTools",
@@ -1099,14 +1099,14 @@ namespace DeToiServerData.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("77e2226d-b004-4efb-9143-bd0eac9dfb54"),
+                            Id = new Guid("0e61408b-15d1-4e45-be0c-f9d43d32b299"),
                             Description = "Tất cả dịch vụ, dọn toàn bộ nhà / phòng",
                             InputMethodTypeId = new Guid("89e6f2f5-15cc-470c-a363-427ee8646609"),
                             Name = "Dọn trọn gói"
                         },
                         new
                         {
-                            Id = new Guid("d73d6560-cc60-4f1e-81b1-fb298da2a3b0"),
+                            Id = new Guid("ac4fb75b-497d-4e45-b8db-4a9d3b47dee1"),
                             Description = "Trung bình 50.000đ / phòng, tiết kiệm và nhanh chóng",
                             InputMethodTypeId = new Guid("89e6f2f5-15cc-470c-a363-427ee8646609"),
                             Name = "Dọn theo phòng"
@@ -1151,7 +1151,7 @@ namespace DeToiServerData.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d50b8357-0610-4b3a-b55d-eafc7c796927"),
+                            Id = new Guid("45811fc1-d5e3-46c8-9ec5-613d9580eaa0"),
                             InputMethodId = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
                             Key = "addressLine",
                             Label = "Số nhà, số phòng, hẻm (ngõ)",
@@ -1160,7 +1160,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("81daab7a-6023-4582-b09b-f36df4decfc6"),
+                            Id = new Guid("28e52281-2dff-42f6-a3e9-7255b8489751"),
                             InputMethodId = new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"),
                             Key = "cleanningType",
                             Label = "Bạn muốn chúng tôi dọn như thế nào?",
@@ -1170,7 +1170,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d78160ce-d75d-4cfe-b7ab-68cf33f7a3d2"),
+                            Id = new Guid("fa8a946d-7822-4aad-8b52-563c658c66ac"),
                             InputMethodId = new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"),
                             Key = "roomNumber",
                             Label = "Số lượng phòng",
@@ -1249,14 +1249,14 @@ namespace DeToiServerData.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("27c731e1-475c-43d5-b553-0da58e93a088"),
+                            Id = new Guid("e9c1e5ae-62b4-4f9c-bab1-99b36ba3b64c"),
                             InputMethodId = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
                             Message = "Thông báo valid input 1 custom 1.",
                             Name = "required"
                         },
                         new
                         {
-                            Id = new Guid("c8fb9e92-64bd-4a22-bdcc-50abc5c2b2b5"),
+                            Id = new Guid("e546c1dc-532d-4a00-8bec-720e194be822"),
                             InputMethodId = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
                             Message = "Thông báo valid input 1 custom 2.",
                             Name = "min",
@@ -1264,7 +1264,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e571f4ad-f69c-419d-874d-9e6dce0ffb5e"),
+                            Id = new Guid("08d8f2a4-376f-4ac6-b30b-03f99cc5fd16"),
                             InputMethodId = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
                             Message = "Thông báo valid input 1 custom 3.",
                             Name = "max",
@@ -1272,21 +1272,21 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("487879e1-0510-4d5e-a8af-53abf0e71bc8"),
+                            Id = new Guid("4c092111-0abe-4e7d-83fb-248558cc6e7a"),
                             InputMethodId = new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"),
                             Message = "Thông báo valid input 2 custom 1.",
                             Name = "required"
                         },
                         new
                         {
-                            Id = new Guid("b404edda-e35b-41fd-9b33-ea59845fbfca"),
+                            Id = new Guid("8b945d7e-8794-4601-be3a-23e06d291dd8"),
                             InputMethodId = new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"),
                             Message = "Thông báo valid input 3 custom 1.",
                             Name = "required"
                         },
                         new
                         {
-                            Id = new Guid("498667b1-287d-4edd-8ada-beaedd1eed4d"),
+                            Id = new Guid("f06c0488-0525-4117-ae95-666b5d9fbe08"),
                             InputMethodId = new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"),
                             Message = "Thông báo valid input 3 custom 2.",
                             Name = "min",
@@ -1425,74 +1425,6 @@ namespace DeToiServerData.Migrations
                     b.Navigation("Freelancer");
                 });
 
-            modelBuilder.Entity("DeToiServerCore.Models.FreelanceQuiz.FreelanceCorrectQuestion", b =>
-                {
-                    b.HasOne("DeToiServerCore.Models.FreelanceQuiz.FreelanceQuizQuestion", "Question")
-                        .WithMany("FreelanceCorrectQuestions")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("DeToiServerCore.Models.FreelanceQuiz.FreelanceQuizResult", "Result")
-                        .WithMany("CorrectQuestions")
-                        .HasForeignKey("ResultId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-
-                    b.Navigation("Result");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.FreelanceQuiz.FreelanceQuizAnswer", b =>
-                {
-                    b.HasOne("DeToiServerCore.Models.FreelanceQuiz.FreelanceQuizQuestion", "Question")
-                        .WithMany("Answers")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.FreelanceQuiz.FreelanceQuizResult", b =>
-                {
-                    b.HasOne("DeToiServerCore.Models.Accounts.FreelanceAccount", "Freelancer")
-                        .WithMany("QuizHistory")
-                        .HasForeignKey("FreelancerId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.HasOne("DeToiServerCore.Models.FreelanceQuiz.FreelanceQuiz", "Quiz")
-                        .WithMany("FreelanceQuizResults")
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Freelancer");
-
-                    b.Navigation("Quiz");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.FreelanceQuiz.QuizQuestion", b =>
-                {
-                    b.HasOne("DeToiServerCore.Models.FreelanceQuiz.FreelanceQuizQuestion", "Question")
-                        .WithMany("QuizQuestions")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("DeToiServerCore.Models.FreelanceQuiz.FreelanceQuiz", "Quiz")
-                        .WithMany("QuizQuestions")
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-
-                    b.Navigation("Quiz");
-                });
-
             modelBuilder.Entity("DeToiServerCore.Models.Order", b =>
                 {
                     b.HasOne("DeToiServerCore.Models.Accounts.Address", "Address")
@@ -1534,6 +1466,77 @@ namespace DeToiServerData.Migrations
                         .HasForeignKey("FreelanceAccountId");
 
                     b.Navigation("FreelanceAccount");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.Quiz.FreelanceCorrectQuestion", b =>
+                {
+                    b.HasOne("DeToiServerCore.Models.Quiz.FreelanceQuizQuestion", "Question")
+                        .WithMany("FreelanceCorrectQuestions")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("DeToiServerCore.Models.Quiz.FreelanceQuizResult", "Result")
+                        .WithMany("CorrectQuestions")
+                        .HasForeignKey("ResultId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+
+                    b.Navigation("Result");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.Quiz.FreelanceQuiz", b =>
+                {
+                    b.HasOne("DeToiServerCore.Models.Accounts.FreelanceAccount", "Freelancer")
+                        .WithMany("QuizCollection")
+                        .HasForeignKey("FreelancerId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.Navigation("Freelancer");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.Quiz.FreelanceQuizAnswer", b =>
+                {
+                    b.HasOne("DeToiServerCore.Models.Quiz.FreelanceQuizQuestion", "Question")
+                        .WithMany("Answers")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.Quiz.FreelanceQuizResult", b =>
+                {
+                    b.HasOne("DeToiServerCore.Models.Quiz.FreelanceQuiz", "Quiz")
+                        .WithMany("FreelanceQuizResults")
+                        .HasForeignKey("QuizId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Quiz");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.Quiz.QuizQuestion", b =>
+                {
+                    b.HasOne("DeToiServerCore.Models.Quiz.FreelanceQuizQuestion", "Question")
+                        .WithMany("QuizQuestions")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("DeToiServerCore.Models.Quiz.FreelanceQuiz", "Quiz")
+                        .WithMany("QuizQuestions")
+                        .HasForeignKey("QuizId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+
+                    b.Navigation("Quiz");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Services.OrderService", b =>
@@ -1715,7 +1718,7 @@ namespace DeToiServerData.Migrations
 
                     b.Navigation("Orders");
 
-                    b.Navigation("QuizHistory");
+                    b.Navigation("QuizCollection");
 
                     b.Navigation("ServiceProven");
                 });
@@ -1723,27 +1726,6 @@ namespace DeToiServerData.Migrations
             modelBuilder.Entity("DeToiServerCore.Models.Accounts.Skill", b =>
                 {
                     b.Navigation("FreelanceSkills");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.FreelanceQuiz.FreelanceQuiz", b =>
-                {
-                    b.Navigation("FreelanceQuizResults");
-
-                    b.Navigation("QuizQuestions");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.FreelanceQuiz.FreelanceQuizQuestion", b =>
-                {
-                    b.Navigation("Answers");
-
-                    b.Navigation("FreelanceCorrectQuestions");
-
-                    b.Navigation("QuizQuestions");
-                });
-
-            modelBuilder.Entity("DeToiServerCore.Models.FreelanceQuiz.FreelanceQuizResult", b =>
-                {
-                    b.Navigation("CorrectQuestions");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.Order", b =>
@@ -1758,6 +1740,27 @@ namespace DeToiServerData.Migrations
             modelBuilder.Entity("DeToiServerCore.Models.Promotion", b =>
                 {
                     b.Navigation("CustomerPromotions");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.Quiz.FreelanceQuiz", b =>
+                {
+                    b.Navigation("FreelanceQuizResults");
+
+                    b.Navigation("QuizQuestions");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.Quiz.FreelanceQuizQuestion", b =>
+                {
+                    b.Navigation("Answers");
+
+                    b.Navigation("FreelanceCorrectQuestions");
+
+                    b.Navigation("QuizQuestions");
+                });
+
+            modelBuilder.Entity("DeToiServerCore.Models.Quiz.FreelanceQuizResult", b =>
+                {
+                    b.Navigation("CorrectQuestions");
                 });
 
             modelBuilder.Entity("DeToiServerCore.Models.ServiceCategory", b =>

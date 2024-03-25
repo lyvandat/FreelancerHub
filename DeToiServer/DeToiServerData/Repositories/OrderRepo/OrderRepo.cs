@@ -139,7 +139,7 @@ namespace DeToiServerData.Repositories.OrderRepo
 
             var sortExpression = GetFreelancerOrderSortExpression(filterQuery);
 
-            if (filterQuery.SortType == "desc")
+            if (filterQuery.SortType.ToLower().Equals("desc"))
             {
                 query = query.OrderByDescending(sortExpression);
             }

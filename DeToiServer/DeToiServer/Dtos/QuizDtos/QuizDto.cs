@@ -1,6 +1,6 @@
 ﻿using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Models.Accounts;
-using DeToiServerCore.Models.FreelanceQuiz;
+using DeToiServerCore.Models.Quiz;
 
 namespace DeToiServer.Dtos.QuizDtos
 {

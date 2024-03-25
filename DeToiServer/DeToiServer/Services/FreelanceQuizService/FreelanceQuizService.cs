@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos.QuizDtos;
-using DeToiServerCore.Models.FreelanceQuiz;
+using DeToiServerCore.Models.Quiz;
 
 namespace DeToiServer.Services.FreelanceQuizService
 {
@@ -34,9 +34,16 @@ namespace DeToiServer.Services.FreelanceQuizService
         public async Task<GetPreDefinedQuizDto> GetRandomPreDefinedQuiz()
         {
             var quizzes = _mapper.Map<IEnumerable<GetPreDefinedQuizDto>>(await _uow.FreelanceQuizRepo.GetPreDefinedQuizzesAsync());
-            var random = new Random();
 
-            return quizzes.ElementAt(random.Next(quizzes.Count()));
+            return quizzes.First(); // quizzes.ElementAt(random.Next(quizzes.Count()));
+        }
+
+        public async Task<GetPreDefinedQuizDto> GetFreelancerUncompleteQuiz(Guid freelancerId)
+        {
+            var quiz = _mapper.Map<GetPreDefinedQuizDto>
+                (await _uow.FreelanceQuizRepo.GetNewFreelancerQuizAsync(freelancerId));
+
+            return quiz;
         }
 
         public async Task<FreelanceQuizResult> PostFreelanceQuizResult(PostFreelanceQuizResultDto data)

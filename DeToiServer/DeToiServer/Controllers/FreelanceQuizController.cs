@@ -59,21 +59,21 @@ namespace DeToiServer.Controllers
             return Ok(result);
         }
 
-        [HttpGet("new-set")] // , AuthorizeRoles(GlobalConstant.Freelancer)
+        [HttpGet("new-set"), AuthorizeRoles(GlobalConstant.Freelancer)]
         public async Task<ActionResult<GetPreDefinedQuizDto>> GetNewQuizSet()
         {
-            //_ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
-            //var freelance = await _freelanceAccService.GetByAccId(accountId);
+            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var freelance = await _freelanceAccService.GetByAccId(accountId);
 
-            //if (freelance == null)
-            //{
-            //    return BadRequest(new
-            //    {
-            //        Message = "Không tìm thấy tài khoản, hãy đăng nhập để thử lại"
-            //    });
-            //}
+            if (freelance == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không tìm thấy tài khoản, hãy đăng nhập để thử lại"
+                });
+            }
 
-            var result = await _quizService.GetRandomPreDefinedQuiz();
+            var result = await _quizService.GetFreelancerUncompleteQuiz(freelance.Id);
 
             return Ok(result);
         }

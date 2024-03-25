@@ -1,7 +1,7 @@
 ﻿using DeToiServer.Models;
 using DeToiServerCore.Models;
 using DeToiServerCore.Models.Accounts;
-using DeToiServerCore.Models.FreelanceQuiz;
+using DeToiServerCore.Models.Quiz;
 using DeToiServerCore.Models.Payment;
 using DeToiServerCore.Models.Services;
 using DeToiServerCore.Models.SevicesUIElement;

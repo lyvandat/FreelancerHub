@@ -1,4 +1,4 @@
-﻿using DeToiServerCore.Models.FreelanceQuiz;
+﻿using DeToiServerCore.Models.Quiz;
 
 namespace DeToiServerData.Repositories.FreelancerQuizRepo
 {
@@ -8,5 +8,6 @@ namespace DeToiServerData.Repositories.FreelancerQuizRepo
         Task<IEnumerable<FreelanceQuizResult>> GetAllQuizResultAsync();
         Task<FreelanceQuizResult> GetLatestQuizResultAsync(Guid freelancerId);
         Task<FreelanceQuizResult> AddFreelanceQuizResultAsync(FreelanceQuizResult data);
+        Task<FreelanceQuiz> GetNewFreelancerQuizAsync(Guid freelancerId);
     }
 }

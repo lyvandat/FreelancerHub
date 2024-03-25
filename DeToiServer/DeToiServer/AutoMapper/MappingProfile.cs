@@ -15,7 +15,7 @@ using DeToiServer.Dtos.UIElementDtos;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Accounts;
-using DeToiServerCore.Models.FreelanceQuiz;
+using DeToiServerCore.Models.Quiz;
 using DeToiServerCore.Models.Services;
 using DeToiServerCore.Models.SevicesUIElement;
 using Newtonsoft.Json;

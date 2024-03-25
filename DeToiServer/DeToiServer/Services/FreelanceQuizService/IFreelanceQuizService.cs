@@ -1,5 +1,5 @@
 ﻿using DeToiServer.Dtos.QuizDtos;
-using DeToiServerCore.Models.FreelanceQuiz;
+using DeToiServerCore.Models.Quiz;
 
 namespace DeToiServer.Services.FreelanceQuizService
 {
@@ -10,5 +10,6 @@ namespace DeToiServer.Services.FreelanceQuizService
         Task<FreelanceQuizResultDto> GetLatestQuizResult(Guid freelancerId);
         Task<GetPreDefinedQuizDto> GetRandomPreDefinedQuiz();
         Task<FreelanceQuizResult> PostFreelanceQuizResult(PostFreelanceQuizResultDto data);
+        Task<GetPreDefinedQuizDto> GetFreelancerUncompleteQuiz(Guid freelancerId);
     }
 }

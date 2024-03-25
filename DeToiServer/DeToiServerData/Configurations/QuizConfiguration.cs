@@ -1,4 +1,4 @@
-﻿using DeToiServerCore.Models.FreelanceQuiz;
+﻿using DeToiServerCore.Models.Quiz;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -47,6 +47,10 @@ namespace DeToiServerData.Configurations
     {
         protected override void OnConfigure(EntityTypeBuilder<FreelanceQuiz> builder)
         {
+            builder.HasOne(qr => qr.Freelancer)
+                .WithMany(fl => fl.QuizCollection)
+                .HasForeignKey(qr => qr.FreelancerId)
+                .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 
@@ -73,10 +77,6 @@ namespace DeToiServerData.Configurations
     {
         protected override void OnConfigure(EntityTypeBuilder<FreelanceQuizResult> builder)
         {
-            builder.HasOne(qr => qr.Freelancer)
-                .WithMany(fl => fl.QuizHistory)
-                .HasForeignKey(qr => qr.FreelancerId)
-                .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }
