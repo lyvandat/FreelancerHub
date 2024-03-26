@@ -4,6 +4,7 @@ using DeToiServerData.Repositories.AccountFreelanceRepo;
 using DeToiServerData.Repositories.AddressRepo;
 using DeToiServerData.Repositories.FreelanceQuizRepo;
 using DeToiServerData.Repositories.FreelancerQuizRepo;
+using DeToiServerData.Repositories.FreelanceSkillRepo;
 using DeToiServerData.Repositories.OrderRepo;
 using DeToiServerData.Repositories.PromotionRepo;
 using DeToiServerData.Repositories.ServiceCategoryRepo;
@@ -210,6 +211,18 @@ namespace DeToiServerData
             {
                 _freelanceQuizRepo ??= new FreelanceQuizRepo(_dataContext);
                 return _freelanceQuizRepo;
+            }
+        }
+        #endregion
+
+        #region Freelance Skill Repo
+        private IFreelanceSkillRepo _freelanceSkillRepo;
+        public IFreelanceSkillRepo FreelanceSkillRepo
+        {
+            get
+            {
+                _freelanceSkillRepo ??= new FreelanceSkillRepo(_dataContext);
+                return _freelanceSkillRepo;
             }
         }
         #endregion

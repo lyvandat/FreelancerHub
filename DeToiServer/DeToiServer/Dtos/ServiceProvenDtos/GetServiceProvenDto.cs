@@ -5,6 +5,7 @@
         public Guid Id { get; set; }
         public string ImageBefore { get; set; } = string.Empty;
         public string ImageAfter { get; set; } = string.Empty;
+        public string MediaType { get; set; } = string.Empty;
         public double EstimatedPrice { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime FinishTime { get; set; }

@@ -7,6 +7,7 @@ namespace DeToiServer.Dtos.ServiceProvenDtos
     {
         public string ImageBefore { get; set; } = string.Empty;
         public string ImageAfter { get; set; } = string.Empty;
+        public string MediaType { get; set; } = string.Empty;
         public Guid OrderId { get; set; }
         public Guid FreelancerId { get; set; }
         public Guid ServiceTypeId { get; set; }

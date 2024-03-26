@@ -74,6 +74,13 @@ namespace DeToiServer.Controllers
             }
 
             var result = await _quizService.GetFreelancerUncompleteQuiz(freelance.Id);
+            if (result == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Lỗi tạo bộ đề mới cho Freelancer"
+                });
+            }
 
             return Ok(result);
         }

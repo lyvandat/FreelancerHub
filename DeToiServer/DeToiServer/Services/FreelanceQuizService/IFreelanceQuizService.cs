@@ -10,6 +10,7 @@ namespace DeToiServer.Services.FreelanceQuizService
         Task<FreelanceQuizResultDto> GetLatestQuizResult(Guid freelancerId);
         Task<GetPreDefinedQuizDto> GetRandomPreDefinedQuiz();
         Task<FreelanceQuizResult> PostFreelanceQuizResult(PostFreelanceQuizResultDto data);
-        Task<GetPreDefinedQuizDto> GetFreelancerUncompleteQuiz(Guid freelancerId);
+        Task<GetPreDefinedQuizDto?> GetFreelancerUncompleteQuiz(Guid freelancerId);
+        Task<bool> IsFreelancerDoneQuiz(Guid freelancerId);
     }
 }

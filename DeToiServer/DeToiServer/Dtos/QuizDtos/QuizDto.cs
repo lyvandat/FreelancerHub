@@ -9,6 +9,7 @@ namespace DeToiServer.Dtos.QuizDtos
         public Guid Id { get; set; }
         public int TotalTime { get; set; }
         public int TotalQuestion { get; set; }
+        public Guid FreelancerId { get; set; }
         public required ICollection<FreelanceQuizQuestionDto> QuizQuestions { get; set; }
     }
 

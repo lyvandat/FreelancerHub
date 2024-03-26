@@ -2,6 +2,7 @@
 {
     public class RequirementDataDto
     {
+        public string? Icon { get; set; } = string.Empty;
         public string Key { get; set; } = string.Empty;
         public string Value { get; set; } = string.Empty;
     }

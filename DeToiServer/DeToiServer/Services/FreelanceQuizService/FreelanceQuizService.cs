@@ -38,12 +38,14 @@ namespace DeToiServer.Services.FreelanceQuizService
             return quizzes.First(); // quizzes.ElementAt(random.Next(quizzes.Count()));
         }
 
-        public async Task<GetPreDefinedQuizDto> GetFreelancerUncompleteQuiz(Guid freelancerId)
+        public async Task<GetPreDefinedQuizDto?> GetFreelancerUncompleteQuiz(Guid freelancerId)
         {
-            var quiz = _mapper.Map<GetPreDefinedQuizDto>
-                (await _uow.FreelanceQuizRepo.GetNewFreelancerQuizAsync(freelancerId));
+            var quiz = await _uow.FreelanceQuizRepo.GetNewFreelancerQuizAsync(freelancerId);
+            quiz ??= await _uow.FreelanceQuizRepo.AddNewFreelancerQuizAsync(freelancerId);
 
-            return quiz;
+            if (!await _uow.SaveChangesAsync()) return null;
+
+            return _mapper.Map<GetPreDefinedQuizDto>(quiz);
         }
 
         public async Task<FreelanceQuizResult> PostFreelanceQuizResult(PostFreelanceQuizResultDto data)
@@ -54,5 +56,8 @@ namespace DeToiServer.Services.FreelanceQuizService
 
             return afterAdd;
         }
+
+        public async Task<bool> IsFreelancerDoneQuiz(Guid freelancerId)
+            => await _uow.FreelanceQuizRepo.IsFreelancerDoneQuizAsync(freelancerId);
     }
 }

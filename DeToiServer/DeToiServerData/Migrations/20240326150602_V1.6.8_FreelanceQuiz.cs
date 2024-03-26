@@ -91,6 +91,13 @@ namespace DeToiServerData.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("e383e057-7122-4382-9c78-3e0375da9d28"));
 
+            migrationBuilder.AddColumn<string>(
+                name: "MediaType",
+                table: "ServiceProven",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
             migrationBuilder.CreateTable(
                 name: "FreelanceQuizQuestions",
                 columns: table => new
@@ -208,14 +215,112 @@ namespace DeToiServerData.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("07cb166a-4b4e-4637-b224-6277a69003d9"),
+                column: "Image",
+                value: "https://detoivn.sirv.com/services/dondep/chungcu.jpg");
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("3361bc88-9f58-4be8-ac37-561606430f8a"),
+                column: "Image",
+                value: "https://detoivn.sirv.com/services/dondep/chungcu.jpg");
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("3779d349-abcb-4dbc-abf1-25ba9e94a695"),
+                column: "Image",
+                value: "https://detoivn.sirv.com/services/dondep/chungcu.jpg");
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("63ce2ebf-ef36-4b4a-891e-abbde2a75b38"),
+                column: "Image",
+                value: "https://detoivn.sirv.com/services/dondep/chungcu.jpg");
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("662a64be-f7ea-4419-8978-dbf8f19159dc"),
+                column: "Image",
+                value: "https://detoivn.sirv.com/services/dondep/chungcu.jpg");
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("73bf981f-1cfd-483d-80ee-14ab6d2e55ef"),
+                column: "Image",
+                value: "https://detoivn.sirv.com/services/dondep/chungcu.jpg");
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("88006a8c-d757-4b85-8b91-c88e6078fe9c"),
+                column: "Image",
+                value: "https://detoivn.sirv.com/services/dondep/chungcu.jpg");
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("96d250d4-0c0e-4521-b94e-05f3cafca3f3"),
+                column: "Image",
+                value: "https://detoivn.sirv.com/services/dondep/chungcu.jpg");
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("a5677de0-a6a7-42c0-ab77-f34b75beb63d"),
+                column: "Image",
+                value: "https://detoivn.sirv.com/services/dondep/chungcu.jpg");
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("b9f74f9e-f792-4c48-b1b6-b6f0bc402d07"),
+                column: "Image",
+                value: "https://detoivn.sirv.com/services/dondep/chungcu.jpg");
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("c82954a1-39d4-4012-86b3-6cad42c2b399"),
+                column: "Image",
+                value: "https://detoivn.sirv.com/services/dondep/chungcu.jpg");
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("cca752d4-c17c-4c31-906f-f33cb8a18e48"),
+                column: "Image",
+                value: "https://detoivn.sirv.com/services/dondep/chungcu.jpg");
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("ef2034c1-7f44-4d07-b9c0-e2a497999a9d"),
+                column: "Image",
+                value: "https://detoivn.sirv.com/services/dondep/chungcu.jpg");
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("f1b832b2-49f3-456f-bacb-b1f8da766bea"),
+                column: "Image",
+                value: "https://detoivn.sirv.com/services/dondep/chungcu.jpg");
+
             migrationBuilder.InsertData(
                 table: "UIElementAdditionServiceRequirements",
                 columns: new[] { "Id", "AutoSelect", "Icon", "Key", "Label", "ServiceTypeId" },
                 values: new object[,]
                 {
-                    { new Guid("0bbbc3d6-4c7f-4b6d-bd8f-35e3b66b9df6"), false, "faBroom", "freelancerBringTools", "Nhân viên tự mang theo dụng cụ", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") },
-                    { new Guid("589580f5-7943-44a7-b9dd-54d78e90fdda"), false, "faComputer", "hasElectronics", "Nhà có nhiều đồ điện tử", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") },
-                    { new Guid("d7571ef5-f696-4ff6-a1f2-5af0cc4518fe"), true, "faDog", "hasPets", "Nhà có thú cưng", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") }
+                    { new Guid("197e734a-8978-4333-8863-dd815593e93a"), false, "faComputer", "hasElectronics", "Nhà có nhiều đồ điện tử", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") },
+                    { new Guid("7f2ab19c-1615-4c43-ae79-669ac6bbfcee"), false, "faBroom", "freelancerBringTools", "Nhân viên tự mang theo dụng cụ", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") },
+                    { new Guid("e5b14f71-2a14-4858-8967-8b305dc6483e"), true, "faDog", "hasPets", "Nhà có thú cưng", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") }
                 });
 
             migrationBuilder.InsertData(
@@ -223,8 +328,8 @@ namespace DeToiServerData.Migrations
                 columns: new[] { "Id", "Description", "InputMethodTypeId", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("0e61408b-15d1-4e45-be0c-f9d43d32b299"), "Tất cả dịch vụ, dọn toàn bộ nhà / phòng", new Guid("89e6f2f5-15cc-470c-a363-427ee8646609"), "Dọn trọn gói" },
-                    { new Guid("ac4fb75b-497d-4e45-b8db-4a9d3b47dee1"), "Trung bình 50.000đ / phòng, tiết kiệm và nhanh chóng", new Guid("89e6f2f5-15cc-470c-a363-427ee8646609"), "Dọn theo phòng" }
+                    { new Guid("71a9e03c-e5d0-4de9-9c72-77fb26bac56e"), "Trung bình 50.000đ / phòng, tiết kiệm và nhanh chóng", new Guid("89e6f2f5-15cc-470c-a363-427ee8646609"), "Dọn theo phòng" },
+                    { new Guid("b407d5eb-81fe-4a61-8f0b-c10a4c205cee"), "Tất cả dịch vụ, dọn toàn bộ nhà / phòng", new Guid("89e6f2f5-15cc-470c-a363-427ee8646609"), "Dọn trọn gói" }
                 });
 
             migrationBuilder.InsertData(
@@ -232,9 +337,9 @@ namespace DeToiServerData.Migrations
                 columns: new[] { "Id", "InputMethodId", "Key", "Label", "LabelIcon", "Placeholder", "ServiceTypeId" },
                 values: new object[,]
                 {
-                    { new Guid("28e52281-2dff-42f6-a3e9-7255b8489751"), new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"), "cleanningType", "Bạn muốn chúng tôi dọn như thế nào?", "faFlag", "Giúp nhân viên biết thêm về công việc cần làm", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") },
-                    { new Guid("45811fc1-d5e3-46c8-9ec5-613d9580eaa0"), new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"), "addressLine", "Số nhà, số phòng, hẻm (ngõ)", null, "Ví dụ: 257/43 Phòng 2014 Căn hộ Sunrise Continent", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") },
-                    { new Guid("fa8a946d-7822-4aad-8b52-563c658c66ac"), new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"), "roomNumber", "Số lượng phòng", "faPersonShelter", "Lưu ý: Nếu bạn chọn dịch vụ dọn theo phòng, vui lòng bổ sung số phòng cần dọn ở đây", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") }
+                    { new Guid("2f97ced3-d80b-4a3b-8af2-1f196157bd7a"), new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"), "roomNumber", "Số lượng phòng", "faPersonShelter", "Lưu ý: Nếu bạn chọn dịch vụ dọn theo phòng, vui lòng bổ sung số phòng cần dọn ở đây", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") },
+                    { new Guid("6e15febe-5fde-4c45-8a30-485816704fc8"), new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"), "addressLine", "Số nhà, số phòng, hẻm (ngõ)", null, "Ví dụ: 257/43 Phòng 2014 Căn hộ Sunrise Continent", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") },
+                    { new Guid("de5f2797-b971-4f81-b766-8f574aae177c"), new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"), "cleanningType", "Bạn muốn chúng tôi dọn như thế nào?", "faFlag", "Giúp nhân viên biết thêm về công việc cần làm", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") }
                 });
 
             migrationBuilder.InsertData(
@@ -242,12 +347,12 @@ namespace DeToiServerData.Migrations
                 columns: new[] { "Id", "InputMethodId", "Message", "Name", "Value" },
                 values: new object[,]
                 {
-                    { new Guid("08d8f2a4-376f-4ac6-b30b-03f99cc5fd16"), new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"), "Thông báo valid input 1 custom 3.", "max", "255" },
-                    { new Guid("4c092111-0abe-4e7d-83fb-248558cc6e7a"), new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"), "Thông báo valid input 2 custom 1.", "required", null },
-                    { new Guid("8b945d7e-8794-4601-be3a-23e06d291dd8"), new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"), "Thông báo valid input 3 custom 1.", "required", null },
-                    { new Guid("e546c1dc-532d-4a00-8bec-720e194be822"), new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"), "Thông báo valid input 1 custom 2.", "min", "0" },
-                    { new Guid("e9c1e5ae-62b4-4f9c-bab1-99b36ba3b64c"), new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"), "Thông báo valid input 1 custom 1.", "required", null },
-                    { new Guid("f06c0488-0525-4117-ae95-666b5d9fbe08"), new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"), "Thông báo valid input 3 custom 2.", "min", "1" }
+                    { new Guid("17989d41-3aec-4eb7-b9b7-f9a098060e54"), new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"), "Thông báo valid input 1 custom 2.", "min", "0" },
+                    { new Guid("2d1db9b1-6630-4bdf-8358-4b00bf4a5aa0"), new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"), "Thông báo valid input 1 custom 1.", "required", null },
+                    { new Guid("3c49fd15-8af9-4c24-a9ee-214de5cd7f92"), new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"), "Thông báo valid input 2 custom 1.", "required", null },
+                    { new Guid("4080e368-3486-4581-92b0-54c5000a1d7f"), new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"), "Thông báo valid input 3 custom 2.", "min", "1" },
+                    { new Guid("9001bafc-331e-41de-88de-12254661c998"), new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"), "Thông báo valid input 3 custom 1.", "required", null },
+                    { new Guid("d33a1ce1-948e-49dd-8ebf-3c844840e454"), new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"), "Thông báo valid input 1 custom 3.", "max", "255" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -300,72 +405,76 @@ namespace DeToiServerData.Migrations
             migrationBuilder.DeleteData(
                 table: "UIElementAdditionServiceRequirements",
                 keyColumn: "Id",
-                keyValue: new Guid("0bbbc3d6-4c7f-4b6d-bd8f-35e3b66b9df6"));
+                keyValue: new Guid("197e734a-8978-4333-8863-dd815593e93a"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementAdditionServiceRequirements",
                 keyColumn: "Id",
-                keyValue: new Guid("589580f5-7943-44a7-b9dd-54d78e90fdda"));
+                keyValue: new Guid("7f2ab19c-1615-4c43-ae79-669ac6bbfcee"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementAdditionServiceRequirements",
                 keyColumn: "Id",
-                keyValue: new Guid("d7571ef5-f696-4ff6-a1f2-5af0cc4518fe"));
+                keyValue: new Guid("e5b14f71-2a14-4858-8967-8b305dc6483e"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementInputOptions",
                 keyColumn: "Id",
-                keyValue: new Guid("0e61408b-15d1-4e45-be0c-f9d43d32b299"));
+                keyValue: new Guid("71a9e03c-e5d0-4de9-9c72-77fb26bac56e"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementInputOptions",
                 keyColumn: "Id",
-                keyValue: new Guid("ac4fb75b-497d-4e45-b8db-4a9d3b47dee1"));
+                keyValue: new Guid("b407d5eb-81fe-4a61-8f0b-c10a4c205cee"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementServiceRequirements",
                 keyColumn: "Id",
-                keyValue: new Guid("28e52281-2dff-42f6-a3e9-7255b8489751"));
+                keyValue: new Guid("2f97ced3-d80b-4a3b-8af2-1f196157bd7a"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementServiceRequirements",
                 keyColumn: "Id",
-                keyValue: new Guid("45811fc1-d5e3-46c8-9ec5-613d9580eaa0"));
+                keyValue: new Guid("6e15febe-5fde-4c45-8a30-485816704fc8"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementServiceRequirements",
                 keyColumn: "Id",
-                keyValue: new Guid("fa8a946d-7822-4aad-8b52-563c658c66ac"));
+                keyValue: new Guid("de5f2797-b971-4f81-b766-8f574aae177c"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementValidationTypes",
                 keyColumn: "Id",
-                keyValue: new Guid("08d8f2a4-376f-4ac6-b30b-03f99cc5fd16"));
+                keyValue: new Guid("17989d41-3aec-4eb7-b9b7-f9a098060e54"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementValidationTypes",
                 keyColumn: "Id",
-                keyValue: new Guid("4c092111-0abe-4e7d-83fb-248558cc6e7a"));
+                keyValue: new Guid("2d1db9b1-6630-4bdf-8358-4b00bf4a5aa0"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementValidationTypes",
                 keyColumn: "Id",
-                keyValue: new Guid("8b945d7e-8794-4601-be3a-23e06d291dd8"));
+                keyValue: new Guid("3c49fd15-8af9-4c24-a9ee-214de5cd7f92"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementValidationTypes",
                 keyColumn: "Id",
-                keyValue: new Guid("e546c1dc-532d-4a00-8bec-720e194be822"));
+                keyValue: new Guid("4080e368-3486-4581-92b0-54c5000a1d7f"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementValidationTypes",
                 keyColumn: "Id",
-                keyValue: new Guid("e9c1e5ae-62b4-4f9c-bab1-99b36ba3b64c"));
+                keyValue: new Guid("9001bafc-331e-41de-88de-12254661c998"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementValidationTypes",
                 keyColumn: "Id",
-                keyValue: new Guid("f06c0488-0525-4117-ae95-666b5d9fbe08"));
+                keyValue: new Guid("d33a1ce1-948e-49dd-8ebf-3c844840e454"));
+
+            migrationBuilder.DropColumn(
+                name: "MediaType",
+                table: "ServiceProven");
 
             migrationBuilder.CreateTable(
                 name: "ServiceClones",
@@ -379,6 +488,104 @@ namespace DeToiServerData.Migrations
                 {
                     table.PrimaryKey("PK_ServiceClones", x => x.Id);
                 });
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("07cb166a-4b4e-4637-b224-6277a69003d9"),
+                column: "Image",
+                value: null);
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("3361bc88-9f58-4be8-ac37-561606430f8a"),
+                column: "Image",
+                value: null);
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("3779d349-abcb-4dbc-abf1-25ba9e94a695"),
+                column: "Image",
+                value: null);
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("63ce2ebf-ef36-4b4a-891e-abbde2a75b38"),
+                column: "Image",
+                value: null);
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("662a64be-f7ea-4419-8978-dbf8f19159dc"),
+                column: "Image",
+                value: null);
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("73bf981f-1cfd-483d-80ee-14ab6d2e55ef"),
+                column: "Image",
+                value: null);
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("88006a8c-d757-4b85-8b91-c88e6078fe9c"),
+                column: "Image",
+                value: null);
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("96d250d4-0c0e-4521-b94e-05f3cafca3f3"),
+                column: "Image",
+                value: null);
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("a5677de0-a6a7-42c0-ab77-f34b75beb63d"),
+                column: "Image",
+                value: null);
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("b9f74f9e-f792-4c48-b1b6-b6f0bc402d07"),
+                column: "Image",
+                value: null);
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("c82954a1-39d4-4012-86b3-6cad42c2b399"),
+                column: "Image",
+                value: null);
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("cca752d4-c17c-4c31-906f-f33cb8a18e48"),
+                column: "Image",
+                value: null);
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("ef2034c1-7f44-4d07-b9c0-e2a497999a9d"),
+                column: "Image",
+                value: null);
+
+            migrationBuilder.UpdateData(
+                table: "ServiceTypes",
+                keyColumn: "Id",
+                keyValue: new Guid("f1b832b2-49f3-456f-bacb-b1f8da766bea"),
+                column: "Image",
+                value: null);
 
             migrationBuilder.InsertData(
                 table: "UIElementAdditionServiceRequirements",

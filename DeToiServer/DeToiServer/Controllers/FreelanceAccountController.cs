@@ -2,8 +2,11 @@
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.OrderDtos;
+using DeToiServer.Dtos.SkillDtos;
 using DeToiServer.Services.AccountService;
 using DeToiServer.Services.FreelanceAccountService;
+using DeToiServer.Services.FreelanceQuizService;
+using DeToiServer.Services.FreelanceSkillService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
@@ -21,13 +24,23 @@ namespace DeToiServer.Controllers
         private readonly IAccountService _accService;
         private readonly IFreelanceAccountService _freelanceAccService;
         private readonly IOrderManagementService _orderService;
+        private readonly IFreelanceQuizService _quizService;
+        private readonly IFreelanceSkillService _skillService;
         private readonly IMapper _mapper;
 
-        public FreelanceAccountController(IAccountService accService, IFreelanceAccountService freelanceAccountService, IOrderManagementService orderService, IMapper mapper)
+        public FreelanceAccountController(
+            IAccountService accService, 
+            IFreelanceAccountService freelanceAccountService, 
+            IOrderManagementService orderService, 
+            IFreelanceQuizService quizService, 
+            IFreelanceSkillService skillService,
+            IMapper mapper)
         {
             _accService = accService;
             _freelanceAccService = freelanceAccountService;
             _orderService = orderService;
+            _quizService = quizService;
+            _skillService = skillService;
             _mapper = mapper;
         }
 
@@ -132,52 +145,46 @@ namespace DeToiServer.Controllers
             return Ok(result);
         }
 
-        [HttpGet("existed-and-added-skills")]
-        public async Task<ActionResult<bool>> IsFreelancerExistedAndHaveSkills(
-            [FromQuery] string phoneNumber
-        )
+        [HttpGet("added-skills-and-done-test"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult<IsFreelancerAddedSkillAndDoneTest>> IsFreelancerHaveSkillsAndDoneTest()
         {
-            var account = await _accService.GetByCondition(acc => acc.Phone.Equals(phoneNumber));
+            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var freelance = await _freelanceAccService.GetByAccId(accountId);
 
-            if (account == null)
-            {
-                return BadRequest(new
-                {
-                    Message = "Số điện thoại chưa được đăng ký trở thành Freelancer"
-                });
-            }
-
-            if (!account.Role.Equals(GlobalConstant.Freelancer))
-            {
-                return BadRequest(new
-                {
-                    Message = "Số điện thoại này đã được đăng ký dưới định danh khác không phải Freelancer"
-                });
-            }
-
-            var freelance = await _freelanceAccService.GetByAccId(account.Id);
             if (freelance is null)
             {
                 return BadRequest(new
                 {
-                    Message = "Freelancer không tồn tại!"
+                    Message = "Có lỗi xảy ra trong quá trình đăng nhập, xin hãy thử lại"
                 });
             }
+
             var result = _mapper.Map<GetFreelanceDto>(freelance);
-            if (result.Skills == null || result.Skills.Count == 0)
-            {
-                return BadRequest(new
-                {
-                    Message = "Freelancer chưa thêm Kỹ năng vào profile!"
-                });
-            }
 
-            // result.Address = _mapper.Map<AddressDto>(freelance.Address!.FirstOrDefault());
-
-            return Ok(new
+            return Ok(new IsFreelancerAddedSkillAndDoneTest()
             {
-                Message = "Freelancer đã có ít nhất 1 Kỹ năng trong profile"
+                IsAddedSkill = !(result.Skills == null || result.Skills.Count == 0),
+                IsDoneTest = await _quizService.IsFreelancerDoneQuiz(freelance.Id),
             });
+        }
+
+        [HttpGet("skill/all")]
+        public async Task<ActionResult<IEnumerable<SkillDto>>> GetAllSkills()
+        {
+            //_ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            //var freelance = await _freelanceAccService.GetByAccId(accountId);
+
+            //if (freelance is null)
+            //{
+            //    return BadRequest(new
+            //    {
+            //        Message = "Có lỗi xảy ra trong quá trình đăng nhập, xin hãy thử lại"
+            //    });
+            //}
+
+            var result = await _skillService.GetAllSkills();
+
+            return Ok(result);
         }
     }
 }

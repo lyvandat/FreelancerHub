@@ -61,4 +61,10 @@ namespace DeToiServer.Dtos.FreelanceDtos
         public string Avatar { get; set; } = string.Empty;
         public double Balance { get; set; }
     }
+
+    public class IsFreelancerAddedSkillAndDoneTest
+    {
+        public bool IsAddedSkill { get; set; } = false;
+        public bool IsDoneTest { get; set; } = false;
+    }
 }
