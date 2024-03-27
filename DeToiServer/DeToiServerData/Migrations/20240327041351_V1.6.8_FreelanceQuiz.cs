@@ -318,9 +318,9 @@ namespace DeToiServerData.Migrations
                 columns: new[] { "Id", "AutoSelect", "Icon", "Key", "Label", "ServiceTypeId" },
                 values: new object[,]
                 {
-                    { new Guid("197e734a-8978-4333-8863-dd815593e93a"), false, "faComputer", "hasElectronics", "Nhà có nhiều đồ điện tử", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") },
-                    { new Guid("7f2ab19c-1615-4c43-ae79-669ac6bbfcee"), false, "faBroom", "freelancerBringTools", "Nhân viên tự mang theo dụng cụ", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") },
-                    { new Guid("e5b14f71-2a14-4858-8967-8b305dc6483e"), true, "faDog", "hasPets", "Nhà có thú cưng", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") }
+                    { new Guid("23947f88-f693-4c6a-b0ad-f0bdc56ccdc5"), true, "faDog", "hasPets", "Nhà có thú cưng", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") },
+                    { new Guid("38246ae4-fe71-404e-9ec5-123bd0cae46e"), false, "faBroom", "freelancerBringTools", "Nhân viên tự mang theo dụng cụ", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") },
+                    { new Guid("f1eb26d4-52ba-4ec2-b6ec-720dffcb4cfd"), false, "faComputer", "hasElectronics", "Nhà có nhiều đồ điện tử", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") }
                 });
 
             migrationBuilder.InsertData(
@@ -328,8 +328,8 @@ namespace DeToiServerData.Migrations
                 columns: new[] { "Id", "Description", "InputMethodTypeId", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("71a9e03c-e5d0-4de9-9c72-77fb26bac56e"), "Trung bình 50.000đ / phòng, tiết kiệm và nhanh chóng", new Guid("89e6f2f5-15cc-470c-a363-427ee8646609"), "Dọn theo phòng" },
-                    { new Guid("b407d5eb-81fe-4a61-8f0b-c10a4c205cee"), "Tất cả dịch vụ, dọn toàn bộ nhà / phòng", new Guid("89e6f2f5-15cc-470c-a363-427ee8646609"), "Dọn trọn gói" }
+                    { new Guid("24ae7c12-fab1-4222-8ed2-59fc2826d26d"), "Trung bình 50.000đ / phòng, tiết kiệm và nhanh chóng", new Guid("89e6f2f5-15cc-470c-a363-427ee8646609"), "Dọn theo phòng" },
+                    { new Guid("be5542d3-d05e-4bb6-a131-31c8b6c2a37c"), "Tất cả dịch vụ, dọn toàn bộ nhà / phòng", new Guid("89e6f2f5-15cc-470c-a363-427ee8646609"), "Dọn trọn gói" }
                 });
 
             migrationBuilder.InsertData(
@@ -337,9 +337,9 @@ namespace DeToiServerData.Migrations
                 columns: new[] { "Id", "InputMethodId", "Key", "Label", "LabelIcon", "Placeholder", "ServiceTypeId" },
                 values: new object[,]
                 {
-                    { new Guid("2f97ced3-d80b-4a3b-8af2-1f196157bd7a"), new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"), "roomNumber", "Số lượng phòng", "faPersonShelter", "Lưu ý: Nếu bạn chọn dịch vụ dọn theo phòng, vui lòng bổ sung số phòng cần dọn ở đây", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") },
-                    { new Guid("6e15febe-5fde-4c45-8a30-485816704fc8"), new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"), "addressLine", "Số nhà, số phòng, hẻm (ngõ)", null, "Ví dụ: 257/43 Phòng 2014 Căn hộ Sunrise Continent", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") },
-                    { new Guid("de5f2797-b971-4f81-b766-8f574aae177c"), new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"), "cleanningType", "Bạn muốn chúng tôi dọn như thế nào?", "faFlag", "Giúp nhân viên biết thêm về công việc cần làm", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") }
+                    { new Guid("0537f2ad-88b3-4578-92f3-90f6eacc1517"), new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"), "addressLine", "Số nhà, số phòng, hẻm (ngõ)", null, "Ví dụ: 257/43 Phòng 2014 Căn hộ Sunrise Continent", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") },
+                    { new Guid("70e758be-8132-4c45-b64d-db48813203dc"), new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"), "roomNumber", "Số lượng phòng", "faPersonShelter", "Lưu ý: Nếu bạn chọn dịch vụ dọn theo phòng, vui lòng bổ sung số phòng cần dọn ở đây", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") },
+                    { new Guid("daa66796-c38e-4603-8f84-a768df52b69a"), new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"), "cleanningType", "Bạn muốn chúng tôi dọn như thế nào?", "faFlag", "Giúp nhân viên biết thêm về công việc cần làm", new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603") }
                 });
 
             migrationBuilder.InsertData(
@@ -347,12 +347,12 @@ namespace DeToiServerData.Migrations
                 columns: new[] { "Id", "InputMethodId", "Message", "Name", "Value" },
                 values: new object[,]
                 {
-                    { new Guid("17989d41-3aec-4eb7-b9b7-f9a098060e54"), new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"), "Thông báo valid input 1 custom 2.", "min", "0" },
-                    { new Guid("2d1db9b1-6630-4bdf-8358-4b00bf4a5aa0"), new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"), "Thông báo valid input 1 custom 1.", "required", null },
-                    { new Guid("3c49fd15-8af9-4c24-a9ee-214de5cd7f92"), new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"), "Thông báo valid input 2 custom 1.", "required", null },
-                    { new Guid("4080e368-3486-4581-92b0-54c5000a1d7f"), new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"), "Thông báo valid input 3 custom 2.", "min", "1" },
-                    { new Guid("9001bafc-331e-41de-88de-12254661c998"), new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"), "Thông báo valid input 3 custom 1.", "required", null },
-                    { new Guid("d33a1ce1-948e-49dd-8ebf-3c844840e454"), new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"), "Thông báo valid input 1 custom 3.", "max", "255" }
+                    { new Guid("6d8a52de-6b6a-42ff-a65c-45cccc8f2172"), new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"), "Thông báo valid input 3 custom 2.", "min", "1" },
+                    { new Guid("83833525-d81f-4f9c-be5c-b0e527ab4ec9"), new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"), "Thông báo valid input 3 custom 1.", "required", null },
+                    { new Guid("88a8a95a-bde2-495d-9d8b-00a40b42a94d"), new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"), "Thông báo valid input 1 custom 2.", "min", "0" },
+                    { new Guid("a59a636b-4464-4714-a058-31cf0d34c07b"), new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"), "Thông báo valid input 2 custom 1.", "required", null },
+                    { new Guid("cea006f3-c3c1-48c6-bb49-67acdd784fdb"), new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"), "Thông báo valid input 1 custom 1.", "required", null },
+                    { new Guid("e2561ed8-376e-4b64-af13-b595f7602941"), new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"), "Thông báo valid input 1 custom 3.", "max", "255" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -405,72 +405,72 @@ namespace DeToiServerData.Migrations
             migrationBuilder.DeleteData(
                 table: "UIElementAdditionServiceRequirements",
                 keyColumn: "Id",
-                keyValue: new Guid("197e734a-8978-4333-8863-dd815593e93a"));
+                keyValue: new Guid("23947f88-f693-4c6a-b0ad-f0bdc56ccdc5"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementAdditionServiceRequirements",
                 keyColumn: "Id",
-                keyValue: new Guid("7f2ab19c-1615-4c43-ae79-669ac6bbfcee"));
+                keyValue: new Guid("38246ae4-fe71-404e-9ec5-123bd0cae46e"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementAdditionServiceRequirements",
                 keyColumn: "Id",
-                keyValue: new Guid("e5b14f71-2a14-4858-8967-8b305dc6483e"));
+                keyValue: new Guid("f1eb26d4-52ba-4ec2-b6ec-720dffcb4cfd"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementInputOptions",
                 keyColumn: "Id",
-                keyValue: new Guid("71a9e03c-e5d0-4de9-9c72-77fb26bac56e"));
+                keyValue: new Guid("24ae7c12-fab1-4222-8ed2-59fc2826d26d"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementInputOptions",
                 keyColumn: "Id",
-                keyValue: new Guid("b407d5eb-81fe-4a61-8f0b-c10a4c205cee"));
+                keyValue: new Guid("be5542d3-d05e-4bb6-a131-31c8b6c2a37c"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementServiceRequirements",
                 keyColumn: "Id",
-                keyValue: new Guid("2f97ced3-d80b-4a3b-8af2-1f196157bd7a"));
+                keyValue: new Guid("0537f2ad-88b3-4578-92f3-90f6eacc1517"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementServiceRequirements",
                 keyColumn: "Id",
-                keyValue: new Guid("6e15febe-5fde-4c45-8a30-485816704fc8"));
+                keyValue: new Guid("70e758be-8132-4c45-b64d-db48813203dc"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementServiceRequirements",
                 keyColumn: "Id",
-                keyValue: new Guid("de5f2797-b971-4f81-b766-8f574aae177c"));
+                keyValue: new Guid("daa66796-c38e-4603-8f84-a768df52b69a"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementValidationTypes",
                 keyColumn: "Id",
-                keyValue: new Guid("17989d41-3aec-4eb7-b9b7-f9a098060e54"));
+                keyValue: new Guid("6d8a52de-6b6a-42ff-a65c-45cccc8f2172"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementValidationTypes",
                 keyColumn: "Id",
-                keyValue: new Guid("2d1db9b1-6630-4bdf-8358-4b00bf4a5aa0"));
+                keyValue: new Guid("83833525-d81f-4f9c-be5c-b0e527ab4ec9"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementValidationTypes",
                 keyColumn: "Id",
-                keyValue: new Guid("3c49fd15-8af9-4c24-a9ee-214de5cd7f92"));
+                keyValue: new Guid("88a8a95a-bde2-495d-9d8b-00a40b42a94d"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementValidationTypes",
                 keyColumn: "Id",
-                keyValue: new Guid("4080e368-3486-4581-92b0-54c5000a1d7f"));
+                keyValue: new Guid("a59a636b-4464-4714-a058-31cf0d34c07b"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementValidationTypes",
                 keyColumn: "Id",
-                keyValue: new Guid("9001bafc-331e-41de-88de-12254661c998"));
+                keyValue: new Guid("cea006f3-c3c1-48c6-bb49-67acdd784fdb"));
 
             migrationBuilder.DeleteData(
                 table: "UIElementValidationTypes",
                 keyColumn: "Id",
-                keyValue: new Guid("d33a1ce1-948e-49dd-8ebf-3c844840e454"));
+                keyValue: new Guid("e2561ed8-376e-4b64-af13-b595f7602941"));
 
             migrationBuilder.DropColumn(
                 name: "MediaType",

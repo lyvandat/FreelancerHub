@@ -186,5 +186,35 @@ namespace DeToiServer.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("skill/add-multiple"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult<IEnumerable<SkillDto>>> AddMultipleFreelancerSkills(ChooseFreelancerSkillsDto postSkills)
+        {
+            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var freelance = await _freelanceAccService.GetByAccId(accountId);
+
+            if (freelance is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Có lỗi xảy ra trong quá trình đăng nhập, xin hãy thử lại"
+                });
+            }
+
+            postSkills.FreelancerId = freelance.Id;
+            var result = await _skillService.AddSkillsFreelancer(postSkills);
+            if (!result)
+            {
+                return BadRequest(new
+                {
+                    Message = "Có lỗi xảy ra trong quá trình thêm kỹ năng, xin hãy thử lại"
+                });
+            }
+
+            return Ok(new
+            {
+                Message = "Thêm kỹ năng cho Freelancer thành công"
+            });
+        }
     }
 }

@@ -84,18 +84,16 @@ namespace DeToiServer.AutoMapper
             #endregion
 
             #region Skill
+            CreateMap<Skill, SkillDto>().ReverseMap();
             CreateMap<FreelanceSkill, Skill>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.SkillId))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Skill.Name))
-                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Skill.Description))
-                .ForMember(dest => dest.SkillCategory, opt => opt.MapFrom(src => src.Skill.SkillCategory));
+                .ConvertUsing((src, dest, context) => {
+                    return context.Mapper.Map<Skill>(src.Skill);
+                });
 
             CreateMap<FreelanceSkill, SkillDto>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.SkillId))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Skill.Name))
-                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Skill.Description));
-
-            CreateMap<Skill, SkillDto>().ReverseMap();
+                .ConvertUsing((src, dest, context) => {
+                    return context.Mapper.Map<SkillDto>(src.Skill);
+                });
             #endregion
 
             #region Freelance

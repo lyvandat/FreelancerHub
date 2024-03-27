@@ -9,6 +9,9 @@ namespace DeToiServerData.Repositories.FreelanceSkillRepo
     {
         private readonly DataContext _context = context;
 
-
+        public async Task ChooseFreelancerSkillsAsync(IEnumerable<FreelanceSkill> skills)
+        {
+            await _context.FreelanceSkills.AddRangeAsync(skills);
+        }
     }
 }

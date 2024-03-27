@@ -82,8 +82,6 @@ namespace DeToiServerData.Configurations
                 .WithMany(c => c.FreelanceSkills)
                 .HasForeignKey(fv => fv.SkillId)
                 .OnDelete(DeleteBehavior.NoAction);
-
-            builder.ToTable("FreelanceSkills");
         }
     }
 }
