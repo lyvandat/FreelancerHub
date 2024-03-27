@@ -190,6 +190,8 @@ namespace DeToiServerData.Configurations
                 .HasForeignKey(req => req.ServiceTypeId)
                 .IsRequired();
 
+            builder.Property(sr => sr.Priority).HasDefaultValue(0);
+
             builder.HasData(new List<UIElementServiceRequirement>
             {
                 new()
@@ -202,7 +204,8 @@ namespace DeToiServerData.Configurations
                     LabelIcon = null,
                     Placeholder = "Ví dụ: 257/43 Phòng 2014 Căn hộ Sunrise Continent",
                     ServiceTypeId = new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603"),
-                    ServiceType = null!
+                    ServiceType = null!,
+                    Priority = 0,
                 },
                 new()
                 {
@@ -214,7 +217,8 @@ namespace DeToiServerData.Configurations
                     LabelIcon = "faFlag",
                     Placeholder = "Giúp nhân viên biết thêm về công việc cần làm",
                     ServiceTypeId = new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603"),
-                    ServiceType = null!
+                    ServiceType = null!,
+                    Priority = 1,
                 },
                 new()
                 {
@@ -226,7 +230,8 @@ namespace DeToiServerData.Configurations
                     LabelIcon = "faPersonShelter",
                     Placeholder = "Lưu ý: Nếu bạn chọn dịch vụ dọn theo phòng, vui lòng bổ sung số phòng cần dọn ở đây",
                     ServiceTypeId = new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603"),
-                    ServiceType = null!
+                    ServiceType = null!,
+                    Priority = 2,
                 },
             });
         }
@@ -241,6 +246,8 @@ namespace DeToiServerData.Configurations
                 .HasForeignKey(aReq => aReq.ServiceTypeId)
                 .IsRequired();
 
+            builder.Property(sar => sar.Priority).HasDefaultValue(0);
+
             builder.HasData(new List<UIElementAdditionServiceRequirement>
             {
                 new()
@@ -251,7 +258,8 @@ namespace DeToiServerData.Configurations
                     Label = "Nhà có thú cưng",
                     AutoSelect = true,
                     ServiceTypeId = new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603"),
-                    ServiceType = null!
+                    ServiceType = null!,
+                    Priority = 0,
                 },
                 new()
                 {
@@ -261,7 +269,8 @@ namespace DeToiServerData.Configurations
                     Label = "Nhà có nhiều đồ điện tử",
                     AutoSelect = false,
                     ServiceTypeId = new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603"),
-                    ServiceType = null!
+                    ServiceType = null!,
+                    Priority = 1,
                 },
                 new()
                 {
@@ -271,7 +280,8 @@ namespace DeToiServerData.Configurations
                     Label = "Nhân viên tự mang theo dụng cụ",
                     AutoSelect = false,
                     ServiceTypeId = new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603"),
-                    ServiceType = null!
+                    ServiceType = null!,
+                    Priority = 2,
                 },
             });
         }

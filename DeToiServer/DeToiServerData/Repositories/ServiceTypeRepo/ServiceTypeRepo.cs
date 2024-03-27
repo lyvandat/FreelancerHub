@@ -46,6 +46,9 @@ namespace DeToiServerData.Repositories.ServiceTypeRepo
                 .Include(st => st.AdditionalRequirements)
                 .FirstOrDefaultAsync(st => st.Id.Equals(id));
 
+            result.Requirements = result.Requirements.OrderBy(req => req.Priority).ToList();
+            result.AdditionalRequirements = result.AdditionalRequirements.OrderBy(areq => areq.Priority).ToList();
+
             return result;
         }
 

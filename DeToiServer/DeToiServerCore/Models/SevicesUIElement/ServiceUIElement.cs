@@ -56,6 +56,7 @@ namespace DeToiServerCore.Models.SevicesUIElement
         public required string Label { get; set; }
         public string? LabelIcon { get; set; }
         public string Placeholder { get; set; } = String.Empty;
+        public int Priority { get; set; } = 0;
 
         public required Guid ServiceTypeId { get; set; }
         public required ServiceType ServiceType { get; set; }
@@ -67,6 +68,7 @@ namespace DeToiServerCore.Models.SevicesUIElement
         public required string Icon { get; set; }
         public required string Label { get; set; }
         public bool AutoSelect { get; set; }
+        public int Priority { get; set; } = 0;
 
         public required Guid ServiceTypeId { get; set; }
         public required ServiceType ServiceType { get; set; }

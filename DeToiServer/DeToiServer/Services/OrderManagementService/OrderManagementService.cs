@@ -50,6 +50,16 @@ namespace DeToiServer.Services.OrderManagementService
             return service;
         }
 
+        private async Task<ServiceDto?> MapServiceRequirementsWithIcon(Service? serviceToMap)
+        {
+            if (serviceToMap == null) return null;
+            await Task.Delay(10);
+            //var reqElement = ;
+
+
+            return _mapper.Map<ServiceDto>(serviceToMap);
+        }
+
         public async Task<Order?> Add(PostOrderDto postOrderDto)
         {
             var rawOrder = _mapper.Map<Order>(postOrderDto);

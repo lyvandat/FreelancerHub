@@ -119,10 +119,19 @@ namespace DeToiServer.Controllers
         [HttpPost("login/customer")]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
-            var customer = await _customerAccService
-                .GetByCondition(cus => cus.Account.Phone.Equals(request.Phone));
+            var rawAccount = await _accService.GetByCondition(cus => cus.Phone.Equals(request.Phone));
+            
+            if (rawAccount != null && rawAccount.Role.Equals(GlobalConstant.Freelancer))
+            {
+                return Unauthorized(new 
+                {
+                    Message = "Số điện thoại đã được đăng ký dưới định danh Freelancer"
+                });
+            }
 
-            if (customer == null)
+            var customer = await _customerAccService.GetByCondition(cus
+                => cus.Account.Phone.Equals(request.Phone));
+            if (rawAccount == null)
             {
                 var account = new Account()
                 {
@@ -164,17 +173,16 @@ namespace DeToiServer.Controllers
                 return NotFound();
             }
 
-            //if (!request.Otp.Equals("2014") && !account.LoginToken.Equals(request.Otp))
-            //    return BadRequest(new
-            //    {
-            //        Message = "Mã otp không hợp lệ."
-            //    });
-            //else if (IsOtpExpired(account.LoginTokenExpires, 300))
-            //    return BadRequest(new
-            //    {
-            //        Message = "Mã otp đã hết hạn. Xin hãy yêu cầu mã OTP mới."
-            //    });
-
+            if (!request.Otp.Equals("2014") && !account.LoginToken.Equals(request.Otp))
+                return BadRequest(new
+                {
+                    Message = "Mã otp không hợp lệ."
+                });
+            else if (IsOtpExpired(account.LoginTokenExpires, 300))
+                return BadRequest(new
+                {
+                    Message = "Mã otp đã hết hạn. Xin hãy yêu cầu mã OTP mới."
+                });
 
             if (!account.IsVerified)
             {

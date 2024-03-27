@@ -117,35 +117,35 @@ namespace DeToiServerData.Configurations
                         Name = "Dọn dẹp", 
                         Description = "Bao gồm lau nhà, quét nhà, hút bụi, và nhiều dịch vụ khác", 
                         Image = "https://detoivn.sirv.com/services/dondep/category.png", 
-                        ServiceClassName = "CleaningService"
+                        ServiceClassName = "Cleaning"
                     },
                     new ServiceCategory { 
                         Id = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f"), 
                         Name = "Mua sắm", 
                         Description = "Bao gồm đi chợ, siêu thị, nhà sách, và nhiều dịch vụ khác", 
                         Image = "https://detoivn.sirv.com/services/dicho/category.png",
-                        ServiceClassName = "ShoppingService"
+                        ServiceClassName = "Shopping"
                     },
                     new ServiceCategory { 
                         Id = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a"), 
                         Name = "Sửa chữa", 
                         Description = "Bao gồm sửa máy lạnh, tủ lạnh, và nhiều dịch vụ khác", 
                         Image = "https://detoivn.sirv.com/services/suachua/category.png",
-                        ServiceClassName = "RepairingService"
+                        ServiceClassName = "Repairing"
                     },
                     new ServiceCategory { 
                         Id = new Guid("0f6f1894-3ee7-46a8-9939-842e3c620231"), 
                         Name = "Vệ sinh thiết bị", 
                         Description = "Bao gồm vệ sinh máy lạnh, tủ lạnh, ...", 
                         Image = "https://detoivn.sirv.com/services/vesinhmaylanh/category.png",
-                        ServiceClassName = "ElectronicsCleaningService"
+                        ServiceClassName = "ElectronicsCleaning"
                     },
                     new ServiceCategory { 
                         Id = new Guid("1b1a6ebd-2838-4b3d-a1f1-1818305df2d6"), 
-                        Name = "Chuyển nhà, phòng trọ", 
+                        Name = "Chuyển nhà, phòng trọ",
                         Description = "Chuyển nhà phòng trọ", 
                         Image = "https://detoivn.sirv.com/services/chuyennhaphongtro/category.png",
-                        ServiceClassName = "MovingService"
+                        ServiceClassName = "Moving"
                     },
                 }
             );
