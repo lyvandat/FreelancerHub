@@ -51,7 +51,7 @@ namespace DeToiServer.RealTime
             }
         }
 
-        public bool PushOrderStatusToQ(UpdateOnMovingOrderStatusRealTimeDto orderStatus)
+        public bool PushOrderStatusToQ(UpdateOrderStatusRealTimeDto orderStatus)
         {
             try
             {

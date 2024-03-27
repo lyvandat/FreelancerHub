@@ -9,7 +9,7 @@ namespace DeToiServer.Dtos.RealTimeDtos
         public Guid ServiceStatusId { get; set; } 
     }
 
-    public class UpdateOnMovingOrderStatusRealTimeDto
+    public class UpdateOrderStatusRealTimeDto
     {
         public AddressDto? Address { get; set; }
         public Guid ServiceStatusId { get; set; }

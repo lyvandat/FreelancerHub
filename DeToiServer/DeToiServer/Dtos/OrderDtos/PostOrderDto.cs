@@ -30,6 +30,13 @@ namespace DeToiServer.Dtos.OrderDtos
         public Guid OrderId { get; set; }
     }
 
+    public class PutOrderMovingStatusDto
+    {
+        public Guid OrderId { get; set; }
+        public double Lat { get; set; }
+        public double Lon { get; set; }
+    }
+
     public class PostOrderCustomerReviewDto
     {
         public Guid OrderId { get; set; }

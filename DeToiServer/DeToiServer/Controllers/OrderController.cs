@@ -174,11 +174,50 @@ namespace DeToiServer.Controllers
 
             // Handle real time - freelancers send update status message to customers.
             var customer = await _customerAcc.GetByCondition(cus => cus.Id == order.CustomerId);
-            _rabbitMQProducer.PushOrderStatusToQ(new UpdateOnMovingOrderStatusRealTimeDto
+            _rabbitMQProducer.PushOrderStatusToQ(new UpdateOrderStatusRealTimeDto
             {
                 CustomerPhone = customer.Account.Phone,
                 Address = _mapper.Map<AddressDto>(freelancer.Address?.FirstOrDefault()),
                 ServiceStatusId = orderStatus
+            });
+
+            return Ok(new
+            {
+                Message = "Cập nhật trạng thái thành công"
+            });
+        }
+
+        [HttpPut("order-moving-position-status"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        private async Task<ActionResult> UpdatePositionMovingStatus(PutOrderMovingStatusDto putOrderMovingStatusDto)
+        {
+            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var freelancer = await _uow.FreelanceAccountRepo.GetByAccId(accountId);
+
+            if (freelancer is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Tài khoản freelancer không hợp lệ"
+                });
+            }
+
+            var order = await _orderService.GetById(putOrderMovingStatusDto.OrderId);
+
+            if (order is null || order.FreelancerId != freelancer.Id)
+            {
+                return BadRequest(new
+                {
+                    Message = "Cập nhật vị trí thất bại"
+                });
+            }
+
+            // Handle real time - freelancers send update status message to customers.
+            var customer = await _customerAcc.GetByCondition(cus => cus.Id == order.CustomerId);
+            _rabbitMQProducer.PushOrderStatusToQ(new UpdateOrderStatusRealTimeDto
+            {
+                CustomerPhone = customer.Account.Phone,
+                Address = new AddressDto() { Lat = putOrderMovingStatusDto.Lat, Lon = putOrderMovingStatusDto.Lon },
+                ServiceStatusId = StatusConst.OnMoving
             });
 
             return Ok(new
