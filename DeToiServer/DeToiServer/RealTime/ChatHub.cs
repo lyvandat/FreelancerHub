@@ -89,7 +89,7 @@ namespace DeToiServer.RealTime
             }
         }
 
-        public async Task SendOrderStatusToCustomer(UpdateOnMovingOrderStatusRealTimeDto orderStatus)
+        public async Task SendOrderStatusToCustomer(UpdateOrderStatusRealTimeDto orderStatus)
         {
             var user = await _context.Users
                 .AsNoTracking()

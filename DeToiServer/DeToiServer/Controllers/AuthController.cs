@@ -170,7 +170,10 @@ namespace DeToiServer.Controllers
 
             if (account == null)
             {
-                return NotFound();
+                return NotFound(new
+                {
+                    Message = $"Không tìm thấy tài khoản với số điện thoại: {request.Phone}."
+                });
             }
 
             if (!request.Otp.Equals("2014") && !account.LoginToken.Equals(request.Otp))
@@ -178,11 +181,11 @@ namespace DeToiServer.Controllers
                 {
                     Message = "Mã otp không hợp lệ."
                 });
-            else if (IsOtpExpired(account.LoginTokenExpires, 300))
-                return BadRequest(new
-                {
-                    Message = "Mã otp đã hết hạn. Xin hãy yêu cầu mã OTP mới."
-                });
+            //else if (IsOtpExpired(account.LoginTokenExpires, 300))
+            //    return BadRequest(new
+            //    {
+            //        Message = "Mã otp đã hết hạn. Xin hãy yêu cầu mã OTP mới."
+            //    });
 
             if (!account.IsVerified)
             {

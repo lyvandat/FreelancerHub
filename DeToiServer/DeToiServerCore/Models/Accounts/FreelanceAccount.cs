@@ -23,5 +23,6 @@ namespace DeToiServerCore.Models.Accounts
         public ICollection<ServiceProven>? ServiceProven { get; set; }
         public ICollection<Favorite>? FavoriteBy { get; set; }
         public ICollection<FreelanceQuiz>? QuizCollection { get; set; }
+        //public ICollection<FreelanceServiceType>? FreelancerFeasibleServices { get; set; }
     }
 }

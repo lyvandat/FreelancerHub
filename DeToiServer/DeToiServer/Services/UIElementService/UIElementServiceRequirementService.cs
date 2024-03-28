@@ -37,5 +37,8 @@ namespace DeToiServer.Services.UIElementService
 
             return _mapper.Map<ServiceDto>(res);
         }
+
+        public async Task<IEnumerable<UIElementServiceRequirement>> GetAllWithIcon(Guid serviceTypeId)
+            => await _uow.UIElementServiceRequirementRepo.GetAllWithIcon(serviceTypeId);
     }
 }

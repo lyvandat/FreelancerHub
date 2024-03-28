@@ -93,7 +93,7 @@ namespace DeToiServer.RealTime
                         var data = Encoding.UTF8.GetString(body);
 
                         // Add signalR real time handling here if we want asynchronous realtime communication
-                        UpdateOnMovingOrderStatusRealTimeDto? orderStatus = JsonConvert.DeserializeObject<UpdateOnMovingOrderStatusRealTimeDto>(data);
+                        UpdateOrderStatusRealTimeDto? orderStatus = JsonConvert.DeserializeObject<UpdateOrderStatusRealTimeDto>(data);
                         _connectionSignalR?.InvokeAsync("SendOrderStatusToCustomer", orderStatus);
                     }
 

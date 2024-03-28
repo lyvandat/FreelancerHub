@@ -6,5 +6,6 @@
         public string Description { get; set; } = string.Empty;
         public string SkillCategory { get; set; } = string.Empty;
         public ICollection<FreelanceSkill>? FreelanceSkills { get; set; }
+        //public ICollection<SkillServiceType>? ServiceTypeOfSkill { get; set; }
     }
 }

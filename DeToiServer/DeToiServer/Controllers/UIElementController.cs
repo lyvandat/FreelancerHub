@@ -48,9 +48,9 @@ namespace DeToiServer.Controllers
         }
 
         [HttpPost("test4")]
-        public async Task<ActionResult<ServiceDto>> Test4(ServiceDto input)
+        public async Task<ActionResult<ServiceDto>> Test4(Guid input)
         {
-            var res = await _requirementService.AddServiceClone(input);
+            var res = await _requirementService.GetAllWithIcon(input);
 
             if (res == null)
             {

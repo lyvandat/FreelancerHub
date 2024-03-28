@@ -43,6 +43,7 @@
         public required UIElementServiceRequirementInputMethodDto InputMethod { get; set; }
         public required string Key { get; set; }
         public required string Label { get; set; }
+        public int Priority { get; set; }
         public string? LabelIcon { get; set; }
         public string Placeholder { get; set; } = String.Empty;
     }
@@ -53,6 +54,7 @@
         public required string Key { get; set; }
         public required string Icon { get; set; }
         public required string Label { get; set; }
+        public int Priority { get; set; }
         public bool AutoSelect { get; set; }
     }
 }

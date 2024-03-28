@@ -18,6 +18,14 @@ namespace DeToiServerData.Repositories.UIElementServiceRequirementRepo
                 .Include(fl => fl.InputMethod.Method.Options)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<UIElementServiceRequirement>> GetAllWithIcon(Guid serviceTypeId)
+        {
+            var query = _context.UIElementServiceRequirements.AsSplitQuery().AsNoTracking()
+                .Where(req => req.ServiceTypeId.Equals(serviceTypeId));
+
+            return await query.ToListAsync();
+        }
     }
 
     public class UIElementAdditionServiceRequirementRepo(DataContext context) 
@@ -30,6 +38,14 @@ namespace DeToiServerData.Repositories.UIElementServiceRequirementRepo
             await Task.Delay(10);
 
             return new List<UIElementAdditionServiceRequirement>();
+        }
+
+        public async Task<IEnumerable<UIElementAdditionServiceRequirement>> GetAllWithIcon(Guid serviceTypeId)
+        {
+            var query = _context.UIElementAdditionServiceRequirements.AsSplitQuery().AsNoTracking()
+                .Where(req => req.ServiceTypeId.Equals(serviceTypeId));
+
+            return await query.ToListAsync();
         }
     }
 }

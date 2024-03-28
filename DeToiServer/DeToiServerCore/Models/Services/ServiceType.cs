@@ -1,4 +1,5 @@
-﻿using DeToiServerCore.Models.SevicesUIElement;
+﻿using DeToiServerCore.Models.Accounts;
+using DeToiServerCore.Models.SevicesUIElement;
 
 namespace DeToiServerCore.Models.Services
 {
@@ -16,5 +17,7 @@ namespace DeToiServerCore.Models.Services
         public ICollection<ServiceProven>? ServiceProven { get; set; }
         public ICollection<UIElementServiceRequirement>? Requirements { get; set; }
         public ICollection<UIElementAdditionServiceRequirement>? AdditionalRequirements { get; set; }
+        //public ICollection<FreelanceServiceType>? FreelancerInService { get; set; }
+        //public ICollection<SkillServiceType>? SkillOfService { get; set; }
     }
 }

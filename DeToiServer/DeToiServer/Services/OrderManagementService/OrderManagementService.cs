@@ -50,12 +50,34 @@ namespace DeToiServer.Services.OrderManagementService
             return service;
         }
 
-        private async Task<ServiceDto?> MapServiceRequirementsWithIcon(Service? serviceToMap)
+        private async Task<ServiceDto?> MapServiceRequirementsWithIcon(PostServiceDto? serviceToMap)
         {
             if (serviceToMap == null) return null;
             await Task.Delay(10);
-            //var reqElement = ;
+            var reqElement = await _uow.UIElementServiceRequirementRepo.GetAllWithIcon(serviceToMap.ServiceTypeId);
+            var areqElement = await _uow.UIElementAdditionServiceRequirementRepo.GetAllWithIcon(serviceToMap.ServiceTypeId);
 
+            foreach (var item in serviceToMap.Requirement)
+            {
+                var req = reqElement.FirstOrDefault(e => e.Key.Equals(item.Key));
+                if (req != null)
+                {
+                    item.Icon = req.LabelIcon;
+                }
+                else 
+                    item.Icon = GlobalConstant.Requirement.DefaultRequirementIcon;
+            }
+
+            foreach (var item in serviceToMap.AdditionalRequirement)
+            {
+                var req = areqElement.FirstOrDefault(e => e.Key.Equals(item.Key));
+                if (req != null)
+                {
+                    item.Icon = req.Icon;
+                }
+                else
+                    item.Icon = GlobalConstant.Requirement.DefaultRequirementIcon;
+            }
 
             return _mapper.Map<ServiceDto>(serviceToMap);
         }
@@ -78,7 +100,8 @@ namespace DeToiServer.Services.OrderManagementService
 
             await _uow.OrderRepo.CreateAsync(rawOrder);
 
-            var addedService = AddService(_mapper.Map<ServiceDto>(postOrderDto.Services), rawOrder.Id, rawOrder);
+            var serviceToAdd = _mapper.Map<ServiceDto>(await MapServiceRequirementsWithIcon(postOrderDto.Services));
+            var addedService = AddService(serviceToAdd, rawOrder.Id, rawOrder);
 
             if (addedService != null) await _uow.ServiceRepo.CreateAsync(addedService);
 

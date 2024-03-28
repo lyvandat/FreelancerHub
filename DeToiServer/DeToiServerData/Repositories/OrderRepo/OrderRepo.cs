@@ -103,7 +103,7 @@ namespace DeToiServerData.Repositories.OrderRepo
         {
             "date" => ord => ord.CreatedTime,
             "distance" => ord => ord.CreatedTime,
-            _ => ord => ord.Id,
+            _ => ord => ord.CreatedTime,
         };
 
         public async Task<IEnumerable<Order>> GetFreelancerSuitableOrders(Guid freelancerId, FilterFreelancerOrderQuery filterQuery)
@@ -139,13 +139,13 @@ namespace DeToiServerData.Repositories.OrderRepo
 
             var sortExpression = GetFreelancerOrderSortExpression(filterQuery);
 
-            if (filterQuery.SortType.ToLower().Equals("desc"))
+            if (filterQuery.SortType.ToLower().Equals("asc"))
             {
-                query = query.OrderByDescending(sortExpression);
+                query = query.OrderBy(sortExpression);
             }
             else
             {
-                query = query.OrderBy(sortExpression);
+                query = query.OrderByDescending(sortExpression);
             }
 
             return await query.ToListAsync();

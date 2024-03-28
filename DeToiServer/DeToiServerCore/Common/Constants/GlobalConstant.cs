@@ -39,6 +39,16 @@
                 public static readonly string MultipleChoice = "MultipleChoice";
             }
         }
+
+        public static class Requirement
+        {
+            public static readonly string DefaultRequirementIcon = "faNoteSticky";
+        }
+
+        public static class Review
+        {
+            public static readonly DateTime DefaultDateTime = new(2024, 1, 1);
+        }
     }
 
     public static class StatusConst

@@ -8,5 +8,6 @@ namespace DeToiServer.Services.UIElementService
         public Task<IEnumerable<UIElementServiceRequirement>> GetAllWithDetail();
         public Task<IEnumerable<ServiceDto>> GetServiceClone();
         public Task<ServiceDto?> AddServiceClone(ServiceDto toAdd);
+        public Task<IEnumerable<UIElementServiceRequirement>> GetAllWithIcon(Guid serviceTypeId);
     }
 }

@@ -66,22 +66,4 @@ namespace DeToiServerData.Configurations
             builder.ToTable("Favorites");
         }
     }
-
-    internal class FreelancerSkillConfiguration : EntityTypeConfigurationBaseClass<FreelanceSkill>
-    {
-        protected override void OnConfigure(EntityTypeBuilder<FreelanceSkill> builder)
-        {
-            builder.HasKey(fv => new { fv.FreelancerId, fv.SkillId });
-
-            builder.HasOne(fv => fv.Freelancer)
-                .WithMany(fl => fl.FreelanceSkills)
-                .HasForeignKey(fv => fv.FreelancerId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.HasOne(fv => fv.Skill)
-                .WithMany(c => c.FreelanceSkills)
-                .HasForeignKey(fv => fv.SkillId)
-                .OnDelete(DeleteBehavior.NoAction);
-        }
-    }
 }

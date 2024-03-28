@@ -84,7 +84,7 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("current"), AuthorizeRoles(GlobalConstant.Freelancer)]
-        public async Task<ActionResult<GetFreelanceDto>> GetCurrentFreelancerDetail()
+        public async Task<ActionResult<GetFreelanceMatchingDto>> GetCurrentFreelancerDetail()
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerId);
             var freelance = await _freelanceAccService.GetByAccId(freelancerId);
@@ -96,14 +96,9 @@ namespace DeToiServer.Controllers
                     Message = "Không tìm thấy tài khoản, hãy đăng nhập để thử lại"
                 });
             }
-            var result = _mapper.Map<GetFreelanceDto>(freelance);
-            result.Address = _mapper.Map<AddressDto>(freelance.Address!.FirstOrDefault());
+            var result = await _freelanceAccService.GetDetailWithStatistic(freelancerId);
 
-            return Ok(new
-            {
-                result,
-                freelance
-            });
+            return Ok(result);
         }
 
         [HttpGet("orders"), AuthorizeRoles(GlobalConstant.Freelancer)]
