@@ -7,6 +7,7 @@ namespace DeToiServer.Services.CustomerAccountService
     {
         Task<CustomerAccount> GetById(Guid id);
         Task<CustomerAccount> GetByAccId(Guid accId);
+        Task<CustomerAccount> GetByIdWithAccount(Guid id);
         Task<IEnumerable<CustomerAccount>> GetAll();
         Task<CustomerAccount> GetByCondition(Expression<Func<CustomerAccount, bool>> predicate);
         Task<CustomerAccount> Add(CustomerAccount acc);

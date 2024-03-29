@@ -3,6 +3,9 @@ using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.RealTimeDtos;
 using DeToiServer.Models;
+using DeToiServer.Services.CustomerAccountService;
+using DeToiServer.Services.FreelanceAccountService;
+using DeToiServer.Services.OrderManagementService;
 using DeToiServerCore.Common.Helper;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +14,16 @@ namespace DeToiServer.RealTime
 {
     public class ChatHub : Hub<IChatClient>
     {
+        private readonly IFreelanceAccountService _freelancerService;
+        private readonly ICustomerAccountService _customerService;
+        private readonly IOrderManagementService _orderService;
         private readonly DataContext _context;
 
-        public ChatHub(DataContext context)
+        public ChatHub(DataContext context, IFreelanceAccountService freelancerService, ICustomerAccountService customerService, IOrderManagementService orderService)
         {
+            _freelancerService = freelancerService;
+            _customerService = customerService;
+            _orderService = orderService;
             _context = context;
         }
 
@@ -73,18 +82,27 @@ namespace DeToiServer.RealTime
             }
         }
 
-        public async Task SendMessageToCustomer(GetFreelanceMatchingDto matchingFreelancer)
+        public async Task SendMessageToCustomer(GetFreelancerAndPreviewPriceDto matchingFreelancer)
         {
+            var freelancer = await _freelancerService.GetDetailWithStatistic(matchingFreelancer.FreelancerId);
+            var order = await _orderService.GetById(matchingFreelancer.OrderId);
+
+            if (order == null) return;
+
+            var customer = await _customerService.GetByIdWithAccount(order.CustomerId);
+
             var user = await _context.Users
                 .AsNoTracking()
+                .Where(u => u.Phone.Equals(customer.Account.Phone))
                 .Include(u => u.Connections)
-                .FirstOrDefaultAsync(user => user.Phone.Equals(matchingFreelancer.Account.Phone));
+                .FirstOrDefaultAsync();
 
             if (user?.Connections != null)
             {
+                freelancer.PreviewPrice = matchingFreelancer.PreviewPrice;
                 foreach (var connection in user.Connections)
                 {
-                    await Clients.Client(connection.ConnectionId).ReceiveFreelancerResponse(matchingFreelancer);
+                    await Clients.Client(connection.ConnectionId).ReceiveFreelancerResponse(freelancer);
                 }
             }
         }
@@ -115,6 +133,7 @@ namespace DeToiServer.RealTime
 
             if (!string.IsNullOrEmpty(phone))
             {
+                phone = $"+{phone.Trim()}";
                 var user = _context.Users
                 .Include(u => u.Connections)
                 .SingleOrDefault(u => u.Phone == phone);

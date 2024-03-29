@@ -46,6 +46,13 @@ namespace DeToiServer.Dtos.FreelanceDtos
         public ICollection<GetFreelanceReviewDto>? Reviews { get; set; }
     }
 
+    public class GetFreelancerAndPreviewPriceDto
+    {
+        public double PreviewPrice { get; set; }
+        public Guid OrderId { get; set; }
+        public Guid FreelancerId { get; set; }
+    }
+
     public class GetFreelanceAccountInOrderDto
     {
         public Guid Id { get; set; }

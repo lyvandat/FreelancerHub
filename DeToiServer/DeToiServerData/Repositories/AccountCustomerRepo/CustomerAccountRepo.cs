@@ -25,5 +25,14 @@ namespace DeToiServerData.Repositories.AccountCustomerRepo
                 .Include(c => c.Addresses)
                 .FirstOrDefaultAsync(predicate);
         }
+
+        public async Task<CustomerAccount> GetByIdWithAccount(Guid id)
+        {
+            return await _context.Customers
+                .AsNoTracking()
+                .Where(c => c.Id == id)
+                .Include(c => c.Account)
+                .FirstOrDefaultAsync();
+        }
     }
 }
