@@ -237,6 +237,10 @@ namespace DeToiServer.AutoMapper
             CreateMap<PostFreelanceQuizResultDto, FreelanceQuizResult>();
             CreateMap<PostCorrectQuizQuestionDto, FreelanceCorrectQuestion>();
             #endregion
+
+            #region Bidding Order
+            CreateMap<GetFreelancerAndPreviewPriceDto, BiddingOrder>().ReverseMap();
+            #endregion
         }
     }
 }

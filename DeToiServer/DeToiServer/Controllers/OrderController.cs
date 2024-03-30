@@ -10,6 +10,7 @@ using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.UserService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
+using DeToiServerData.Repositories.AccountFreelanceRepo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
@@ -23,7 +24,9 @@ namespace DeToiServer.Controllers
     {
         private readonly UnitOfWork _uow;
         private readonly IOrderManagementService _orderService;
+        private readonly IBiddingOrderService _biddingOrderService;
         private readonly ICustomerAccountService _customerAcc;
+        private readonly IFreelanceAccountRepo _freelancerAcc;
         private readonly IUserService _userService;
         private readonly RabbitMQProducer _rabbitMQProducer;
         private readonly IHubContext<ChatHub, IChatClient> _chatHubContext;
@@ -32,7 +35,9 @@ namespace DeToiServer.Controllers
         public OrderController(
             UnitOfWork uow, 
             IOrderManagementService orderService, 
+            IBiddingOrderService biddingOrderService,
             ICustomerAccountService customerAcc, 
+            IFreelanceAccountRepo freelancerAcc,
             IUserService userService,
             RabbitMQProducer rabbitMQProducer,
             IHubContext<ChatHub, IChatClient> chatHubContext,
@@ -40,7 +45,9 @@ namespace DeToiServer.Controllers
         {
             _uow = uow;
             _orderService = orderService;
+            _biddingOrderService = biddingOrderService;
             _customerAcc = customerAcc;
+            _freelancerAcc = freelancerAcc;
             _userService = userService;
             _rabbitMQProducer = rabbitMQProducer;
             _chatHubContext = chatHubContext;
@@ -278,6 +285,23 @@ namespace DeToiServer.Controllers
             var order = await _orderService.GetLatestCustomerOrders(customer.Id);
 
             return Ok(order);
+        }
+
+        [HttpGet("freelancer-bidding"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult<GetOrderDto>> GetBiddingOrders()
+        {
+            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var freelancer = await _freelancerAcc.GetByAccId(accountId);
+
+            if (freelancer is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không thể xem danh sách đơn hàng, hãy đăng nhập để thử lại"
+                });
+            }
+
+            return Ok(await _biddingOrderService.GetFreelancerBiddingOrders(freelancer.Id));
         }
 
         [HttpPost("customer-review"), AuthorizeRoles(GlobalConstant.Customer)]

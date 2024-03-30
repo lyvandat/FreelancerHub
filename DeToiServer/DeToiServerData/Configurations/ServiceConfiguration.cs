@@ -1,5 +1,6 @@
 ﻿using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Models;
+using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -43,6 +44,22 @@ namespace DeToiServerData.Configurations
                 .WithMany(a => a.Orders)
                 .HasForeignKey(o => o.AddressId)
                 .OnDelete(DeleteBehavior.NoAction);
+        }
+    }
+
+    internal class BiddingOrderConfiguration : EntityTypeConfigurationBase<BiddingOrder>
+    {
+        protected override void OnConfigure(EntityTypeBuilder<BiddingOrder> builder)
+        {
+            builder.HasOne(bo => bo.Order)
+                .WithOne()
+                .HasForeignKey<BiddingOrder>(bo => bo.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(bo => bo.Freelancer)
+                .WithOne()
+                .HasForeignKey<BiddingOrder>(bo => bo.FreelancerId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 

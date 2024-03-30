@@ -1,4 +1,5 @@
-﻿using DeToiServer.Dtos.AddressDtos;
+﻿using AutoMapper;
+using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.RealTimeDtos;
@@ -17,13 +18,15 @@ namespace DeToiServer.RealTime
         private readonly IFreelanceAccountService _freelancerService;
         private readonly ICustomerAccountService _customerService;
         private readonly IOrderManagementService _orderService;
+        private readonly IMapper _mapper;
         private readonly DataContext _context;
 
-        public ChatHub(DataContext context, IFreelanceAccountService freelancerService, ICustomerAccountService customerService, IOrderManagementService orderService)
+        public ChatHub(DataContext context, IFreelanceAccountService freelancerService, ICustomerAccountService customerService, IOrderManagementService orderService, IMapper mapper)
         {
             _freelancerService = freelancerService;
             _customerService = customerService;
             _orderService = orderService;
+            _mapper = mapper;
             _context = context;
         }
 
@@ -100,6 +103,17 @@ namespace DeToiServer.RealTime
             if (user?.Connections != null)
             {
                 freelancer.PreviewPrice = matchingFreelancer.PreviewPrice;
+                _context.BiddingOrders.Add(_mapper.Map<BiddingOrder>(matchingFreelancer));
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch(Exception)
+                {
+                    throw new Exception("Có lỗi trong quá trình xử lí, vui lòng thử lại");
+                }
+
                 foreach (var connection in user.Connections)
                 {
                     await Clients.Client(connection.ConnectionId).ReceiveFreelancerResponse(freelancer);

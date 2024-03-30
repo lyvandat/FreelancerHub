@@ -119,6 +119,16 @@ namespace DeToiServerData
                 return _orderRepo;
             }
         }
+
+        private IBiddingOrderRepo _biddingOrderRepo;
+        public IBiddingOrderRepo BiddingOrderRepo
+        {
+            get
+            {
+                _biddingOrderRepo ??= new BiddingOrderRepo(_dataContext);
+                return _biddingOrderRepo;
+            }
+        }
         #endregion
 
         #region Service Repo

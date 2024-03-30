@@ -43,6 +43,7 @@ namespace DeToiServerData
             modelBuilder.ApplyConfiguration(new ServiceCategoryConfiguration());
             modelBuilder.ApplyConfiguration(new ServiceStatusConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
+            modelBuilder.ApplyConfiguration(new BiddingOrderConfiguration());
             modelBuilder.ApplyConfiguration(new OrderServiceConfiguration());
 
             modelBuilder.ApplyConfiguration(new OrderServiceTypeConfiguration());
@@ -94,6 +95,7 @@ namespace DeToiServerData
 
         // Service related models
         public DbSet<Order> Orders { get; set; }
+        public DbSet<BiddingOrder> BiddingOrders { get; set; }
         public DbSet<ServiceStatus> ServiceStatuses { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<ServiceType> ServiceTypes { get; set; }

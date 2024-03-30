@@ -84,6 +84,7 @@ namespace DeToiServerData
             services.AddScoped<IServiceCategoryRepo, ServiceCategoryRepo>();
             services.AddScoped<IServiceProvenRepo, ServiceProvenRepo>();
             services.AddScoped<IPromotionRepo, PromotionRepo>();
+            services.AddScoped<IBiddingOrderRepo, BiddingOrderRepo>();
             services.AddScoped<IOrderRepo, OrderRepo>();
             services.AddScoped<IServiceRepo, ServiceRepo>();
             services.AddScoped<IUserRepo, UserRepo>();
@@ -112,6 +113,7 @@ namespace DeToiServerData
             services.AddScoped<IServiceCategoryService, ServiceCategoryService>();
             services.AddScoped<IServiceProvenService, ServiceProvenService>();
             services.AddScoped<IOrderManagementService, OrderManagementService>();
+            services.AddScoped<IBiddingOrderService, BiddingOrderService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMessageQueueService, MessageQueueService>();
             services.AddScoped<IFavoriteService, FavoriteService>();
