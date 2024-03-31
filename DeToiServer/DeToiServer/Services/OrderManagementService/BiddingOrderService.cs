@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.OrderDtos;
 
 namespace DeToiServer.Services.OrderManagementService
@@ -24,6 +25,24 @@ namespace DeToiServer.Services.OrderManagementService
             }
 
             return biddingOrderDetail.Select(bo => _mapper.Map<GetOrderDto>(bo.Order));
+        }
+
+        public async Task<IEnumerable<GetFreelanceMatchingDto>> GetFreelancersForCustomerBiddingOrder(Guid orderId)
+        {
+            var biddingOrderDetail = await _uow.BiddingOrderRepo.GetMatchingFreelancersByOrderId(orderId);
+
+            return biddingOrderDetail.Select(bo => 
+            {
+                var freelancer = _mapper.Map<GetFreelanceMatchingDto>(bo.Freelancer);
+
+                if (freelancer == null)
+                {
+                    throw new InvalidCastException("Có lỗi trong quá trình lấy thông tin freelancers báo giá");
+                }
+
+                freelancer.PreviewPrice = bo.PreviewPrice;
+                return freelancer;
+            });
         }
     }
 }

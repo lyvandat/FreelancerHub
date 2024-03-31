@@ -26,6 +26,7 @@ namespace DeToiServer.Controllers
         private readonly IOrderManagementService _orderService;
         private readonly IFreelanceQuizService _quizService;
         private readonly IFreelanceSkillService _skillService;
+        private readonly IBiddingOrderService _biddingOrderService;
         private readonly IMapper _mapper;
 
         public FreelanceAccountController(
@@ -34,6 +35,7 @@ namespace DeToiServer.Controllers
             IOrderManagementService orderService, 
             IFreelanceQuizService quizService, 
             IFreelanceSkillService skillService,
+            IBiddingOrderService biddingOrderService,
             IMapper mapper)
         {
             _accService = accService;
@@ -41,6 +43,7 @@ namespace DeToiServer.Controllers
             _orderService = orderService;
             _quizService = quizService;
             _skillService = skillService;
+            _biddingOrderService = biddingOrderService;
             _mapper = mapper;
         }
 
@@ -161,6 +164,25 @@ namespace DeToiServer.Controllers
                 IsAddedSkill = !(result.Skills == null || result.Skills.Count == 0),
                 IsDoneTest = await _quizService.IsFreelancerDoneQuiz(freelance.Id),
             });
+        }
+
+
+
+        [HttpGet("customer-bidding"), AuthorizeRoles(GlobalConstant.Customer)]
+        public async Task<ActionResult<GetOrderDto>> GetBiddingOrders(Guid orderId)
+        {
+            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var customerAcc = await _accService.GetById(accountId);
+
+            if (customerAcc == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Vui lòng đăng nhập để tiếp tục"
+                });
+            }
+
+            return Ok(await _biddingOrderService.GetFreelancersForCustomerBiddingOrder(orderId));
         }
     }
 }
