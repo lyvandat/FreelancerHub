@@ -63,9 +63,13 @@ namespace DeToiServer.Services.OrderManagementService
                 if (req != null)
                 {
                     item.Icon = req.LabelIcon;
+                    item.Label = req.Label;
                 }
-                else 
+                else
+                {
                     item.Icon = GlobalConstant.Requirement.DefaultRequirementIcon;
+                    item.Label = "Yêu cầu";
+                }
             }
 
             foreach (var item in serviceToMap.AdditionalRequirement)
@@ -74,9 +78,13 @@ namespace DeToiServer.Services.OrderManagementService
                 if (req != null)
                 {
                     item.Icon = req.Icon;
+                    item.Label = req.Label;
                 }
                 else
+                {
                     item.Icon = GlobalConstant.Requirement.DefaultRequirementIcon;
+                    item.Label = "Yêu cầu";
+                }
             }
 
             return _mapper.Map<ServiceDto>(serviceToMap);

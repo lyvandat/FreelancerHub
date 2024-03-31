@@ -13,6 +13,7 @@ using DeToiServerCore.Common.CustomAttribute;
 using DeToiServerData.Repositories.AccountFreelanceRepo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Identity.Client;
 using Newtonsoft.Json;
 using System.Security.Claims;
 
@@ -61,7 +62,6 @@ namespace DeToiServer.Controllers
             var customer = await _customerAcc.GetByAccId(accountId);
 
             postOrder.CustomerId = customer.Id;
-            var my_str = JsonConvert.SerializeObject(postOrder.Services.Requirement);
             var order = await _orderService.Add(postOrder);
             
             if (order is null)
@@ -100,7 +100,8 @@ namespace DeToiServer.Controllers
         [HttpPut("order-price"), AuthorizeRoles(GlobalConstant.Customer)]
         public async Task<ActionResult<Order>> UpdateOrderActualPriceAndFreelancer(PutOrderPriceAndFreelancerDto putOrder)
         {
-            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid customerId);
+            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var customer = await _customerAcc.GetByAccId(accountId);
             var order = await _orderService.GetById(putOrder.OrderId);
 
             if (order == null)
@@ -111,7 +112,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            if (order.CustomerId != customerId)
+            if (order.CustomerId != customer.Id)
             {
                 return BadRequest(new
                 {
