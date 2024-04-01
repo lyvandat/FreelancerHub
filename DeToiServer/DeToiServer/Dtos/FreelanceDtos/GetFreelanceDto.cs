@@ -1,6 +1,7 @@
 ﻿using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.ServiceProvenDtos;
+using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Dtos.SkillDtos;
 
 namespace DeToiServer.Dtos.FreelanceDtos
@@ -24,6 +25,7 @@ namespace DeToiServer.Dtos.FreelanceDtos
         public ICollection<SkillDto>? Skills { get; set; }
         public ICollection<GetServiceProvenDto>? ServiceProven { get; set; }
         public ICollection<GetFreelanceReviewDto>? Reviews { get; set; }
+        public ICollection<GetServiceTypeDto>? FreelancerFeasibleServices { get; set; }
     }
 
     public class GetFreelanceMatchingDto
@@ -46,6 +48,7 @@ namespace DeToiServer.Dtos.FreelanceDtos
         public ICollection<SkillDto>? Skills { get; set; }
         public ICollection<GetServiceProvenDto>? ServiceProven { get; set; }
         public ICollection<GetFreelanceReviewDto>? Reviews { get; set; }
+        public ICollection<GetServiceTypeDto>? FreelancerFeasibleServices { get; set; }
     }
 
     public class GetFreelancerAndPreviewPriceDto

@@ -17,7 +17,7 @@ namespace DeToiServerCore.Models.Services
         public ICollection<ServiceProven>? ServiceProven { get; set; }
         public ICollection<UIElementServiceRequirement>? Requirements { get; set; }
         public ICollection<UIElementAdditionServiceRequirement>? AdditionalRequirements { get; set; }
-        //public ICollection<FreelanceServiceType>? FreelancerInService { get; set; }
-        //public ICollection<SkillServiceType>? SkillOfService { get; set; }
+        public ICollection<FreelanceServiceType>? FreelancerInService { get; set; }
+        public ICollection<SkillServiceType>? SkillOfService { get; set; }
     }
 }

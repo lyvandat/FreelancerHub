@@ -2,6 +2,7 @@
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.ServiceDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
+using DeToiServer.Dtos.SkillDtos;
 using System.Text.Json.Serialization;
 
 namespace DeToiServer.Dtos.OrderDtos
@@ -21,6 +22,7 @@ namespace DeToiServer.Dtos.OrderDtos
         public GetFreelanceAccountInOrderDto? Freelance { get; set; }
         public string ServiceStatus { get; set; } = string.Empty;
         public ICollection<GetServiceTypeDto>? ServiceTypes { get; set; }
+        public ICollection<SkillDto>? SkillRequired { get; set; }
         public required ServiceDto Services { get; set; }
     }
 }

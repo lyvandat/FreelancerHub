@@ -20,11 +20,9 @@ namespace DeToiServerData.Repositories.FreelanceSkillRepo
 
         public async Task<IEnumerable<Skill>> GetFreelancerSkillInCategoryAsync(Guid categoryId, int? length)
         {
-            var category = await _context.ServiceCategories.AsNoTracking().AsSplitQuery()
-                .FirstOrDefaultAsync(cate => cate.Id.Equals(categoryId));
-
             var query = _context.Skills.AsNoTracking().AsSplitQuery()
-                .Where(sk => sk.SkillCategory.Equals(category.ServiceClassName));
+                .Include(sk => sk.ServiceTypeOfSkill)
+                .Where(sk => sk.ServiceTypeOfSkill.Any(st_sk => st_sk.ServiceTypeId.Equals(categoryId)));
 
             if (length != null)
             {
@@ -37,12 +35,10 @@ namespace DeToiServerData.Repositories.FreelanceSkillRepo
 
         public async Task<IEnumerable<Skill>> SeachFreelanceSkillsAsync(FreelanceSkillQuery search)
         {
-            var categoryName = search.CategoryId != null ?
-                (await _context.ServiceCategories.FindAsync(search.CategoryId ?? Guid.Empty)).ServiceClassName
-                : string.Empty;
-
             var query = _context.Skills.AsNoTracking().AsSplitQuery()
-                .Where(s => s.Name.Contains(search.Key) && s.SkillCategory.Contains(categoryName));
+                .Include(sk => sk.ServiceTypeOfSkill)
+                .Where(sk => sk.ServiceTypeOfSkill.Any(st_sk => st_sk.ServiceTypeId.Equals(search.CategoryId ?? Guid.Empty))
+                    && sk.Name.Contains(search.Key));
 
             return await query.ToListAsync();
         }

@@ -87,7 +87,8 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            return Ok(_mapper.Map<IEnumerable<GetOrderDto>>(order));
+            // _mapper.Map<IEnumerable<GetOrderDto>>(order)
+            return Ok(_mapper.Map<IEnumerable<GetOrderDto>>(order)); 
         }
 
         [HttpPut("order-price"), AuthorizeRoles(GlobalConstant.Customer)]

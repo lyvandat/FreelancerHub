@@ -149,6 +149,11 @@ namespace DeToiServer.AutoMapper
                     return context.Mapper.Map<GetServiceTypeDto>(src.ServiceType);
                 });
 
+            CreateMap<OrderSkillRequired, SkillDto>()
+                .ConvertUsing((src, dest, context) => {
+                    return context.Mapper.Map<SkillDto>(src.Skill);
+                });
+
             //CreateMap<OrderServiceType, GetOrderServiceTypeDto>();
 
             CreateMap<PostServiceProvenDto, ServiceProven>().ReverseMap();

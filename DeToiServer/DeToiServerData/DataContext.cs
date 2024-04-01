@@ -34,8 +34,9 @@ namespace DeToiServerData
             modelBuilder.ApplyConfiguration(new FavoriteConfiguration());
             modelBuilder.ApplyConfiguration(new FreelancePaymentConfiguration());
             modelBuilder.ApplyConfiguration(new FreelancerSkillConfiguration());
-            //modelBuilder.ApplyConfiguration(new FreelancerServiceTypeConfiguration());
-            //modelBuilder.ApplyConfiguration(new SkillServiceTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new FreelancerServiceTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new SkillServiceTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderSkillRequireTypeConfiguration());
 
             // Service
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
@@ -89,9 +90,10 @@ namespace DeToiServerData
         public DbSet<FreelancePaymentHistory> FreelancePaymentHistories { get; set; }
 
         public DbSet<FreelanceSkill> FreelanceSkills { get; set; }
-        //public DbSet<FreelanceServiceType> FreelanceServiceTypes { get; set; }
-        //public DbSet<SkillServiceType> SkillServiceTypes { get; set; }
-
+        public DbSet<FreelanceServiceType> FreelanceServiceTypes { get; set; }
+        public DbSet<SkillServiceType> SkillServiceTypes { get; set; }
+        public DbSet<OrderSkillRequired> OrderSkillsRequired { get; set; }
+        
 
         // Service related models
         public DbSet<Order> Orders { get; set; }

@@ -49,11 +49,18 @@ namespace DeToiServerData.Repositories.FreelanceQuizRepo
                 .AsNoTracking().AsSplitQuery()
                 .Include(fl => fl.FreelanceSkills)
                     .ThenInclude(fl_sk => fl_sk.Skill)
+                        .ThenInclude(sk => sk.ServiceTypeOfSkill)
+                            .ThenInclude(st_sk => st_sk.ServiceType)
+                                .ThenInclude(st => st.ServiceCategory)
+                .Include(fl => fl.FreelancerFeasibleServices)
+                    .ThenInclude(fl_sv => fl_sv.ServiceType)
+                        .ThenInclude(st => st.ServiceCategory)
                 .FirstOrDefaultAsync(fl => fl.Id == freelancerId);
 
             // Materialize the suitable skill categories
             var suitableSkillCategories = freelance.FreelanceSkills
-                .Select(fl_sk => fl_sk.Skill.SkillCategory)
+                .SelectMany(fl_sk => fl_sk.Skill.ServiceTypeOfSkill.Select(sk_st => sk_st.ServiceType.ServiceCategory.ServiceClassName))
+                .Concat(freelance.FreelancerFeasibleServices.Select(f_sv => f_sv.ServiceType.ServiceCategory.ServiceClassName))
                 .Distinct()
                 .ToList();
 
