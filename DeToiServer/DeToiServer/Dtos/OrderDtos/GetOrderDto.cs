@@ -11,6 +11,7 @@ namespace DeToiServer.Dtos.OrderDtos
         public Guid Id { get; set; }
         public AddressDto? Address { get; set; }
         public double EstimatedPrice { get; set; }
+        public double PreviewPrice { get; set; }
         public TimeOnly StartTime { get; set; }
         public DateOnly StartDate { get; set; }
         public TimeOnly FinishTime { get; set; }

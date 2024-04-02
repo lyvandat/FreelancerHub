@@ -24,7 +24,12 @@ namespace DeToiServer.Services.OrderManagementService
                 return Enumerable.Empty<GetOrderDto>();
             }
 
-            return biddingOrderDetail.Select(bo => _mapper.Map<GetOrderDto>(bo.Order));
+            return biddingOrderDetail.Select(bo => {
+                var mapOrder = _mapper.Map<GetOrderDto>(bo.Order);
+                mapOrder.PreviewPrice = bo.PreviewPrice;
+
+                return mapOrder;
+            });
         }
 
         public async Task<IEnumerable<GetFreelanceMatchingDto>> GetFreelancersForCustomerBiddingOrder(Guid orderId)
