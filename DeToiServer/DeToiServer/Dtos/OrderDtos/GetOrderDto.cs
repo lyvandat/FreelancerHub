@@ -12,6 +12,7 @@ namespace DeToiServer.Dtos.OrderDtos
         public AddressDto? Address { get; set; }
         public double EstimatedPrice { get; set; }
         public double PreviewPrice { get; set; }
+        public double RecommendPrice { get; set; }
         public TimeOnly StartTime { get; set; }
         public DateOnly StartDate { get; set; }
         public TimeOnly FinishTime { get; set; }
