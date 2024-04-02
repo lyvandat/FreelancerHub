@@ -52,13 +52,13 @@ namespace DeToiServerData.Configurations
         protected override void OnConfigure(EntityTypeBuilder<BiddingOrder> builder)
         {
             builder.HasOne(bo => bo.Order)
-                .WithOne()
-                .HasForeignKey<BiddingOrder>(bo => bo.OrderId)
+                .WithMany(o => o.BiddingOrders)
+                .HasForeignKey(o => o.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(bo => bo.Freelancer)
-                .WithOne()
-                .HasForeignKey<BiddingOrder>(bo => bo.FreelancerId)
+                .WithMany(f => f.BiddingOrders)
+                .HasForeignKey(o => o.FreelancerId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

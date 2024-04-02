@@ -288,11 +288,9 @@ namespace DeToiServerData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FreelancerId")
-                        .IsUnique();
+                    b.HasIndex("FreelancerId");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique();
+                    b.HasIndex("OrderId");
 
                     b.ToTable("BiddingOrders");
                 });
@@ -1064,7 +1062,7 @@ namespace DeToiServerData.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("4ce359ba-5406-43db-8d98-cfaac7e2ebcf"),
+                            Id = new Guid("0a1b9cd8-d0d2-41bd-910c-2676a522583a"),
                             AutoSelect = true,
                             Icon = "faDog",
                             Key = "hasPets",
@@ -1074,7 +1072,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("140a3ef6-ad3b-4fcb-8d4b-872693e95cc8"),
+                            Id = new Guid("fef22366-9d7d-4f2a-9d05-7a8d9abe4c94"),
                             AutoSelect = false,
                             Icon = "faComputer",
                             Key = "hasElectronics",
@@ -1084,7 +1082,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("95bea657-9a10-4c1f-980c-c231ff5aff20"),
+                            Id = new Guid("381d43b2-076f-4e1b-b27c-cb410a3ed6d6"),
                             AutoSelect = false,
                             Icon = "faBroom",
                             Key = "freelancerBringTools",
@@ -1151,14 +1149,14 @@ namespace DeToiServerData.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("59f84c0f-d05a-4bfe-92cc-61ed0694069b"),
+                            Id = new Guid("0801833e-14b2-4acd-a037-60f54e593aac"),
                             Description = "Tất cả dịch vụ, dọn toàn bộ nhà / phòng",
                             InputMethodTypeId = new Guid("89e6f2f5-15cc-470c-a363-427ee8646609"),
                             Name = "Dọn trọn gói"
                         },
                         new
                         {
-                            Id = new Guid("6b2ef35c-1722-4ebf-ade5-a5d74e084993"),
+                            Id = new Guid("bdb6266b-5ee8-4fc2-a068-5381c3cd8ab5"),
                             Description = "Trung bình 50.000đ / phòng, tiết kiệm và nhanh chóng",
                             InputMethodTypeId = new Guid("89e6f2f5-15cc-470c-a363-427ee8646609"),
                             Name = "Dọn theo phòng"
@@ -1208,7 +1206,7 @@ namespace DeToiServerData.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("dd87c544-69c2-4a34-b209-7dcda5ffb2c0"),
+                            Id = new Guid("bc41666c-40ca-42f8-a077-3682b9e996ad"),
                             InputMethodId = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
                             Key = "addressLine",
                             Label = "Số nhà, số phòng, hẻm (ngõ)",
@@ -1218,7 +1216,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f1ce1db7-7478-4a52-bcbc-63c910407e73"),
+                            Id = new Guid("25adcf6e-7a89-46e9-8c30-f00ea3546222"),
                             InputMethodId = new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"),
                             Key = "cleanningType",
                             Label = "Bạn muốn chúng tôi dọn như thế nào?",
@@ -1229,7 +1227,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0eb821b2-8071-4b90-bfcc-4ed4b64b5202"),
+                            Id = new Guid("8672c4be-1ce3-47b1-b34c-3093197084a4"),
                             InputMethodId = new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"),
                             Key = "roomNumber",
                             Label = "Số lượng phòng",
@@ -1309,14 +1307,14 @@ namespace DeToiServerData.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("4f3b78be-18d0-44bf-807f-34d1e1d1a829"),
+                            Id = new Guid("72184616-9b3a-4e0e-a2ac-498cc2101d1f"),
                             InputMethodId = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
                             Message = "Thông báo valid input 1 custom 1.",
                             Name = "required"
                         },
                         new
                         {
-                            Id = new Guid("d0bd2f60-c995-41d0-97ab-c1f4c0ddc20a"),
+                            Id = new Guid("c53f49c6-8e53-4d75-a4c8-5223da87e221"),
                             InputMethodId = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
                             Message = "Thông báo valid input 1 custom 2.",
                             Name = "min",
@@ -1324,7 +1322,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f45bccdf-ba26-4f2b-89df-f144951f5223"),
+                            Id = new Guid("519f7d0b-ec3e-45ab-b0f8-48f6cd31c707"),
                             InputMethodId = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
                             Message = "Thông báo valid input 1 custom 3.",
                             Name = "max",
@@ -1332,21 +1330,21 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("20fd9f5d-fbca-48d4-8682-877f1c4f9e80"),
+                            Id = new Guid("f60fde02-dcd8-4f5a-8093-d4c4a4e63297"),
                             InputMethodId = new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"),
                             Message = "Thông báo valid input 2 custom 1.",
                             Name = "required"
                         },
                         new
                         {
-                            Id = new Guid("6085ecb5-0b89-478b-b222-8507f55ae8f1"),
+                            Id = new Guid("b279a55d-e8e7-4209-ac9c-adaa9f3668dc"),
                             InputMethodId = new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"),
                             Message = "Thông báo valid input 3 custom 1.",
                             Name = "required"
                         },
                         new
                         {
-                            Id = new Guid("8142984d-a0b2-4728-93d2-4b79f813dc53"),
+                            Id = new Guid("81c2fded-0617-4f0c-b334-a54af751dd74"),
                             InputMethodId = new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"),
                             Message = "Thông báo valid input 3 custom 2.",
                             Name = "min",
@@ -1450,14 +1448,14 @@ namespace DeToiServerData.Migrations
             modelBuilder.Entity("DeToiServerCore.Models.BiddingOrder", b =>
                 {
                     b.HasOne("DeToiServerCore.Models.Accounts.FreelanceAccount", "Freelancer")
-                        .WithOne()
-                        .HasForeignKey("DeToiServerCore.Models.BiddingOrder", "FreelancerId")
+                        .WithMany("BiddingOrders")
+                        .HasForeignKey("FreelancerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DeToiServerCore.Models.Order", "Order")
-                        .WithOne()
-                        .HasForeignKey("DeToiServerCore.Models.BiddingOrder", "OrderId")
+                        .WithMany("BiddingOrders")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1791,6 +1789,8 @@ namespace DeToiServerData.Migrations
                 {
                     b.Navigation("Address");
 
+                    b.Navigation("BiddingOrders");
+
                     b.Navigation("FavoriteBy");
 
                     b.Navigation("FreelanceSkills");
@@ -1809,6 +1809,8 @@ namespace DeToiServerData.Migrations
 
             modelBuilder.Entity("DeToiServerCore.Models.Order", b =>
                 {
+                    b.Navigation("BiddingOrders");
+
                     b.Navigation("OrderServiceTypes");
 
                     b.Navigation("OrderServices");

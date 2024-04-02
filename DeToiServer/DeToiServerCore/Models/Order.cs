@@ -22,5 +22,6 @@ namespace DeToiServerCore.Models
         public ICollection<OrderService>? OrderServices { get; set; }
         public ICollection<OrderServiceType>? OrderServiceTypes { get; set; }
         public ICollection<ServiceProven>? ServiceProven { get; set; }
+        public ICollection<BiddingOrder>? BiddingOrders { get; set; }
     }
 }

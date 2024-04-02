@@ -89,7 +89,7 @@ namespace DeToiServer.RealTime
         {
             var freelancer = await _freelancerService.GetDetailWithStatistic(matchingFreelancer.FreelancerId);
             var order = await _orderService.GetById(matchingFreelancer.OrderId);
-
+            
             if (order == null) return;
 
             var customer = await _customerService.GetByIdWithAccount(order.CustomerId);
@@ -100,15 +100,15 @@ namespace DeToiServer.RealTime
                 .Include(u => u.Connections)
                 .FirstOrDefaultAsync();
 
-            _context.BiddingOrders.Add(_mapper.Map<BiddingOrder>(matchingFreelancer));
+            var biddingOrder = _mapper.Map<BiddingOrder>(matchingFreelancer);
+            var existingBiddingOrder = await _context.BiddingOrders
+                .Where(bo => bo.OrderId == biddingOrder.OrderId && bo.FreelancerId == biddingOrder.FreelancerId)
+                .FirstOrDefaultAsync();
 
-            try
+            if (existingBiddingOrder != null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
-                throw new Exception("Có lỗi trong quá trình xử lí, vui lòng thử lại");
+                // Add Notification here for fe to catch
+                return;
             }
 
             if (user?.Connections != null)
@@ -119,6 +119,17 @@ namespace DeToiServer.RealTime
                 {
                     await Clients.Client(connection.ConnectionId).ReceiveFreelancerResponse(freelancer);
                 }
+            }
+
+            // Save bidding orders
+            try
+            {
+                _context.BiddingOrders.Add(biddingOrder);
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception)
+            {
+                Console.WriteLine("Cannot save bidding order");
             }
         }
 
