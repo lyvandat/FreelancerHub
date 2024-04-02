@@ -100,19 +100,20 @@ namespace DeToiServer.RealTime
                 .Include(u => u.Connections)
                 .FirstOrDefaultAsync();
 
+            _context.BiddingOrders.Add(_mapper.Map<BiddingOrder>(matchingFreelancer));
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw new Exception("Có lỗi trong quá trình xử lí, vui lòng thử lại");
+            }
+
             if (user?.Connections != null)
             {
                 freelancer.PreviewPrice = matchingFreelancer.PreviewPrice;
-                _context.BiddingOrders.Add(_mapper.Map<BiddingOrder>(matchingFreelancer));
-
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch(Exception)
-                {
-                    throw new Exception("Có lỗi trong quá trình xử lí, vui lòng thử lại");
-                }
 
                 foreach (var connection in user.Connections)
                 {

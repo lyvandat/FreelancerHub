@@ -108,11 +108,11 @@ namespace DeToiServer.AutoMapper
             CreateMap<FreelanceAccount, GetFreelanceDto>()
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
-                .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders)); 
+                .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders));
 
             CreateMap<FreelanceAccount, GetFreelanceMatchingDto>()
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
-                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault() ))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
                 .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders));
 
             CreateMap<FreelanceAccount, GetFreelanceAccountShortDetailDto>()
@@ -149,7 +149,7 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.ServiceStatus, opt => opt.MapFrom(src => src.ServiceStatus != null ? src.ServiceStatus.Name : "Chờ xử lí"))
                 .ForMember(dest => dest.Services, opt => opt.MapFrom(src => src.OrderServices!.FirstOrDefault()))
                 .ForMember(dest => dest.ServiceTypes, opt => opt.MapFrom(src => src.OrderServiceTypes));
-                
+
             CreateMap<OrderServiceType, GetServiceTypeDto>()
                 .ConvertUsing((src, dest, context) => {
                     return context.Mapper.Map<GetServiceTypeDto>(src.ServiceType);

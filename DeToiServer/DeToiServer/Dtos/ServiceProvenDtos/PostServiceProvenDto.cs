@@ -1,15 +1,18 @@
-﻿using DeToiServerCore.Models.Accounts;
-using DeToiServerCore.Models.Services;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DeToiServer.Dtos.ServiceProvenDtos
 {
     public class PostServiceProvenDto
     {
-        public string ImageBefore { get; set; } = string.Empty;
-        public string ImageAfter { get; set; } = string.Empty;
+        [Required]
+        public required ICollection<string> MediaPath { get; set; }
+        [Required]
         public string MediaType { get; set; } = string.Empty;
+        [Required]
         public Guid OrderId { get; set; }
+        [Required]
         public Guid FreelancerId { get; set; }
+        [Required]
         public Guid ServiceTypeId { get; set; }
     }
 }

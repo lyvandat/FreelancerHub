@@ -15,8 +15,22 @@ namespace DeToiServer.Services.ServiceProvenService
             _mapper = mapper;
         }
 
-        public async Task<ServiceProven> Add(PostServiceProvenDto serviceProven)
-            => await _uow.ServiceProvenRepo.CreateAsync(_mapper.Map<ServiceProven>(serviceProven));
+        public async Task<ServiceProven> Add(PostServiceProvenDto serviceProven, bool before = false)
+        {
+            var proven = _mapper.Map<ServiceProven>(serviceProven);
+            var jointPath = string.Join("|", serviceProven.MediaPath);
+
+            if (before)
+            {
+                proven.ImageBefore = jointPath;
+            }
+            else
+            {
+                proven.ImageAfter = jointPath;
+            }
+
+            return await _uow.ServiceProvenRepo.CreateAsync(proven);
+        }
 
         public async Task<IEnumerable<GetServiceProvenDto>> GetAll()
         {
@@ -25,7 +39,25 @@ namespace DeToiServer.Services.ServiceProvenService
             return serviceProven.Select(_mapper.Map<GetServiceProvenDto>);
         }
 
-        public async Task<GetServiceProvenDto> GetById(Guid id)
-            => _mapper.Map<GetServiceProvenDto>(await _uow.ServiceProvenRepo.GetByIdWithInfo(id));
+        public async Task<GetServiceProvenDto?> GetById(Guid id)
+        {
+            var serviceProven = await _uow.ServiceProvenRepo.GetByIdWithInfo(id);
+
+            if (serviceProven == null)
+            {
+                return null;
+            }
+
+            var getSpDto = _mapper.Map<GetServiceProvenDto>(serviceProven);
+            getSpDto.MediaPathBefore = serviceProven.ImageBefore?.Split("|");
+            getSpDto.MediaPathAfter = serviceProven.ImageAfter?.Split("|");
+
+            return getSpDto;
+        }
+
+        public async Task<ServiceProven?> GetByOrderId(Guid id)
+        {
+            return await _uow.ServiceProvenRepo.GetByConditionsAsync(sp => sp.OrderId == id);
+        }
     }
 }

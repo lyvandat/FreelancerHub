@@ -1,7 +1,5 @@
 ﻿using DeToiServer.Dtos.ServiceProvenDtos;
 using DeToiServer.Services.ServiceProvenService;
-using DeToiServerCore.Models;
-using DeToiServerCore.Models.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeToiServer.Controllers
@@ -31,10 +29,28 @@ namespace DeToiServer.Controllers
             return Ok(await _serviceProven.GetById(id));
         }
 
-        [HttpPost]
-        public async Task<ActionResult<GetServiceProvenDto>> PostServiceProven(PostServiceProvenDto postServiceProven)
+        [HttpPost("before")]
+        public async Task<ActionResult<GetServiceProvenDto>> PostServiceProvenBefore(PostServiceProvenDto postServiceProven)
         {
-            var serviceProven = await _serviceProven.Add(postServiceProven);
+            var serviceProven = await _serviceProven.Add(postServiceProven, true);
+            await _uow.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetServiceProvenDetail), new { id = serviceProven.Id }, serviceProven);
+        }
+
+        [HttpPost("after")]
+        public async Task<ActionResult<GetServiceProvenDto>> PostServiceProvenAfter(PostServiceProvenDto postServiceProven)
+        {
+            var serviceProven = await _serviceProven.GetByOrderId(postServiceProven.OrderId);
+
+            if (serviceProven != null)
+            {
+                serviceProven.ImageAfter = string.Join("|", postServiceProven.MediaPath);
+            }
+            else
+            {
+                serviceProven = await _serviceProven.Add(postServiceProven);
+            }
+
             await _uow.SaveChangesAsync();
             return CreatedAtAction(nameof(GetServiceProvenDetail), new { id = serviceProven.Id }, serviceProven);
         }

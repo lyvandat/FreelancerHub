@@ -1,10 +1,13 @@
-﻿namespace DeToiServer.Dtos.ServiceProvenDtos
+﻿
+using Newtonsoft.Json;
+
+namespace DeToiServer.Dtos.ServiceProvenDtos
 {
     public class GetServiceProvenDto
     {
         public Guid Id { get; set; }
-        public string ImageBefore { get; set; } = string.Empty;
-        public string ImageAfter { get; set; } = string.Empty;
+        public ICollection<string>? MediaPathBefore { get; set; }
+        public ICollection<string>? MediaPathAfter { get; set; }
         public string MediaType { get; set; } = string.Empty;
         public double EstimatedPrice { get; set; }
         public DateTime StartTime { get; set; }
