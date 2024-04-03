@@ -1,5 +1,5 @@
 -- DELETE ALL!!!
-Delete from [OrderServiceType];
+Delete from [OrderServiceTypes];
 Delete from [OrderService];
 Delete from [Orders];
 Delete from [Services];
@@ -66,7 +66,7 @@ INSERT INTO [OrderService] ([OrderId], [ServiceId]) VALUES
 ('5f6a7ab9-2e2e-4eac-880b-c87484993f94', '3a6bb767-4afa-446b-b4aa-44b10b073ee6'),
 ('08f8cb99-6368-4e6f-a947-1caf01266391', 'd585cd1e-02ac-4b9c-8a97-c10178915969'); 
 
-INSERT INTO [OrderServiceType] ([OrderId], [ServiceTypeId]) VALUES
+INSERT INTO [OrderServiceTypes] ([OrderId], [ServiceTypeId]) VALUES
 ('6e9be42f-b78d-4b65-b1ab-302a1c297907', '49A42267-D9DC-4E11-87A5-36525D4254D9'),
 ('f7802868-8028-48fe-a72b-625b7b690a31', 'DBB78597-043D-47C1-8810-93D392FD09BA'),
 ('5f6a7ab9-2e2e-4eac-880b-c87484993f94', '3B8A2D6A-B0E7-46AF-A688-397CEA642603'),

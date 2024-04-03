@@ -95,6 +95,7 @@ namespace DeToiServerData
 
         // Service related models
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderServiceType> OrderServiceTypes { get; set; }
         public DbSet<BiddingOrder> BiddingOrders { get; set; }
         public DbSet<ServiceStatus> ServiceStatuses { get; set; }
         public DbSet<Service> Services { get; set; }

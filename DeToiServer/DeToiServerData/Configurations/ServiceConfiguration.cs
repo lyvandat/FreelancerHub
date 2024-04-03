@@ -99,9 +99,6 @@ namespace DeToiServerData.Configurations
                 .WithMany(st => st.OrderServiceTypes)
                 .HasForeignKey(ost => ost.ServiceTypeId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            // Optionally, set the table name for the joint table
-            builder.ToTable("OrderServiceType");
         }
     }
 
