@@ -26,6 +26,7 @@ namespace DeToiServer.Dtos.QuizDtos
         public required string Type { get; set; } = String.Empty;
         public required ICollection<string> OfSkills { get; set; }
         public required string Question { get; set; } = string.Empty;
+        public int Point { get; set; }
         public required ICollection<FreelanceQuizAnswerDto> Answers { get; set; }
     }
 

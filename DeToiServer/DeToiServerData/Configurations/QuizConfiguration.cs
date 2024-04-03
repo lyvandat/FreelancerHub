@@ -19,9 +19,6 @@ namespace DeToiServerData.Configurations
                 .WithMany(q => q.QuizQuestions)
                 .HasForeignKey(qq => qq.QuestionId)
                 .OnDelete(DeleteBehavior.NoAction);
-
-            // Optionally, set the table name for the joint table
-            builder.ToTable("QuizQuestions");
         }
     }
 

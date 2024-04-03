@@ -133,6 +133,7 @@ namespace DeToiServerData
         public DbSet<FreelanceQuizAnswer> FreelanceQuizAnswers { get; set; }
         public DbSet<FreelanceCorrectQuestion> FreelanceCorrectQuestions { get; set; }
         public DbSet<FreelanceQuizResult> FreelanceQuizResults { get; set; }
+        public DbSet<QuizQuestion> QuizQuestions { get; set; }
         #endregion
     }
 }

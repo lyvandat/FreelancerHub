@@ -41,11 +41,15 @@ namespace DeToiServer.Services.FreelanceQuizService
         public async Task<GetPreDefinedQuizDto?> GetFreelancerUncompleteQuiz(Guid freelancerId)
         {
             var quiz = await _uow.FreelanceQuizRepo.GetNewFreelancerQuizAsync(freelancerId);
-            quiz ??= await _uow.FreelanceQuizRepo.AddNewFreelancerQuizAsync(freelancerId);
+            if (quiz == null)
+            {
+                _ = await _uow.FreelanceQuizRepo.AddNewFreelancerQuizAsync(freelancerId);
+                if (!await _uow.SaveChangesAsync()) return null;
+            }
 
-            if (!await _uow.SaveChangesAsync()) return null;
-
-            return _mapper.Map<GetPreDefinedQuizDto>(quiz);
+            var addedQuiz = await _uow.FreelanceQuizRepo.GetNewFreelancerQuizAsync(freelancerId);
+            
+            return _mapper.Map<GetPreDefinedQuizDto>(addedQuiz);
         }
 
         public async Task<FreelanceQuizResult> PostFreelanceQuizResult(PostFreelanceQuizResultDto data)

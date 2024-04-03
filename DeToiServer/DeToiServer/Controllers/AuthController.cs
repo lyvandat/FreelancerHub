@@ -71,7 +71,7 @@ namespace DeToiServer.Controllers
                 IdentityNumber = request.IdentityNumber,
                 IsTeam = request.IsTeam,
                 Address = _mapper.Map<List<Address>>(request.Address),
-                //Skills = _mapper.Map<List<Skill>>(request.Skills),
+                //FreelanceSkills = _mapper.Map<List<Skill>>(request.Skills),
             };
 
             // TODO: maybe this is unnecessary

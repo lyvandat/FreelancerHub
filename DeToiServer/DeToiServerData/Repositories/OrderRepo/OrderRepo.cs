@@ -47,7 +47,7 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Include(o => o.Address)
                 .ToListAsync();
 
-            foreach (var order in ordersQuery)
+            foreach (var order in result)
             {
                 order.RecommendPrice = order.OrderServiceTypes
                     .Select(async ost => await CalcAvgOrderPriceByServiceType(ost.ServiceTypeId))
@@ -86,6 +86,7 @@ namespace DeToiServerData.Repositories.OrderRepo
         public async Task<Order> GetOrderDetailByIdAsync(Guid id)
         {
             var orderDetail = _context.Orders
+                .Where(o => o.Id == id) // && !o.ServiceStatusId.Equals(StatusConst.Canceled)
                 .AsNoTracking().AsSplitQuery()
                 .Include(o => o.OrderServiceTypes)
                     .ThenInclude(ost => ost.ServiceType)
@@ -94,14 +95,12 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Include(o => o.Freelance)
                     .ThenInclude(f => f.Account)
                 .Include(o => o.ServiceStatus)
-                .Include(o => o.Address)
-                .Where(o => o.Id == id); // && !o.ServiceStatusId.Equals(StatusConst.Canceled)
+                .Include(o => o.Address);
 
             var result = await orderDetail.FirstOrDefaultAsync();
-            var avgPrice = result.OrderServiceTypes
+            result.RecommendPrice = result.OrderServiceTypes
                 .Select(async ost => await CalcAvgOrderPriceByServiceType(ost.ServiceTypeId))
                 .ToList().Sum(price => price.Result);
-            result.RecommendPrice = avgPrice;
 
             return result;
         }
