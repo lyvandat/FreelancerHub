@@ -76,8 +76,8 @@ namespace DeToiServerData.Repositories.FreelanceQuizRepo
                 FreelanceQuizResults = null!
             };
 
-            // var update = await _context.FreelanceQuizzes.AddAsync(result);
-            return result;
+            var update = await _context.FreelanceQuizzes.AddAsync(result);
+            return update.Entity;
         }
 
         public async Task<IEnumerable<FreelanceQuizResult>> GetAllQuizResultAsync()
