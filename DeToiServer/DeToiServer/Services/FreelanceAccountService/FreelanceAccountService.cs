@@ -71,7 +71,9 @@ namespace DeToiServer.Services.FreelanceAccountService
                 rawResult.LoveCount = favoriteBy.Count;
             }
 
-            return _mapper.Map<GetFreelanceMatchingDto>(rawResult);
+            var getFreelancerDto = _mapper.Map<GetFreelanceMatchingDto>(rawResult);
+            getFreelancerDto.AccountId = rawResult.Id;
+            return getFreelancerDto;
         }
 
         public async Task<IEnumerable<GetFreelanceMatchingDto>> GetAllFreelanceDetail()
