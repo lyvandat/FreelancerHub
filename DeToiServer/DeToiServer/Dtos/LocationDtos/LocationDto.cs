@@ -10,6 +10,18 @@ namespace DeToiServer.Dtos.LocationDtos
         public double Longitude { get; set; }
     }
 
+    public class GeoCodeErrorDto
+    {
+        public string Code { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
+    }
+
+    public class GeoCodeErrorResponseDto
+    {
+        public GeoCodeErrorDto? Error { get; set; }
+    }
+
+
     public class LocationDto
     {
         public double Lat { get; set; }

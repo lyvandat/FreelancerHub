@@ -78,6 +78,17 @@ namespace DeToiServer.Controllers
                         result = _mapper.Map<IEnumerable<RevGeoCodeResultDto>>(rawResult.Results);
                     }
                 }
+                else
+                {
+                    var res = await response.Content.ReadAsStringAsync();
+                    var error = JsonConvert.DeserializeObject<GeoCodeErrorResponseDto>(res);
+                    return StatusCode(500, new
+                    {
+                        Message = error == null
+                            ? "Lỗi dịch vụ Geocoding"
+                            : error.Error == null ? "Lỗi dịch vụ Geocoding" : error.Error.Message
+                    });
+                }
             }
 
             if (!result.Any())
@@ -139,6 +150,17 @@ namespace DeToiServer.Controllers
                     {
                         result = _mapper.Map<IEnumerable<GeoCodeResultDto>>(rawResult.Results);
                     }
+                }
+                else
+                {
+                    var res = await response.Content.ReadAsStringAsync();
+                    var error = JsonConvert.DeserializeObject<GeoCodeErrorResponseDto>(res);
+                    return StatusCode(500, new
+                    {
+                        Message = error == null 
+                            ? "Lỗi dịch vụ Geocoding" 
+                            : error.Error == null ? "Lỗi dịch vụ Geocoding" : error.Error.Message
+                    });
                 }
             }
 
