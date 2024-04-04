@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos.LocationDtos;
 using DeToiServerCore.Common.Helper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR.Protocol;
 using Microsoft.Extensions.Options;
@@ -24,17 +25,24 @@ namespace DeToiServer.Controllers
         {
             _uow = uow;
             _mapper = mapper;
-            _apiKey = appSecret.Value.GeoCoding == null ? "658dac28274ce196615546rej6e920c" : appSecret.Value.GeoCoding.ApiKey;
+            _apiKey = appSecret.Value.GeoCoding == null ? "" : appSecret.Value.GeoCoding.ApiKey;
         }
 
         [HttpGet("reverse")]
-        public async Task<ActionResult<RevGeoCodeResultDto>> GetRevGeoCodeInfo(
+        public async Task<ActionResult<IEnumerable<RevGeoCodeResultDto>>> GetRevGeoCodeInfo(
             [FromQuery, Required] double lat = 10.7625844,
             [FromQuery, Required] double lon = 106.68168516587875
         )
         {
-            RevGeoCodeResponseDto? rawResult = null;
-            RevGeoCodeResultDto? result = new();
+            if (string.IsNullOrEmpty(_apiKey))
+            {
+                return NotFound(new
+                {
+                    message = "[Server] Không tìm thấy api key cho dịch vụ này (Geocoding)."
+                });
+            }
+
+            IEnumerable<RevGeoCodeResultDto> result = [];
 
             var handler = new HttpClientHandler();
             handler.ServerCertificateCustomValidationCallback +=
@@ -43,8 +51,8 @@ namespace DeToiServer.Controllers
                     return true;
                 };
 
-            var requestUrl = new StringBuilder("https://geocode.maps.co/reverse");
-            requestUrl.Append($"?lat={lat}&lon={lon}&api_key={_apiKey}");
+            var requestUrl = new StringBuilder("https://rsapi.goong.io/geocode");
+            requestUrl.Append($"?latlng={lat},{lon}&api_key={_apiKey}");
 
             using (var httpClient = new HttpClient(handler))
             {
@@ -63,16 +71,16 @@ namespace DeToiServer.Controllers
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
-                    rawResult = JsonConvert.DeserializeObject<RevGeoCodeResponseDto>(apiResponse);
-                    result = _mapper.Map<RevGeoCodeResultDto>(rawResult!.Address);
-                    result.Display_name = rawResult!.Display_name!;
+                    var rawResult = JsonConvert.DeserializeObject<GeoCodeResponseDto>(apiResponse);
 
-                    result.Lat = lat;
-                    result.Lon = lon;
+                    if (rawResult != null)
+                    {
+                        result = _mapper.Map<IEnumerable<RevGeoCodeResultDto>>(rawResult.Results);
+                    }
                 }
             }
 
-            if (result is null)
+            if (!result.Any())
             {
                 return NotFound(new
                 {
@@ -88,8 +96,15 @@ namespace DeToiServer.Controllers
             [FromQuery, Required] string search
         )
         {
-            List<GeoCodeResponseDto>? rawResult = null;
-            List<GeoCodeResultDto>? result = [];
+            if (string.IsNullOrEmpty(_apiKey))
+            {
+                return NotFound(new
+                {
+                    message = "[Server] Không tìm thấy api key cho dịch vụ này (Geocoding)."
+                });
+            }
+
+            IEnumerable<GeoCodeResultDto> result = [];
 
             var handler = new HttpClientHandler();
             handler.ServerCertificateCustomValidationCallback +=
@@ -98,8 +113,8 @@ namespace DeToiServer.Controllers
                     return true;
                 };
 
-            var requestUrl = new StringBuilder("https://geocode.maps.co/search");
-            requestUrl.Append($"?q={search}&api_key={_apiKey}");
+            var requestUrl = new StringBuilder("https://rsapi.goong.io/geocode");
+            requestUrl.Append($"?address={search}&api_key={_apiKey}");
 
             using (var httpClient = new HttpClient(handler))
             {
@@ -118,15 +133,16 @@ namespace DeToiServer.Controllers
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     string apiResponse = await response.Content.ReadAsStringAsync();
-                    rawResult = JsonConvert.DeserializeObject<List<GeoCodeResponseDto>>(apiResponse);
-                    foreach (var item in rawResult!)
+                    var rawResult = JsonConvert.DeserializeObject<GeoCodeResponseDto>(apiResponse);
+
+                    if (rawResult != null)
                     {
-                        result.Add(_mapper.Map<GeoCodeResultDto>(item));
+                        result = _mapper.Map<IEnumerable<GeoCodeResultDto>>(rawResult.Results);
                     }
                 }
             }
 
-            if (result is null)
+            if (!result.Any())
             {
                 return NotFound(new
                 {

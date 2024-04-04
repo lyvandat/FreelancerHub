@@ -23,48 +23,20 @@ using Newtonsoft.Json;
 namespace DeToiServer.AutoMapper
 {
     #region Location Mapper Resolver
-    public class WardResolver : IValueResolver<LocationAddressResultDto, RevGeoCodeResultDto, string>
-    {
-        public string Resolve(LocationAddressResultDto source, RevGeoCodeResultDto destination, string destMember, ResolutionContext context)
-        {
-            if (!string.IsNullOrEmpty(source.Quarter))
-                return source.Quarter;
-            if (!string.IsNullOrEmpty(source.Town))
-                return source.Town;
-            if (!string.IsNullOrEmpty(source.Village))
-                return source.Village;
+    //public class AddressComponentResolver : IValueResolver<LocationAddressResultDto, RevGeoCodeResultDto, string>
+    //{
+    //    public string Resolve(LocationAddressResultDto source, RevGeoCodeResultDto destination, string destMember, ResolutionContext context)
+    //    {
+    //        if (!string.IsNullOrEmpty(source.Quarter))
+    //            return source.Quarter;
+    //        if (!string.IsNullOrEmpty(source.Town))
+    //            return source.Town;
+    //        if (!string.IsNullOrEmpty(source.Village))
+    //            return source.Village;
 
-            return string.Empty; // or throw an exception, depending on your logic
-        }
-    }
-
-    public class DistrictResolver : IValueResolver<LocationAddressResultDto, RevGeoCodeResultDto, string>
-    {
-        public string Resolve(LocationAddressResultDto source, RevGeoCodeResultDto destination, string destMember, ResolutionContext context)
-        {
-            if (!string.IsNullOrEmpty(source.Suburb))
-                return source.Suburb;
-            if (!string.IsNullOrEmpty(source.County))
-                return source.County;
-            if (!string.IsNullOrEmpty(source.City_district))
-                return source.City_district;
-
-            return string.Empty; // or throw an exception, depending on your logic
-        }
-    }
-
-    public class ProvinceResolver : IValueResolver<LocationAddressResultDto, RevGeoCodeResultDto, string>
-    {
-        public string Resolve(LocationAddressResultDto source, RevGeoCodeResultDto destination, string destMember, ResolutionContext context)
-        {
-            if (!string.IsNullOrEmpty(source.City))
-                return source.City;
-            if (!string.IsNullOrEmpty(source.State))
-                return source.State;
-
-            return string.Empty; // or throw an exception, depending on your logic
-        }
-    }
+    //        return string.Empty; // or throw an exception, depending on your logic
+    //    }
+    //}
     #endregion
 
     public class MappingProfile : Profile
@@ -167,18 +139,29 @@ namespace DeToiServer.AutoMapper
 
             #region GeoCoding
             CreateMap<LocationAddressResultDto, RevGeoCodeResultDto>()
-                .ForMember(dest => dest.Ward, opt => opt.MapFrom<WardResolver>())
-                .ForMember(dest => dest.District, opt => opt.MapFrom<DistrictResolver>())
-                .ForMember(dest => dest.Province, opt => opt.MapFrom<ProvinceResolver>());
+                .ConvertUsing((src, dest, context) => {
+                    return new ()
+                    {
+                        Country = "Việt Nam", // Default 
+                        Province = Helper.GetLocationUnit(src.Formatted_address, 0) ?? GlobalConstant.GeoCodeDefault,
+                        District = Helper.GetLocationUnit(src.Formatted_address, 1) ?? GlobalConstant.GeoCodeDefault,
+                        Ward = Helper.GetLocationUnit(src.Formatted_address, 2) ?? GlobalConstant.GeoCodeDefault,
+                        Road = Helper.GetLocationUnit(src.Formatted_address, 3),
+                        House_number = Helper.GetLocationUnit(src.Formatted_address, 4),
+                        Amenity = Helper.GetLocationUnit(src.Formatted_address, 5),
+                        Display_name = src.Formatted_address,
+                        Lat = src.Geometry.Location.Lat,
+                        Lon = src.Geometry.Location.Lng,
+                        PlaceId = src.Place_id,
+                    };
+                });
 
-            CreateMap<GeoCodeResponseDto, GeoCodeResultDto>()
-                .ForMember(dest => dest.Country, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 0) ?? GlobalConstant.GeoCodeDefault))
-                .ForMember(dest => dest.Province, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 1) ?? GlobalConstant.GeoCodeDefault))
-                .ForMember(dest => dest.District, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 2) ?? GlobalConstant.GeoCodeDefault))
-                .ForMember(dest => dest.Ward, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 3) ?? GlobalConstant.GeoCodeDefault))
-                .ForMember(dest => dest.Road, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 4)))
-                .ForMember(dest => dest.House_number, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 5)))
-                .ForMember(dest => dest.Amenity, opt => opt.MapFrom(src => Helper.GetLocationUnit(src.Display_name, 6)));
+            CreateMap<RevGeoCodeResultDto, GeoCodeResultDto>().ReverseMap();
+
+            CreateMap<LocationAddressResultDto, GeoCodeResultDto>()
+                .ConvertUsing((src, dest, context) => {
+                    return context.Mapper.Map<GeoCodeResultDto>(context.Mapper.Map<RevGeoCodeResultDto>(src));
+                });
 
             #endregion
 
