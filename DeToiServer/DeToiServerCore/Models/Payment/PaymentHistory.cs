@@ -8,16 +8,17 @@ using System.Threading.Tasks;
 
 namespace DeToiServerCore.Models.Payment
 {
-    public class PaymentHistory : ModelBase
+    public class FreelancePaymentHistory : ModelBase
     {
-        public double Value { get; set; }
+        public string Value { get; set; } = string.Empty;
         public string Method { get; set; } = GlobalConstant.Payment.CoD;
         public DateTime Timestamp { get; set; }
 
-        public Guid? FreelanceAccountId { get; set; }
-        public FreelanceAccount? FreelanceAccount { get; set; }
-
-        //public Guid? CustomerAccountId { get; set; }
-        //public CustomerAccount? CustomerAccount { get; set; }
+        public required Guid FreelanceAccountId { get; set; }
+        public required FreelanceAccount FreelanceAccount { get; set; }
     }
+
+
+    //public Guid? CustomerAccountId { get; set; }
+    //public CustomerAccount? CustomerAccount { get; set; }
 }

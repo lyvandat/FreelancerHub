@@ -1,4 +1,5 @@
 using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
@@ -136,11 +137,32 @@ namespace DeToiServerData.Repositories.OrderRepo
             return result;
         }
 
+        private double GetOrderDistance(Order order, FreelanceAccount freelancer)
+        {
+            if (order.Address == null || freelancer.Address == null || freelancer.Address.Count == 0)
+                return 0d;
+
+            var address = freelancer.Address.First();
+
+            return Helper.GeoCalculator.CalculateDistance(
+                new Coordination()
+                {
+                    Lat = order.Address.Lat,
+                    Lon = order.Address.Lon,
+                },
+                new Coordination()
+                {
+                    Lat = address.Lat,
+                    Lon = address.Lon,
+                });
+        }
+
         private Expression<Func<Order, object>> GetFreelancerOrderSortExpression(FilterFreelancerOrderQuery filterQuery)
         => filterQuery.SortingCol?.ToLower() switch
         {
-            "date" => ord => ord.CreatedTime,
+            "date" => ord => ord.StartTime,
             "distance" => ord => ord.CreatedTime,
+            "created_at" => ord => ord.CreatedTime,
             _ => ord => ord.CreatedTime,
         };
 
@@ -192,6 +214,15 @@ namespace DeToiServerData.Repositories.OrderRepo
                 order.RecommendPrice = order.OrderServiceTypes
                     .Select(async ost => await CalcAvgOrderPriceByServiceType(ost.ServiceTypeId))
                     .ToList().Sum(price => price.Result);
+            }
+
+            if (!(freelance.Address == null || freelance.Address.Count == 0))
+            if (filterQuery.SortingCol.ToLower().Equals("distance"))
+            {
+                if (filterQuery.SortType.ToLower().Equals("asc"))
+                    result = result.OrderBy(order => order, new DistanceComparer(freelance.Address.First())).ToList();
+                else
+                    result = result.OrderByDescending(order => order, new DistanceComparer(freelance.Address.First())).ToList();
             }
 
             return result;
@@ -254,6 +285,24 @@ namespace DeToiServerData.Repositories.OrderRepo
             }
 
             return result;
+        }
+    }
+
+    public class DistanceComparer(Address freelancerAddress) : IComparer<Order>
+    {
+        private readonly Coordination _coord = new ()
+        {
+            Lat = freelancerAddress.Lat,
+            Lon = freelancerAddress.Lon,
+        };
+
+        public int Compare(Order x, Order y)
+        {
+            double distance1 = Helper.GeoCalculator.CalculateDistance(new Coordination() { Lat = x.Address.Lat, Lon = x.Address.Lon }, _coord);
+            double distance2 = Helper.GeoCalculator.CalculateDistance(new Coordination() { Lat = y.Address.Lat, Lon = y.Address.Lon }, _coord);
+
+            // Compare A objects based on the length of additional data from B
+            return (int)(distance1 - distance2);
         }
     }
 }

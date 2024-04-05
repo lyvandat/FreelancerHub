@@ -77,6 +77,7 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Comment ?? GlobalConstant.DefaultCommentContent))
                 .ForMember(dest => dest.ReviewDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.FinishTime ?? GlobalConstant.Review.DefaultDateTime)));
 
+            //
             CreateMap<FreelanceAccount, GetFreelanceDto>()
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))

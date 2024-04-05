@@ -1,3 +1,4 @@
+using DeToiServerCore.Models.Payment;
 using DeToiServerCore.Models.Quiz;
 using DeToiServerCore.Models.Services;
 
@@ -9,6 +10,7 @@ namespace DeToiServerCore.Models.Accounts
         public required Guid AccountId { get; set; }
         public double Rating { get; set; }
         public double Balance { get; set; }
+        public string SystemBalance { get; set; } = string.Empty;
         public int OrderCount { get; set; }
         public int LoveCount { get; set; }
         public int PositiveReviewCount { get; set; }
@@ -24,6 +26,7 @@ namespace DeToiServerCore.Models.Accounts
         public ICollection<Favorite>? FavoriteBy { get; set; }
         public ICollection<FreelanceQuiz>? QuizCollection { get; set; }
         public ICollection<BiddingOrder>? BiddingOrders { get; set; }
+        public ICollection<FreelancePaymentHistory>? PaymentHistories { get; set; }
         //public ICollection<FreelanceServiceType>? FreelancerFeasibleServices { get; set; }
     }
 }

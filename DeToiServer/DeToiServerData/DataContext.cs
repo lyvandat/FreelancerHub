@@ -32,7 +32,7 @@ namespace DeToiServerData
             modelBuilder.ApplyConfiguration(new AddressConfiguration());
 
             modelBuilder.ApplyConfiguration(new FavoriteConfiguration());
-            modelBuilder.ApplyConfiguration(new PaymentConfiguration());
+            modelBuilder.ApplyConfiguration(new FreelancePaymentConfiguration());
             modelBuilder.ApplyConfiguration(new FreelancerSkillConfiguration());
             //modelBuilder.ApplyConfiguration(new FreelancerServiceTypeConfiguration());
             //modelBuilder.ApplyConfiguration(new SkillServiceTypeConfiguration());
@@ -86,7 +86,7 @@ namespace DeToiServerData
         public DbSet<CustomerAccount> Customers { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<Address> Addresses { get; set; }
-        public DbSet<PaymentHistory> PaymentHistories { get; set; }
+        public DbSet<FreelancePaymentHistory> PaymentHistories { get; set; }
 
         public DbSet<FreelanceSkill> FreelanceSkills { get; set; }
         //public DbSet<FreelanceServiceType> FreelanceServiceTypes { get; set; }

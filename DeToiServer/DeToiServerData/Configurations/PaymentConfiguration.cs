@@ -4,13 +4,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DeToiServerData.Configurations
 {
-    internal class PaymentConfiguration : EntityTypeConfigurationBase<PaymentHistory>
+    internal class FreelancePaymentConfiguration : EntityTypeConfigurationBase<FreelancePaymentHistory>
     {
-        protected override void OnConfigure(EntityTypeBuilder<PaymentHistory> builder)
+        protected override void OnConfigure(EntityTypeBuilder<FreelancePaymentHistory> builder)
         {
             builder.Property(b => b.Timestamp)
                 .ValueGeneratedOnAddOrUpdate()
                 .HasDefaultValueSql("GETDATE()");
+
+            builder.HasOne(fph => fph.FreelanceAccount)
+                .WithMany(fl => fl.PaymentHistories)
+                .HasForeignKey(fph => fph.FreelanceAccountId)
+                .OnDelete(DeleteBehavior.ClientNoAction);
         }
     }
 }
