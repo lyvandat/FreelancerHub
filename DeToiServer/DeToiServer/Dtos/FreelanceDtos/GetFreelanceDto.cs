@@ -77,6 +77,7 @@ namespace DeToiServer.Dtos.FreelanceDtos
 
     public class IsFreelancerAddedSkillAndDoneTest
     {
+        public bool IsAddedServiceType { get; set; } = false;
         public bool IsAddedSkill { get; set; } = false;
         public bool IsDoneTest { get; set; } = false;
     }

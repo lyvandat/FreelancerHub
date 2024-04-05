@@ -161,6 +161,7 @@ namespace DeToiServer.Controllers
 
             return Ok(new IsFreelancerAddedSkillAndDoneTest()
             {
+                IsAddedServiceType = !(result.FreelancerFeasibleServices == null || result.FreelancerFeasibleServices.Count == 0),
                 IsAddedSkill = !(result.Skills == null || result.Skills.Count == 0),
                 IsDoneTest = await _quizService.IsFreelancerDoneQuiz(freelance.Id),
             });
@@ -184,5 +185,8 @@ namespace DeToiServer.Controllers
 
             return Ok(await _biddingOrderService.GetFreelancersForCustomerBiddingOrder(orderId));
         }
+
+
+
     }
 }
