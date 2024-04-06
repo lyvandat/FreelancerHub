@@ -9,7 +9,7 @@ namespace DeToiServerCore.Models.Accounts
         public required Account Account { get; set; }
         public required Guid AccountId { get; set; }
         public double Rating { get; set; }
-        public double Balance { get; set; }
+        public string Balance { get; set; } = string.Empty;
         public string SystemBalance { get; set; } = string.Empty;
         public int OrderCount { get; set; }
         public int LoveCount { get; set; }

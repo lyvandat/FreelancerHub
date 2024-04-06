@@ -130,35 +130,35 @@ namespace DeToiServerData.Configurations
                         Id = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e"), 
                         Name = "Dọn dẹp", 
                         Description = "Bao gồm lau nhà, quét nhà, hút bụi, và nhiều dịch vụ khác", 
-                        Image = "https://detoivn.sirv.com/services/dondep/category.png", 
+                        Image = "https://detoivn.b-cdn.net/services/dondep/category.png", 
                         ServiceClassName = "Cleaning"
                     },
                     new ServiceCategory { 
                         Id = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f"), 
                         Name = "Mua sắm", 
                         Description = "Bao gồm đi chợ, siêu thị, nhà sách, và nhiều dịch vụ khác", 
-                        Image = "https://detoivn.sirv.com/services/dicho/category.png",
+                        Image = "https://detoivn.b-cdn.net/services/dicho/category.png",
                         ServiceClassName = "Shopping"
                     },
                     new ServiceCategory { 
                         Id = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a"), 
                         Name = "Sửa chữa", 
                         Description = "Bao gồm sửa máy lạnh, tủ lạnh, và nhiều dịch vụ khác", 
-                        Image = "https://detoivn.sirv.com/services/suachua/category.png",
+                        Image = "https://detoivn.b-cdn.net/services/suachua/category.png",
                         ServiceClassName = "Repairing"
                     },
                     new ServiceCategory { 
                         Id = new Guid("0f6f1894-3ee7-46a8-9939-842e3c620231"), 
                         Name = "Vệ sinh thiết bị", 
                         Description = "Bao gồm vệ sinh máy lạnh, tủ lạnh, ...", 
-                        Image = "https://detoivn.sirv.com/services/vesinhmaylanh/category.png",
+                        Image = "https://detoivn.b-cdn.net/services/vesinhmaylanh/category.png",
                         ServiceClassName = "ElectronicsCleaning"
                     },
                     new ServiceCategory { 
                         Id = new Guid("1b1a6ebd-2838-4b3d-a1f1-1818305df2d6"), 
                         Name = "Chuyển nhà, phòng trọ",
                         Description = "Chuyển nhà phòng trọ", 
-                        Image = "https://detoivn.sirv.com/services/chuyennhaphongtro/category.png",
+                        Image = "https://detoivn.b-cdn.net/services/chuyennhaphongtro/category.png",
                         ServiceClassName = "Moving"
                     },
                 }
@@ -178,26 +178,26 @@ namespace DeToiServerData.Configurations
             builder.HasData(
                 new List<ServiceType>
                 {
-                    new ServiceType { Id = new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603"), Name = "Phòng trọ", BasePrice = 30000, Description = "Dọn dẹp Phòng trọ", Image="https://detoivn.sirv.com/services/dondep/phongtro.png", ServiceCategoryId = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
-                    new ServiceType { Id = new Guid("49a42267-d9dc-4e11-87a5-36525d4254d9"), Name = "Biệt thự", BasePrice = 55000, Description = "Dọn dẹp Biệt thự", Image="https://detoivn.sirv.com/services/dondep/bietthu.png", ServiceCategoryId = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
-                    new ServiceType { Id = new Guid("ef2632f0-47bd-4bbe-a46f-628a28f03d8b"), Name = "Nhà / Nhà phố", BasePrice = 50000, Description = "Dọn dẹp Nhà / Nhà phố", Image="https://detoivn.sirv.com/services/dondep/n%C3%A2-nhapho.png", ServiceCategoryId = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
-                    new ServiceType { Id = new Guid("dbb78597-043d-47c1-8810-93d392fd09ba"), Name = "Căn hộ chung cư", BasePrice = 40000, Description = "Dọn dẹp Căn hộ chung cư", Image="https://detoivn.sirv.com/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
+                    new ServiceType { Id = new Guid("3b8a2d6a-b0e7-46af-a688-397cea642603"), Name = "Phòng trọ", BasePrice = 30000, Description = "Dọn dẹp Phòng trọ", Image="https://detoivn.b-cdn.net/services/dondep/phongtro.png", ServiceCategoryId = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
+                    new ServiceType { Id = new Guid("49a42267-d9dc-4e11-87a5-36525d4254d9"), Name = "Biệt thự", BasePrice = 55000, Description = "Dọn dẹp Biệt thự", Image="https://detoivn.b-cdn.net/services/dondep/bietthu.png", ServiceCategoryId = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
+                    new ServiceType { Id = new Guid("ef2632f0-47bd-4bbe-a46f-628a28f03d8b"), Name = "Nhà / Nhà phố", BasePrice = 50000, Description = "Dọn dẹp Nhà / Nhà phố", Image="https://detoivn.b-cdn.net/services/dondep/n%C3%A2-nhapho.png", ServiceCategoryId = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
+                    new ServiceType { Id = new Guid("dbb78597-043d-47c1-8810-93d392fd09ba"), Name = "Căn hộ chung cư", BasePrice = 40000, Description = "Dọn dẹp Căn hộ chung cư", Image="https://detoivn.b-cdn.net/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("d17ad87c-9f80-4f0e-bfd4-53138d900a6e") },
 
-                    new ServiceType { Id = new Guid("c82954a1-39d4-4012-86b3-6cad42c2b399"), Name = "Đi chợ hộ", BasePrice = 40000, Description = "Mua sắm hộ siêu nhanh", Image="https://detoivn.sirv.com/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
-                    new ServiceType { Id = new Guid("96d250d4-0c0e-4521-b94e-05f3cafca3f3"), Name = "Đi siêu thị hộ", BasePrice = 50000, Description = "Mua sắm hộ siêu nhanh", Image="https://detoivn.sirv.com/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
-                    new ServiceType { Id = new Guid("73bf981f-1cfd-483d-80ee-14ab6d2e55ef"), Name = "Đi siêu thị sang trọng", BasePrice = 100000, Description = "Mua sắm hộ siêu nhanh", Image="https://detoivn.sirv.com/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
-                    new ServiceType { Id = new Guid("3779d349-abcb-4dbc-abf1-25ba9e94a695"), Name = "Đi mua quần áo", BasePrice = 60000, Description = "Mua sắm hộ siêu nhanh", Image="https://detoivn.sirv.com/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
-                    new ServiceType { Id = new Guid("3361bc88-9f58-4be8-ac37-561606430f8a"), Name = "Đi mua giày camping", BasePrice = 300000, Description = "Mua sắm hộ siêu nhanh", Image="https://detoivn.sirv.com/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
-                    new ServiceType { Id = new Guid("07cb166a-4b4e-4637-b224-6277a69003d9"), Name = "Đi mua vé concert", BasePrice = 4000000, Description = "Mua sắm hộ siêu nhanh", Image="https://detoivn.sirv.com/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
-                    new ServiceType { Id = new Guid("a5677de0-a6a7-42c0-ab77-f34b75beb63d"), Name = "Đi mua vé xem phim", BasePrice = 20000, Description = "Mua sắm hộ siêu nhanh", Image="https://detoivn.sirv.com/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
+                    new ServiceType { Id = new Guid("c82954a1-39d4-4012-86b3-6cad42c2b399"), Name = "Đi chợ hộ", BasePrice = 40000, Description = "Mua sắm hộ siêu nhanh", Image="https://detoivn.b-cdn.net/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
+                    new ServiceType { Id = new Guid("96d250d4-0c0e-4521-b94e-05f3cafca3f3"), Name = "Đi siêu thị hộ", BasePrice = 50000, Description = "Mua sắm hộ siêu nhanh", Image="https://detoivn.b-cdn.net/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
+                    new ServiceType { Id = new Guid("73bf981f-1cfd-483d-80ee-14ab6d2e55ef"), Name = "Đi siêu thị sang trọng", BasePrice = 100000, Description = "Mua sắm hộ siêu nhanh", Image="https://detoivn.b-cdn.net/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
+                    new ServiceType { Id = new Guid("3779d349-abcb-4dbc-abf1-25ba9e94a695"), Name = "Đi mua quần áo", BasePrice = 60000, Description = "Mua sắm hộ siêu nhanh", Image="https://detoivn.b-cdn.net/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
+                    new ServiceType { Id = new Guid("3361bc88-9f58-4be8-ac37-561606430f8a"), Name = "Đi mua giày camping", BasePrice = 300000, Description = "Mua sắm hộ siêu nhanh", Image="https://detoivn.b-cdn.net/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
+                    new ServiceType { Id = new Guid("07cb166a-4b4e-4637-b224-6277a69003d9"), Name = "Đi mua vé concert", BasePrice = 4000000, Description = "Mua sắm hộ siêu nhanh", Image="https://detoivn.b-cdn.net/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
+                    new ServiceType { Id = new Guid("a5677de0-a6a7-42c0-ab77-f34b75beb63d"), Name = "Đi mua vé xem phim", BasePrice = 20000, Description = "Mua sắm hộ siêu nhanh", Image="https://detoivn.b-cdn.net/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("6f57d993-eb26-4b35-8c7d-7871a7fd624f") },
 
-                    new ServiceType { Id = new Guid("63ce2ebf-ef36-4b4a-891e-abbde2a75b38"), Name = "Sửa máy giặt", BasePrice = 200000, Description = "Sửa máy giặt", Image="https://detoivn.sirv.com/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
-                    new ServiceType { Id = new Guid("f1b832b2-49f3-456f-bacb-b1f8da766bea"), Name = "Sửa máy lạnh", BasePrice = 200000, Description = "Sửa chữa để tôi lo", Image="https://detoivn.sirv.com/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
-                    new ServiceType { Id = new Guid("b9f74f9e-f792-4c48-b1b6-b6f0bc402d07"), Name = "Sửa bàn ủi", BasePrice = 200000, Description = "Sửa chữa để tôi lo", Image="https://detoivn.sirv.com/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
-                    new ServiceType { Id = new Guid("88006a8c-d757-4b85-8b91-c88e6078fe9c"), Name = "Sửa tivi", BasePrice = 200000, Description = "Sửa chữa để tôi lo", Image="https://detoivn.sirv.com/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
-                    new ServiceType { Id = new Guid("662a64be-f7ea-4419-8978-dbf8f19159dc"), Name = "Sửa ống nước", BasePrice = 200000, Description = "Sửa chữa để tôi lo", Image="https://detoivn.sirv.com/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
-                    new ServiceType { Id = new Guid("ef2034c1-7f44-4d07-b9c0-e2a497999a9d"), Name = "Sửa bình gas", BasePrice = 50000000, Description = "Hãy yên tâm không nổ đâu", Image="https://detoivn.sirv.com/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
-                    new ServiceType { Id = new Guid("cca752d4-c17c-4c31-906f-f33cb8a18e48"), Name = "Sửa máy tính laptop", BasePrice = 200000, Description = "Hãy yên tâm không nổ đâu", Image="https://detoivn.sirv.com/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
+                    new ServiceType { Id = new Guid("63ce2ebf-ef36-4b4a-891e-abbde2a75b38"), Name = "Sửa máy giặt", BasePrice = 200000, Description = "Sửa máy giặt", Image="https://detoivn.b-cdn.net/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
+                    new ServiceType { Id = new Guid("f1b832b2-49f3-456f-bacb-b1f8da766bea"), Name = "Sửa máy lạnh", BasePrice = 200000, Description = "Sửa chữa để tôi lo", Image="https://detoivn.b-cdn.net/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
+                    new ServiceType { Id = new Guid("b9f74f9e-f792-4c48-b1b6-b6f0bc402d07"), Name = "Sửa bàn ủi", BasePrice = 200000, Description = "Sửa chữa để tôi lo", Image="https://detoivn.b-cdn.net/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
+                    new ServiceType { Id = new Guid("88006a8c-d757-4b85-8b91-c88e6078fe9c"), Name = "Sửa tivi", BasePrice = 200000, Description = "Sửa chữa để tôi lo", Image="https://detoivn.b-cdn.net/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
+                    new ServiceType { Id = new Guid("662a64be-f7ea-4419-8978-dbf8f19159dc"), Name = "Sửa ống nước", BasePrice = 200000, Description = "Sửa chữa để tôi lo", Image="https://detoivn.b-cdn.net/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
+                    new ServiceType { Id = new Guid("ef2034c1-7f44-4d07-b9c0-e2a497999a9d"), Name = "Sửa bình gas", BasePrice = 50000000, Description = "Hãy yên tâm không nổ đâu", Image="https://detoivn.b-cdn.net/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
+                    new ServiceType { Id = new Guid("cca752d4-c17c-4c31-906f-f33cb8a18e48"), Name = "Sửa máy tính laptop", BasePrice = 200000, Description = "Hãy yên tâm không nổ đâu", Image="https://detoivn.b-cdn.net/services/dondep/chungcu.jpg", ServiceCategoryId = new Guid("8a21b21e-dc31-49c8-8b5b-84b69204dc3a") },
                 }
             );
         }

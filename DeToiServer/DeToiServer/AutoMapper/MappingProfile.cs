@@ -81,16 +81,25 @@ namespace DeToiServer.AutoMapper
             CreateMap<FreelanceAccount, GetFreelanceDto>()
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
-                .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders));
+                .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders))
+                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.AccountId.ToString(), src.Balance))))
+                .ForMember(dest => dest.SystemBalance, opt => opt.Ignore());
+
 
             CreateMap<FreelanceAccount, GetFreelanceMatchingDto>()
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
-                .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders));
+                .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders))
+                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.AccountId.ToString(), src.Balance))))
+                .ForMember(dest => dest.SystemBalance, opt => opt.Ignore());
 
             CreateMap<FreelanceAccount, GetFreelanceAccountShortDetailDto>()
                 .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Account.Avatar ?? GlobalConstant.DefaultCommentAvt))
-                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Account.FullName ?? "Người dùng"));
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Account.FullName ?? "Người dùng"))
+                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.AccountId.ToString(), src.Balance))))
+                .ForMember(dest => dest.SystemBalance, opt => opt.Ignore());
+
+
             #endregion
 
             #region ServiceType and ServiceCategory

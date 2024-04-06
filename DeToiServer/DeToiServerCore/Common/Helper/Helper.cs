@@ -1,5 +1,6 @@
 ﻿using DeToiServerCore.Common.Constants;
 using System.Linq.Expressions;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace DeToiServerCore.Common.Helper
@@ -75,6 +76,48 @@ namespace DeToiServerCore.Common.Helper
         {
             var element = address.Split(',').Reverse().ElementAtOrDefault(pos);
             return element?.Trim();
+        }
+
+        public class AesEncryption
+        {
+            public static string Encrypt(string encryptionKey, string plainText)
+            {
+                if (string.IsNullOrEmpty(encryptionKey) || encryptionKey.Length < 32)
+                    throw new ArgumentException("Encryption key must be at least 32 characters long.");
+
+                using Aes aesAlg = Aes.Create();
+                aesAlg.Key = Encoding.UTF8.GetBytes(encryptionKey[..32]);
+                aesAlg.IV = Encoding.UTF8.GetBytes(string.Concat(encryptionKey.Reverse())[..16]);
+
+                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+                using MemoryStream msEncrypt = new();
+                using (CryptoStream csEncrypt = new(msEncrypt, encryptor, CryptoStreamMode.Write))
+                {
+                    using StreamWriter swEncrypt = new(csEncrypt);
+                    swEncrypt.Write(plainText);
+                }
+                return Convert.ToBase64String(msEncrypt.ToArray());
+            }
+
+            public static string Decrypt(string encryptionKey, string cipherText)
+            {
+                if (string.IsNullOrEmpty(encryptionKey) || encryptionKey.Length < 32)
+                    throw new ArgumentException("Encryption key must be at least 32 characters long.");
+
+                byte[] cipherBytes = Convert.FromBase64String(cipherText);
+
+                using Aes aesAlg = Aes.Create();
+                aesAlg.Key = Encoding.UTF8.GetBytes(encryptionKey[..32]);
+                aesAlg.IV = Encoding.UTF8.GetBytes(string.Concat(encryptionKey.Reverse())[..16]);
+
+                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+                using MemoryStream msDecrypt = new(cipherBytes);
+                using CryptoStream csDecrypt = new(msDecrypt, decryptor, CryptoStreamMode.Read);
+                using StreamReader srDecrypt = new(csDecrypt);
+                return srDecrypt.ReadToEnd();
+            }
         }
 
         public static class GeoCalculator

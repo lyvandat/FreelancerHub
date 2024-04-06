@@ -44,7 +44,7 @@ app.UseSwaggerUI();
 app.UseCors("NgOrigins");
 app.ApplyDatabaseMigrations(app.Environment);
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
-//app.UseMiddleware<DelayTimerMiddleware>();
+app.UseMiddleware<DelayTimerMiddleware>();
 
 // Add other configurations
 app.UseHttpsRedirection();

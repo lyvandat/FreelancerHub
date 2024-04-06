@@ -21,11 +21,11 @@ Delete from [Accounts];
 
 
 INSERT INTO [Accounts] ([Id], [Email], [FullName], [DateOfBirth], [Phone], [Role], [Avatar], [RefreshToken], [LoginToken], [LoginTokenExpires], [TokenCreated], [TokenExpires], [IsActive], [IsVerified]) VALUES
-('e5b9b91e-029c-44a6-b777-df9a708540ab', null, N'Nguyễn Đinh Thi Xuân', '1987-01-05', '+84337839146', 'Freelancer', 'https://detoivn.sirv.com/customer_avt/user-avt%20(2).png', 'string', 'default', '2024-03-27T23:50:26.448249', '2024-03-27 23:40:26.448249', '2024-03-27 23:50:26.448249', 1, 1),
-('8fa08d71-4b76-465d-8fb8-59fffb32bbdf', null, N'Huỳnh Dương Khánh Mai', '1990-05-29', '+84325728454', 'Customer', 'https://detoivn.sirv.com/customer_avt/user-avt%20(1).png', 'string', 'default', '2024-03-27T23:50:26.481418', '2024-03-27 23:40:26.481418', '2024-03-27 23:50:26.481418', 1, 1); 
+('e5b9b91e-029c-44a6-b777-df9a708540ab', null, N'Nguyễn Đinh Thi Xuân', '1987-01-05', '+84337839146', 'Freelancer', 'https://detoivn.b-cdn.net/customer_avt/user-avt%20(2).png', 'string', 'default', '2024-03-27T23:50:26.448249', '2024-03-27 23:40:26.448249', '2024-03-27 23:50:26.448249', 1, 1),
+('8fa08d71-4b76-465d-8fb8-59fffb32bbdf', null, N'Huỳnh Dương Khánh Mai', '1990-05-29', '+84325728454', 'Customer', 'https://detoivn.b-cdn.net/customer_avt/user-avt%20(1).png', 'string', 'default', '2024-03-27T23:50:26.481418', '2024-03-27 23:40:26.481418', '2024-03-27 23:50:26.481418', 1, 1); 
 
 INSERT INTO [Freelancers] ([Id], [AccountId], [Rating], [TotalReviewCount], [Balance], [OrderCount], [LoveCount], [PositiveReviewCount], [IdentityNumber], [IsTeam], [Description], [TeamMemberCount]) VALUES
-('9d825870-8214-4a82-836c-3aa53406d093', 'e5b9b91e-029c-44a6-b777-df9a708540ab', 0, 0, 1000000000, 0, 0, 0, '051200000011', 0, 'Work special total financial role together range. Nice government first policy daughter need kind. Employee source nature add rest human station. Ability management test during foot that course nothing.', 1); 
+('9d825870-8214-4a82-836c-3aa53406d093', 'e5b9b91e-029c-44a6-b777-df9a708540ab', 0, 0, '/OwRav9YwRyS34A4FLNPXg==', 0, 0, 0, '051200000011', 0, 'Work special total financial role together range. Nice government first policy daughter need kind. Employee source nature add rest human station. Ability management test during foot that course nothing.', 1); 
 
 INSERT INTO [Customers] ([Id], [AccountId], [CustomerRank], [MemberPoint]) VALUES
 ('e132b043-8e3a-4e6d-a39e-2e873412e70d', '8fa08d71-4b76-465d-8fb8-59fffb32bbdf', 'Unranked', 0); 
