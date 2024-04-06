@@ -3,18 +3,13 @@ using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.RealTimeDtos;
 using DeToiServer.RealTime;
-using DeToiServer.Services.AccountService;
 using DeToiServer.Services.CustomerAccountService;
-using DeToiServer.Services.MessageQueueService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.UserService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
 using DeToiServerData.Repositories.AccountFreelanceRepo;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.Identity.Client;
-using Newtonsoft.Json;
 using System.Security.Claims;
 
 namespace DeToiServer.Controllers
@@ -29,8 +24,7 @@ namespace DeToiServer.Controllers
         private readonly ICustomerAccountService _customerAcc;
         private readonly IFreelanceAccountRepo _freelancerAcc;
         private readonly IUserService _userService;
-        private readonly RabbitMQProducer _rabbitMQProducer;
-        private readonly IHubContext<ChatHub, IChatClient> _chatHubContext;
+        private readonly RealtimeConsumer _rabbitMQConsumer;
         private readonly IMapper _mapper;
 
         public OrderController(
@@ -40,8 +34,7 @@ namespace DeToiServer.Controllers
             ICustomerAccountService customerAcc, 
             IFreelanceAccountRepo freelancerAcc,
             IUserService userService,
-            RabbitMQProducer rabbitMQProducer,
-            IHubContext<ChatHub, IChatClient> chatHubContext,
+            RealtimeConsumer rabbitMQConsumer,
             IMapper mapper)
         {
             _uow = uow;
@@ -50,8 +43,7 @@ namespace DeToiServer.Controllers
             _customerAcc = customerAcc;
             _freelancerAcc = freelancerAcc;
             _userService = userService;
-            _rabbitMQProducer = rabbitMQProducer;
-            _chatHubContext = chatHubContext;
+            _rabbitMQConsumer = rabbitMQConsumer;
             _mapper = mapper;
         }
 
@@ -72,7 +64,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            _rabbitMQProducer.PushMessageToQ(postOrder);
+            await _rabbitMQConsumer.SendMessageToFreelancer(postOrder);
 
             return Ok(new PostOrderResultDto()
             {
@@ -157,7 +149,16 @@ namespace DeToiServer.Controllers
         private async Task<ActionResult> UpdateOrderStatus(PutOrderStatus putOrderStatus, Guid orderStatus)
         {
             Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var isValidStatus = StatusConst.StatusConstOrder.TryGetValue(orderStatus, out var statusOrder);
             var freelancer = await _uow.FreelanceAccountRepo.GetByAccId(accountId);
+
+            if (!isValidStatus)
+            {
+                return BadRequest(new
+                {
+                    Message = "Trạng thái đơn hàng không hợp lệ"
+                });
+            }
 
             if (freelancer is null)
             {
@@ -177,12 +178,29 @@ namespace DeToiServer.Controllers
                 });
             }
 
+            if (orderStatus == order.ServiceStatusId)
+            {
+                return BadRequest(new
+                {
+                    Message = "Đơn hàng đã ở trạng thái này"
+                });
+            }
+
+            // Do not allow users to update the status other than the next one.
+            if (statusOrder != StatusConst.StatusConstOrder[order.ServiceStatusId] + 1)
+            {
+                return BadRequest(new
+                {
+                    Message = "Trạng thái đơn hàng không hợp lệ"
+                });
+            }
+
             order.ServiceStatusId = orderStatus;
             await _uow.SaveChangesAsync();
 
             // Handle real time - freelancers send update status message to customers.
             var customer = await _customerAcc.GetByCondition(cus => cus.Id == order.CustomerId);
-            _rabbitMQProducer.PushOrderStatusToQ(new UpdateOrderStatusRealTimeDto
+            await _rabbitMQConsumer.SendOrderStatusToCustomer(new UpdateOrderStatusRealTimeDto
             {
                 CustomerPhone = customer.Account.Phone,
                 Address = _mapper.Map<AddressDto>(freelancer.Address?.FirstOrDefault()),
@@ -219,9 +237,17 @@ namespace DeToiServer.Controllers
                 });
             }
 
+            if (order.ServiceStatusId != StatusConst.OnMoving)
+            {
+                return BadRequest(new
+                {
+                    Message = "Trạng thái đơn hàng không hợp lệ"
+                });
+            }
+
             // Handle real time - freelancers send update status message to customers.
             var customer = await _customerAcc.GetByCondition(cus => cus.Id == order.CustomerId);
-            _rabbitMQProducer.PushOrderStatusToQ(new UpdateOrderStatusRealTimeDto
+            await _rabbitMQConsumer.SendOrderStatusToCustomer(new UpdateOrderStatusRealTimeDto
             {
                 CustomerPhone = customer.Account.Phone,
                 Address = new AddressDto() { Lat = putOrderMovingStatusDto.Lat, Lon = putOrderMovingStatusDto.Lon },

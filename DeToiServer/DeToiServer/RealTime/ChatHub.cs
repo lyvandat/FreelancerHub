@@ -43,7 +43,9 @@ namespace DeToiServer.RealTime
                     .Where(acc => {
                         if (acc.Address != null && acc.Address.Count > 0)
                         {
-                            var freelanceAddress = acc.Address.First();
+                            var freelanceAddress = acc.Address.FirstOrDefault();
+
+                            if (freelanceAddress == null) return false;
 
                             return Helper.IsInAcceptableZone(
                                 new Coordination()

@@ -9,7 +9,7 @@ namespace DeToiServer.Middlewares
         private readonly RequestDelegate _next;
         private readonly ILogger<GlobalExceptionHandlerMiddleware> _logger;
 
-        public GlobalExceptionHandlerMiddleware(RequestDelegate next, ILogger<GlobalExceptionHandlerMiddleware> logger, RabbitMQConsumer consumer)
+        public GlobalExceptionHandlerMiddleware(RequestDelegate next, ILogger<GlobalExceptionHandlerMiddleware> logger)
         {
             _next = next;
             _logger = logger;
