@@ -12,6 +12,7 @@ namespace DeToiServerCore.Models.Payment
     {
         public string Value { get; set; } = string.Empty;
         public string Method { get; set; } = GlobalConstant.Payment.CoD;
+        public string Wallet { get; set; } = GlobalConstant.Payment.Wallet.Personal;
         public DateTime Timestamp { get; set; }
 
         public required Guid FreelanceAccountId { get; set; }

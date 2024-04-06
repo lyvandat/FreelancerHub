@@ -86,7 +86,7 @@ namespace DeToiServerData
         public DbSet<CustomerAccount> Customers { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<Address> Addresses { get; set; }
-        public DbSet<FreelancePaymentHistory> PaymentHistories { get; set; }
+        public DbSet<FreelancePaymentHistory> FreelancePaymentHistories { get; set; }
 
         public DbSet<FreelanceSkill> FreelanceSkills { get; set; }
         //public DbSet<FreelanceServiceType> FreelanceServiceTypes { get; set; }

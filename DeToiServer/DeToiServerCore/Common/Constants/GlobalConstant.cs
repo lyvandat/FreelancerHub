@@ -29,6 +29,13 @@
         public static class Payment
         {
             public static readonly string CoD = "CoD";
+            public static readonly string MoMo = "Momo";
+            public static readonly string Card = "Card";
+
+            public static class Wallet {
+                public static readonly string Personal = "Personal";
+                public static readonly string System = "System";
+            }
         }
 
         public static class SqlFiles

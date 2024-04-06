@@ -66,7 +66,7 @@ namespace DeToiServer.RealTime
                     Console.WriteLine("Cannot send real time messages due to connection error");
                     return;
                 }
-                await _connectionSignalR?.InvokeAsync("SendOrderStatusToCustomer", orderStatusRealTimeDto);
+                await _connectionSignalR.InvokeAsync("SendOrderStatusToCustomer", orderStatusRealTimeDto);
             }
             catch (Exception ex)
             {

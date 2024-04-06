@@ -6,6 +6,7 @@ using DeToiServer.Services.FreelanceQuizService;
 using DeToiServer.Services.FreelanceSkillService;
 using DeToiServer.Services.MessageQueueService;
 using DeToiServer.Services.OrderManagementService;
+using DeToiServer.Services.PaymentService;
 using DeToiServer.Services.ServiceCategoryService;
 using DeToiServer.Services.ServiceProvenService;
 using DeToiServer.Services.ServiceStatusService;
@@ -21,6 +22,7 @@ using DeToiServerData.Repositories.FreelanceQuizRepo;
 using DeToiServerData.Repositories.FreelancerQuizRepo;
 using DeToiServerData.Repositories.FreelanceSkillRepo;
 using DeToiServerData.Repositories.OrderRepo;
+using DeToiServerData.Repositories.PaymentRepo;
 using DeToiServerData.Repositories.PromotionRepo;
 using DeToiServerData.Repositories.ServiceCategoryRepo;
 using DeToiServerData.Repositories.ServiceRepo;
@@ -97,6 +99,7 @@ namespace DeToiServerData
             services.AddScoped<IFreelanceSkillRepo, FreelanceSkillRepo>();
 
             services.AddScoped<IAddressRepo, AddressRepo>();
+            services.AddScoped<IPaymentRepo, PaymentRepo>();
 
 
             services.AddScoped<UnitOfWork>();
@@ -120,6 +123,7 @@ namespace DeToiServerData
             services.AddScoped<IUIElementServiceRequirementService, UIElementServiceRequirementService>();
             services.AddScoped<IFreelanceQuizService, FreelanceQuizService>();
             services.AddScoped<IFreelanceSkillService, FreelanceSkillService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             return services;
         }
 
