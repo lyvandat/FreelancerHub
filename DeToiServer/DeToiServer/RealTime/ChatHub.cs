@@ -87,6 +87,30 @@ namespace DeToiServer.RealTime
             }
         }
 
+        public async Task SendReceiveOrderMessageToFreelancer(string freelancerPhone, GetOrderDto getOrderDto)
+        {
+            // Online users that are connecting to SignalR
+            var users = await _context.Users
+                .AsNoTracking()
+                .Include(u => u.Connections)
+                .ToListAsync();
+
+            // Send a message to the online freelancers
+            foreach (var user in users)
+            {
+                if (user.Phone.Equals(freelancerPhone))
+                {
+                    if (user.Connections != null)
+                    {
+                        foreach (var connection in user.Connections)
+                        {
+                            await Clients.Client(connection.ConnectionId).ReceiveConfirmCustomerOrder(getOrderDto);
+                        }
+                    }
+                }
+            }
+        }
+
         public async Task SendMessageToCustomer(GetFreelancerAndPreviewPriceDto matchingFreelancer)
         {
             var freelancer = await _freelancerService.GetDetailWithStatistic(matchingFreelancer.FreelancerId);

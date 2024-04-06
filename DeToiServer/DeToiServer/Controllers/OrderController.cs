@@ -4,6 +4,7 @@ using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.RealTimeDtos;
 using DeToiServer.RealTime;
 using DeToiServer.Services.CustomerAccountService;
+using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.UserService;
 using DeToiServerCore.Common.Constants;
@@ -22,7 +23,7 @@ namespace DeToiServer.Controllers
         private readonly IOrderManagementService _orderService;
         private readonly IBiddingOrderService _biddingOrderService;
         private readonly ICustomerAccountService _customerAcc;
-        private readonly IFreelanceAccountRepo _freelancerAcc;
+        private readonly IFreelanceAccountService _freelancerAcc;
         private readonly IUserService _userService;
         private readonly RealtimeConsumer _rabbitMQConsumer;
         private readonly IMapper _mapper;
@@ -31,8 +32,8 @@ namespace DeToiServer.Controllers
             UnitOfWork uow, 
             IOrderManagementService orderService, 
             IBiddingOrderService biddingOrderService,
-            ICustomerAccountService customerAcc, 
-            IFreelanceAccountRepo freelancerAcc,
+            ICustomerAccountService customerAcc,
+            IFreelanceAccountService freelancerAcc,
             IUserService userService,
             RealtimeConsumer rabbitMQConsumer,
             IMapper mapper)
@@ -95,12 +96,29 @@ namespace DeToiServer.Controllers
             Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
             var customer = await _customerAcc.GetByAccId(accountId);
             var order = await _orderService.GetById(putOrder.OrderId);
+            var freelancer = await _freelancerAcc.GetByAccId(putOrder.FreelancerId);
+
+            if (freelancer == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Freelancer không tồn tại"
+                });
+            }
 
             if (order == null)
             {
                 return BadRequest(new
                 {
-                    Message = "Cập nhật đơn đặt hàng không thành công"
+                    Message = "Đơn hàng không tồn tại"
+                });
+            }
+
+            if (order.FreelancerId != null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Đơn hàng này đã có Freelancer nhận"
                 });
             }
 
@@ -125,6 +143,8 @@ namespace DeToiServer.Controllers
                 });
             }
 
+            var getOrderDto = await _orderService.GetOrderDetailById(putOrder.OrderId);
+            await _rabbitMQConsumer.SendReceiveOrderMessageToFreelancer(freelancer, getOrderDto);
             return Ok(order);
         }
 

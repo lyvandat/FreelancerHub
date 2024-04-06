@@ -9,5 +9,6 @@ namespace DeToiServer.RealTime
         Task ReceiveCustomerOrder(PostOrderDto postOrder);
         Task ReceiveFreelancerResponse(GetFreelanceMatchingDto matchingFreelancer);
         Task ReceiveFreelancerStatusResponse(UpdateOnMovingOrderStatusDto onMovingStatusDto);
+        Task ReceiveConfirmCustomerOrder(GetOrderDto getOrderDto);
     }
 }

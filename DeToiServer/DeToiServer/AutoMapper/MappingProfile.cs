@@ -203,7 +203,7 @@ namespace DeToiServer.AutoMapper
 
             CreateMap<OrderService, ServiceDto>()
                 .ConvertUsing((src, dest, context) => {
-                    return context.Mapper.Map<ServiceDto>(src.Service);
+                    return context.Mapper.Map<ServiceDto>(src?.Service ?? new Service());
                 });
             #endregion
 
