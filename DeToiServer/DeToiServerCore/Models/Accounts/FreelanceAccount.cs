@@ -27,7 +27,6 @@ namespace DeToiServerCore.Models.Accounts
         public ICollection<FreelanceQuiz>? QuizCollection { get; set; }
         public ICollection<BiddingOrder>? BiddingOrders { get; set; }
         public ICollection<FreelancePaymentHistory>? PaymentHistories { get; set; }
-        //public ICollection<FreelanceServiceType>? FreelancerFeasibleServices { get; set; }
         public ICollection<FreelanceServiceType>? FreelancerFeasibleServices { get; set; }
     }
 }

@@ -82,34 +82,47 @@ namespace DeToiServerCore.Common.Helper
         {
             public static string Encrypt(string encryptionKey, string plainText)
             {
-                if (string.IsNullOrEmpty(encryptionKey) || encryptionKey.Length < 32)
+                if (encryptionKey.Length < 32)
                     throw new ArgumentException("Encryption key must be at least 32 characters long.");
 
+                // Truncate or pad encryption key to 32 bytes
+                encryptionKey = encryptionKey.Length > 32 ? encryptionKey[..32] : encryptionKey.PadRight(32, ' ');
+
+                // Generate IV from reversed encryption key
+                byte[] iv = SHA256.HashData(Encoding.UTF8.GetBytes(encryptionKey)).AsSpan(0, 16).ToArray();
+
                 using Aes aesAlg = Aes.Create();
-                aesAlg.Key = Encoding.UTF8.GetBytes(encryptionKey[..32]);
-                aesAlg.IV = Encoding.UTF8.GetBytes(string.Concat(encryptionKey.Reverse())[..16]);
+                aesAlg.Key = Encoding.UTF8.GetBytes(encryptionKey);
+                aesAlg.IV = iv;
 
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
                 using MemoryStream msEncrypt = new();
-                using (CryptoStream csEncrypt = new(msEncrypt, encryptor, CryptoStreamMode.Write))
+                using CryptoStream csEncrypt = new(msEncrypt, encryptor, CryptoStreamMode.Write);
+                using (StreamWriter swEncrypt = new(csEncrypt))
                 {
-                    using StreamWriter swEncrypt = new(csEncrypt);
                     swEncrypt.Write(plainText);
                 }
+
                 return Convert.ToBase64String(msEncrypt.ToArray());
             }
 
             public static string Decrypt(string encryptionKey, string cipherText)
             {
-                if (string.IsNullOrEmpty(encryptionKey) || encryptionKey.Length < 32)
+                if (encryptionKey.Length < 32)
                     throw new ArgumentException("Encryption key must be at least 32 characters long.");
+
+                // Truncate or pad encryption key to 32 bytes
+                encryptionKey = encryptionKey.Length > 32 ? encryptionKey[..32] : encryptionKey.PadRight(32, ' ');
+
+                // Generate IV from reversed encryption key
+                byte[] iv = SHA256.HashData(Encoding.UTF8.GetBytes(encryptionKey)).AsSpan(0, 16).ToArray();
 
                 byte[] cipherBytes = Convert.FromBase64String(cipherText);
 
                 using Aes aesAlg = Aes.Create();
-                aesAlg.Key = Encoding.UTF8.GetBytes(encryptionKey[..32]);
-                aesAlg.IV = Encoding.UTF8.GetBytes(string.Concat(encryptionKey.Reverse())[..16]);
+                aesAlg.Key = Encoding.UTF8.GetBytes(encryptionKey);
+                aesAlg.IV = iv;
 
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
 
