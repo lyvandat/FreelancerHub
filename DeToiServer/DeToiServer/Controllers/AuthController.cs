@@ -1,9 +1,11 @@
 using AutoMapper;
 using DeToiServer.Dtos.AuthDtos;
+using DeToiServer.Filters;
 using DeToiServer.Services.AccountService;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Accounts;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
@@ -27,16 +29,46 @@ namespace DeToiServer.Controllers
         private readonly ICustomerAccountService _customerAccService;
         private readonly IFreelanceAccountService _freelanceAccService;
         private readonly LoginSocialSecret _socialSecret;
+        private readonly UnitOfWork _uow;
         private readonly IMapper _mapper;
 
-        public AuthController(IConfiguration configuration, IAccountService accService, ICustomerAccountService customerAccountService, IFreelanceAccountService freelanceAccountService, IOptions<ApplicationSecretSettings> appSecret, IMapper mapper)
+        public AuthController(IConfiguration configuration, IAccountService accService, ICustomerAccountService customerAccountService, IFreelanceAccountService freelanceAccountService, IOptions<ApplicationSecretSettings> appSecret, IMapper mapper, UnitOfWork uow)
         {
             _configuration = configuration;
             _accService = accService;
             _customerAccService = customerAccountService;
             _freelanceAccService = freelanceAccountService;
             _socialSecret = (appSecret.Value ?? throw new ArgumentException(null, nameof(appSecret))).LoginSocial;
+            _uow = uow;
             _mapper = mapper;
+        }
+
+        [HttpPost("verify-freelance")]
+        public async Task<ActionResult<Account>> VerifyFreelance(VerifyFreelanceDto request)
+        {
+            var freelance = await _freelanceAccService.GetByAccId(request.FreelancerId);
+
+            if (freelance == null)
+            {
+                return BadRequest(new
+                {
+                    message = $"Tài khoản Freelancer không tồn tại."
+                });
+            }
+
+            freelance.Account.IsVerified = true;
+            if (!await _uow.SaveChangesAsync())
+            {
+                return StatusCode(500, new
+                {
+                    message = $"Lỗi kiểm chứng Freelancer."
+                });
+            }
+
+            return Ok(new
+            {
+                message = "Kiểm chứng Freelancer thành công!"
+            });
         }
 
         [HttpPost("register-freelance")]
@@ -60,28 +92,29 @@ namespace DeToiServer.Controllers
                 DateOfBirth = request.DateOfBirth,
                 Phone = request.Phone,
                 Role = GlobalConstant.Freelancer,
-                Avatar = GlobalConstant.CustomerAvtMale,
-                IsVerified = true,
+                Avatar = request.Avatar,
+                Gender = request.Gender,
+                IsVerified = false,
             };
 
+            var freelancerId = Guid.NewGuid();
             freelance = new FreelanceAccount()
             {
+                Id = freelancerId,
                 Account = account,
                 AccountId = account.Id,
-                IdentityNumber = request.IdentityNumber,
                 IsTeam = request.IsTeam,
-                Address = _mapper.Map<List<Address>>(request.Address),
-                //FreelanceSkills = _mapper.Map<List<Skill>>(request.Skills),
+                TeamMemberCount = request.TeamMemberCount,
+                Description = request.Description,
+                Address = [
+                    _mapper.Map<Address>(request.Address),
+                ],
+                IdentityNumber = request.IdentityNumber,
+                IdentityCardImage = request.IdentityCardImage,
+                IdentityCardImageBack = request.IdentityCardImageBack,
+                Balance = Helper.AesEncryption.Encrypt(freelancerId.ToString(), "0"),
+                SystemBalance = Helper.AesEncryption.Encrypt(freelancerId.ToString(), "0"),
             };
-
-            // TODO: maybe this is unnecessary
-            if (request.Address != null)
-            {
-                foreach (var item in freelance.Address)
-                {
-                    item.FreelanceAccountId = freelance.Id;
-                }
-            }
 
             await _freelanceAccService.Add(freelance);
 
@@ -139,7 +172,8 @@ namespace DeToiServer.Controllers
                     FullName = $"Customer_{DateTime.Now:yyyyMMdd}_VIE",
                     Phone = request.Phone,
                     Role = GlobalConstant.Customer,
-                    Avatar = GlobalConstant.CustomerAvtMale
+                    Avatar = GlobalConstant.CustomerAvtMale,
+                    IsVerified = true, // Temporary
                 };
 
                 customer = new CustomerAccount()
@@ -189,7 +223,10 @@ namespace DeToiServer.Controllers
 
             if (!account.IsVerified)
             {
-                account.IsVerified = true;
+                return BadRequest(new
+                {
+                    Message = "Tài khoản của bạn chưa được kiểm chứng."
+                });
             }
 
             var token = CreateToken(account, account.Role);

@@ -28,6 +28,11 @@ namespace DeToiServerData.Configurations
                 .WithOne(sp => sp.Freelancer)
                 .HasForeignKey(sp => sp.FreelancerId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Property(fl => fl.IdentityCardImage)
+                .HasDefaultValue("None");
+            builder.Property(fl => fl.IdentityCardImageBack)
+                .HasDefaultValue("None");
         }
     }
 

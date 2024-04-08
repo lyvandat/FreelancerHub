@@ -61,6 +61,12 @@
         {
             public static readonly DateTime DefaultDateTime = new(2024, 1, 1);
         }
+
+        public static class Gender
+        {
+            public static readonly string Male = "Male";
+            public static readonly string Female = "Female";
+        }
     }
 
     public static class StatusConst

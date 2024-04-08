@@ -17,6 +17,8 @@ namespace DeToiServerCore.Models.Accounts
         public int TotalReviewCount { get; set; }
         public ICollection<Address>? Address { get; set; }
         public string IdentityNumber { get; set; } = string.Empty;
+        public string IdentityCardImage { get; set; } = string.Empty;
+        public string IdentityCardImageBack { get; set; } = string.Empty;
         public bool IsTeam { get; set; } = false;
         public string Description { get; set; } = string.Empty;
         public int TeamMemberCount { get; set; } = 1;
