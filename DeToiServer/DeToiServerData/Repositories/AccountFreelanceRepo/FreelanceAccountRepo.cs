@@ -74,4 +74,17 @@ public class FreelanceAccountRepo : RepositoryBase<FreelanceAccount>, IFreelance
             .Include(fl => fl.FavoriteBy)
             .ToListAsync();
     }
+
+    public async Task ChooseFreelancerServiceTypesAsync(IEnumerable<FreelanceServiceType> serviceTypes)
+    {
+        await _context.FreelanceServiceTypes.AddRangeAsync(serviceTypes);
+    }
+
+    public async Task RemoveFreelancerServiceTypesAsync(IEnumerable<FreelanceServiceType> serviceTypes)
+    {
+        await Task.Run(() =>
+        {
+            _context.FreelanceServiceTypes.RemoveRange(serviceTypes);
+        });
+    }
 }

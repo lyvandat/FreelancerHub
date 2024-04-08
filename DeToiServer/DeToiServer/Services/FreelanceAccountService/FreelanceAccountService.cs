@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.FreelanceDtos;
+using DeToiServer.Dtos.SkillDtos;
 using DeToiServerCore.Models.Accounts;
 using System.Linq.Expressions;
 
@@ -80,6 +81,36 @@ namespace DeToiServer.Services.FreelanceAccountService
         {
             var result = await _unitOfWork.FreelanceAccountRepo.GetAllDetail();
             return _mapper.Map<List<GetFreelanceMatchingDto>>(result);
+        }
+
+
+
+        public async Task<bool> AddServiceTypesFreelancer(ChooseFreelancerServiceTypesDto serviceTypes)
+        {
+            var toAdd = serviceTypes.ServiceTypes.Select(id => new FreelanceServiceType()
+            {
+                FreelancerId = serviceTypes.FreelancerId,
+                Freelancer = null!,
+                ServiceTypeId = id,
+                ServiceType = null!,
+            }).ToList();
+
+            await _unitOfWork.FreelanceAccountRepo.ChooseFreelancerServiceTypesAsync(toAdd);
+            return await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<bool> RemoveServiceTypesFreelancer(ChooseFreelancerServiceTypesDto serviceTypes)
+        {
+            var toAdd = serviceTypes.ServiceTypes.Select(id => new FreelanceServiceType()
+            {
+                FreelancerId = serviceTypes.FreelancerId,
+                Freelancer = null!,
+                ServiceTypeId = id,
+                ServiceType = null!,
+            }).ToList();
+
+            await _unitOfWork.FreelanceAccountRepo.RemoveFreelancerServiceTypesAsync(toAdd);
+            return await _unitOfWork.SaveChangesAsync();
         }
     }
 }

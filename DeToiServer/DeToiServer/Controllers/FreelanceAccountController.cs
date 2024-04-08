@@ -2,6 +2,7 @@
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.OrderDtos;
+using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Dtos.SkillDtos;
 using DeToiServer.Services.AccountService;
 using DeToiServer.Services.FreelanceAccountService;
@@ -187,6 +188,34 @@ namespace DeToiServer.Controllers
         }
 
 
+        [HttpPost("add-multiple-service-type"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult<IEnumerable<GetServiceTypeDto>>> AddMultipleFreelancerServiceTypes(ChooseFreelancerServiceTypesDto postSkills)
+        {
+            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var freelance = await _freelanceAccService.GetByAccId(accountId);
 
+            if (freelance is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Có lỗi xảy ra trong quá trình đăng nhập, xin hãy thử lại"
+                });
+            }
+
+            postSkills.FreelancerId = freelance.Id;
+            var result = await _freelanceAccService.AddServiceTypesFreelancer(postSkills);
+            if (!result)
+            {
+                return BadRequest(new
+                {
+                    Message = "Có lỗi xảy ra trong quá trình thêm dịch vụ, xin hãy thử lại"
+                });
+            }
+
+            return Ok(new
+            {
+                Message = "Thêm dịch vụ cho Freelancer thành công"
+            });
+        }
     }
 }
