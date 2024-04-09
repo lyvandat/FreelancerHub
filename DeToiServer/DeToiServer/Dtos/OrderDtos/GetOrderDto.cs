@@ -34,7 +34,6 @@ namespace DeToiServer.Dtos.OrderDtos
         public double PreviewPrice { get; set; }
         public double RecommendPrice { get; set; }
         public int NumberOfPricing { get; set; }
-        public IEnumerable<GetFreelanceMatchingDto>? PricingDetail { get; set; }
         public TimeOnly StartTime { get; set; }
         public DateOnly StartDate { get; set; }
         public TimeOnly FinishTime { get; set; }

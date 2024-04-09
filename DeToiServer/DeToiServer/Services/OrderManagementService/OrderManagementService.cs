@@ -149,13 +149,12 @@ namespace DeToiServer.Services.OrderManagementService
             {
                 if (item.ServiceStatusId.Equals(StatusConst.OnMatching))
                 {
-                    var freelancers = _uow.BiddingOrderRepo.GetMatchingFreelancersByOrderId(item.Id);
-                    item.PricingDetail = _mapper.Map<IEnumerable<GetFreelanceMatchingDto>>(freelancers);
+                    var freelancers = await _uow.BiddingOrderRepo.GetMatchingFreelancersByOrderId(item.Id);
+                    item.NumberOfPricing = freelancers.Count();
                 }
                 else
                 {
                     item.NumberOfPricing = 0;
-                    item.PricingDetail = []; // Empty
                 }
             }
 
