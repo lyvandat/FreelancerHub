@@ -109,6 +109,8 @@ namespace DeToiServerData.Configurations
             builder.HasData(
                 new List<ServiceStatus>
                 {
+                    new ServiceStatus { Id = StatusConst.Created, Name = "Đơn vừa tạo" },
+                    new ServiceStatus { Id = StatusConst.OnMatching, Name = "Đang ghép cặp" },
                     new ServiceStatus { Id = StatusConst.Waiting, Name = "Chưa đến giờ hoạt động" },
                     new ServiceStatus { Id = StatusConst.OnMoving, Name = "Đang di chuyển, hãy kiên nhẫn" },
                     new ServiceStatus { Id = StatusConst.OnDoingService, Name = "Đang làm việc" },

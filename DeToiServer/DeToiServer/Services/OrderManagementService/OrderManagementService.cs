@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.ServiceDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
@@ -140,16 +141,22 @@ namespace DeToiServer.Services.OrderManagementService
             return order;
         }
 
-        public async Task<IEnumerable<GetOrderDto>> GetAllCustomerOrders(Guid customerId)
+        public async Task<IEnumerable<GetCustomerOrderDto>> GetAllCustomerOrders(Guid customerId)
         {
             var rawOrders = await _uow.OrderRepo.GetCustomerOrders(customerId);
-
-            var result = new List<GetOrderDto>();
-            foreach (var rawOrder in rawOrders)
+            var result = _mapper.Map<IEnumerable<GetCustomerOrderDto>>(rawOrders);
+            foreach (var item in result)
             {
-                var order = _mapper.Map<GetOrderDto>(rawOrder);
-                //order.ServiceTypes = rawOrder.OrderServiceTypes?.Select(ost => _mapper.Map<GetServiceTypeDto>(ost.ServiceType)).ToList();
-                result.Add(order);
+                if (item.ServiceStatusId.Equals(StatusConst.OnMatching))
+                {
+                    var freelancers = _uow.BiddingOrderRepo.GetMatchingFreelancersByOrderId(item.Id);
+                    item.PricingDetail = _mapper.Map<IEnumerable<GetFreelanceMatchingDto>>(freelancers);
+                }
+                else
+                {
+                    item.NumberOfPricing = 0;
+                    item.PricingDetail = []; // Empty
+                }
             }
 
             return result;
@@ -196,6 +203,13 @@ namespace DeToiServer.Services.OrderManagementService
                     Message = "Đơn đặt hàng của bạn chưa được nhận bởi Freelancer"
                 };
             }
+            if (order.Rating != 0)
+            {
+                return new()
+                {
+                    Message = "Đơn đặt hàng của bạn đã được review."
+                };
+            }
 
             order.Rating = review.Rating;
             order.Comment = review.Comment;
@@ -212,7 +226,7 @@ namespace DeToiServer.Services.OrderManagementService
         {
             var validStatusList = new List<Guid>()
             {
-                StatusConst.Waiting, StatusConst.Canceled
+                StatusConst.Created, StatusConst.OnMatching, StatusConst.Waiting, StatusConst.Canceled
             };
 
             var order = await _uow.OrderRepo.GetByConditionsAsync(o =>

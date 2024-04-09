@@ -133,6 +133,10 @@ namespace DeToiServer.Controllers
 
             order.EstimatedPrice = putOrder.ActualPrice;
             order.FreelancerId = putOrder.FreelancerId;
+            if (order.ServiceStatusId.Equals(StatusConst.OnMatching))
+            {
+                order.ServiceStatusId = StatusConst.Waiting;
+            }
 
             var saveResult = await _uow.SaveChangesAsync();
 
@@ -298,7 +302,7 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("customer-all"), AuthorizeRoles(GlobalConstant.Customer)]
-        public async Task<ActionResult<GetOrderDto>> GetCustomerOrders()
+        public async Task<ActionResult<GetCustomerOrderDto>> GetCustomerOrders()
         {
             Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
             var customer = await _customerAcc.GetByAccId(accountId);

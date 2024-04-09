@@ -7,6 +7,7 @@ using DeToiServer.Models;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.OrderManagementService;
+using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.Helper;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -147,9 +148,13 @@ namespace DeToiServer.RealTime
                 }
             }
 
-            // Save bidding orders
+            // Save bidding orders, update orderStatus.
             try
             {
+                if (order.ServiceStatusId.Equals(StatusConst.Created))
+                {
+                    order.ServiceStatusId = StatusConst.OnMatching;
+                }
                 _context.BiddingOrders.Add(biddingOrder);
                 await _context.SaveChangesAsync();
             }

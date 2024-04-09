@@ -9,11 +9,11 @@ namespace DeToiServer.Services.OrderManagementService
         Task<IEnumerable<GetOrderDto>> GetFreelancerSuitableOrders(Guid freelancerId, FilterFreelancerOrderQuery filterQuery);
         Task<Order?> GetById(Guid orderId);
         Task<GetOrderDto?> GetOrderDetailById(Guid id);
-        Task<IEnumerable<GetOrderDto>> GetAllCustomerOrders(Guid customerid);
         Task<GetOrderDto?> GetLatestCustomerOrders(Guid customerId);
         Task<IEnumerable<Order>> GetAllOrderTest();
         Task<UpdateOrderResultDto> PostOrderReview(PostOrderCustomerReviewDto review, Guid customerId);
         Task<UpdateOrderResultDto> PostCancelOrderCustomer(Guid orderId, Guid customerId);
         Task<IEnumerable<GetOrderDto>> GetFreelancerIncomingOrders(Guid freelancerId);
+        Task<IEnumerable<GetCustomerOrderDto>> GetAllCustomerOrders(Guid customerId);
     }
 }

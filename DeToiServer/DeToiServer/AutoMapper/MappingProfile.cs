@@ -101,6 +101,10 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.Balance))))
                 .ForMember(dest => dest.SystemBalance, opt => opt.Ignore());
 
+            CreateMap<BiddingOrder, GetFreelanceMatchingDto>()
+                .ConvertUsing((src, dest, context) => {
+                    return context.Mapper.Map<GetFreelanceMatchingDto>(src.Freelancer);
+                });
 
             #endregion
 
@@ -136,6 +140,16 @@ namespace DeToiServer.AutoMapper
             CreateMap<PostOrderDto, Order>()
                 .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartDate.ToDateTime(src.StartTime)));
             CreateMap<Order, GetOrderDto>()
+                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.StartTime)))
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.StartTime)))
+                .ForMember(dest => dest.FinishTime, opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.FinishTime ?? DateTime.MinValue)))
+                .ForMember(dest => dest.FinishDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.FinishTime ?? DateTime.MinValue)))
+                .ForMember(dest => dest.Freelance, opt => opt.MapFrom(src => src.Freelance != null ? src.Freelance.Account : null))
+                .ForMember(dest => dest.ServiceStatus, opt => opt.MapFrom(src => src.ServiceStatus != null ? src.ServiceStatus.Name : "Chờ xử lí"))
+                .ForMember(dest => dest.Services, opt => opt.MapFrom(src => src.OrderServices!.FirstOrDefault()))
+                .ForMember(dest => dest.ServiceTypes, opt => opt.MapFrom(src => src.OrderServiceTypes));
+
+            CreateMap<Order, GetCustomerOrderDto>()
                 .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.StartTime)))
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.StartTime)))
                 .ForMember(dest => dest.FinishTime, opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.FinishTime ?? DateTime.MinValue)))
