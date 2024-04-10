@@ -2,10 +2,14 @@ global using DeToiServerCore.Models;
 global using DeToiServerData;
 using DeToiServer;
 using DeToiServer.AutoMapper;
+using DeToiServer.ConfigModels;
 using DeToiServer.Middlewares;
 using DeToiServer.RealTime;
 using DeToiServerCore.Common.Helper;
+using DeToiServerCore.Models.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System.Runtime;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,10 +37,11 @@ builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddServicesData();
 builder.Services.AddUnitOfWork(options => 
-    options.UseSqlServer(Helper.GetDockerConnectionString())); // builder.Configuration.GetConnectionString("local") | Helper.GetDockerConnectionString()
+    options.UseSqlServer(builder.Configuration.GetConnectionString("local_dat"))); // builder.Configuration.GetConnectionString("local") | Helper.GetDockerConnectionString()
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<RealtimeConsumer>();
+builder.Services.Configure<VnPayConfigModel>(builder.Configuration.GetSection("VnPayConfig"));
 var app = builder.Build();
 
 app.UseSwagger();
@@ -44,7 +49,7 @@ app.UseSwaggerUI();
 app.UseCors("NgOrigins");
 app.ApplyDatabaseMigrations(app.Environment);
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
-app.UseMiddleware<DelayTimerMiddleware>();
+//app.UseMiddleware<DelayTimerMiddleware>();
 
 // Add other configurations
 app.UseHttpsRedirection();
