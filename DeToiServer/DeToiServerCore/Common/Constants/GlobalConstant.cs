@@ -6,6 +6,13 @@
         public const string Freelancer = "Freelancer";
         public const string Admin = "Admin";
 
+        public enum ERole
+        {
+            Customer,
+            Freelancer,
+            Admin
+        };
+
         public static readonly List<string> Roles =
         [
             Customer,

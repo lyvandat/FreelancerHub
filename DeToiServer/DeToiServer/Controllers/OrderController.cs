@@ -2,6 +2,7 @@
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.RealTimeDtos;
+using DeToiServer.HtmlTemplates;
 using DeToiServer.RealTime;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
@@ -10,6 +11,7 @@ using DeToiServer.Services.UserService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
 using DeToiServerData.Repositories.AccountFreelanceRepo;
+using HtmlTags;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -138,19 +140,24 @@ namespace DeToiServer.Controllers
                 order.ServiceStatusId = StatusConst.Waiting;
             }
 
-            var saveResult = await _uow.SaveChangesAsync();
-
-            if (!saveResult)
-            {
-                return BadRequest(new
-                {
-                    Message = "Cập nhật đơn đặt hàng không thành công"
-                });
-            }
+            // Add notification content
+            //var html = HtmlGenerator.GenerateHtmlWithTitleMessageImage("Test voucher notification", "Xin chao ban da chuc mung thanh cong", "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7");
 
             var getOrderDto = await _orderService.GetOrderDetailById(putOrder.OrderId);
             await _rabbitMQConsumer.SendReceiveOrderMessageToFreelancer(freelancer, getOrderDto);
             return Ok(order);
+        }
+
+        //[HttpGet("test-notification-format")]
+        private ActionResult TestNotiFormat()
+        {
+            var html = HtmlGenerator.GenerateHtmlWithTitleMessageImages("Test voucher notification", "Xin chao ban da chuc mung thanh cong", 
+                "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7",
+                "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7",
+                "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7",
+                "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7");
+            var htmlTag2 = HtmlGenerator.GenerateHtmlWithComponents("Test voucher notification big", "Xin chao ban da chuc mung thanh cong big", html);
+            return Ok(htmlTag2.ToString());
         }
 
         [HttpPut("order-moving-status"), AuthorizeRoles(GlobalConstant.Freelancer)]
