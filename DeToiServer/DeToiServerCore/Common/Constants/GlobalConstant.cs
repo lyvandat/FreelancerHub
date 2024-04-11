@@ -89,12 +89,25 @@
 
         public static Dictionary<Guid, int> StatusConstOrder = new Dictionary<Guid, int>()
         {
+            {Created, -1},
+            {OnMatching, -1},
+
             {Canceled, -1},
             {Waiting, 0},
             {OnMoving, 1},
             {OnDoingService, 2},
             {Completed, 3},
         };
+
+        public static readonly IEnumerable<Guid> StatusIdCollections = [
+            Created,
+            OnMatching,
+            Waiting,
+            OnMoving,
+            OnDoingService,
+            Completed,
+            Canceled,
+        ];
     }
 
     public static class CustomerRankConst

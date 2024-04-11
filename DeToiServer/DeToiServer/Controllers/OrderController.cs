@@ -12,11 +12,13 @@ using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.UserService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
+using DeToiServerCore.QueryModels.OrderQueryModels;
 using DeToiServerData.Repositories.AccountFreelanceRepo;
 using HtmlTags;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DeToiServer.Controllers
 {
@@ -353,10 +355,10 @@ namespace DeToiServer.Controllers
             return Ok(order);
         }
 
-        [HttpGet("customer-all"), AuthorizeRoles(GlobalConstant.Customer)]
-        public async Task<ActionResult<GetCustomerOrderDto>> GetCustomerOrders()
+
+        private async Task<ActionResult> GetCustomerOrders(FilterCustomerOrderQuery query)
         {
-            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
             var customer = await _customerAcc.GetByAccId(accountId);
 
             if (customer is null)
@@ -367,9 +369,46 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            var order = await _orderService.GetAllCustomerOrders(customer.Id);
+            var order = await _orderService.GetAllCustomerOrders(customer.Id, query);
 
             return Ok(order);
+        }
+
+
+        [HttpGet("customer-all"), AuthorizeRoles(GlobalConstant.Customer)]
+        public async Task<ActionResult<GetCustomerOrderDto>> GetAllCustomerOrders([FromQuery] FilterCustomerOrderQuery query)
+        {
+            return await GetCustomerOrders(query);
+        }
+
+        [HttpGet("customer/on-service"), AuthorizeRoles(GlobalConstant.Customer)]
+        public async Task<ActionResult<GetCustomerOrderDto>> GetCustomerOnServiceOrders()
+        {
+            var query = new FilterCustomerOrderQuery()
+            {
+                OrderStatusId = [StatusConst.OnDoingService],
+            };
+            return await GetCustomerOrders(query);
+        }
+
+        [HttpGet("customer/on-matching"), AuthorizeRoles(GlobalConstant.Customer)]
+        public async Task<ActionResult<GetCustomerOrderDto>> GetCustomerOnMatchingOrders()
+        {
+            var query = new FilterCustomerOrderQuery()
+            {
+                OrderStatusId = [StatusConst.OnMatching],
+            };
+            return await GetCustomerOrders(query);
+        }
+
+        [HttpGet("customer/completed"), AuthorizeRoles(GlobalConstant.Customer)]
+        public async Task<ActionResult<GetCustomerOrderDto>> GetCustomerCompletedOrders()
+        {
+            var query = new FilterCustomerOrderQuery()
+            {
+                OrderStatusId = [StatusConst.Completed],
+            };
+            return await GetCustomerOrders(query);
         }
 
         [HttpGet("customer-latest"), AuthorizeRoles(GlobalConstant.Customer)]
@@ -469,5 +508,7 @@ namespace DeToiServer.Controllers
                 order.Message
             });
         }
+
+        
     }
 }

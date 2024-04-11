@@ -141,9 +141,9 @@ namespace DeToiServer.Services.OrderManagementService
             return order;
         }
 
-        public async Task<IEnumerable<GetCustomerOrderDto>> GetAllCustomerOrders(Guid customerId)
+        public async Task<IEnumerable<GetCustomerOrderDto>> GetAllCustomerOrders(Guid customerId, FilterCustomerOrderQuery orderQuery)
         {
-            var rawOrders = await _uow.OrderRepo.GetCustomerOrders(customerId);
+            var rawOrders = await _uow.OrderRepo.GetCustomerOrders(customerId, orderQuery);
             var result = _mapper.Map<IEnumerable<GetCustomerOrderDto>>(rawOrders);
             foreach (var item in result)
             {
