@@ -527,8 +527,23 @@ namespace DeToiServer.Controllers
 
             var orderPage = PageList<GetOrderDto>.ToPageList(order.AsQueryable(), getOrderQuery.PageNumber, getOrderQuery.PageSize);
             return Ok(orderPage);
-            // _mapper.Map<IEnumerable<GetOrderDto>>(order)
-            // return Ok(_mapper.Map<IEnumerable<GetOrderDto>>(order));
+        }
+
+        [HttpGet("search"), AuthorizeRoles(GlobalConstant.Admin)]
+        public async Task<ActionResult<GetOrderDto>> SearchOrderById(Guid id)
+        {
+
+            var order = await _orderService.GetById(id);
+
+            if (order is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Lấy đơn đặt hàng không thành công"
+                });
+            }
+
+            return Ok(order);
         }
     }
 }

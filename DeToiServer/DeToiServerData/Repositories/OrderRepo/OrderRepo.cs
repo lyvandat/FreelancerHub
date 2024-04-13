@@ -76,9 +76,6 @@ namespace DeToiServerData.Repositories.OrderRepo
                     .ThenInclude(f => f.Account)
                 .Include(o => o.ServiceStatus)
                 .Include(o => o.Address)
-                // .OrderBy(o => o.Id)
-                // .Skip((getOrderQuery.PageNumber - 1) * getOrderQuery.PageSize)
-                // .Take(getOrderQuery.PageSize)
                 .ToListAsync();
 
             foreach (var order in result)
