@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DeToiServer.ConfigModels;
+using DeToiServer.Dtos;
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.RealTimeDtos;
@@ -12,6 +13,7 @@ using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.UserService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
+using DeToiServerCore.Common.Helper;
 using DeToiServerCore.QueryModels.OrderQueryModels;
 using DeToiServerData.Repositories.AccountFreelanceRepo;
 using HtmlTags;
@@ -37,8 +39,8 @@ namespace DeToiServer.Controllers
         private readonly VnPayConfigModel _vnPayConfig;
 
         public OrderController(
-            UnitOfWork uow, 
-            IOrderManagementService orderService, 
+            UnitOfWork uow,
+            IOrderManagementService orderService,
             IBiddingOrderService biddingOrderService,
             ICustomerAccountService customerAcc,
             IFreelanceAccountService freelancerAcc,
@@ -66,7 +68,7 @@ namespace DeToiServer.Controllers
 
             postOrder.CustomerId = customer.Id;
             var order = await _orderService.Add(postOrder);
-            
+
             if (order is null)
             {
                 return BadRequest(new
@@ -98,7 +100,7 @@ namespace DeToiServer.Controllers
             }
 
             // _mapper.Map<IEnumerable<GetOrderDto>>(order)
-            return Ok(_mapper.Map<IEnumerable<GetOrderDto>>(order)); 
+            return Ok(_mapper.Map<IEnumerable<GetOrderDto>>(order));
         }
 
         [HttpPut("order-price"), AuthorizeRoles(GlobalConstant.Customer)]
@@ -198,7 +200,7 @@ namespace DeToiServer.Controllers
         //[HttpGet("test-notification-format")]
         private ActionResult TestNotiFormat()
         {
-            var html = HtmlGenerator.GenerateHtmlWithTitleMessageImages("Test voucher notification", "Xin chao ban da chuc mung thanh cong", 
+            var html = HtmlGenerator.GenerateHtmlWithTitleMessageImages("Test voucher notification", "Xin chao ban da chuc mung thanh cong",
                 "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7",
                 "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7",
                 "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7",
@@ -509,6 +511,24 @@ namespace DeToiServer.Controllers
             });
         }
 
-        
+        [HttpGet(""), AuthorizeRoles(GlobalConstant.Admin)]
+        public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetOrders([FromQuery] GetOrderQuery getOrderQuery)
+        {
+
+            var order = await _orderService.GetAllOrder(getOrderQuery);
+
+            if (order is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Lấy đơn đặt hàng không thành công"
+                });
+            }
+
+            var orderPage = PageList<GetOrderDto>.ToPageList(order.AsQueryable(), getOrderQuery.PageNumber, getOrderQuery.PageSize);
+            return Ok(orderPage);
+            // _mapper.Map<IEnumerable<GetOrderDto>>(order)
+            // return Ok(_mapper.Map<IEnumerable<GetOrderDto>>(order));
+        }
     }
 }

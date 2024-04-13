@@ -123,7 +123,7 @@ namespace DeToiServer.Services.OrderManagementService
         public async Task<IEnumerable<GetOrderDto>> GetFreelancerSuitableOrders(Guid freelancerId, FilterFreelancerOrderQuery filterQuery)
         {
             var result = await _uow.OrderRepo.GetFreelancerSuitableOrders(freelancerId, filterQuery);
-            
+
             return result.Select(_mapper.Map<GetOrderDto>);
         }
 
@@ -172,7 +172,7 @@ namespace DeToiServer.Services.OrderManagementService
 
             var order = _mapper.Map<GetOrderDto>(rawOrder);
             // order.ServiceTypes = rawOrder.OrderServiceTypes?.Select(ost => _mapper.Map<GetServiceTypeDto>(ost.ServiceType)).ToList();
-            
+
             return order;
         }
 
@@ -182,14 +182,21 @@ namespace DeToiServer.Services.OrderManagementService
             return res;
         }
 
+        public async Task<IEnumerable<GetOrderDto>> GetAllOrder(GetOrderQuery getOrderQuery)
+        {
+            var res = await _uow.OrderRepo.GetOrderWithDetailAsync(getOrderQuery);
+            return res.Select(_mapper.Map<GetOrderDto>);
+        }
+
         public async Task<UpdateOrderResultDto> PostOrderReview(PostOrderCustomerReviewDto review, Guid customerId)
         {
-            var order = await _uow.OrderRepo.GetByConditionsAsync(o => 
-                o.Id.Equals(review.OrderId) 
+            var order = await _uow.OrderRepo.GetByConditionsAsync(o =>
+                o.Id.Equals(review.OrderId)
                 && o.CustomerId.Equals(customerId)
                 && !o.ServiceStatusId.Equals(StatusConst.Canceled));
-            
-            if (order == null) {
+
+            if (order == null)
+            {
                 return new()
                 {
                     Message = "Không tìm thấy đơn đặt hàng"

@@ -6,6 +6,7 @@ namespace DeToiServerData.Repositories.OrderRepo
     public interface IOrderRepo : IRepository<Order>
     {
         Task<IEnumerable<Order>> GetAllOrderWithDetailAsync();
+        Task<IEnumerable<Order>> GetOrderWithDetailAsync(GetOrderQuery getOrderQuery);
         Task<Order> GetOrderDetailByIdAsync(Guid id);
         Task<IEnumerable<Order>> GetFreelancerSuitableOrders(Guid freelancerId, FilterFreelancerOrderQuery filterQuery);
         Task<Order> GetLatestCustomerOrders(Guid customerId);
