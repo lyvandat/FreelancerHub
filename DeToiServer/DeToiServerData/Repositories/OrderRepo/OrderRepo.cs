@@ -61,9 +61,10 @@ namespace DeToiServerData.Repositories.OrderRepo
             return result;
         }
 
-        public async Task<IEnumerable<Order>> GetOrderWithDetailAsync(GetOrderQuery getOrderQuery)
+        public async Task<IEnumerable<Order>> GetOrderWithDetailAsync(FilterOrderQuery filterOrderQuery)
         {
             var ordersQuery = _context.Orders.AsSplitQuery().AsNoTracking();
+
 
             var result = await ordersQuery
                 .Include(o => o.OrderServiceTypes)
@@ -77,6 +78,37 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Include(o => o.ServiceStatus)
                 .Include(o => o.Address)
                 .ToListAsync();
+
+            if (!string.IsNullOrEmpty(filterOrderQuery.Ward))
+            {
+                result = result.Where(o => o.Address.Ward.Contains(filterOrderQuery.Ward)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(filterOrderQuery.District))
+            {
+                result = result.Where(o => o.Address.District.Contains(filterOrderQuery.District)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(filterOrderQuery.Province))
+            {
+                result = result.Where(o => o.Address.Province.Contains(filterOrderQuery.Province)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(filterOrderQuery.Country))
+            {
+                result = result.Where(o => o.Address.Country.Contains(filterOrderQuery.Country)).ToList();
+            }
+
+            var sortExpression = GetSortExpression(filterOrderQuery);
+
+            if (filterOrderQuery.SortType == "desc")
+            {
+                result = result.AsQueryable().OrderByDescending(sortExpression).ToList();
+            }
+            else
+            {
+                result = result.AsQueryable().OrderBy(sortExpression).ToList();
+            }
 
             foreach (var order in result)
             {

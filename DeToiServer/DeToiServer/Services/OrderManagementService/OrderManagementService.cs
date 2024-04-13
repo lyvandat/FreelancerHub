@@ -182,9 +182,9 @@ namespace DeToiServer.Services.OrderManagementService
             return res;
         }
 
-        public async Task<IEnumerable<GetOrderDto>> GetAllOrder(GetOrderQuery getOrderQuery)
+        public async Task<IEnumerable<GetOrderDto>> GetAllOrder(FilterOrderQuery filterOrderQuery)
         {
-            var res = await _uow.OrderRepo.GetOrderWithDetailAsync(getOrderQuery);
+            var res = await _uow.OrderRepo.GetOrderWithDetailAsync(filterOrderQuery);
             return res.Select(_mapper.Map<GetOrderDto>);
         }
 

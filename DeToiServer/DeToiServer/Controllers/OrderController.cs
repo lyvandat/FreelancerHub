@@ -512,10 +512,10 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet(""), AuthorizeRoles(GlobalConstant.Admin)]
-        public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetOrders([FromQuery] GetOrderQuery getOrderQuery)
+        public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetOrders([FromQuery] FilterOrderQuery filterOrderQuery)
         {
 
-            var order = await _orderService.GetAllOrder(getOrderQuery);
+            var order = await _orderService.GetAllOrder(filterOrderQuery);
 
             if (order is null)
             {
@@ -525,12 +525,12 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            var orderPage = PageList<GetOrderDto>.ToPageList(order.AsQueryable(), getOrderQuery.PageNumber, getOrderQuery.PageSize);
+            var orderPage = PageList<GetOrderDto>.ToPageList(order.AsQueryable(), filterOrderQuery.Page, filterOrderQuery.PageSize);
             return Ok(orderPage);
         }
 
         [HttpGet("search"), AuthorizeRoles(GlobalConstant.Admin)]
-        public async Task<ActionResult<GetOrderDto>> SearchOrderById(Guid id)
+        public async Task<ActionResult<GetOrderDto>> GetOrderById(Guid id)
         {
 
             var order = await _orderService.GetById(id);

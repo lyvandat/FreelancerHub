@@ -11,7 +11,7 @@ namespace DeToiServer.Services.OrderManagementService
         Task<GetOrderDto?> GetOrderDetailById(Guid id);
         Task<GetOrderDto?> GetLatestCustomerOrders(Guid customerId);
         Task<IEnumerable<Order>> GetAllOrderTest();
-        Task<IEnumerable<GetOrderDto>> GetAllOrder(GetOrderQuery query);
+        Task<IEnumerable<GetOrderDto>> GetAllOrder(FilterOrderQuery filterOrderQuery);
         Task<UpdateOrderResultDto> PostOrderReview(PostOrderCustomerReviewDto review, Guid customerId);
         Task<UpdateOrderResultDto> PostCancelOrderCustomer(Guid orderId, Guid customerId);
         Task<IEnumerable<GetOrderDto>> GetFreelancerIncomingOrders(Guid freelancerId);
