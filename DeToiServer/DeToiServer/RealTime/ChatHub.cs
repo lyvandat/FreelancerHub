@@ -74,7 +74,7 @@ namespace DeToiServer.RealTime
             {
                 foreach (var user in users)
                 {
-                    if (user.Phone.Equals(freelanceAcc.Account.Phone))
+                    if (user.Phone.Equals(freelanceAcc.Account.CombinedPhone))
                     {
                         if (user.Connections != null)
                         {
@@ -123,7 +123,7 @@ namespace DeToiServer.RealTime
 
             var user = await _context.Users
                 .AsNoTracking()
-                .Where(u => u.Phone.Equals(customer.Account.Phone))
+                .Where(u => u.Phone.Equals(customer.Account.CombinedPhone))
                 .Include(u => u.Connections)
                 .FirstOrDefaultAsync();
 

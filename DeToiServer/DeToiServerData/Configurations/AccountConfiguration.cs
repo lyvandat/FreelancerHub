@@ -14,7 +14,7 @@ namespace DeToiServerData.Configurations
             //builder.Property(e => e.PasswordHash).HasMaxLength(512);
             //builder.Property(e => e.PasswordResetToken).HasMaxLength(512);
             //builder.Property(e => e.PasswordSalt).HasMaxLength(512);
-            builder.Property(e => e.Phone).HasMaxLength(12);
+            //builder.Property(e => e.Phone).HasMaxLength(12);
             builder.Property(e => e.RefreshToken).HasMaxLength(512);
             builder.Property(e => e.Role).HasMaxLength(12);
         }
