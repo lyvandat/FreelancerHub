@@ -42,13 +42,11 @@ namespace DeToiServerData.Configurations
         {
             builder.HasOne(ad => ad.CustomerAccount)
                 .WithMany(cus => cus.Addresses)
-                .HasForeignKey(ad => ad.CustomerAccountId)
-                .IsRequired(false);
+                .HasForeignKey(ad => ad.CustomerAccountId);
 
             builder.HasOne(ad => ad.FreelanceAccount)
                 .WithMany(frl => frl.Address)
-                .HasForeignKey(ad => ad.FreelanceAccountId)
-                .IsRequired(false);
+                .HasForeignKey(ad => ad.FreelanceAccountId);
         }
     }
 
