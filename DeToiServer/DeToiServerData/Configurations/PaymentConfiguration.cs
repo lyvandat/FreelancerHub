@@ -9,7 +9,7 @@ namespace DeToiServerData.Configurations
         protected override void OnConfigure(EntityTypeBuilder<FreelancePaymentHistory> builder)
         {
             builder.Property(b => b.Timestamp)
-                .ValueGeneratedOnAddOrUpdate()
+                .ValueGeneratedOnAdd()
                 .HasDefaultValueSql("GETDATE()");
 
             builder.HasOne(fph => fph.FreelanceAccount)

@@ -33,6 +33,10 @@ namespace DeToiServerData.Configurations
                 .HasDefaultValue("None");
             builder.Property(fl => fl.IdentityCardImageBack)
                 .HasDefaultValue("None");
+
+            builder.Property(b => b.ActiveTime)
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("GETDATE()");
         }
     }
 
