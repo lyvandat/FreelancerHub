@@ -511,39 +511,6 @@ namespace DeToiServer.Controllers
             });
         }
 
-        [HttpGet(""), AuthorizeRoles(GlobalConstant.Admin)]
-        public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetOrders([FromQuery] FilterOrderQuery filterOrderQuery)
-        {
 
-            var order = await _orderService.GetAllOrder(filterOrderQuery);
-
-            if (order is null)
-            {
-                return BadRequest(new
-                {
-                    Message = "Lấy đơn đặt hàng không thành công"
-                });
-            }
-
-            var orderPage = PageList<GetOrderDto>.ToPageList(order.AsQueryable(), filterOrderQuery.Page, filterOrderQuery.PageSize);
-            return Ok(orderPage);
-        }
-
-        [HttpGet("search"), AuthorizeRoles(GlobalConstant.Admin)]
-        public async Task<ActionResult<GetOrderDto>> GetOrderById(Guid id)
-        {
-
-            var order = await _orderService.GetById(id);
-
-            if (order is null)
-            {
-                return BadRequest(new
-                {
-                    Message = "Lấy đơn đặt hàng không thành công"
-                });
-            }
-
-            return Ok(order);
-        }
     }
 }
