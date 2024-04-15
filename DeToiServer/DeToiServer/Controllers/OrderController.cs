@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DeToiServer.AsyncDataServices;
 using DeToiServer.ConfigModels;
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.OrderDtos;
@@ -32,6 +33,7 @@ namespace DeToiServer.Controllers
         private readonly IUserService _userService;
         private readonly RealtimeConsumer _rabbitMQConsumer;
         private readonly IMapper _mapper;
+        private readonly IMessageBusClient _messageBusClient;
         private readonly VnPayConfigModel _vnPayConfig;
 
         public OrderController(
@@ -42,6 +44,7 @@ namespace DeToiServer.Controllers
             IFreelanceAccountService freelancerAcc,
             IUserService userService,
             RealtimeConsumer rabbitMQConsumer,
+            IMessageBusClient messageBusClient,
             IOptions<VnPayConfigModel> vnPayConfig,
             IMapper mapper)
         {
@@ -53,7 +56,14 @@ namespace DeToiServer.Controllers
             _userService = userService;
             _rabbitMQConsumer = rabbitMQConsumer;
             _mapper = mapper;
+            _messageBusClient = messageBusClient;
             _vnPayConfig = vnPayConfig.Value;
+        }
+
+        [HttpGet("test-gateway")]
+        public ActionResult TestGw()
+        {
+            return Ok("Great Job!, your services are running well");
         }
 
         [HttpPost, AuthorizeRoles(GlobalConstant.Customer)]
@@ -154,7 +164,26 @@ namespace DeToiServer.Controllers
             return Ok(order);
         }
 
-        [HttpGet("test-payment")]
+        [HttpGet("test-post-order")]
+        public ActionResult TestPostOrder()
+        {
+            var publishedOrder = new OrderPlacedDto();
+            publishedOrder.Comment = "Test published";
+            //Send Async Message
+            try
+            {
+                publishedOrder.Event = "OrderPlaced";
+                _messageBusClient.PublishNewOrder(publishedOrder);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"--> Could not send asynchronously: {ex.Message}");
+                return BadRequest();
+            }
+            return Ok();
+        }
+
+            [HttpGet("test-payment")]
         public ActionResult TestPayment()
         {
             // payment

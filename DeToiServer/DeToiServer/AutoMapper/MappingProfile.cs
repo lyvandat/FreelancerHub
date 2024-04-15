@@ -137,6 +137,7 @@ namespace DeToiServer.AutoMapper
             #endregion
 
             #region services for an order
+            CreateMap<Order, OrderPlacedDto>();
             CreateMap<PostOrderDto, Order>()
                 .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartDate.ToDateTime(src.StartTime)));
             CreateMap<Order, GetOrderDto>()

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: detoiserver-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: detoiserverservice
+  template:
+    metadata:
+      labels:
+        app: detoiserverservice
+    spec:
+      containers:
+        - name: detoiserverservice
+          image: dat113/detoiserver:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: detoiserver-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: detoiserverservice
+  ports:
+  - name: detoiserverservice
+    protocol: TCP
+    port: 8080
+    targetPort: 8080

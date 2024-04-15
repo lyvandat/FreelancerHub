@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+  - hosts:
+      - detoiserver.com
+    secretName: tls-conn-secret
+  rules:
+    - host: detoiserver.com
+      http:
+        paths:
+          - path: /api/payment
+            pathType: Prefix
+            backend:
+              service:
+                name: detoiserverpayment-clusterip-srv
+                port:
+                  number: 8080
+          - path: /api/v1
+            pathType: Prefix
+            backend:
+              service:
+                name: detoiserver-clusterip-srv
+                port:
+                  number: 8080

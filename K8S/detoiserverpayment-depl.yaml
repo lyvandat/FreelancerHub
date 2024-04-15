@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: detoiserverpayment-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: detoiserverpayment
+  template:
+    metadata:
+      labels:
+        app: detoiserverpayment
+    spec:
+      containers:
+        - name: detoiserverpayment
+          image: dat113/detoiserverpayment
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: detoiserverpayment-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: detoiserverpayment
+  ports:
+  - name: detoiserverpayment
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
