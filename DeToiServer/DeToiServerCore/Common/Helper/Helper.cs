@@ -47,7 +47,7 @@ namespace DeToiServerCore.Common.Helper
         {
             return Environment.GetEnvironmentVariable("MQ_HOST") != null
                 ? "http://localhost:8080/chat-hub"
-                : "http://localhost:5053/chat-hub";
+                : "https://localhost:7140/chat-hub";
         }
 
         public static int GetDockerDelayPeriod()

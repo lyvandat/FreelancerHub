@@ -37,7 +37,7 @@ builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddServicesData();
 builder.Services.AddUnitOfWork(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("local_duy"))); // builder.Configuration.GetConnectionString("local") | Helper.GetDockerConnectionString()
+    options.UseSqlServer(Helper.GetDockerConnectionString())); // builder.Configuration.GetConnectionString("local") | Helper.GetDockerConnectionString()
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<RealtimeConsumer>();
