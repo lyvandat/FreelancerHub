@@ -480,6 +480,36 @@ namespace DeToiServer.Controllers
             });
         }
 
+        [HttpPost("freelancer-review"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult<string>> PostFreelancerOrderReview(PostOrderFreelancerReviewDto review)
+        {
+            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var freelancer = await _freelancerAcc.GetByAccId(accountId);
+
+            if (freelancer is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không thể đánh giá đơn hàng, hãy đăng nhập để thử lại."
+                });
+            }
+
+            var order = await _orderService.PostFreelancerReview(review, freelancer.Id);
+
+            if (order.Order == null)
+            {
+                return BadRequest(new
+                {
+                    order.Message
+                });
+            }
+            
+            return Ok(new
+            {
+                order.Message
+            });
+        }
+
         [HttpDelete("customer-order"), AuthorizeRoles(GlobalConstant.Customer)]
         public async Task<ActionResult<string>> PostCustomerCancelOrder(Guid orderId)
         {

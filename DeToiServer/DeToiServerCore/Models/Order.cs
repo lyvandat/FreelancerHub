@@ -18,6 +18,7 @@ namespace DeToiServerCore.Models
         public CustomerAccount? Customer { get; set; }
         public double Rating { get; set; }
         public string? Comment { get; set; }
+        public double FreelancerRating { get; set; } = 0;
         public Guid ServiceStatusId { get; set; } = new Guid("a888efc3-1d7b-445a-b38c-758737b67bad");
         public ServiceStatus? ServiceStatus { get; set; }
         public ICollection<OrderService>? OrderServices { get; set; }

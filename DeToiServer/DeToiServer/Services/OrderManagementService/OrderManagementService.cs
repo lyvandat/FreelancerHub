@@ -265,5 +265,44 @@ namespace DeToiServer.Services.OrderManagementService
 
             return _mapper.Map<IEnumerable<GetOrderDto>>(res);
         }
+
+        public async Task<UpdateOrderResultDto> PostFreelancerReview(PostOrderFreelancerReviewDto review, Guid freelancerId)
+        {
+            var order = await _uow.OrderRepo.GetByConditionsAsync(o =>
+                o.Id.Equals(review.OrderId)
+                && o.FreelancerId.Equals(freelancerId)
+                && !o.ServiceStatusId.Equals(StatusConst.Canceled));
+
+            if (order == null)
+            {
+                return new()
+                {
+                    Message = "Không tìm thấy đơn đặt hàng"
+                };
+            }
+            if (order.FreelancerRating != 0)
+            {
+                return new()
+                {
+                    Message = "Bạn đã review cho đơn này."
+                };
+            }
+
+            order.FreelancerRating = review.Rating;
+
+            if (!await _uow.SaveChangesAsync())
+            {
+                return new()
+                {
+                    Message = "Có lỗi xảy ra trong lúc đánh giá đơn."
+                };
+            }
+
+            return new()
+            {
+                Order = order,
+                Message = "Đánh giá đơn hàng thành công",
+            };
+        }
     }
 }
