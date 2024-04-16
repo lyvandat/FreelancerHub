@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DeToiServer.Dtos.AdminDto;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Services.AccountService;
 using DeToiServer.Services.CustomerAccountService;
@@ -10,6 +11,7 @@ using DeToiServerCore.Common.Helper;
 using DeToiServerCore.QueryModels.OrderQueryModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace DeToiServer.Controllers
 {
@@ -37,6 +39,28 @@ namespace DeToiServer.Controllers
 
         // Doanh thu = 5% Tiền dịch vụ
         // Tổng tiền = Tiền dịch vụ + Doanh thu
+
+        
+
+        [HttpGet("overview"), AuthorizeRoles(GlobalConstant.Admin)]
+        public async Task<ActionResult<GetOverviewDataAdminDto>> GetOverviewDataAdmin()
+        {
+            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var result = await _accService.GetAccountDetailsById(accountId);
+
+            if (result is null)
+            {
+                return NotFound(new
+                {
+                    message = "Không tìm thấy tài khoản!"
+                });
+            }
+
+            return Ok(new
+            {
+                message = "Test"
+            });
+        }
 
         [HttpGet("order"), AuthorizeRoles(GlobalConstant.Admin)]
         public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetOrders([FromQuery] FilterOrderQuery filterOrderQuery)
