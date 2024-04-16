@@ -141,6 +141,13 @@ namespace DeToiServer.Controllers
                     message = "Tài khoản Freelancer không tồn tại.",
                 });
             }
+            if (!freelance.Account.IsVerified)
+            {
+                return BadRequest(new
+                {
+                    Message = "Tài khoản của bạn chưa được kiểm chứng."
+                });
+            }
 
             freelance.Account.LoginToken = GenerateOTP();
             freelance.Account.LoginTokenExpires = DateTime.Now.AddMinutes(5);
@@ -232,14 +239,6 @@ namespace DeToiServer.Controllers
             //    {
             //        Message = "Mã otp đã hết hạn. Xin hãy yêu cầu mã OTP mới."
             //    });
-
-            if (!account.IsVerified)
-            {
-                return BadRequest(new
-                {
-                    Message = "Tài khoản của bạn chưa được kiểm chứng."
-                });
-            }
 
             var token = CreateToken(account, account.Role);
             var refreshToken = GenerateRefreshToken();
