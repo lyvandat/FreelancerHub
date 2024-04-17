@@ -49,4 +49,10 @@ namespace DeToiServer.Dtos.OrderDtos
         public Order? Order { get; set; } = null;
         public string Message { get; set; } = string.Empty;
     }
+
+    public class PostOrderFreelancerReviewDto
+    {
+        public Guid OrderId { get; set; }
+        public double Rating { get; set; }
+    }
 }

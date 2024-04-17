@@ -75,13 +75,14 @@ namespace DeToiServer.Controllers
         public async Task<ActionResult<Account>> RegisterFreelance(RegisterFreelanceDto request)
         {
             var freelance = await _freelanceAccService
-                .GetByCondition(flc => flc.Account.Phone.Equals(request.Phone));
+                .GetByCondition(flc => flc.Account.Phone.Equals(request.Phone)
+                    && flc.Account.CountryCode.Equals(request.CountryCode));
 
             if (freelance != null)
             {
                 return BadRequest(new
                 {
-                    message = $"Tài khoản với số điện thoại {request.Phone} đã tồn tại!"
+                    message = $"Tài khoản với số điện thoại {request.CountryCode}:{request.Phone} đã tồn tại!"
                 });
             }
 
@@ -90,7 +91,9 @@ namespace DeToiServer.Controllers
                 Email = null,
                 FullName = request.FullName ?? $"Freelancer_{DateTime.Now:yyyyMMdd}_VIE",
                 DateOfBirth = request.DateOfBirth,
+                CountryCode = request.CountryCode,
                 Phone = request.Phone,
+                CombinedPhone = $"{request.CountryCode}{request.Phone}",
                 Role = GlobalConstant.Freelancer,
                 Avatar = request.Avatar,
                 Gender = request.Gender,
@@ -128,13 +131,21 @@ namespace DeToiServer.Controllers
         public async Task<ActionResult<string>> LoginFreelancer(LoginDto request)
         {
             var freelance = await _freelanceAccService
-                .GetByCondition(cus => cus.Account.Phone.Equals(request.Phone));
+                .GetByCondition(cus => cus.Account.Phone.Equals(request.Phone) 
+                    && cus.Account.CountryCode.Equals(request.CountryCode));
 
             if (freelance == null)
             {
                 return BadRequest(new
                 {
                     message = "Tài khoản Freelancer không tồn tại.",
+                });
+            }
+            if (!freelance.Account.IsVerified)
+            {
+                return BadRequest(new
+                {
+                    Message = "Tài khoản của bạn chưa được kiểm chứng."
                 });
             }
 
@@ -152,8 +163,10 @@ namespace DeToiServer.Controllers
         [HttpPost("login/customer")]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
-            var rawAccount = await _accService.GetByCondition(cus => cus.Phone.Equals(request.Phone));
-            
+            var rawAccount = await _accService
+                .GetByCondition(acc => acc.Phone.Equals(request.Phone) 
+                    && acc.CountryCode.Equals(request.CountryCode));
+
             if (rawAccount != null && rawAccount.Role.Equals(GlobalConstant.Freelancer))
             {
                 return Unauthorized(new 
@@ -163,14 +176,18 @@ namespace DeToiServer.Controllers
             }
 
             var customer = await _customerAccService.GetByCondition(cus
-                => cus.Account.Phone.Equals(request.Phone));
+                => cus.Account.Phone.Equals(request.Phone)
+                && cus.Account.CountryCode.Equals(request.CountryCode));
+
             if (rawAccount == null)
             {
                 var account = new Account()
                 {
                     Email = null,
                     FullName = $"Customer_{DateTime.Now:yyyyMMdd}_VIE",
+                    CountryCode = request.CountryCode,
                     Phone = request.Phone,
+                    CombinedPhone = $"{request.CountryCode}{request.Phone}",
                     Role = GlobalConstant.Customer,
                     Avatar = GlobalConstant.CustomerAvtMale,
                     IsVerified = true, // Temporary
@@ -200,7 +217,9 @@ namespace DeToiServer.Controllers
         [HttpPost("verify-otp/register-login")]
         public async Task<IActionResult> VerifyOtpToken(PhoneAndOtpDto request)
         {
-            var account = await _accService.GetByCondition(acc => acc.Phone == request.Phone);
+            var account = await _accService
+                .GetByCondition(acc => acc.Phone == request.Phone
+                    && acc.CountryCode == request.CountryCode);
 
             if (account == null)
             {
@@ -221,14 +240,6 @@ namespace DeToiServer.Controllers
             //        Message = "Mã otp đã hết hạn. Xin hãy yêu cầu mã OTP mới."
             //    });
 
-            if (!account.IsVerified)
-            {
-                return BadRequest(new
-                {
-                    Message = "Tài khoản của bạn chưa được kiểm chứng."
-                });
-            }
-
             var token = CreateToken(account, account.Role);
             var refreshToken = GenerateRefreshToken();
             SetRefreshToken(refreshToken, account);
@@ -245,7 +256,9 @@ namespace DeToiServer.Controllers
         [HttpPost("resend-otp/register-login")]
         public async Task<IActionResult> ResendOtpToken(ResendOtpDto request)
         {
-            var account = await _accService.GetByCondition(acc => acc.Phone == request.Phone);
+            var account = await _accService
+                .GetByCondition(acc => acc.Phone == request.Phone
+                    && acc.CountryCode == request.CountryCode);
 
             if (account == null)
             {

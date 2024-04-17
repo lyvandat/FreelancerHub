@@ -37,8 +37,8 @@ builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddServicesData();
-builder.Services.AddUnitOfWork(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("local"))); // builder.Configuration.GetConnectionString("local") | Helper.GetDockerConnectionString()
+builder.Services.AddUnitOfWork(options =>
+    options.UseSqlServer(Helper.GetDockerConnectionString())); // builder.Configuration.GetConnectionString("local") | Helper.GetDockerConnectionString()
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<RealtimeConsumer>();
@@ -51,7 +51,7 @@ app.UseSwaggerUI();
 app.UseCors("NgOrigins");
 app.ApplyDatabaseMigrations(app.Environment);
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
-//app.UseMiddleware<DelayTimerMiddleware>();
+app.UseMiddleware<DelayTimerMiddleware>();
 
 // Add other configurations
 app.UseHttpsRedirection();

@@ -89,12 +89,51 @@
 
         public static Dictionary<Guid, int> StatusConstOrder = new Dictionary<Guid, int>()
         {
+            {Created, -1},
+            {OnMatching, -1},
+
             {Canceled, -1},
             {Waiting, 0},
             {OnMoving, 1},
             {OnDoingService, 2},
             {Completed, 3},
         };
+
+        public static readonly IEnumerable<Guid> StatusIdCollections = [
+            Created,
+            OnMatching,
+            Waiting,
+            OnMoving,
+            OnDoingService,
+            Completed,
+            Canceled,
+        ];
+    }
+
+    public static class ReportConst
+    {
+        public readonly static Guid New = Guid.Parse("a888efc3-1d7b-445a-b38c-758737b67bad");
+        public readonly static Guid Handled = Guid.Parse("a53e9887-2186-4ff8-a009-f7706c800b52");
+
+        public static class Actions
+        {
+            public readonly static Guid Rejected = Guid.Parse("8a9f22f1-3c67-49f7-bd84-ec290e4a37fd");
+            public readonly static Guid BanCustomer = Guid.Parse("0815e9cf-98c7-4a6a-b27b-43d9b8d1f5a2");
+            public readonly static Guid BanFreelancer = Guid.Parse("3f98b502-7245-4e86-b7b4-7db05357a1f8");
+            public readonly static Guid MarkFreelancer = Guid.Parse("a7d1f0e8-2a6f-4b9d-aa1c-10f58a1d5d32");
+            public readonly static Guid Canceled = Guid.Parse("0774e101-f1a3-4186-af1e-af95a26e9ead");
+        }
+
+
+
+        //public static Dictionary<Guid, int> StatusConstOrder = new Dictionary<Guid, int>()
+        //{
+        //    {Canceled, -1},
+        //    {Waiting, 0},
+        //    {OnMoving, 1},
+        //    {OnDoingService, 2},
+        //    {Completed, 3},
+        //};
     }
 
     public static class CustomerRankConst

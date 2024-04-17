@@ -4,6 +4,7 @@ using DeToiServerData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeToiServerData.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240414091416_V1.6.15.1_FreelancerAccountActiveTime")]
+    partial class V16151_FreelancerAccountActiveTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -457,9 +460,6 @@ namespace DeToiServerData.Migrations
 
                     b.Property<Guid?>("FreelancerId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("FreelancerRating")
-                        .HasColumnType("float");
 
                     b.Property<double>("Rating")
                         .HasColumnType("float");
@@ -1157,7 +1157,7 @@ namespace DeToiServerData.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("41133941-a95d-4954-ac15-0f1bc8b50560"),
+                            Id = new Guid("19cc2193-db43-4f27-8a69-f31ebb7a8058"),
                             AutoSelect = true,
                             Icon = "faDog",
                             Key = "hasPets",
@@ -1167,7 +1167,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("21a21c4e-1a36-47cf-905c-acc28d7da256"),
+                            Id = new Guid("3bfdf036-2a02-460c-8b79-408ff1429300"),
                             AutoSelect = false,
                             Icon = "faComputer",
                             Key = "hasElectronics",
@@ -1177,7 +1177,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("12d1e57b-4b03-487b-842a-082e39ec857d"),
+                            Id = new Guid("8f995c7b-761f-4b52-b713-4ac193339972"),
                             AutoSelect = false,
                             Icon = "faBroom",
                             Key = "freelancerBringTools",
@@ -1244,14 +1244,14 @@ namespace DeToiServerData.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("37193d07-d585-4a25-88a2-5365e3147285"),
+                            Id = new Guid("66fb09dd-82ef-4655-b460-b1b622964abe"),
                             Description = "Tất cả dịch vụ, dọn toàn bộ nhà / phòng",
                             InputMethodTypeId = new Guid("89e6f2f5-15cc-470c-a363-427ee8646609"),
                             Name = "Dọn trọn gói"
                         },
                         new
                         {
-                            Id = new Guid("d220ba61-6139-439c-9650-7130448ad2ba"),
+                            Id = new Guid("0aaa8144-6219-4e32-9ac1-d310d874d4cd"),
                             Description = "Trung bình 50.000đ / phòng, tiết kiệm và nhanh chóng",
                             InputMethodTypeId = new Guid("89e6f2f5-15cc-470c-a363-427ee8646609"),
                             Name = "Dọn theo phòng"
@@ -1301,7 +1301,7 @@ namespace DeToiServerData.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("574b908c-5a12-4fda-a6f0-59b7808d2b3e"),
+                            Id = new Guid("7b120917-8d7c-4d44-b7a1-94d2175709bb"),
                             InputMethodId = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
                             Key = "addressLine",
                             Label = "Số nhà, số phòng, hẻm (ngõ)",
@@ -1311,7 +1311,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("35c86a73-c2b0-4372-b6c3-2af07f36681e"),
+                            Id = new Guid("9094ac25-b235-45ba-8dfe-21c10e1538d1"),
                             InputMethodId = new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"),
                             Key = "cleanningType",
                             Label = "Bạn muốn chúng tôi dọn như thế nào?",
@@ -1322,7 +1322,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("49ac4f5c-7152-402e-8d74-e92ec1b39ea6"),
+                            Id = new Guid("35cf4c3e-ccea-4c8d-8f9f-1a5035a640d3"),
                             InputMethodId = new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"),
                             Key = "roomNumber",
                             Label = "Số lượng phòng",
@@ -1402,14 +1402,14 @@ namespace DeToiServerData.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("66b2bcf8-6f50-4c79-906e-0be392225f0e"),
+                            Id = new Guid("8e0c526b-294e-4b0c-9931-f131fad225b3"),
                             InputMethodId = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
                             Message = "Thông báo valid input 1 custom 1.",
                             Name = "required"
                         },
                         new
                         {
-                            Id = new Guid("8330e9ae-885f-414d-880b-cf23103059dc"),
+                            Id = new Guid("efb558a7-cb0a-4117-b8a0-18f31a94cf91"),
                             InputMethodId = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
                             Message = "Thông báo valid input 1 custom 2.",
                             Name = "min",
@@ -1417,7 +1417,7 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1eb87b0f-789a-4e54-b833-91c7b696a1e1"),
+                            Id = new Guid("c5bdcc47-8de6-4108-be37-0ffa4c01d1b7"),
                             InputMethodId = new Guid("95b69f6f-c8a5-4b94-824b-214bb7435c4f"),
                             Message = "Thông báo valid input 1 custom 3.",
                             Name = "max",
@@ -1425,21 +1425,21 @@ namespace DeToiServerData.Migrations
                         },
                         new
                         {
-                            Id = new Guid("4e3a943f-278b-42dd-b6c7-9c93f4a9b28c"),
+                            Id = new Guid("a1158adb-72bf-4d72-8a90-956429d16212"),
                             InputMethodId = new Guid("0ad2fdde-73c5-433c-99f8-95e9c9df32a4"),
                             Message = "Thông báo valid input 2 custom 1.",
                             Name = "required"
                         },
                         new
                         {
-                            Id = new Guid("4a85be3e-4f86-41e7-b9fb-541729bc59f1"),
+                            Id = new Guid("ff0a11c9-ac46-4192-a902-ed10c1e9bbe0"),
                             InputMethodId = new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"),
                             Message = "Thông báo valid input 3 custom 1.",
                             Name = "required"
                         },
                         new
                         {
-                            Id = new Guid("f0d3739b-f830-4a7f-80a2-80da60b1c6b6"),
+                            Id = new Guid("caa830d7-7acf-432f-ba1b-ccaffbdabb6c"),
                             InputMethodId = new Guid("42b3fce8-5392-4bfd-97a2-0b84532a4b67"),
                             Message = "Thông báo valid input 3 custom 2.",
                             Name = "min",

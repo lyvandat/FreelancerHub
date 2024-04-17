@@ -55,6 +55,7 @@ namespace DeToiServer.AutoMapper
             #region Address
             CreateMap<Address, AddressDto>().ReverseMap();
             CreateMap<Address, PostOrderAddressDto>().ReverseMap();
+            CreateMap<PostAddressDto, Address>();
             #endregion
 
             #region Skill

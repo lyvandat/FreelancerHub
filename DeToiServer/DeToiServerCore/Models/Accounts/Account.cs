@@ -6,8 +6,10 @@ namespace DeToiServerCore.Models.Accounts
     {
         public string? Email { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty; // auto generated
-        public DateOnly DateOfBirth { get; set; }
+        public DateOnly? DateOfBirth { get; set; } = null;
+        public string CountryCode { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
+        public string CombinedPhone { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
         public string Avatar { get; set; } = string.Empty;
         public string Gender { get; set; } = GlobalConstant.Gender.Male;

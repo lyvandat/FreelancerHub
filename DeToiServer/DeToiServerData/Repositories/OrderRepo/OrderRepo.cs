@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DeToiServerData.Repositories.OrderRepo
 {
@@ -25,12 +26,53 @@ namespace DeToiServerData.Repositories.OrderRepo
         {
             var query = await _context.OrderServiceTypes.AsNoTracking().AsSplitQuery()
                 .Include(ost => ost.Order)
-                .Where(ost => ost.ServiceTypeId.Equals(serviceTypeId) 
+                .Where(ost => ost.ServiceTypeId.Equals(serviceTypeId)
                     && ost.Order.ServiceStatusId.Equals(StatusConst.Completed))
                 .Select(ost => ost.Order.EstimatedPrice)
                 .ToListAsync();
-            
+
             return query.IsNullOrEmpty() ? GlobalConstant.Order.DefaultRecommendPrice : query.Average();
+        }
+
+        public List<Order> FilterOrders(List<Order> orders, FilterOrderQuery filterOrderQuery)
+        {
+            if (!string.IsNullOrEmpty(filterOrderQuery.Ward))
+            {
+                orders = orders.Where(o => o.Address.Ward.Contains(filterOrderQuery.Ward)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(filterOrderQuery.District))
+            {
+                orders = orders.Where(o => o.Address.District.Contains(filterOrderQuery.District)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(filterOrderQuery.Province))
+            {
+                orders = orders.Where(o => o.Address.Province.Contains(filterOrderQuery.Province)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(filterOrderQuery.Country))
+            {
+                orders = orders.Where(o => o.Address.Country.Contains(filterOrderQuery.Country)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(filterOrderQuery.Status))
+            {
+                orders = orders.Where(o => o.ServiceStatus.Name.Contains(filterOrderQuery.Status)).ToList();
+            }
+
+            var sortExpression = GetSortExpression(filterOrderQuery);
+
+            if (filterOrderQuery.SortType == "desc")
+            {
+                orders = orders.AsQueryable().OrderByDescending(sortExpression).ToList();
+            }
+            else
+            {
+                orders = orders.AsQueryable().OrderBy(sortExpression).ToList();
+            }
+
+            return orders;
         }
 
         public async Task<IEnumerable<Order>> GetAllOrderWithDetailAsync()
@@ -49,6 +91,36 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Include(o => o.ServiceStatus)
                 .Include(o => o.Address)
                 .ToListAsync();
+
+
+            foreach (var order in result)
+            {
+                order.RecommendPrice = order.OrderServiceTypes
+                    .Select(async ost => await CalcAvgOrderPriceByServiceType(ost.ServiceTypeId))
+                    .ToList().Sum(price => price.Result);
+            }
+
+            return result;
+        }
+
+        public async Task<IEnumerable<Order>> GetOrderWithDetailAsync(FilterOrderQuery filterOrderQuery)
+        {
+            var ordersQuery = _context.Orders.AsSplitQuery().AsNoTracking();
+
+            var result = await ordersQuery
+                .Include(o => o.OrderServiceTypes)
+                    .ThenInclude(ost => ost.ServiceType)
+                .Include(o => o.OrderServices)
+                    .ThenInclude(ost => ost.Service)
+                .Include(o => o.SkillRequired)
+                    .ThenInclude(skr => skr.Skill)
+                .Include(o => o.Freelance)
+                    .ThenInclude(f => f.Account)
+                .Include(o => o.ServiceStatus)
+                .Include(o => o.Address)
+                .ToListAsync();
+
+            result = FilterOrders(result.ToList(), filterOrderQuery);
 
             foreach (var order in result)
             {
@@ -110,16 +182,23 @@ namespace DeToiServerData.Repositories.OrderRepo
             return result;
         }
 
-        public async Task<IEnumerable<Order>> GetCustomerOrders(Guid customerId)
+        private Expression<Func<Order, object>> GetCustomerOrderSortExpression(FilterCustomerOrderQuery filterQuery)
+        => filterQuery.SortingCol?.ToLower() switch
+        {
+            "date" => ord => ord.StartTime,
+            "created_at" => ord => ord.CreatedTime,
+            _ => ord => ord.CreatedTime,
+        };
+
+        public async Task<IEnumerable<Order>> GetCustomerOrders(Guid customerId, FilterCustomerOrderQuery filterQuery)
         {
             var statusList = new List<Guid>() {
                 StatusConst.Canceled,
                 StatusConst.Completed
             };
 
-            var result = await _context.Orders
+            var query = _context.Orders
                 .AsNoTracking().AsSplitQuery()
-                .Where(o => o.CustomerId == customerId) // && !o.ServiceStatusId.Equals(StatusConst.Canceled)
                 .Include(o => o.OrderServiceTypes)
                     .ThenInclude(ost => ost.ServiceType)
                 .Include(o => o.OrderServices)
@@ -130,8 +209,25 @@ namespace DeToiServerData.Repositories.OrderRepo
                     .ThenInclude(f => f.Account)
                 .Include(o => o.ServiceStatus)
                 .Include(o => o.Address)
-                .ToListAsync();
+                .Where(o => o.CustomerId == customerId); // && !o.ServiceStatusId.Equals(StatusConst.Canceled)
 
+            if (filterQuery.OrderStatusId != null)
+            {
+                query = query.Where(o => filterQuery.OrderStatusId.Contains(o.ServiceStatusId));
+            }
+
+            var sortExpression = GetCustomerOrderSortExpression(filterQuery);
+
+            if (filterQuery.SortType.ToLower().Equals("asc"))
+            {
+                query = query.OrderBy(sortExpression);
+            }
+            else
+            {
+                query = query.OrderByDescending(sortExpression);
+            }
+
+            var result = await query.ToListAsync();
             foreach (var order in result)
             {
                 if (!statusList.Contains(order.ServiceStatusId))
@@ -141,26 +237,6 @@ namespace DeToiServerData.Repositories.OrderRepo
             }
 
             return result;
-        }
-
-        private double GetOrderDistance(Order order, FreelanceAccount freelancer)
-        {
-            if (order.Address == null || freelancer.Address == null || freelancer.Address.Count == 0)
-                return 0d;
-
-            var address = freelancer.Address.First();
-
-            return Helper.GeoCalculator.CalculateDistance(
-                new Coordination()
-                {
-                    Lat = order.Address.Lat,
-                    Lon = order.Address.Lon,
-                },
-                new Coordination()
-                {
-                    Lat = address.Lat,
-                    Lon = address.Lon,
-                });
         }
 
         private Expression<Func<Order, object>> GetFreelancerOrderSortExpression(FilterFreelancerOrderQuery filterQuery)
@@ -234,13 +310,13 @@ namespace DeToiServerData.Repositories.OrderRepo
             }
 
             if (!(freelance.Address == null || freelance.Address.Count == 0))
-            if (filterQuery.SortingCol.ToLower().Equals("distance"))
-            {
-                if (filterQuery.SortType.ToLower().Equals("asc"))
-                    result = result.OrderBy(order => order, new DistanceComparer(freelance.Address.First())).ToList();
-                else
-                    result = result.OrderByDescending(order => order, new DistanceComparer(freelance.Address.First())).ToList();
-            }
+                if (filterQuery.SortingCol.ToLower().Equals("distance"))
+                {
+                    if (filterQuery.SortType.ToLower().Equals("asc"))
+                        result = result.OrderBy(order => order, new DistanceComparer(freelance.Address.First())).ToList();
+                    else
+                        result = result.OrderByDescending(order => order, new DistanceComparer(freelance.Address.First())).ToList();
+                }
 
             return result;
         }
@@ -297,7 +373,7 @@ namespace DeToiServerData.Repositories.OrderRepo
                     && order.FreelancerId.Equals(freelancerId))
                 .OrderByDescending(o => o.CreatedTime)
                 .ToListAsync();
-            
+
             foreach (var order in result)
             {
                 order.RecommendPrice = order.OrderServiceTypes
@@ -311,7 +387,7 @@ namespace DeToiServerData.Repositories.OrderRepo
 
     public class DistanceComparer(Address freelancerAddress) : IComparer<Order>
     {
-        private readonly Coordination _coord = new ()
+        private readonly Coordination _coord = new()
         {
             Lat = freelancerAddress.Lat,
             Lon = freelancerAddress.Lon,

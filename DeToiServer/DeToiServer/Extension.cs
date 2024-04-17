@@ -1,4 +1,5 @@
 ﻿using DeToiServer.Services.AccountService;
+using DeToiServer.Services.AddressService;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FavoriteService;
 using DeToiServer.Services.FreelanceAccountService;
@@ -124,6 +125,7 @@ namespace DeToiServerData
             services.AddScoped<IFreelanceQuizService, FreelanceQuizService>();
             services.AddScoped<IFreelanceSkillService, FreelanceSkillService>();
             services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IAddressService, AddressService>();
             return services;
         }
 

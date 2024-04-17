@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DeToiServer.AsyncDataServices;
 using DeToiServer.ConfigModels;
+using DeToiServer.Dtos;
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.RealTimeDtos;
@@ -13,11 +14,14 @@ using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.UserService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
+using DeToiServerCore.Common.Helper;
+using DeToiServerCore.QueryModels.OrderQueryModels;
 using DeToiServerData.Repositories.AccountFreelanceRepo;
 using HtmlTags;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DeToiServer.Controllers
 {
@@ -37,8 +41,8 @@ namespace DeToiServer.Controllers
         private readonly VnPayConfigModel _vnPayConfig;
 
         public OrderController(
-            UnitOfWork uow, 
-            IOrderManagementService orderService, 
+            UnitOfWork uow,
+            IOrderManagementService orderService,
             IBiddingOrderService biddingOrderService,
             ICustomerAccountService customerAcc,
             IFreelanceAccountService freelancerAcc,
@@ -74,7 +78,7 @@ namespace DeToiServer.Controllers
 
             postOrder.CustomerId = customer.Id;
             var order = await _orderService.Add(postOrder);
-            
+
             if (order is null)
             {
                 return BadRequest(new
@@ -106,7 +110,7 @@ namespace DeToiServer.Controllers
             }
 
             // _mapper.Map<IEnumerable<GetOrderDto>>(order)
-            return Ok(_mapper.Map<IEnumerable<GetOrderDto>>(order)); 
+            return Ok(_mapper.Map<IEnumerable<GetOrderDto>>(order));
         }
 
         [HttpPut("order-price"), AuthorizeRoles(GlobalConstant.Customer)]
@@ -225,7 +229,7 @@ namespace DeToiServer.Controllers
         //[HttpGet("test-notification-format")]
         private ActionResult TestNotiFormat()
         {
-            var html = HtmlGenerator.GenerateHtmlWithTitleMessageImages("Test voucher notification", "Xin chao ban da chuc mung thanh cong", 
+            var html = HtmlGenerator.GenerateHtmlWithTitleMessageImages("Test voucher notification", "Xin chao ban da chuc mung thanh cong",
                 "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7",
                 "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7",
                 "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7",
@@ -382,10 +386,10 @@ namespace DeToiServer.Controllers
             return Ok(order);
         }
 
-        [HttpGet("customer-all"), AuthorizeRoles(GlobalConstant.Customer)]
-        public async Task<ActionResult<GetCustomerOrderDto>> GetCustomerOrders()
+
+        private async Task<ActionResult> GetCustomerOrders(FilterCustomerOrderQuery query)
         {
-            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
             var customer = await _customerAcc.GetByAccId(accountId);
 
             if (customer is null)
@@ -396,9 +400,46 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            var order = await _orderService.GetAllCustomerOrders(customer.Id);
+            var order = await _orderService.GetAllCustomerOrders(customer.Id, query);
 
             return Ok(order);
+        }
+
+
+        [HttpGet("customer-all"), AuthorizeRoles(GlobalConstant.Customer)]
+        public async Task<ActionResult<GetCustomerOrderDto>> GetAllCustomerOrders([FromQuery] FilterCustomerOrderQuery query)
+        {
+            return await GetCustomerOrders(query);
+        }
+
+        [HttpGet("customer/on-service"), AuthorizeRoles(GlobalConstant.Customer)]
+        public async Task<ActionResult<GetCustomerOrderDto>> GetCustomerOnServiceOrders()
+        {
+            var query = new FilterCustomerOrderQuery()
+            {
+                OrderStatusId = [StatusConst.OnDoingService],
+            };
+            return await GetCustomerOrders(query);
+        }
+
+        [HttpGet("customer/on-matching"), AuthorizeRoles(GlobalConstant.Customer)]
+        public async Task<ActionResult<GetCustomerOrderDto>> GetCustomerOnMatchingOrders()
+        {
+            var query = new FilterCustomerOrderQuery()
+            {
+                OrderStatusId = [StatusConst.OnMatching],
+            };
+            return await GetCustomerOrders(query);
+        }
+
+        [HttpGet("customer/completed"), AuthorizeRoles(GlobalConstant.Customer)]
+        public async Task<ActionResult<GetCustomerOrderDto>> GetCustomerCompletedOrders()
+        {
+            var query = new FilterCustomerOrderQuery()
+            {
+                OrderStatusId = [StatusConst.Completed],
+            };
+            return await GetCustomerOrders(query);
         }
 
         [HttpGet("customer-latest"), AuthorizeRoles(GlobalConstant.Customer)]
@@ -468,6 +509,36 @@ namespace DeToiServer.Controllers
             });
         }
 
+        [HttpPost("freelancer-review"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult<string>> PostFreelancerOrderReview(PostOrderFreelancerReviewDto review)
+        {
+            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var freelancer = await _freelancerAcc.GetByAccId(accountId);
+
+            if (freelancer is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không thể đánh giá đơn hàng, hãy đăng nhập để thử lại."
+                });
+            }
+
+            var order = await _orderService.PostFreelancerReview(review, freelancer.Id);
+
+            if (order.Order == null)
+            {
+                return BadRequest(new
+                {
+                    order.Message
+                });
+            }
+            
+            return Ok(new
+            {
+                order.Message
+            });
+        }
+
         [HttpDelete("customer-order"), AuthorizeRoles(GlobalConstant.Customer)]
         public async Task<ActionResult<string>> PostCustomerCancelOrder(Guid orderId)
         {
@@ -498,5 +569,7 @@ namespace DeToiServer.Controllers
                 order.Message
             });
         }
+
+
     }
 }

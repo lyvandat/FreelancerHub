@@ -8,6 +8,7 @@ namespace DeToiServer.Dtos.AuthDtos
         //[EmailAddress]
         //public string Email { get; set; } = string.Empty;
         //public string Password { get; set; } = string.Empty;
+        public string CountryCode { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         //public DateOnly DateOfBirth { get; set; }
     }
@@ -17,7 +18,7 @@ namespace DeToiServer.Dtos.AuthDtos
         //[EmailAddress]
         //public string Email { get; set; } = string.Empty;
         //public string Password { get; set; } = string.Empty;
-        [Phone]
+        public string CountryCode { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
     }
 
@@ -57,14 +58,14 @@ namespace DeToiServer.Dtos.AuthDtos
 
     public class PhoneAndOtpDto
     {
-        [Phone]
+        public string CountryCode { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public string Otp { get; set; } = string.Empty;
     }
 
     public class ResendOtpDto
     {
-        [Phone]
+        public string CountryCode { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
     }
 

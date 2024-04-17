@@ -14,7 +14,7 @@ namespace DeToiServerData.Configurations
             //builder.Property(e => e.PasswordHash).HasMaxLength(512);
             //builder.Property(e => e.PasswordResetToken).HasMaxLength(512);
             //builder.Property(e => e.PasswordSalt).HasMaxLength(512);
-            builder.Property(e => e.Phone).HasMaxLength(12);
+            //builder.Property(e => e.Phone).HasMaxLength(12);
             builder.Property(e => e.RefreshToken).HasMaxLength(512);
             builder.Property(e => e.Role).HasMaxLength(12);
         }
@@ -33,6 +33,10 @@ namespace DeToiServerData.Configurations
                 .HasDefaultValue("None");
             builder.Property(fl => fl.IdentityCardImageBack)
                 .HasDefaultValue("None");
+
+            builder.Property(b => b.ActiveTime)
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("GETDATE()");
         }
     }
 
@@ -42,13 +46,11 @@ namespace DeToiServerData.Configurations
         {
             builder.HasOne(ad => ad.CustomerAccount)
                 .WithMany(cus => cus.Addresses)
-                .HasForeignKey(ad => ad.CustomerAccountId)
-                .IsRequired(false);
+                .HasForeignKey(ad => ad.CustomerAccountId);
 
             builder.HasOne(ad => ad.FreelanceAccount)
                 .WithMany(frl => frl.Address)
-                .HasForeignKey(ad => ad.FreelanceAccountId)
-                .IsRequired(false);
+                .HasForeignKey(ad => ad.FreelanceAccountId);
         }
     }
 

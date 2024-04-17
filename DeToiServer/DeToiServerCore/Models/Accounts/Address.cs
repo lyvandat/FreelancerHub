@@ -8,9 +8,9 @@ namespace DeToiServerCore.Models.Accounts
 {
     public class Address : ModelBase
     {
-        public CustomerAccount? CustomerAccount { get; set; }
+        public CustomerAccount CustomerAccount { get; set; } = null!;
         public Guid? CustomerAccountId { get; set; }
-        public FreelanceAccount? FreelanceAccount { get; set; }
+        public FreelanceAccount FreelanceAccount { get; set; } = null!;
         public Guid? FreelanceAccountId { get; set; }
         public ICollection<Order>? Orders { get; set; }
 

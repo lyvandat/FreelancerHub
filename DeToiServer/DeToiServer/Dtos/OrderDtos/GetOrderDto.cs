@@ -23,7 +23,7 @@ namespace DeToiServer.Dtos.OrderDtos
         public string ServiceStatus { get; set; } = string.Empty;
         public ICollection<GetServiceTypeDto>? ServiceTypes { get; set; }
         public ICollection<SkillDto>? SkillRequired { get; set; }
-        public ServiceDto Services { get; set; }
+        public ServiceDto Services { get; set; } = null!;
     }
 
     public class GetCustomerOrderDto

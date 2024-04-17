@@ -9,7 +9,8 @@ namespace DeToiServer.Dtos.AuthDtos
     public class RegisterFreelanceDto
     {
         public string FullName { get; set; } = string.Empty; // auto generated
-        public DateOnly DateOfBirth { get; set; }
+        public DateOnly? DateOfBirth { get; set; }
+        public string CountryCode { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public AddressDto? Address { get; set; }
         public string Gender { get; set; } = GlobalConstant.Gender.Male;
