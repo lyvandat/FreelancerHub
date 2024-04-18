@@ -74,6 +74,14 @@
             public static readonly string Male = "Male";
             public static readonly string Female = "Female";
         }
+
+        public static class Notification
+        {
+            public static readonly string CustomerChooseThisFreelancer = "CUSTOMER_CHOSE_THIS_FREELANCER";
+            public static readonly string FreelancerQuoteServiceToCustomer = "FREELANCER_QUOTE_SERVICE_TO_CUSTOMER";
+            public static readonly string FreelancerCanceledOrder = "FREELANCER_CANCELED_ORDER";
+            public static readonly string CustomerCanceledOrder = "CUSTOMER_CANCELED_ORDER";
+        }
     }
 
     public static class StatusConst

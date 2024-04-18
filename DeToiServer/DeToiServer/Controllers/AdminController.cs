@@ -62,6 +62,51 @@ namespace DeToiServer.Controllers
             });
         }
 
+        [HttpGet("overview1"), AuthorizeRoles(GlobalConstant.Admin)]
+        public async Task<ActionResult<ManageCustomerAccountDto>> GetOverviewDataAdmin1()
+        {
+            return Ok(new
+            {
+                message = "Test"
+            });
+        }
+
+        [HttpGet("overview2"), AuthorizeRoles(GlobalConstant.Admin)]
+        public async Task<ActionResult<ManageFreelancerAccountDto>> GetOverviewDataAdmin2()
+        {
+            return Ok(new
+            {
+                message = "Test"
+            });
+        }
+
+        [HttpGet("overview3"), AuthorizeRoles(GlobalConstant.Admin)]
+        public async Task<ActionResult<FreelancerAccountLicensingDto>> GetOverviewDataAdmin3()
+        {
+            return Ok(new
+            {
+                message = "Test"
+            });
+        }
+
+        [HttpGet("overview4"), AuthorizeRoles(GlobalConstant.Admin)]
+        public async Task<ActionResult<ManageListServiceCategoryDto>> GetOverviewDataAdmin4()
+        {
+            return Ok(new
+            {
+                message = "Test"
+            });
+        }
+
+        [HttpGet("overview5"), AuthorizeRoles(GlobalConstant.Admin)]
+        public async Task<ActionResult<ManageServiceCategoryDto>> GetOverviewDataAdmin5()
+        {
+            return Ok(new
+            {
+                message = "Test"
+            });
+        }
+
         [HttpGet("order"), AuthorizeRoles(GlobalConstant.Admin)]
         public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetOrders([FromQuery] FilterOrderQuery filterOrderQuery)
         {

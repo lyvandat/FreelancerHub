@@ -3,6 +3,7 @@ using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.LocationDtos;
+using DeToiServer.Dtos.NotificationDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.PaymentDtos;
 using DeToiServer.Dtos.QuizDtos;
@@ -118,7 +119,6 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.Value, opt => opt
                     .MapFrom(src => Helper.AesEncryption.Encrypt(src.FreelanceAccountId.ToString(), src.Value.ToString())));
             #endregion
-
 
             #region ServiceType and ServiceCategory
             CreateMap<GetServiceTypeDto, ServiceType>().ReverseMap();
@@ -267,6 +267,13 @@ namespace DeToiServer.AutoMapper
 
             #region Bidding Order
             CreateMap<GetFreelancerAndPreviewPriceDto, BiddingOrder>().ReverseMap();
+            #endregion
+
+            #region Notification
+            CreateMap<PushNotificationDto, PushTicketRequest>()
+                .ForMember(dest => dest.PushTo, opt => opt.MapFrom(src => src.ExpoPushTokens))
+                .ForMember(dest => dest.PushTitle, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dest => dest.PushBody, opt => opt.MapFrom(src => src.Body));
             #endregion
         }
     }

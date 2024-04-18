@@ -289,6 +289,7 @@ namespace DeToiServer.Services.OrderManagementService
             }
 
             order.FreelancerRating = review.Rating;
+            order.FreelancerComment = review.Comment;
 
             if (!await _uow.SaveChangesAsync())
             {

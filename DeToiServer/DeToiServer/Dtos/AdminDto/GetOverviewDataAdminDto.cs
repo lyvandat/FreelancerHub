@@ -158,11 +158,19 @@ namespace DeToiServer.Dtos.AdminDto
     #endregion
 
     #region Manage Service Category
-    public class ManageListServiceTypeDto
+    public class ManageListServiceCategoryDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public int ServiceTypeCount { get; set; } // count ICollection<ServiceType>? ServiceTypes;
+    }
+
+    public class ManageServiceTypeDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public string? Image { get; set; }
     }
 
     public class ManageServiceCategoryDto
@@ -173,7 +181,7 @@ namespace DeToiServer.Dtos.AdminDto
         public string? Description { get; set; }
         public required string ServiceClassName { get; set; }
         public string? Keys { get; set; }
-        public ICollection<ServiceType>? ServiceTypes { get; set; }
+        public ICollection<ManageServiceTypeDto>? ServiceTypes { get; set; }
         public int ServiceTypeCount { get; set; } // count ICollection<ServiceType>? ServiceTypes;
         public IEnumerable<ServicePercentageAdminDto> PopularServices { get; set; } = null!; // count ICollection<ServiceType>? ServiceTypes;
     }

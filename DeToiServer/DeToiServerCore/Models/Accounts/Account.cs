@@ -20,5 +20,6 @@ namespace DeToiServerCore.Models.Accounts
         public DateTime TokenExpires { get; set; }
         public bool IsActive { get; set; } = true;
         public bool IsVerified { get; set; } = false;
+        public string ExpoPushToken { get; set; } = string.Empty;
     }
 }

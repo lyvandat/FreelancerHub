@@ -54,5 +54,6 @@ namespace DeToiServer.Dtos.OrderDtos
     {
         public Guid OrderId { get; set; }
         public double Rating { get; set; }
+        public string? Comment { get; set; } = null;
     }
 }

@@ -6,6 +6,7 @@ using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.FreelanceQuizService;
 using DeToiServer.Services.FreelanceSkillService;
 using DeToiServer.Services.MessageQueueService;
+using DeToiServer.Services.NotificationService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.PaymentService;
 using DeToiServer.Services.ServiceCategoryService;
@@ -126,6 +127,7 @@ namespace DeToiServerData
             services.AddScoped<IFreelanceSkillService, FreelanceSkillService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IAddressService, AddressService>();
+            services.AddSingleton<INotificationService, NotificationService>();
             return services;
         }
 
