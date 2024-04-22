@@ -1,4 +1,4 @@
-﻿namespace DeToiServerPayment.Dtos
+﻿namespace DeToiServer.Dtos
 {
     public class GenericEventDto
     {

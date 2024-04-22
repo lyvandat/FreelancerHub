@@ -1,8 +1,5 @@
 ﻿using DeToiServer.Dtos.FreelanceDtos;
-using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.PaymentDtos;
-using DeToiServer.Dtos.ServiceCategoryDtos;
-using DeToiServer.Payment;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.PaymentService;
 using DeToiServerCore.Common.Constants;

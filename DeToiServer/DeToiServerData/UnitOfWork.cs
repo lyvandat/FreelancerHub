@@ -130,6 +130,16 @@ namespace DeToiServerData
                 return _biddingOrderRepo;
             }
         }
+
+        private IPaymentStatusHistoryRepo _paymentStatusRepo;
+        public IPaymentStatusHistoryRepo PaymentStatusHistoryRepo
+        {
+            get
+            {
+                _paymentStatusRepo ??= new PaymentStatusHistoryRepo(_dataContext);
+                return _paymentStatusRepo;
+            }
+        }
         #endregion
 
         #region Service Repo

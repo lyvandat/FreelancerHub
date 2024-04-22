@@ -95,6 +95,7 @@ namespace DeToiServer.Services.OrderManagementService
         {
             var rawOrder = _mapper.Map<Order>(postOrderDto);
             rawOrder.Id = Guid.NewGuid();
+            rawOrder.PaymentStatus = PaymentStatus.NotPaid;
             var searchAddress = await _uow.AddressRepo.GetByIdAsync(postOrderDto.Address.Id);
             if (searchAddress == null)
             {
@@ -304,6 +305,26 @@ namespace DeToiServer.Services.OrderManagementService
                 Order = order,
                 Message = "Đánh giá đơn hàng thành công",
             };
+        }
+
+        public async Task<Order?> UpdateStatusAndPostPaymentHistory(PostPaymentStatusHistoryDto paymentStatusHistory)
+        {
+            var order = await _uow.OrderRepo.GetByIdAsync(paymentStatusHistory.OrderId);
+            var paymentStatus = _mapper.Map<PaymentStatusHistory>(paymentStatusHistory);
+
+            if (order == null || paymentStatus == null)
+                return null;
+
+            order.PaymentStatus = paymentStatusHistory.PaymentStatus;
+            await _uow.PaymentStatusHistoryRepo.CreateAsync(paymentStatus);
+
+            if (!await _uow.SaveChangesAsync())
+            {
+                Console.WriteLine($"Cannot update payment status for order: {paymentStatusHistory.OrderId}");
+                return null;
+            }
+
+            return order;
         }
     }
 }

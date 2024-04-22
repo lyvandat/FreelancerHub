@@ -10,10 +10,20 @@ namespace DeToiServer.RealTime
     public class RealtimeConsumer
     {
         static HubConnection? _connectionSignalR;
+        readonly IConfiguration _configuration;
 
-        public RealtimeConsumer()
+        public RealtimeConsumer(IConfiguration configuration)
         {
-            Connect().Wait();
+            _configuration = configuration;
+
+            try
+            {
+                Connect().Wait();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"ERROR: Cannot connect to real time endpoints: {ex.Message}");
+            }
         }
 
         public async Task SendMessageToFreelancer(PostOrderDto postOrderDto)
@@ -74,10 +84,10 @@ namespace DeToiServer.RealTime
             }
         }
 
-        public static async Task Connect()
+        public async Task Connect()
         {
             _connectionSignalR = new HubConnectionBuilder()
-               .WithUrl(Helper.GetDockerHostUrl())
+               .WithUrl(_configuration["RealTimeHub"] ?? Helper.GetDockerHostUrl())
                .Build();
             await _connectionSignalR.StartAsync();
         }

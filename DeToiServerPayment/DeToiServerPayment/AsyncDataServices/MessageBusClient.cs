@@ -1,10 +1,9 @@
-﻿using DeToiServer.Dtos.OrderDtos;
+﻿using DeToiServerPayment.Dtos;
 using RabbitMQ.Client;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Channels;
+using System.Text;
 
-namespace DeToiServer.AsyncDataServices
+namespace DeToiServerPayment.AsyncDataServices
 {
     public class MessageBusClient : IMessageBusClient
     {
@@ -26,7 +25,7 @@ namespace DeToiServer.AsyncDataServices
                 _connection = factory.CreateConnection();
                 _channel = _connection.CreateModel();
 
-                _channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Fanout);
+                _channel.ExchangeDeclare(exchange: "status-trigger", type: ExchangeType.Fanout);
 
                 _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
 
@@ -39,9 +38,9 @@ namespace DeToiServer.AsyncDataServices
             }
         }
 
-        public void PublishNewOrder(OrderPlacedDto orderPlacedDto)
+        public void UpdateOrderPaymentStatus(PaymentStatusUpdatedDto paymentStatusDto)
         {
-            var message = JsonSerializer.Serialize(orderPlacedDto);
+            var message = JsonSerializer.Serialize(paymentStatusDto);
 
             if (_connection != null && _connection.IsOpen)
             {

@@ -1,5 +1,4 @@
-﻿using DeToiServerCore.Models;
-using DeToiServerData.Specifications;
+﻿using DeToiServerData.Specifications;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -15,6 +14,10 @@ namespace DeToiServerData.Repositories
             _context = dbContext;
         }
 
+        public bool Any(Expression<Func<TModel, bool>> predicate)
+        {
+            return _context.Set<TModel>().Any(predicate);
+        }
         public TModel GetById(Guid id)
         {
             return _context.Set<TModel>().Find(id);

@@ -4,13 +4,11 @@ using DeToiServer;
 using DeToiServer.AsyncDataServices;
 using DeToiServer.AutoMapper;
 using DeToiServer.ConfigModels;
+using DeToiServer.EventProcessing;
 using DeToiServer.Middlewares;
 using DeToiServer.RealTime;
 using DeToiServerCore.Common.Helper;
-using DeToiServerCore.Models.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System.Runtime;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,6 +41,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<RealtimeConsumer>();
 builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
+builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
+builder.Services.AddHostedService<MessageBusSubscriber>();
 builder.Services.Configure<VnPayConfigModel>(builder.Configuration.GetSection("VnPayConfig"));
 var app = builder.Build();
 

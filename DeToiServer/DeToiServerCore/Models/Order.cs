@@ -3,6 +3,14 @@ using DeToiServerCore.Models.Services;
 
 namespace DeToiServerCore.Models
 {
+    public enum PaymentStatus
+    {
+        NotPaid,
+        Paid,
+        Refunded,
+        Failed
+    }
+
     public class Order : ModelBase
     {
         public Guid AddressId { get; set; }
@@ -22,10 +30,20 @@ namespace DeToiServerCore.Models
         public string? FreelancerComment { get; set; }
         public Guid ServiceStatusId { get; set; } = new Guid("a888efc3-1d7b-445a-b38c-758737b67bad");
         public ServiceStatus? ServiceStatus { get; set; }
+        public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.NotPaid;
         public ICollection<OrderService>? OrderServices { get; set; }
         public ICollection<OrderServiceType>? OrderServiceTypes { get; set; }
         public ICollection<ServiceProven>? ServiceProven { get; set; }
         public ICollection<BiddingOrder>? BiddingOrders { get; set; }
         public ICollection<OrderSkillRequired>? SkillRequired { get; set; }
+        public ICollection<PaymentStatusHistory>? PaymentHistories { get; set; }
+    }
+
+    public class PaymentStatusHistory : ModelBase
+    {
+        public Guid OrderId { get; set; }
+        public Order? Order { get; set; }
+        public PaymentStatus PaymentStatus { get; set; } // Enum representing payment status
+        public DateTime DateChanged { get; set; } = DateTime.Now;
     }
 }

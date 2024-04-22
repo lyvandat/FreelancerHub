@@ -17,5 +17,6 @@ namespace DeToiServer.Services.OrderManagementService
         Task<IEnumerable<GetOrderDto>> GetFreelancerIncomingOrders(Guid freelancerId);
         Task<IEnumerable<GetCustomerOrderDto>> GetAllCustomerOrders(Guid customerId, FilterCustomerOrderQuery orderQuery);
         Task<UpdateOrderResultDto> PostFreelancerReview(PostOrderFreelancerReviewDto review, Guid freelancerId);
+        Task<Order?> UpdateStatusAndPostPaymentHistory(PostPaymentStatusHistoryDto paymentStatusHistory);
     }
 }

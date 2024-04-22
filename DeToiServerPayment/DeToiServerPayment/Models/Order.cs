@@ -2,6 +2,14 @@
 
 namespace DeToiServerPayment.Models
 {
+    public enum PaymentStatus
+    {
+        NotPaid,
+        Paid,
+        Refunded,
+        Failed
+    }
+
     public class Order
     {
         [Key]
@@ -17,5 +25,6 @@ namespace DeToiServerPayment.Models
         public double Rating { get; set; }
         public string? Comment { get; set; }
         public Guid ServiceStatusId { get; set; }
+        public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.NotPaid;
     }
 }

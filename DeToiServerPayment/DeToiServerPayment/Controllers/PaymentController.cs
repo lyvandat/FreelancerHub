@@ -1,10 +1,11 @@
 ﻿using DeToiServer.Payment;
+using DeToiServerPayment.AsyncDataServices;
 using DeToiServerPayment.ConfigModels;
 using DeToiServerPayment.Data;
+using DeToiServerPayment.Dtos;
 using DeToiServerPayment.Dtos.PaymentDtos;
 using DeToiServerPayment.Models;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -16,11 +17,13 @@ namespace DeToiServerPayment.Controllers
     {
         private readonly VnPayConfigModel _vnPayConfig;
         private readonly IOrderRepo _orderRepo;
+        private readonly IMessageBusClient _messageBusClient;
 
-        public PaymentController(IOptions<VnPayConfigModel> vnPayConfig, IOrderRepo orderRepo)
+        public PaymentController(IOptions<VnPayConfigModel> vnPayConfig, IOrderRepo orderRepo, IMessageBusClient messageBusClient)
         {
             _vnPayConfig = vnPayConfig.Value;
             _orderRepo = orderRepo;
+            _messageBusClient = messageBusClient;
         }
 
         [HttpGet("test")]
@@ -69,6 +72,7 @@ namespace DeToiServerPayment.Controllers
         public async Task<ActionResult> PayWithVnPayConfirmWebHook()
         {
             string returnContent = string.Empty;
+            bool isSuccess = false;
             var query = HttpContext.Request.Query;
             if (query.Count > 0)
             {
@@ -112,16 +116,24 @@ namespace DeToiServerPayment.Controllers
                     //Kiem tra tinh trang Order
                     if (order != null)
                     {
-                        if (vnp_Amount == 100)
+                        if (vnp_Amount == order.EstimatedPrice)
                         {
-                            if (order.Comment == "0")
+                            if (order.PaymentStatus == PaymentStatus.NotPaid)
                             {
                                 if (vnp_ResponseCode == "00" && vnp_TransactionStatus == "00")
                                 {
                                     //Thanh toan thanh cong
                                     Console.WriteLine("Thanh toan thanh cong, OrderId={0}, VNPAY TranId={1}", orderId,
                                         vnpayTranId);
-                                    order.Comment = "1";
+                                    isSuccess = true;
+                                    _messageBusClient.UpdateOrderPaymentStatus(new PaymentStatusUpdatedDto()
+                                    {
+                                        OrderId = order.ExternalId,
+                                        PaymentStatus = PaymentStatus.Paid,
+                                        Event = "PaymentStatusUpdated"
+                                    });
+
+                                    returnContent = "{\"RspCode\":\"00\",\"Message\":\"Confirm Success\"}";
                                 }
                                 else
                                 {
@@ -130,22 +142,28 @@ namespace DeToiServerPayment.Controllers
                                     Console.WriteLine("Thanh toan loi, OrderId={0}, VNPAY TranId={1},ResponseCode={2}",
                                         orderId,
                                         vnpayTranId, vnp_ResponseCode);
-                                    order.Comment = "2";
+                                    returnContent = "{\"RspCode\":\"01\",\"Message\":\"Error while confirming payment\"}";
                                 }
-
-                                //Thêm code Thực hiện cập nhật vào Database 
-                                //Update Database
-
-                                returnContent = "{\"RspCode\":\"00\",\"Message\":\"Confirm Success\"}";
                             }
                             else
                             {
-                                returnContent = "{\"RspCode\":\"02\",\"Message\":\"Order already confirmed\"}";
+                                returnContent = "{\"RspCode\":\"02\",\"Message\":\"Payment status is not 'not paid'\"}";
                             }
                         }
                         else
                         {
-                            returnContent = "{\"RspCode\":\"04\",\"Message\":\"invalid amount\"}";
+                            returnContent = "{\"RspCode\":\"04\",\"Message\":\"Invalid amount\"}";
+                        }
+
+
+                        if (!isSuccess)
+                        {
+                            _messageBusClient.UpdateOrderPaymentStatus(new PaymentStatusUpdatedDto()
+                            {
+                                OrderId = order.ExternalId,
+                                PaymentStatus = PaymentStatus.Failed,
+                                Event = "PaymentStatusUpdated"
+                            });
                         }
                     }
                     else
@@ -165,6 +183,19 @@ namespace DeToiServerPayment.Controllers
             }
 
             return Ok(returnContent);
+        }
+
+        [HttpGet("test-vnpay-confirm")]
+        public ActionResult PayWithVnPayConfirmWebHook2()
+        {
+            _messageBusClient.UpdateOrderPaymentStatus(new PaymentStatusUpdatedDto()
+            {
+                OrderId = Guid.Parse("3D0E9407-3D1E-402E-9FAC-3861E5FE8262"),
+                PaymentStatus = PaymentStatus.Paid,
+                Event = "PaymentStatusUpdated"
+            });
+
+            return Ok("Confirm payment succeeds");
         }
     }
 }

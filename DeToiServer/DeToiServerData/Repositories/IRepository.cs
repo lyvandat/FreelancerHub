@@ -7,6 +7,7 @@ namespace DeToiServerData.Repositories
     {
         IQueryable<TModel> Query { get; }
 
+        bool Any(Expression<Func<TModel, bool>> predicate);
         TModel GetById(Guid id);
         Task<TModel> GetByIdAsync(Guid id);
 

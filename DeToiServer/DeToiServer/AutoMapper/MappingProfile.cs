@@ -137,8 +137,9 @@ namespace DeToiServer.AutoMapper
             CreateMap<GetServiceStatusDto, ServiceStatus>().ReverseMap();
             #endregion
 
-            #region services for an order
+            #region Order and Services for an order
             CreateMap<Order, OrderPlacedDto>();
+            CreateMap<PaymentStatusHistory, PostPaymentStatusHistoryDto>().ReverseMap();
             CreateMap<PostOrderDto, Order>()
                 .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartDate.ToDateTime(src.StartTime)));
             CreateMap<Order, GetOrderDto>()

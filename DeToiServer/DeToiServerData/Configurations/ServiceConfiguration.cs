@@ -44,6 +44,11 @@ namespace DeToiServerData.Configurations
                 .WithMany(a => a.Orders)
                 .HasForeignKey(o => o.AddressId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasMany(o => o.PaymentHistories)
+                .WithOne(ph => ph.Order)
+                .HasForeignKey(ph => ph.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 
