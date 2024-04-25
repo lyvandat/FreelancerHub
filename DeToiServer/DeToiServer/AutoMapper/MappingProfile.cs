@@ -166,7 +166,7 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.FinishTime, opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.FinishTime ?? DateTime.MinValue)))
                 .ForMember(dest => dest.FinishDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.FinishTime ?? DateTime.MinValue)))
                 .ForMember(dest => dest.Freelance, opt => opt.MapFrom(src => src.Freelance != null ? src.Freelance.Account : null))
-                .ForMember(dest => dest.ServiceStatus, opt => opt.MapFrom(src => src.ServiceStatus != null ? src.ServiceStatus.Name : "Chờ xử lí"))
+                .ForMember(dest => dest.ServiceStatus, opt => opt.MapFrom(src => src.ServiceStatusId)) //  != null ? src.ServiceStatus.Name : "Chờ xử lí"
                 .ForMember(dest => dest.Services, opt => opt.MapFrom(src => src.OrderServices!.FirstOrDefault()))
                 .ForMember(dest => dest.ServiceTypes, opt => opt.MapFrom(src => src.OrderServiceTypes))
                 .ForMember(dest => dest.ServiceStatusList, opt => opt.MapFrom(src => src.OrderServiceTypes));
@@ -177,7 +177,7 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.FinishTime, opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.FinishTime ?? DateTime.MinValue)))
                 .ForMember(dest => dest.FinishDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.FinishTime ?? DateTime.MinValue)))
                 .ForMember(dest => dest.Freelance, opt => opt.MapFrom(src => src.Freelance != null ? src.Freelance.Account : null))
-                .ForMember(dest => dest.ServiceStatus, opt => opt.MapFrom(src => src.ServiceStatus != null ? src.ServiceStatus.Name : "Chờ xử lí"))
+                .ForMember(dest => dest.ServiceStatus, opt => opt.MapFrom(src => src.ServiceStatusId)) //  != null ? src.ServiceStatus.Name : "Chờ xử lí"
                 .ForMember(dest => dest.Services, opt => opt.MapFrom(src => src.OrderServices!.FirstOrDefault()))
                 .ForMember(dest => dest.ServiceTypes, opt => opt.MapFrom(src => src.OrderServiceTypes))
                 .ForMember(dest => dest.ServiceStatusList, opt => opt.MapFrom(src => src.OrderServiceTypes));
