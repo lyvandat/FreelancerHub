@@ -40,7 +40,7 @@ namespace DeToiServer.Controllers
             return Ok(res);
         }
 
-        [HttpGet("latest-result"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        [HttpGet("latest-result"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<FreelanceQuizResultDto>> GetLatestQuizResult()
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
@@ -59,7 +59,7 @@ namespace DeToiServer.Controllers
             return Ok(result);
         }
 
-        [HttpGet("new-set"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        [HttpGet("new-set"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<GetPreDefinedQuizDto>> GetNewQuizSet()
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
@@ -85,7 +85,7 @@ namespace DeToiServer.Controllers
             return Ok(result);
         }
 
-        [HttpPost("result"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        [HttpPost("result"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<string>> PostFreelancerResult(PostFreelanceQuizResultDto postResult)
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);

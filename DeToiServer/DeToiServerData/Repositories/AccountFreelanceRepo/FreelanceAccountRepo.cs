@@ -87,4 +87,13 @@ public class FreelanceAccountRepo : RepositoryBase<FreelanceAccount>, IFreelance
             _context.FreelanceServiceTypes.RemoveRange(serviceTypes);
         });
     }
+
+    public async Task<IEnumerable<FreelanceAccount>> GetManyByConditionsAsync(Expression<Func<FreelanceAccount, bool>> predicate)
+    {
+        return await _context.Freelancers
+            .Include(c => c.Account)
+            .Include(c => c.Address)
+            .Where(predicate)
+            .ToListAsync();
+    }
 }

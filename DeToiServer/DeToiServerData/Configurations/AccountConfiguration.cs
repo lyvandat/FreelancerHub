@@ -9,14 +9,18 @@ namespace DeToiServerData.Configurations
     {
         protected override void OnConfigure(EntityTypeBuilder<Account> builder)
         {
-            builder.Property(e => e.Email).HasMaxLength(255);
-            builder.Property(e => e.FullName).HasMaxLength(255);
+            //builder.Property(e => e.Email).HasMaxLength(255);
+            //builder.Property(e => e.FullName).HasMaxLength(255);
             //builder.Property(e => e.PasswordHash).HasMaxLength(512);
             //builder.Property(e => e.PasswordResetToken).HasMaxLength(512);
             //builder.Property(e => e.PasswordSalt).HasMaxLength(512);
             //builder.Property(e => e.Phone).HasMaxLength(12);
-            builder.Property(e => e.RefreshToken).HasMaxLength(512);
-            builder.Property(e => e.Role).HasMaxLength(12);
+            //builder.Property(e => e.RefreshToken).HasMaxLength(512);
+            //builder.Property(e => e.Role).HasMaxLength(12);
+
+            builder.Property(b => b.CreatedAt)
+                .ValueGeneratedOnAdd()
+                .HasDefaultValueSql("GETDATE()");
         }
     }
 
@@ -34,9 +38,8 @@ namespace DeToiServerData.Configurations
             builder.Property(fl => fl.IdentityCardImageBack)
                 .HasDefaultValue("None");
 
-            builder.Property(b => b.ActiveTime)
-                .ValueGeneratedOnAdd()
-                .HasDefaultValueSql("GETDATE()");
+            builder.Property(fl => fl.MarkCount)
+                .HasDefaultValue(0);
         }
     }
 

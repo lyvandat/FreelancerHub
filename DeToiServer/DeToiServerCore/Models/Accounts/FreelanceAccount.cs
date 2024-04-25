@@ -22,7 +22,7 @@ namespace DeToiServerCore.Models.Accounts
         public bool IsTeam { get; set; } = false;
         public string Description { get; set; } = string.Empty;
         public int TeamMemberCount { get; set; } = 1;
-        public DateTime ActiveTime { get; set; }
+        public int MarkCount { get; set; } = 0;
         public ICollection<FreelanceSkill>? FreelanceSkills { get; set; }
         public ICollection<Order>? Orders { get; set; }
         public ICollection<ServiceProven>? ServiceProven { get; set; }

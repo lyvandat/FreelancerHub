@@ -7,6 +7,8 @@ using DeToiServerCore.Models.Services;
 using DeToiServerCore.Models.SevicesUIElement;
 using DeToiServerData.Configurations;
 using Microsoft.EntityFrameworkCore;
+using DeToiServerCore.Models.Notifications;
+using DeToiServerCore.Models.Reports;
 
 namespace DeToiServerData
 {
@@ -46,7 +48,7 @@ namespace DeToiServerData
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
             modelBuilder.ApplyConfiguration(new BiddingOrderConfiguration());
             modelBuilder.ApplyConfiguration(new OrderServiceConfiguration());
-
+            
             modelBuilder.ApplyConfiguration(new OrderServiceTypeConfiguration());
 
             // Blogs
@@ -79,6 +81,19 @@ namespace DeToiServerData
             modelBuilder.ApplyConfiguration(new FreelanceCorrectQuestionConfiguration());
             modelBuilder.ApplyConfiguration(new FreelanceQuizResultConfiguration());
             #endregion
+
+            #region Notification Config
+            modelBuilder.ApplyConfiguration(new NotificationConfiguration());
+            modelBuilder.ApplyConfiguration(new NotificationAccountConfiguration());
+            #endregion
+
+            #region Report Config
+            modelBuilder.ApplyConfiguration(new ReportConfiguration());
+            modelBuilder.ApplyConfiguration(new ReportActionConfiguration());
+            modelBuilder.Entity<ApplyReportAction>().HasNoKey()
+                .ToTable("ApplyReportActions", t => t.ExcludeFromMigrations());
+
+            #endregion
         }
 
         // Account related models
@@ -88,6 +103,8 @@ namespace DeToiServerData
         public DbSet<Skill> Skills { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<FreelancePaymentHistory> FreelancePaymentHistories { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<NotificationAccount> NotificationAccounts { get; set; }
 
         public DbSet<FreelanceSkill> FreelanceSkills { get; set; }
         public DbSet<FreelanceServiceType> FreelanceServiceTypes { get; set; }
@@ -137,6 +154,11 @@ namespace DeToiServerData
         public DbSet<FreelanceCorrectQuestion> FreelanceCorrectQuestions { get; set; }
         public DbSet<FreelanceQuizResult> FreelanceQuizResults { get; set; }
         public DbSet<QuizQuestion> QuizQuestions { get; set; }
+        #endregion
+
+        #region Report
+        public DbSet<Report> Reports { get; set; }
+        public DbSet<ReportAction> ReportActions { get; set; }
         #endregion
     }
 }

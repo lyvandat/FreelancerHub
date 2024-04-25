@@ -55,7 +55,7 @@ namespace DeToiServer.Controllers
             return Ok(freelance);
         }
 
-        [HttpGet("detail")] // , AuthorizeRoles(GlobalConstant.Freelancer)
+        [HttpGet("detail")] // , AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)
         public async Task<ActionResult<GetFreelanceMatchingDto>> GetFreelancerDetail(Guid id)
         {
             var freelance = await _freelanceAccService.GetDetailWithStatistic(id);
@@ -71,7 +71,7 @@ namespace DeToiServer.Controllers
             return Ok(freelance);
         }
 
-        [HttpGet("short-detail"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        [HttpGet("short-detail"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<GetFreelanceAccountShortDetailDto>> GetFreelancerShortDetail()
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerAccountId);
@@ -87,7 +87,7 @@ namespace DeToiServer.Controllers
             return Ok(_mapper.Map<GetFreelanceAccountShortDetailDto>(freelancer));
         }
 
-        [HttpGet("current"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        [HttpGet("current"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<GetFreelanceMatchingDto>> GetCurrentFreelancerDetail()
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerId);
@@ -105,7 +105,7 @@ namespace DeToiServer.Controllers
             return Ok(result);
         }
 
-        [HttpGet("orders"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        [HttpGet("orders"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetCurrentFreelancerMatchingOrders([FromQuery] FilterFreelancerOrderQuery filterQuery)
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerId);
@@ -125,7 +125,7 @@ namespace DeToiServer.Controllers
             return Ok(result);
         }
 
-        [HttpGet("orders/incoming"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        [HttpGet("orders/incoming"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetFreelancerIncomingOrders()
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerId);
@@ -144,7 +144,7 @@ namespace DeToiServer.Controllers
             return Ok(result);
         }
 
-        [HttpGet("added-skills-and-done-test"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        [HttpGet("added-skills-and-done-test"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<IsFreelancerAddedSkillAndDoneTest>> IsFreelancerHaveSkillsAndDoneTest()
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
@@ -188,7 +188,7 @@ namespace DeToiServer.Controllers
         }
 
 
-        [HttpPost("add-multiple-service-type"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        [HttpPost("add-multiple-service-type"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<IEnumerable<GetServiceTypeDto>>> AddMultipleFreelancerServiceTypes(ChooseFreelancerServiceTypesDto postSkills)
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);

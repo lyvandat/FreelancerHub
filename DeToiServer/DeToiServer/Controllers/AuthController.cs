@@ -1,17 +1,23 @@
 using AutoMapper;
+using DeToiServer.CustomAttribute;
+using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.AuthDtos;
 using DeToiServer.Filters;
 using DeToiServer.Services.AccountService;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Common.CustomAttribute;
 using DeToiServerCore.Common.Helper;
+using DeToiServerCore.Models;
 using DeToiServerCore.Models.Accounts;
+using DeToiServerData;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using OtpNet;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
@@ -57,6 +63,7 @@ namespace DeToiServer.Controllers
             }
 
             freelance.Account.IsVerified = true;
+            freelance.Account.Role = GlobalConstant.Freelancer;
             if (!await _uow.SaveChangesAsync())
             {
                 return StatusCode(500, new
@@ -82,19 +89,20 @@ namespace DeToiServer.Controllers
             {
                 return BadRequest(new
                 {
-                    message = $"Tài khoản với số điện thoại {request.CountryCode}:{request.Phone} đã tồn tại!"
+                    Message = $"Tài khoản với số điện thoại {request.CountryCode}:{request.Phone} đã tồn tại!"
                 });
             }
 
             var account = new Account()
             {
+                Id = Guid.NewGuid(),
                 Email = null,
                 FullName = request.FullName ?? $"Freelancer_{DateTime.Now:yyyyMMdd}_VIE",
                 DateOfBirth = request.DateOfBirth,
                 CountryCode = request.CountryCode,
                 Phone = request.Phone,
                 CombinedPhone = $"{request.CountryCode}{request.Phone}",
-                Role = GlobalConstant.Freelancer,
+                Role = GlobalConstant.UnverifiedFreelancer,
                 Avatar = request.Avatar,
                 Gender = request.Gender,
                 IsVerified = false,
@@ -104,7 +112,7 @@ namespace DeToiServer.Controllers
             freelance = new FreelanceAccount()
             {
                 Id = freelancerId,
-                Account = account,
+                Account = null!,
                 AccountId = account.Id,
                 IsTeam = request.IsTeam,
                 TeamMemberCount = request.TeamMemberCount,
@@ -119,11 +127,19 @@ namespace DeToiServer.Controllers
                 SystemBalance = Helper.AesEncryption.Encrypt(freelancerId.ToString(), "0"),
             };
 
+            await _accService.Add(account);
             await _freelanceAccService.Add(freelance);
+            if (!await _uow.SaveChangesAsync())
+            {
+                return StatusCode(500, new
+                {
+                    Message = $"Có lỗi xảy ra khi lưu dữ liệu Freelancer mới."
+                });
+            }
 
             return Ok(new
             {
-                message = "Tạo tài khoản Freelancer mới thành công!"
+                Message = "Tạo tài khoản Freelancer mới thành công!"
             });
         }
 
@@ -171,18 +187,22 @@ namespace DeToiServer.Controllers
             {
                 return Unauthorized(new 
                 {
-                    Message = "Số điện thoại đã được đăng ký dưới định danh Freelancer"
+                    Message = "Số điện thoại đã được đăng ký." //  dưới định danh Freelancer
                 });
             }
-
-            var customer = await _customerAccService.GetByCondition(cus
-                => cus.Account.Phone.Equals(request.Phone)
-                && cus.Account.CountryCode.Equals(request.CountryCode));
+            if (rawAccount != null && rawAccount.Role.Equals(GlobalConstant.Admin))
+            {
+                return Unauthorized(new
+                {
+                    Message = "Số điện thoại đã được đăng ký." //  dưới định danh Freelancer
+                });
+            }
 
             if (rawAccount == null)
             {
                 var account = new Account()
                 {
+                    Id = Guid.NewGuid(),
                     Email = null,
                     FullName = $"Customer_{DateTime.Now:yyyyMMdd}_VIE",
                     CountryCode = request.CountryCode,
@@ -193,18 +213,21 @@ namespace DeToiServer.Controllers
                     IsVerified = true, // Temporary
                 };
 
-                customer = new CustomerAccount()
+                var customer = new CustomerAccount()
                 {
-                    Account = account,
+                    Account = null!,
                     AccountId = account.Id
                 };
 
+                await _accService.Add(account);
                 await _customerAccService.Add(customer);
+
+                rawAccount = account;
             }
 
-            customer.Account.LoginToken = GenerateOTP();
-            customer.Account.LoginTokenExpires = DateTime.Now.AddMinutes(5);
-            await _accService.Update(customer.Account);
+            rawAccount.LoginToken = GenerateOTP();
+            rawAccount.LoginTokenExpires = DateTime.Now.AddMinutes(5);
+            await _accService.Update(rawAccount);
 
             // send OTP to phone
 
@@ -218,14 +241,22 @@ namespace DeToiServer.Controllers
         public async Task<IActionResult> VerifyOtpToken(PhoneAndOtpDto request)
         {
             var account = await _accService
-                .GetByCondition(acc => acc.Phone == request.Phone
-                    && acc.CountryCode == request.CountryCode);
+                .GetByCondition(acc => acc.Phone.Equals(request.Phone)
+                    && acc.CountryCode.Equals(request.CountryCode));
 
             if (account == null)
             {
                 return NotFound(new
                 {
                     Message = $"Không tìm thấy tài khoản với số điện thoại: {request.Phone}."
+                });
+            }
+
+            if (account.Role.Equals(GlobalConstant.Freelancer) && !account.IsVerified)
+            {
+                return NotFound(new
+                {
+                    Message = $"Tài khoản Freelancer của bạn chưa được duyệt bởi Admin."
                 });
             }
 
@@ -243,6 +274,8 @@ namespace DeToiServer.Controllers
             var token = CreateToken(account, account.Role);
             var refreshToken = GenerateRefreshToken();
             SetRefreshToken(refreshToken, account);
+            if (!account.Role.Equals(GlobalConstant.UnverifiedFreelancer))
+                account.IsVerified = true;
             await _accService.Update(account);
 
             return Ok(new
@@ -274,6 +307,42 @@ namespace DeToiServer.Controllers
             return Ok(new
             {
                 message = "Mã OTP đã được gửi đến điện thoại của bạn!",
+            });
+        }
+
+        [HttpPut("expo-token/update"), AuthorizeRoles(GlobalConstant.Customer, GlobalConstant.Freelancer)]
+        public async Task<IActionResult> PostAccountExpoPushToken(PostAccountExpoPushTokenDto request)
+        {
+            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var account = await _accService.GetById(accountId);
+
+            if (account == null)
+            {
+                return NotFound(new
+                {
+                    Message = $"Không tìm được tài khoản có id = {accountId}"
+                });
+            }
+            if (!account.IsVerified)
+            {
+                return BadRequest(new
+                {
+                    Message = $"Tài khoản của bạn chưa được kích hoạt. Hãy kích hoạt và thử lại"
+                });
+            }
+
+            account.ExpoPushToken = request.ExpoPushToken;
+            if (!await _uow.SaveChangesAsync())
+            {
+                return BadRequest(new
+                {
+                    Message = $"Có lỗi xảy ra trong lúc cập nhật PushToken"
+                });
+            }
+
+            return Ok(new
+            {
+                message = "Cập nhật Expo token thành công!",
             });
         }
 

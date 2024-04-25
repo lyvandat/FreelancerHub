@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.AddressDtos;
+using DeToiServer.Dtos.AdminDto;
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.LocationDtos;
 using DeToiServer.Dtos.NotificationDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.PaymentDtos;
 using DeToiServer.Dtos.QuizDtos;
+using DeToiServer.Dtos.ReportDtos;
 using DeToiServer.Dtos.ServiceCategoryDtos;
 using DeToiServer.Dtos.ServiceDtos;
 using DeToiServer.Dtos.ServiceProvenDtos;
@@ -17,10 +19,13 @@ using DeToiServer.Dtos.UIElementDtos;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Accounts;
+using DeToiServerCore.Models.Notifications;
 using DeToiServerCore.Models.Payment;
 using DeToiServerCore.Models.Quiz;
+using DeToiServerCore.Models.Reports;
 using DeToiServerCore.Models.Services;
 using DeToiServerCore.Models.SevicesUIElement;
+using DeToiServerCore.QueryModels.ServiceTypeQueryModels;
 using Newtonsoft.Json;
 
 namespace DeToiServer.AutoMapper
@@ -86,6 +91,7 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
                 .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders))
                 .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.Balance))))
+                .ForMember(dest => dest.ActiveTime, opt => opt.MapFrom(src => src.Account.CreatedAt))
                 .ForMember(dest => dest.SystemBalance, opt => opt.Ignore());
 
 
@@ -127,9 +133,11 @@ namespace DeToiServer.AutoMapper
             CreateMap<PutServiceTypeDto, ServiceType>().ReverseMap();
 
             CreateMap<ServiceCategory, GetServiceCategoryDto>()
-                .ForMember(dest => dest.ServiceClassName, opt => opt.MapFrom(src => Char.ToLowerInvariant(src.ServiceClassName[0]) + src.ServiceClassName.Substring(1)));
+                .ForMember(dest => dest.ServiceClassName, opt => opt.MapFrom(src => Char.ToLowerInvariant(src.ServiceClassName[0]) + src.ServiceClassName.Substring(1)))
+                .ForMember(dest => dest.ServiceTypeCount, opt => opt.MapFrom(src => src.ServiceTypes != null ? src.ServiceTypes.Count() : 0));
             CreateMap<ServiceCategory, GetServiceCategoryWithChildDto>()
-                .ForMember(dest => dest.ServiceClassName, opt => opt.MapFrom(src => Char.ToLowerInvariant(src.ServiceClassName[0]) + src.ServiceClassName.Substring(1)));
+                .ForMember(dest => dest.ServiceClassName, opt => opt.MapFrom(src => Char.ToLowerInvariant(src.ServiceClassName[0]) + src.ServiceClassName.Substring(1)))
+                .ForMember(dest => dest.ServiceTypeCount, opt => opt.MapFrom(src => src.ServiceTypes != null ? src.ServiceTypes.Count() : 0));
 
             CreateMap<PostServiceCategoryDto, ServiceCategory>().ReverseMap();
             CreateMap<PutServiceCategoryDto, ServiceCategory>().ReverseMap();
@@ -274,7 +282,43 @@ namespace DeToiServer.AutoMapper
             CreateMap<PushNotificationDto, PushTicketRequest>()
                 .ForMember(dest => dest.PushTo, opt => opt.MapFrom(src => src.ExpoPushTokens))
                 .ForMember(dest => dest.PushTitle, opt => opt.MapFrom(src => src.Title))
-                .ForMember(dest => dest.PushBody, opt => opt.MapFrom(src => src.Body));
+                .ForMember(dest => dest.PushBody, opt => opt.MapFrom(src => src.Body))
+                .ForMember(dest => dest.PushData, opt => opt.MapFrom(src => src.Data));
+
+            CreateMap<PushNotificationDto, Notification>()
+                .ForMember(dest => dest.PushTo, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.ExpoPushTokens)))
+                .ForMember(dest => dest.PushTitle, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dest => dest.PushBody, opt => opt.MapFrom(src => src.Body))
+                .ForMember(dest => dest.PushData, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Data)));
+
+            CreateMap<Notification, PushNotificationDto>()
+                .ForMember(dest => dest.ExpoPushTokens, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<IEnumerable<string>>(src.PushTo)))
+                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.PushTitle))
+                .ForMember(dest => dest.Body, opt => opt.MapFrom(src => src.PushBody))
+                .ForMember(dest => dest.Data, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<PushNotificationDataDto>(src.PushData)));
+
+            CreateMap<Notification, GetNotificationDto>()
+                .ForMember(dest => dest.ExpoPushTokens, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<IEnumerable<string>>(src.PushTo)))
+                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.PushTitle))
+                .ForMember(dest => dest.Body, opt => opt.MapFrom(src => src.PushBody))
+                .ForMember(dest => dest.Data, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<PushNotificationDataDto>(src.PushData)));
+
+            CreateMap<NotificationAccount, GetNotificationDto>()
+                .ConvertUsing((src, dest, context) => {
+                    return context.Mapper.Map<GetNotificationDto>(src);
+                });
+
+            #endregion
+
+            #region Report
+            CreateMap<PostReportDto, Report>();
+            #endregion
+
+            #region Admin
+            CreateMap<ServiceTypeDistributionModel, ServicePercentageAdminDto>()
+                .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Percentage, opt => opt.MapFrom(src => src.Percentage));
             #endregion
         }
     }

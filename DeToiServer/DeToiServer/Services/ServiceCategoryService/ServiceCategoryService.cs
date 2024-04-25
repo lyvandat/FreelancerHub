@@ -16,7 +16,7 @@ namespace DeToiServer.Services.ServiceCategoryService
 
         public async Task<IEnumerable<GetServiceCategoryDto>> GetServiceCategories()
         {
-            var rawServiceCategories = await _uow.ServiceCategoryRepo.GetAllAsync();
+            var rawServiceCategories = await _uow.ServiceCategoryRepo.GetServiceCategoryWithChild();
 
             return _mapper.Map<IEnumerable<GetServiceCategoryDto>>(rawServiceCategories);
         }

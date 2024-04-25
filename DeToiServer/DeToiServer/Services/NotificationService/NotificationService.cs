@@ -1,5 +1,8 @@
-﻿using DeToiServer.Dtos.LocationDtos;
+﻿using AutoMapper;
+using DeToiServer.Dtos.LocationDtos;
 using DeToiServer.Dtos.NotificationDtos;
+using DeToiServerCore.Models.Notifications;
+using Microsoft.Identity.Client;
 using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http.Headers;
@@ -17,20 +20,50 @@ namespace DeToiServer.Services.NotificationService
         private static readonly HttpClientHandler _httpHandler = new() { MaxConnectionsPerServer = 6 };
         private static readonly HttpClient _httpClient = new(_httpHandler);
 
-        public string AccessToken
-        {
-            set
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", value);
-            }
-        }
+        private readonly IMapper _mapper;
+        private readonly IServiceProvider _serviceProvider;
 
-        public NotificationService()
+        public NotificationService(
+            IMapper mapper,
+            IServiceProvider serviceProvider
+        )
         {
+            _serviceProvider = serviceProvider;
+            _mapper = mapper;
+
             _httpClient.BaseAddress = new Uri(_expoBackendHost);
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
+        }
+
+        public async Task<PushTicketResponse?> PushNotificationAsync(PushNotificationDto notificationDto, IEnumerable<Guid> accountIds)
+        {
+            // Resolve UnitOfWork within the method
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                UnitOfWork _unitOfWork = scope.ServiceProvider.GetRequiredService<UnitOfWork>();
+
+                var notiToAdd = _mapper.Map<Notification>(notificationDto);
+                notiToAdd.NotificationAccounts = [];
+                foreach (var accId in accountIds)
+                {
+                    notiToAdd.NotificationAccounts.Add(new()
+                    {
+                        NotificationId = notiToAdd.Id,
+                        Notification = null!,
+                        AccountId = accId,
+                        Account = null!
+                    });
+                }
+
+                await _unitOfWork.NotificationRepo.CreateAsync(notiToAdd);
+                await _unitOfWork.SaveChangesAsync();
+            }
+
+            var result = await PushSendAsync(_mapper.Map<PushTicketRequest>(notificationDto));
+
+            return result;
         }
 
         public async Task<PushTicketResponse?> PushSendAsync(PushTicketRequest pushTicketRequest)

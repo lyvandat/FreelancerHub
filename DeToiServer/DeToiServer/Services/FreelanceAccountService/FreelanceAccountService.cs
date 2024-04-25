@@ -35,7 +35,6 @@ namespace DeToiServer.Services.FreelanceAccountService
         public async Task<FreelanceAccount> Add(FreelanceAccount acc)
         {
             var added = await _unitOfWork.FreelanceAccountRepo.CreateAsync(acc);
-            await _unitOfWork.SaveChangesAsync();
 
             return added;
         }

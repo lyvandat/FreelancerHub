@@ -33,7 +33,7 @@ namespace DeToiServer.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("all")]
+        [HttpGet("all"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<IEnumerable<SkillDto>>> GetAllSkills()
         {
             //_ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
@@ -52,7 +52,7 @@ namespace DeToiServer.Controllers
             return Ok(result);
         }
 
-        [HttpGet("all-in-category")]
+        [HttpGet("all-in-category"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<IEnumerable<SkillDto>>> GetAllSkillInCategory(
             [FromQuery] Guid categoryId,
             [FromQuery] int? length
@@ -63,7 +63,7 @@ namespace DeToiServer.Controllers
             return Ok(result);
         }
 
-        [HttpGet("search")]
+        [HttpGet("search"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<IEnumerable<SkillDto>>> SearchFreelancerSkills(
             [FromQuery] string? key,
             [FromQuery] Guid? categoryId
@@ -78,7 +78,7 @@ namespace DeToiServer.Controllers
             return Ok(result);
         }
 
-        [HttpPost("add-multiple"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        [HttpPost("add-multiple"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<IEnumerable<SkillDto>>> AddMultipleFreelancerSkills(ChooseFreelancerSkillsDto postSkills)
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);

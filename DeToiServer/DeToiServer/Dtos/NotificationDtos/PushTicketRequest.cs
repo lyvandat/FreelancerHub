@@ -3,22 +3,6 @@ using Newtonsoft.Json;
 
 namespace DeToiServer.Dtos.NotificationDtos
 {
-    public class PushNotificationDataDto
-    {
-        public string NotificationType { get; set; } = GlobalConstant.Notification.CustomerChooseThisFreelancer;
-
-    }
-
-    public class PushNotificationDto
-    {
-        public required List<string> ExpoPushTokens { get; set; }
-        public required string Title { get; set; }
-        public required string Body { get; set; }
-        public string? SubTitle { get; set; }
-        public PushNotificationDataDto? Data { get; set; }
-    }
-
-
     #pragma warning disable CS8618
     [JsonObject(MemberSerialization.OptIn)]
     public class PushTicketRequest

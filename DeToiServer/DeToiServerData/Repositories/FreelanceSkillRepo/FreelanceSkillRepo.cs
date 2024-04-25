@@ -22,7 +22,10 @@ namespace DeToiServerData.Repositories.FreelanceSkillRepo
         {
             var query = _context.Skills.AsNoTracking().AsSplitQuery()
                 .Include(sk => sk.ServiceTypeOfSkill)
-                .Where(sk => sk.ServiceTypeOfSkill.Any(st_sk => st_sk.ServiceTypeId.Equals(categoryId)));
+                    .ThenInclude(st_sk => st_sk.ServiceType)
+                .Where(sk => sk.ServiceTypeOfSkill.Any(st_sk =>
+                    st_sk.ServiceType.ServiceCategoryId.Equals(categoryId) ||
+                    st_sk.ServiceTypeId.Equals(categoryId)));
 
             if (length != null)
             {
@@ -37,7 +40,10 @@ namespace DeToiServerData.Repositories.FreelanceSkillRepo
         {
             var query = _context.Skills.AsNoTracking().AsSplitQuery()
                 .Include(sk => sk.ServiceTypeOfSkill)
-                .Where(sk => sk.ServiceTypeOfSkill.Any(st_sk => st_sk.ServiceTypeId.Equals(search.CategoryId ?? Guid.Empty))
+                    .ThenInclude(st_sk => st_sk.ServiceType)
+                .Where(sk => sk.ServiceTypeOfSkill.Any(st_sk =>
+                        st_sk.ServiceType.ServiceCategoryId.Equals(search.CategoryId ?? Guid.Empty) ||
+                        st_sk.ServiceTypeId.Equals(search.CategoryId ?? Guid.Empty))
                     && sk.Name.Contains(search.Key));
 
             return await query.ToListAsync();

@@ -383,6 +383,17 @@ namespace DeToiServerData.Repositories.OrderRepo
 
             return result;
         }
+
+        public async Task<IEnumerable<Order>> QueryOrdersByMonthAsync(int month, int year)
+        {
+            var result = await _context.Orders
+                .AsNoTracking().AsSplitQuery()
+                .Where(o => o.CreatedTime.Month.Equals(month)
+                    && o.CreatedTime.Year.Equals(year)
+                ).ToListAsync();
+
+            return result;
+        }
     }
 
     public class DistanceComparer(Address freelancerAddress) : IComparer<Order>

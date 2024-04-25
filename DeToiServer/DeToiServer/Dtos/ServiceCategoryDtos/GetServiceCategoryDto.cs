@@ -10,6 +10,7 @@ namespace DeToiServer.Dtos.ServiceCategoryDtos
         public string Image { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string ServiceClassName { get; set; } = string.Empty;
+        public int ServiceTypeCount { get; set; } = 0;
     }
 
     public class GetServiceCategoryWithChildDto
@@ -19,6 +20,7 @@ namespace DeToiServer.Dtos.ServiceCategoryDtos
         public string Image { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string ServiceClassName { get; set; } = string.Empty;
+        public int ServiceTypeCount { get; set; } = 0;
         public ICollection<GetServiceTypeDto>? ServiceTypes { get; set; }
     }
 }

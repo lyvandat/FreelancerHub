@@ -2,12 +2,15 @@
 using DeToiServerData.Repositories.AccountCustomerRepo;
 using DeToiServerData.Repositories.AccountFreelanceRepo;
 using DeToiServerData.Repositories.AddressRepo;
+using DeToiServerData.Repositories.AdminRepo;
 using DeToiServerData.Repositories.FreelanceQuizRepo;
 using DeToiServerData.Repositories.FreelancerQuizRepo;
 using DeToiServerData.Repositories.FreelanceSkillRepo;
+using DeToiServerData.Repositories.NotificationRepo;
 using DeToiServerData.Repositories.OrderRepo;
 using DeToiServerData.Repositories.PaymentRepo;
 using DeToiServerData.Repositories.PromotionRepo;
+using DeToiServerData.Repositories.ReportRepo;
 using DeToiServerData.Repositories.ServiceCategoryRepo;
 using DeToiServerData.Repositories.ServiceRepo;
 using DeToiServerData.Repositories.ServiceStatusRepo;
@@ -260,6 +263,41 @@ namespace DeToiServerData
         }
         #endregion
 
+        #region Notification
+        private INotificationRepo _notificationRepo;
+        public INotificationRepo NotificationRepo
+        {
+            get
+            {
+                _notificationRepo ??= new NotificationRepo(_dataContext);
+                return _notificationRepo;
+            }
+        }
+        #endregion
+
+        #region Report
+        private IReportRepo _reportRepo;
+        public IReportRepo ReportRepo
+        {
+            get
+            {
+                _reportRepo ??= new ReportRepo(_dataContext);
+                return _reportRepo;
+            }
+        }
+        #endregion
+
+        #region Admin
+        private IAdminRepo _adminRepo;
+        public IAdminRepo AdminRepo
+        {
+            get
+            {
+                _adminRepo ??= new AdminRepo(_dataContext);
+                return _adminRepo;
+            }
+        }
+        #endregion
 
         public async Task<bool> SaveChangesAsync()
         {

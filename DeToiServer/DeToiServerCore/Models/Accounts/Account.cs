@@ -1,4 +1,7 @@
 ﻿using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Models.Notifications;
+using DeToiServerCore.Models.Reports;
+using System.Collections.ObjectModel;
 
 namespace DeToiServerCore.Models.Accounts
 {
@@ -21,5 +24,9 @@ namespace DeToiServerCore.Models.Accounts
         public bool IsActive { get; set; } = true;
         public bool IsVerified { get; set; } = false;
         public string ExpoPushToken { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+        public Collection<NotificationAccount>? NotificationAccounts { get; set; }
+        public Collection<Report>? ReportAccounts { get; set; }
+        public Collection<Report>? ReportedBy { get; set; }
     }
 }

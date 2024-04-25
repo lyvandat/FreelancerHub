@@ -7,6 +7,7 @@ using DeToiServer.ConfigModels;
 using DeToiServer.EventProcessing;
 using DeToiServer.Middlewares;
 using DeToiServer.RealTime;
+using DeToiServer.WorkerServices;
 using DeToiServerCore.Common.Helper;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
@@ -44,6 +45,7 @@ builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
 builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
 builder.Services.AddHostedService<MessageBusSubscriber>();
 builder.Services.Configure<VnPayConfigModel>(builder.Configuration.GetSection("VnPayConfig"));
+builder.Services.AddHostedService<NotificationDataCleanupService>();
 var app = builder.Build();
 
 app.UseSwagger();
@@ -51,7 +53,6 @@ app.UseSwaggerUI();
 app.UseCors("NgOrigins");
 app.ApplyDatabaseMigrations(app.Environment);
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
-app.UseMiddleware<DelayTimerMiddleware>();
 
 // Add other configurations
 app.UseHttpsRedirection();

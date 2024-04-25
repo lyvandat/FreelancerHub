@@ -78,6 +78,13 @@ namespace DeToiServerCore.Common.Helper
             return element?.Trim();
         }
 
+        public static double CalcRevenueGrowth(double last, double curr)
+        {
+            if (curr - last == 0) return 0;
+            if (last == 0) return curr / 1000;
+            return ((curr - last) / last) * 100;
+        }
+
         public class AesEncryption
         {
             public static string Encrypt(string encryptionKey, string plainText)
@@ -156,6 +163,11 @@ namespace DeToiServerCore.Common.Helper
             {
                 return Math.PI * angle / 180.0;
             }
+        }
+
+        public static bool IsDateOfMonthAndYear(DateTime dateToCheck, int targetMonth, int targetYear)
+        {
+            return dateToCheck.Month == targetMonth && dateToCheck.Year == targetYear;
         }
     }
 }

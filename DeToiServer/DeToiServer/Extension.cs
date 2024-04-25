@@ -1,5 +1,6 @@
 ﻿using DeToiServer.Services.AccountService;
 using DeToiServer.Services.AddressService;
+using DeToiServer.Services.AdminService;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FavoriteService;
 using DeToiServer.Services.FreelanceAccountService;
@@ -9,6 +10,7 @@ using DeToiServer.Services.MessageQueueService;
 using DeToiServer.Services.NotificationService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.PaymentService;
+using DeToiServer.Services.ReportService;
 using DeToiServer.Services.ServiceCategoryService;
 using DeToiServer.Services.ServiceProvenService;
 using DeToiServer.Services.ServiceStatusService;
@@ -20,12 +22,14 @@ using DeToiServerData.Repositories;
 using DeToiServerData.Repositories.AccountCustomerRepo;
 using DeToiServerData.Repositories.AccountFreelanceRepo;
 using DeToiServerData.Repositories.AddressRepo;
+using DeToiServerData.Repositories.AdminRepo;
 using DeToiServerData.Repositories.FreelanceQuizRepo;
 using DeToiServerData.Repositories.FreelancerQuizRepo;
 using DeToiServerData.Repositories.FreelanceSkillRepo;
 using DeToiServerData.Repositories.OrderRepo;
 using DeToiServerData.Repositories.PaymentRepo;
 using DeToiServerData.Repositories.PromotionRepo;
+using DeToiServerData.Repositories.ReportRepo;
 using DeToiServerData.Repositories.ServiceCategoryRepo;
 using DeToiServerData.Repositories.ServiceRepo;
 using DeToiServerData.Repositories.ServiceStatusRepo;
@@ -102,6 +106,8 @@ namespace DeToiServerData
 
             services.AddScoped<IAddressRepo, AddressRepo>();
             services.AddScoped<IPaymentRepo, PaymentRepo>();
+            services.AddScoped<IReportRepo, ReportRepo>();
+            services.AddScoped<IAdminRepo, AdminRepo>();
 
 
             services.AddScoped<UnitOfWork>();
@@ -128,6 +134,9 @@ namespace DeToiServerData
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IAddressService, AddressService>();
             services.AddSingleton<INotificationService, NotificationService>();
+            services.AddScoped<IAdminService, AdminService>();
+            services.AddScoped<INotificationDataService, NotificationDataService>();
+            services.AddScoped<IReportService, ReportService>();
             return services;
         }
 

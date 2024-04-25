@@ -10,5 +10,6 @@
         public string Phone { get; set; } = string.Empty;
         public string CombinedPhone { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
+        public string ExpoPushToken { get; set; } = null!;
     }
 }

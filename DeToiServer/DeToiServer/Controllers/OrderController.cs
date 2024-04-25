@@ -1,26 +1,23 @@
 ﻿using AutoMapper;
 using DeToiServer.AsyncDataServices;
 using DeToiServer.ConfigModels;
-using DeToiServer.Dtos;
 using DeToiServer.Dtos.AddressDtos;
+using DeToiServer.Dtos.NotificationDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.RealTimeDtos;
 using DeToiServer.HtmlTemplates;
 using DeToiServer.RealTime;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
+using DeToiServer.Services.NotificationService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.UserService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
-using DeToiServerCore.Common.Helper;
 using DeToiServerCore.QueryModels.OrderQueryModels;
-using DeToiServerData.Repositories.AccountFreelanceRepo;
-using HtmlTags;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DeToiServer.Controllers
 {
@@ -38,6 +35,7 @@ namespace DeToiServer.Controllers
         private readonly IMapper _mapper;
         private readonly IMessageBusClient _messageBusClient;
         private readonly VnPayConfigModel _vnPayConfig;
+        private readonly INotificationService _notificationService;
 
         public OrderController(
             UnitOfWork uow,
@@ -49,6 +47,7 @@ namespace DeToiServer.Controllers
             RealtimeConsumer rabbitMQConsumer,
             IMessageBusClient messageBusClient,
             IOptions<VnPayConfigModel> vnPayConfig,
+            INotificationService notificationService,
             IMapper mapper)
         {
             _uow = uow;
@@ -61,6 +60,7 @@ namespace DeToiServer.Controllers
             _mapper = mapper;
             _messageBusClient = messageBusClient;
             _vnPayConfig = vnPayConfig.Value;
+            _notificationService = notificationService;
         }
 
         [HttpGet("test-gateway")]
@@ -173,6 +173,35 @@ namespace DeToiServer.Controllers
             }
 
             // Add notification content
+            // Send success noti to choosen freelancer
+            await _notificationService.PushNotificationAsync(new PushNotificationDto()
+            {
+                ExpoPushTokens = [freelancer.Account.ExpoPushToken],
+                Title = "Bạn đã được chọn!",
+                Body = "Customer đã chọn bạn! Hãy kiểm tra danh sách đơn nhé.",
+                Data = new()
+                {
+                    ActionKey = GlobalConstant.Notification.CustomerChooseThisFreelancer,
+                },
+            }, [freelancer.AccountId]);
+            // Send fail noti to not choosen freelancers
+            var ignoredFreelancer = await _biddingOrderService.GetFreelancersForCustomerBiddingOrder(putOrder.OrderId);
+            
+            
+            if (ignoredFreelancer != null && ignoredFreelancer.Any())
+            {
+                await _notificationService.PushNotificationAsync(new PushNotificationDto()
+                {
+                    ExpoPushTokens = ignoredFreelancer.Select(igfl => igfl.Account.ExpoPushToken).ToList(),
+                    Title = "[DetoiVN] Customer đã chọn người khác.",
+                    Body = "Bạn hãy tiếp tục cố gắng nhé.",
+                    Data = new()
+                    {
+                        ActionKey = GlobalConstant.Notification.CustomerNotChooseThisFreelancer,
+                    },
+                },
+                ignoredFreelancer.Select(igfl => igfl.AccountId).ToList());
+            }
             //var html = HtmlGenerator.GenerateHtmlWithTitleMessageImage("Test voucher notification", "Xin chao ban da chuc mung thanh cong", "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7");
 
             var getOrderDto = await _orderService.GetOrderDetailById(putOrder.OrderId);
@@ -434,7 +463,7 @@ namespace DeToiServer.Controllers
             return Ok(order);
         }
 
-        [HttpGet("freelancer-bidding"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        [HttpGet("freelancer-bidding"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<GetOrderDto>> GetBiddingOrders()
         {
             Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
@@ -536,7 +565,31 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            await _uow.SaveChangesAsync();
+            if (!await _uow.SaveChangesAsync())
+            {
+                return StatusCode(500, new
+                {
+                    Message = "Có lỗi xảy ra trong lúc hủy đơn đặt hàng."
+                });
+            }
+
+            // Send notification to freelancer
+            var freelancerId = order.Order.FreelancerId ?? Guid.Empty;
+            if (!freelancerId.Equals(Guid.Empty))
+            {
+                var freelancerAcc = (await _freelancerAcc.GetByAccId(freelancerId)).Account;
+                await _notificationService.PushNotificationAsync(new PushNotificationDto()
+                {
+                    ExpoPushTokens = [freelancerAcc.ExpoPushToken],
+                    Title = "Bạn đã được chọn!",
+                    Body = "Customer đã chọn bạn! Hãy kiểm tra danh sách đơn nhé.",
+                    Data = new()
+                    {
+                        ActionKey = GlobalConstant.Notification.CustomerChooseThisFreelancer,
+                    },
+                }, [freelancerAcc.Id]);
+            }
+
             return Ok(new
             {
                 order.Message

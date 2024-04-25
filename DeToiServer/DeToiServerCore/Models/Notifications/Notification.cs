@@ -1,31 +1,24 @@
 ﻿using DeToiServerCore.Enums;
+using System.Collections.ObjectModel;
 
 namespace DeToiServerCore.Models.Notifications
 {
-    public class NotificationContent : ModelBase
-    {
-        public string Title { get; set; } = string.Empty;
-        public string SubTitle { get; set; } = string.Empty;
-        public string Content { get; set; } = string.Empty;
-        public string PreviewImage { get; set; } = string.Empty;
-        public DateTime CreatedTime { get; set; } = DateTime.Now;
-        public NotificationType Type { get; set; }
-        public bool IsRead { get; set; }
-        public Role Role { get; set; }
-        public Guid? CustomerId { get; set; }
-        public Guid? FreelancerId { get; set; }
-    }
-
     public class Notification : ModelBase
     {
-        public string Title { get; set; } = string.Empty;
-        public string Message { get; set; } = string.Empty;
-        public ICollection<string>? Images { get; set; }
-        public DateTime CreatedTime { get; set; } = DateTime.Now;
-        public NotificationType Type { get; set; }
-        public bool IsRead { get; set; }
-        public Role Role { get; set; }
-        public Guid? CustomerId { get; set; }
-        public Guid? FreelancerId { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public Collection<NotificationAccount>? NotificationAccounts { get; set; }
+
+        public string PushTo { get; set; } = null!; // List<string>
+        public string PushData { get; set; } = null!; // object
+        public string PushTitle { get; set; } = null!;
+        public string PushBody { get; set; } = null!;
+        //public int? PushTTL { get; set; }
+        //public int? PushExpiration { get; set; }
+        //public string PushPriority { get; set; } = "default";
+        //public string PushSubTitle { get; set; } = null!;
+        //public string PushSound { get; set; } = "default";
+        //public int? PushBadgeCount { get; set; }
+        //public string PushChannelId { get; set; } = null!;
+        //public string PushCategoryId { get; set; } = null!;
     }
 }

@@ -6,5 +6,6 @@ namespace DeToiServer.Services.NotificationService
     {
         Task<PushTicketResponse?> PushSendAsync(PushTicketRequest pushTicketRequest);
         Task<PushReceiptResponse?> PushGetReceiptsAsync(PushReceiptRequest pushReceiptRequest);
+        Task<PushTicketResponse?> PushNotificationAsync(PushNotificationDto notificationDto, IEnumerable<Guid> accountIds);
     }
 }

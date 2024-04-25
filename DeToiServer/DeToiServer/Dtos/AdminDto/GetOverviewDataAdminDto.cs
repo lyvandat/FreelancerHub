@@ -17,6 +17,15 @@ namespace DeToiServer.Dtos.AdminDto
         public int FreelancerRequestCount { get; set; }
     }
 
+    public class ComparedToLastMonthOverviewDto
+    {
+        public double ProfitDifferent { get; set; }
+        public double DiscountCostDifferent { get; set; }
+        public double RevenueDifferent { get; set; }
+        public double SuccessOrderCountDifferent { get; set; }
+        public double FailedOrderCountDifferent { get; set; }
+    }
+
     public class MonthlyOverviewAdminDto
     {
         // Doanh thu = 5% Tiền dịch vụ
@@ -24,7 +33,7 @@ namespace DeToiServer.Dtos.AdminDto
 
         public double TotalProfit { get; set; }
         public double TotalDiscountCost { get; set; }
-        public int TotalRevenue { get; set; }
+        public double TotalRevenue { get; set; }
         public int SuccessOrderCount { get; set; }
         public int FailedOrderCount { get; set; }
     }
@@ -65,7 +74,7 @@ namespace DeToiServer.Dtos.AdminDto
 
     public class ServicePercentageAdminDto
     {
-        public Guid ServiceId { get; set; } // Category
+        public Guid ServiceId { get; set; } // Service type
         public string ServiceName { get; set; } = null!;
         public double Percentage { get; set; }
     }
@@ -80,6 +89,7 @@ namespace DeToiServer.Dtos.AdminDto
         public FeedbackCountAdminDto Feedback { get; set; } = null!;
         public NeedResolveCountAdminDto NeedResolve { get; set; } = null!;
         public MonthlyOverviewAdminDto Overview { get; set; } = null!;
+        public ComparedToLastMonthOverviewDto OverviewLastMonth { get; set; } = null!;
         public ServiceTypeStatisticsAdminDto PopularServices { get; set; } = null!;
         public IEnumerable<ProfitStatisticsAdminDto> ProfitOverview { get; set; } = null!;
         public IEnumerable<PromotionTypeStatisticsAdminDto> Promotions { get; set; } = null!;

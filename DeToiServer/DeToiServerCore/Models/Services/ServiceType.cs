@@ -10,7 +10,8 @@ namespace DeToiServerCore.Models.Services
         public string? Description { get; set; }
         public string? Image { get; set; }
         public string? Keys { get; set; } // Thêm field createdAt, 
-        public DateTime CreatedAt { get; set; } // thêm trạng thái đang hoạt động | ngưng hoạt động (ServiceActivationStatus).
+        public DateTime CreatedAt { get; set; }
+        public bool IsActivated { get; set; }
         public Guid? ServiceCategoryId { get; set; }
         public ServiceCategory? ServiceCategory { get; set; }
         public ICollection<OrderServiceType>? OrderServiceTypes { get; set; }

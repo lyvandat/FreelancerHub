@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.FreelanceDtos;
+using DeToiServer.Dtos.NotificationDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.RealTimeDtos;
 using DeToiServer.Models;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
+using DeToiServer.Services.NotificationService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.Helper;
@@ -19,14 +21,16 @@ namespace DeToiServer.RealTime
         private readonly IFreelanceAccountService _freelancerService;
         private readonly ICustomerAccountService _customerService;
         private readonly IOrderManagementService _orderService;
+        private readonly INotificationService _notificationService;
         private readonly IMapper _mapper;
         private readonly DataContext _context;
 
-        public ChatHub(DataContext context, IFreelanceAccountService freelancerService, ICustomerAccountService customerService, IOrderManagementService orderService, IMapper mapper)
+        public ChatHub(DataContext context, IFreelanceAccountService freelancerService, ICustomerAccountService customerService, IOrderManagementService orderService, INotificationService notificationService, IMapper mapper)
         {
             _freelancerService = freelancerService;
             _customerService = customerService;
             _orderService = orderService;
+            _notificationService = notificationService;
             _mapper = mapper;
             _context = context;
         }
@@ -115,8 +119,15 @@ namespace DeToiServer.RealTime
         public async Task SendMessageToCustomer(GetFreelancerAndPreviewPriceDto matchingFreelancer)
         {
             var freelancer = await _freelancerService.GetDetailWithStatistic(matchingFreelancer.FreelancerId);
+            if (freelancer.Account.Role.Equals(GlobalConstant.UnverifiedFreelancer))
+            {
+                // Add Notification here for fe to catch
+                // Freelancer chưa verify 0 đc báo giá.
+                return;
+            }
+
             var order = await _orderService.GetById(matchingFreelancer.OrderId);
-            
+
             if (order == null) return;
 
             var customer = await _customerService.GetByIdWithAccount(order.CustomerId);
@@ -157,6 +168,17 @@ namespace DeToiServer.RealTime
                 }
                 _context.BiddingOrders.Add(biddingOrder);
                 await _context.SaveChangesAsync();
+
+                await _notificationService.PushNotificationAsync(new PushNotificationDto()
+                {
+                    ExpoPushTokens = [customer.Account.ExpoPushToken],
+                    Title = "Đã có Freelancer báo giá!",
+                    Body = "Freelancer đã báo giá cho đơn của bạn! Hãy kiểm tra danh sách đơn nhé.",
+                    Data = new()
+                    {
+                        ActionKey = GlobalConstant.Notification.FreelancerQuoteServiceToCustomer,
+                    },
+                }, [customer.AccountId]);
             }
             catch(Exception)
             {

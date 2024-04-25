@@ -49,4 +49,12 @@ public class AccountRepo : RepositoryBase<Account>, IAccountRepo
             "email" => acc => acc.Email,
             _ => acc => acc.Id,
         };
+
+    public async Task<IEnumerable<Account>> GetAllAccountByConditionAsync(Expression<Func<Account, bool>> predictate)
+    {
+        var query = _context.Accounts.AsSplitQuery().AsNoTracking()
+            .Where(predictate);
+
+        return await query.ToListAsync();
+    }
 }

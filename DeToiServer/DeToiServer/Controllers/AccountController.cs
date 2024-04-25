@@ -1,7 +1,10 @@
 using AutoMapper;
 using DeToiServer.Dtos.AccountDtos;
+using DeToiServer.Dtos.NotificationDtos;
 using DeToiServer.Services.AccountService;
+using DeToiServer.Services.NotificationService;
 using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Common.CustomAttribute;
 using DeToiServerCore.Common.Helper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +17,16 @@ namespace DeToiServer.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
+        private readonly INotificationDataService _notificationDataService;
         private readonly IMapper _mapper;
 
-        public AccountController(IAccountService accService, IMapper mapper)
+        public AccountController(
+            IAccountService accService, 
+            INotificationDataService notificationDataService,
+            IMapper mapper)
         {
             _accountService = accService;
+            _notificationDataService = notificationDataService;
             _mapper = mapper;
         }
 
@@ -62,7 +70,7 @@ namespace DeToiServer.Controllers
         [HttpPut(""), Authorize]
         public async Task<ActionResult<int>> UpdateAccount(PutAccountDto putAccountDto)
         {
-            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
             var account = await _accountService.GetById(accountId);
 
             if (account is null)
@@ -74,6 +82,7 @@ namespace DeToiServer.Controllers
             }
 
             _mapper.Map(putAccountDto, account);
+            account.CombinedPhone = $"{putAccountDto.CountryCode}{putAccountDto.Phone}";
 
             var result = await _accountService.Update(account);
 
@@ -115,6 +124,25 @@ namespace DeToiServer.Controllers
             var accPage = PageList<GetAccountDto>.ToPageList(result.AsQueryable(), query.Page, query.PageSize);
 
             return Ok(accPage);
+        }
+
+        [HttpGet("notification/all"), Authorize]
+        public async Task<ActionResult<IEnumerable<GetNotificationDto>>> SearchAccount()
+        {
+            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var account = await _accountService.GetById(accountId);
+
+            if (account is null)
+            {
+                return NotFound(new
+                {
+                    message = "Không tìm thấy tài khoản!"
+                });
+            }
+
+            var noti = await _notificationDataService.GetAllNotificationByAcountId(accountId);
+
+            return Ok(noti);
         }
     }
 }

@@ -4,6 +4,7 @@
     {
         public const string Customer = "Customer";
         public const string Freelancer = "Freelancer";
+        public const string UnverifiedFreelancer = "UnverifiedFreelancer";
         public const string Admin = "Admin";
 
         public enum ERole
@@ -20,8 +21,8 @@
             Admin
         ];
 
-        public const string CustomerAvtMale = "https://detoivn.b-cdn.net/customer_avt/user-avt%20(2).png";
-        public const string DefaultCommentAvt = "https://detoivn.b-cdn.net/customer_avt/user-avt%20(2).png";
+        public const string CustomerAvtMale = "customer_avt/user-avt%20(2).png";
+        public const string DefaultCommentAvt = "customer_avt/user-avt%20(2).png";
         public const string DefaultCommentContent = "Người dùng không nhận xét.";
         public const int InMeters = 1000;
         public const int InKilometers = 1;
@@ -78,9 +79,23 @@
         public static class Notification
         {
             public static readonly string CustomerChooseThisFreelancer = "CUSTOMER_CHOSE_THIS_FREELANCER";
+            public static readonly string CustomerNotChooseThisFreelancer = "CUSTOMER_NOT_CHOSE_THIS_FREELANCER";
             public static readonly string FreelancerQuoteServiceToCustomer = "FREELANCER_QUOTE_SERVICE_TO_CUSTOMER";
             public static readonly string FreelancerCanceledOrder = "FREELANCER_CANCELED_ORDER";
             public static readonly string CustomerCanceledOrder = "CUSTOMER_CANCELED_ORDER";
+            public static readonly int TimeSpan = 30;
+        }
+
+        public static class Report
+        {
+            public readonly static Guid NoAction = Guid.Parse("57779da0-5c1e-43d0-92c8-35ad09735667");
+            public readonly static Guid RefundAll = Guid.Parse("558aeed2-8609-4f8d-9a27-57f36e3c9062");
+            public readonly static Guid RefundHalf = Guid.Parse("39cff80d-a7b4-4ef1-899d-a1b4fef74b80"); 
+            public readonly static Guid BanCustomer = Guid.Parse("00ecac93-4e33-4145-b72a-787893f68a84");
+            public readonly static Guid BanFreelancer = Guid.Parse("aadbe15c-882f-4a3b-bd76-e017eee11027"); 
+            public readonly static Guid MarkFreelancer = Guid.Parse("afdc03f7-f266-4031-ae34-223abad7b771");
+
+            public readonly static int MarkToBan = 3;
         }
     }
 
