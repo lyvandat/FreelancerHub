@@ -97,6 +97,14 @@
 
             public readonly static int MarkToBan = 3;
         }
+
+        public static class AddressOption
+        {
+            public static readonly string None = "none";
+            public static readonly string Destination = "destination";
+            public static readonly string Shipping = "shipping";
+            public enum ShippingEnum { From, To }
+        }
     }
 
     public static class StatusConst

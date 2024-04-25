@@ -1,4 +1,5 @@
-﻿using DeToiServerCore.Models.Accounts;
+﻿using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.SevicesUIElement;
 
 namespace DeToiServerCore.Models.Services
@@ -12,6 +13,7 @@ namespace DeToiServerCore.Models.Services
         public string? Keys { get; set; } // Thêm field createdAt, 
         public DateTime CreatedAt { get; set; }
         public bool IsActivated { get; set; }
+        public string AddressRequireOption { get; set; } = GlobalConstant.AddressOption.Destination;
         public Guid? ServiceCategoryId { get; set; }
         public ServiceCategory? ServiceCategory { get; set; }
         public ICollection<OrderServiceType>? OrderServiceTypes { get; set; }
@@ -21,7 +23,6 @@ namespace DeToiServerCore.Models.Services
         public ICollection<UIElementAdditionServiceRequirement>? AdditionalRequirements { get; set; }
         public ICollection<FreelanceServiceType>? FreelancerInService { get; set; }
         public ICollection<SkillServiceType>? SkillOfService { get; set; }
-        public Guid? ActivationStatusId { get; set; }
-        public ServiceActivationStatus? ActivationStatus { get; set; }
+        public ICollection<ServiceTypeStatus> ServiceStatusList { get; set; } = null!;
     }
 }

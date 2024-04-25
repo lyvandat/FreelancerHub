@@ -32,7 +32,7 @@ namespace DeToiServerCore.Models
         public ServiceStatus? ServiceStatus { get; set; }
         public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.NotPaid;
         public ICollection<OrderService>? OrderServices { get; set; }
-        public ICollection<OrderServiceType>? OrderServiceTypes { get; set; }
+        public ICollection<OrderServiceType> OrderServiceTypes { get; set; } = null!;
         public ICollection<ServiceProven>? ServiceProven { get; set; }
         public ICollection<BiddingOrder>? BiddingOrders { get; set; }
         public ICollection<OrderSkillRequired>? SkillRequired { get; set; }

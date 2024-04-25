@@ -114,13 +114,13 @@ namespace DeToiServerData.Configurations
             builder.HasData(
                 new List<ServiceStatus>
                 {
-                    new ServiceStatus { Id = StatusConst.Created, Name = "Đơn vừa tạo" },
-                    new ServiceStatus { Id = StatusConst.OnMatching, Name = "Đang ghép cặp" },
-                    new ServiceStatus { Id = StatusConst.Waiting, Name = "Chưa đến giờ hoạt động" },
-                    new ServiceStatus { Id = StatusConst.OnMoving, Name = "Đang di chuyển, hãy kiên nhẫn" },
-                    new ServiceStatus { Id = StatusConst.OnDoingService, Name = "Đang làm việc" },
-                    new ServiceStatus { Id = StatusConst.Completed, Name = "Đã hoàn thành nhiệm vụ" },
-                    new ServiceStatus { Id = StatusConst.Canceled, Name = "Đơn đã hủy" },
+                    new ServiceStatus { Id = StatusConst.Created, Name = "Đơn vừa tạo", Icon = "faHouse" },
+                    new ServiceStatus { Id = StatusConst.OnMatching, Name = "Đang ghép cặp", Icon = "faHouse" },
+                    new ServiceStatus { Id = StatusConst.Waiting, Name = "Chưa đến giờ hoạt động", Icon = "faHouse" },
+                    new ServiceStatus { Id = StatusConst.OnMoving, Name = "Đang di chuyển, hãy kiên nhẫn", Icon = "faHouse" },
+                    new ServiceStatus { Id = StatusConst.OnDoingService, Name = "Đang làm việc", Icon = "faHouse" },
+                    new ServiceStatus { Id = StatusConst.Completed, Name = "Đã hoàn thành nhiệm vụ", Icon = "faHouse" },
+                    new ServiceStatus { Id = StatusConst.Canceled, Name = "Đơn đã hủy", Icon = "faHouse" },
                 }
             );
         }
@@ -152,6 +152,26 @@ namespace DeToiServerData.Configurations
                 .HasDefaultValueSql("GETDATE()");
             builder.Property(c => c.IsActivated)
                 .HasDefaultValue(true);
+            builder.Property(c => c.AddressRequireOption)
+                .HasDefaultValue(GlobalConstant.AddressOption.Destination);
+        }
+    }
+
+    internal class ServiceTypeStatusConfiguration : EntityTypeConfigurationBaseClass<ServiceTypeStatus>
+    {
+        protected override void OnConfigure(EntityTypeBuilder<ServiceTypeStatus> builder)
+        {
+            builder.HasKey(sts => new { sts.ServiceTypeId, sts.ServiceStatusId });
+
+            builder.HasOne(sts => sts.ServiceType)
+                .WithMany(st => st.ServiceStatusList)
+                .HasForeignKey(sts => sts.ServiceTypeId)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            builder.HasOne(sts => sts.ServiceStatus)
+                .WithMany(s => s.ServiceStatusList)
+                .HasForeignKey(sts => sts.ServiceStatusId)
+                .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

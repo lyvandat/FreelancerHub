@@ -1,6 +1,7 @@
 ﻿using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.ServiceDtos;
+using DeToiServer.Dtos.ServiceStatusDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Dtos.SkillDtos;
 using System.Text.Json.Serialization;
@@ -24,6 +25,7 @@ namespace DeToiServer.Dtos.OrderDtos
         public ICollection<GetServiceTypeDto>? ServiceTypes { get; set; }
         public ICollection<SkillDto>? SkillRequired { get; set; }
         public ServiceDto Services { get; set; } = null!;
+        public ICollection<GetServiceStatusDto> ServiceStatusList { get; set; } = null!;
     }
 
     public class GetCustomerOrderDto
@@ -45,5 +47,6 @@ namespace DeToiServer.Dtos.OrderDtos
         public ICollection<GetServiceTypeDto>? ServiceTypes { get; set; }
         public ICollection<SkillDto>? SkillRequired { get; set; }
         public required ServiceDto Services { get; set; }
+        public ICollection<GetServiceStatusDto> ServiceStatusList { get; set; } = null!;
     }
 }

@@ -50,6 +50,7 @@ namespace DeToiServerData
             modelBuilder.ApplyConfiguration(new OrderServiceConfiguration());
             
             modelBuilder.ApplyConfiguration(new OrderServiceTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new ServiceTypeStatusConfiguration());
 
             // Blogs
             modelBuilder.ApplyConfiguration(new TermOfServiceConfiguration());
@@ -121,6 +122,7 @@ namespace DeToiServerData
         public DbSet<Service> Services { get; set; }
         public DbSet<ServiceType> ServiceTypes { get; set; }
         public DbSet<ServiceCategory> ServiceCategories { get; set; }
+        public DbSet<ServiceTypeStatus> ServiceTypeStatuses { get; set; }
 
         #region Service_UI_Element
         public DbSet<UIElementValidationType> UIElementValidationTypes { get; set; }
