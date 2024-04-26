@@ -9,6 +9,7 @@ namespace DeToiServer.Dtos.ServiceTypeDtos
         public double BasePrice { get; set; }
         public string? Description { get; set; }
         public string? Image { get; set; }
+        public string AddressRequireOption { get; set; } = null!;
     }
 
     public class GetServiceTypeDetailDto
@@ -18,6 +19,7 @@ namespace DeToiServer.Dtos.ServiceTypeDtos
         public double BasePrice { get; set; }
         public string? Description { get; set; }
         public string? Image { get; set; }
+        public string AddressRequireOption { get; set; } = null!;
         public ICollection<UIElementServiceRequirementDto>? Requirements { get; set; }
         public ICollection<UIElementAdditionServiceRequirementDto>? AdditionalRequirements { get; set; }
     }
