@@ -332,13 +332,14 @@ namespace DeToiServer.Controllers
             }
 
             account.ExpoPushToken = request.ExpoPushToken;
-            if (!await _uow.SaveChangesAsync())
-            {
-                return BadRequest(new
-                {
-                    Message = $"Có lỗi xảy ra trong lúc cập nhật PushToken"
-                });
-            }
+            await _accService.Update(account);
+            //if (!await _uow.SaveChangesAsync())
+            //{
+            //    return BadRequest(new
+            //    {
+            //        Message = $"Có lỗi xảy ra trong lúc cập nhật PushToken"
+            //    });
+            //}
 
             return Ok(new
             {
