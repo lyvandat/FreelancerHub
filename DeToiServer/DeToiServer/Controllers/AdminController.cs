@@ -51,8 +51,7 @@ namespace DeToiServer.Controllers
 
         [HttpGet("overview")] // , AuthorizeRoles(GlobalConstant.Admin)
         public async Task<ActionResult<GetOverviewDataAdminDto>> GetOverviewDataAdmin(
-            int? Month = null,
-            int? Year = null
+            ServiceOverviewQueryDto query
         )
         {
             //_ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
@@ -66,7 +65,7 @@ namespace DeToiServer.Controllers
             //    });
             //}
 
-            return Ok(await _adminService.GetAllOverviewDataAdmin(Month, Year));
+            return Ok(await _adminService.GetAllOverviewDataAdmin(query));
         }
 
         [HttpGet("order"), AuthorizeRoles(GlobalConstant.Admin)]

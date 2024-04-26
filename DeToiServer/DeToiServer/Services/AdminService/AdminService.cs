@@ -3,6 +3,8 @@ using DeToiServer.Dtos.AdminDto;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Accounts;
+using DeToiServerCore.QueryModels.AccountQueryModels;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using System;
 using System.Linq.Expressions;
 
@@ -49,49 +51,39 @@ namespace DeToiServer.Services.AdminService
             };
         }
 
-        public async Task<GetOverviewDataAdminDto> GetAllOverviewDataAdmin(int? month = null, int? year = null)
+        public async Task<GetOverviewDataAdminDto> GetAllOverviewDataAdmin(ServiceOverviewQueryDto queryStat)
         {
             GetOverviewDataAdminDto result = new();
-
             var curDate = DateTime.Now.Date;
-            var checkMonth = month ?? curDate.Month;
-            var checkYear = year ?? curDate.Year;
-            DateTime thisDate = new DateTime(checkYear, checkMonth, 1).AddDays(-1);
-            var monthlyOverview = await GetOverviewDataAdminByMonth(checkMonth, checkYear);
+
+            #region Overview
+            var overviewDate = queryStat.Overview ?? new() {
+                Month = curDate.Month,
+                Year = curDate.Year,
+            };
+            DateTime thisDate = new DateTime(overviewDate.Year, overviewDate.Month, 1).AddDays(-1);
+            var monthlyOverview = await GetOverviewDataAdminByMonth(overviewDate.Month, overviewDate.Year);
             var lastOverview = await GetOverviewDataAdminByMonth(thisDate.Month, thisDate.Year);
 
             result.Overview = monthlyOverview;
             result.OverviewLastMonth = ComparedToLastMonthOverview(monthlyOverview, lastOverview);
+            #endregion
 
-            var allAccount = await _unitOfWork.AccountRepo.GetAllAsync();
-            List<string> roleList = [GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer];
-            var newFreelancer = allAccount.Where(acc => 
-                Helper.IsDateOfMonthAndYear(acc.CreatedAt, checkMonth, checkYear)
-                && roleList.Contains(acc.Role));
-            var newCus = allAccount.Where(acc =>
-                Helper.IsDateOfMonthAndYear(acc.CreatedAt, checkMonth, checkYear)
-                && acc.Role.Equals(GlobalConstant.Customer));
-
-            result.NeedResolve = new()
+            #region Income
+            var incomeDate = queryStat.Income ?? new()
             {
-                UnresolvedReportCount = 0,
-                FreelancerRequestCount = allAccount.Where(acc => acc.Role.Equals(GlobalConstant.UnverifiedFreelancer)).Count()
+                Month = curDate.Month,
+                Year = curDate.Year,
             };
-
-            result.PopularServices = new()
-            {
-                Statistics = _mapper.Map<IEnumerable<ServicePercentageAdminDto>>(await _unitOfWork.AdminRepo.GetServiceTypePercentage())
-            };
-
-            var dateCount = DateTime.DaysInMonth(checkYear, checkMonth);
-            DateOnly finalDate = new(checkYear, checkMonth, dateCount);
-            var allOrders = (await _unitOfWork.OrderRepo.QueryOrdersByMonthAsync(checkMonth, checkYear))
+            var dateCount = DateTime.DaysInMonth(incomeDate.Year, incomeDate.Month);
+            DateOnly finalDate = new(incomeDate.Year, incomeDate.Month, dateCount);
+            var allOrders = (await _unitOfWork.OrderRepo.QueryOrdersByMonthAsync(incomeDate.Month, incomeDate.Year))
                 .Where(o => o.ServiceStatusId.Equals(StatusConst.Completed));
 
             var profitStatList = new List<ProfitStatisticsAdminDto>();
             for (var dayCount = 1; dayCount <= dateCount; dayCount++)
             {
-                var checkDate = new DateOnly(checkYear, checkMonth, dayCount);
+                var checkDate = new DateOnly(incomeDate.Year, incomeDate.Month, dayCount);
                 profitStatList.Add(new()
                 {
                     Date = checkDate,
@@ -99,16 +91,26 @@ namespace DeToiServer.Services.AdminService
                 });
             }
             result.ProfitOverview = profitStatList;
+            #endregion
 
-            var customerAccounts = await _unitOfWork.AccountRepo.GetAllAccountByConditionAsync(
-                acc => acc.Role.Equals(GlobalConstant.Customer)
-                && acc.CreatedAt.Year.Equals(checkYear)
-                && acc.IsActive);
+            #region NewUsers
+            var newUsersDate = queryStat.NewUsers ?? new()
+            {
+                Month = curDate.Month,
+                Year = curDate.Year,
+            };
+            var customerAccounts = (await _unitOfWork.AccountRepo
+                .QueryAccountByCreationTimeAndRoleAsync(new AccountCreationDateAndRolesQuery
+                {
+                    Month = null,
+                    Year = newUsersDate.Year,
+                    Roles = [GlobalConstant.Customer]
+                })).Where(acc => acc.IsActive);
             var customerAccountListStat = new List<AccountStatisticsAdminDto>();
 
             var freelancerAccounts = await _unitOfWork.FreelanceAccountRepo.GetManyByConditionsAsync(
                 acc => acc.Account.IsActive 
-                && acc.Account.CreatedAt.Year.Equals(checkYear));
+                && acc.Account.CreatedAt.Year.Equals(newUsersDate.Year));
             var freelancerAccountListStat = new List<AccountStatisticsAdminDto>();
             var teamAccountListStat = new List<AccountStatisticsAdminDto>();
 
@@ -118,7 +120,7 @@ namespace DeToiServer.Services.AdminService
                 {
                     MonthNum = monthNum,
                     UsageCount = customerAccounts
-                        .Where(acc => acc.CreatedAt.Month.Equals(month)).Count()
+                        .Where(acc => acc.CreatedAt.Month.Equals(monthNum)).Count()
                 });
 
                 freelancerAccountListStat.Add(new()
@@ -126,7 +128,7 @@ namespace DeToiServer.Services.AdminService
                     MonthNum = monthNum,
                     UsageCount = freelancerAccounts
                         .Where(acc => !acc.IsTeam
-                            && acc.Account.CreatedAt.Month.Equals(month)).Count()
+                            && acc.Account.CreatedAt.Month.Equals(monthNum)).Count()
                 });
 
                 teamAccountListStat.Add(new()
@@ -134,7 +136,7 @@ namespace DeToiServer.Services.AdminService
                     MonthNum = monthNum,
                     UsageCount = freelancerAccounts
                         .Where(acc => acc.IsTeam
-                            && acc.Account.CreatedAt.Month.Equals(month)).Count()
+                            && acc.Account.CreatedAt.Month.Equals(monthNum)).Count()
                 });
             }
 
@@ -156,6 +158,29 @@ namespace DeToiServer.Services.AdminService
                     Statistics = teamAccountListStat
                 },
             ];
+            #endregion
+
+            #region Discount
+            var discountDate = queryStat.Discount ?? new()
+            {
+                Month = curDate.Month,
+                Year = curDate.Year,
+            };
+            #endregion
+
+            #region Global stat
+            var allAccount = await _unitOfWork.AccountRepo.GetAllAsync();
+            result.NeedResolve = new()
+            {
+                UnresolvedReportCount = 0,
+                FreelancerRequestCount = allAccount.Where(acc => acc.Role.Equals(GlobalConstant.UnverifiedFreelancer)).Count()
+            };
+
+            result.PopularServices = new()
+            {
+                Statistics = _mapper.Map<IEnumerable<ServicePercentageAdminDto>>(await _unitOfWork.AdminRepo.GetServiceTypePercentage())
+            };
+            #endregion
 
             return result;
         }

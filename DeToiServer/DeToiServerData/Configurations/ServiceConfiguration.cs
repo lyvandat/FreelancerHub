@@ -154,6 +154,7 @@ namespace DeToiServerData.Configurations
                 .HasDefaultValue(true);
             builder.Property(c => c.AddressRequireOption)
                 .HasDefaultValue(GlobalConstant.AddressOption.Destination);
+            builder.Property(st => st.Keys).HasDefaultValue("");
         }
     }
 

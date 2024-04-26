@@ -62,5 +62,12 @@ namespace DeToiServerData.Repositories.ServiceTypeRepo
             if (serviceCategory == null) return string.Empty;
             return serviceCategory.ServiceClassName;
         }
+
+        public async Task<IEnumerable<ServiceType>> GetAllServiceTypeWithCategoryAsync()
+        {
+            return await _context.ServiceTypes.AsSplitQuery().AsNoTracking()
+                .Include(st => st.ServiceCategory)
+                .ToListAsync();
+        }
     }
 }

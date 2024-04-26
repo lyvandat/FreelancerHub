@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DeToiServerCore.Common.Helper
 {
@@ -83,6 +84,32 @@ namespace DeToiServerCore.Common.Helper
             if (curr - last == 0) return 0;
             if (last == 0) return curr / 1000;
             return ((curr - last) / last) * 100;
+        }
+
+        private static readonly Dictionary<string, string> patterns = new() {
+            { "[àáảãạăắằẵặẳâầấậẫẩ]", "a" },
+            { "[đ]", "d" },
+            { "[èéẻẽẹêềếểễệ]", "e" },
+            { "[ìíỉĩị]", "i" },
+            { "[òóỏõọôồốổỗộơờớởỡợ]", "o" },
+            { "[ùúủũụưừứửữự]", "u" },
+            { "[ỳýỷỹỵ]", "y" }
+        };
+
+        public static string VieToEngName(string input)
+        {
+            foreach (var item in patterns)
+            {
+                input = Regex.Replace(input, item.Key, item.Value);
+                input = Regex.Replace(input, item.Key.ToUpper(), item.Value.ToUpper());
+            }
+
+            return input;
+        }
+
+        public static bool CompareKey(this string _this, string cpmr)
+        {
+            return _this.Contains(cpmr, StringComparison.CurrentCultureIgnoreCase);
         }
 
         public class AesEncryption

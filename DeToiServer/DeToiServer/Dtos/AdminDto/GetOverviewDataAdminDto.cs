@@ -197,4 +197,18 @@ namespace DeToiServer.Dtos.AdminDto
     }
 
     #endregion
+
+    public class DataStatisticPeriodDto
+    {
+        public int Month { get; set; } = 1;
+        public int Year { get; set; } = 1999;
+    }
+
+    public class ServiceOverviewQueryDto
+    {
+        public DataStatisticPeriodDto? Income { get; set; } = null;
+        public DataStatisticPeriodDto? Discount { get; set; } = null;
+        public DataStatisticPeriodDto? NewUsers { get; set; } = null;
+        public DataStatisticPeriodDto? Overview { get; set; } = null;
+    }
 }

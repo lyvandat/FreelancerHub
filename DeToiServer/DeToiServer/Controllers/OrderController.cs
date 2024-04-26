@@ -96,7 +96,10 @@ namespace DeToiServer.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"--> Could not send order asynchronously: {ex.Message}");
-                return BadRequest();
+                return BadRequest(new
+                {
+                    Message = $"--> Could not send order asynchronously: {ex.Message}"
+                });
             }
 
             await _rabbitMQConsumer.SendMessageToFreelancer(postOrder);

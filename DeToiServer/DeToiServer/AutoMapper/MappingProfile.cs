@@ -132,6 +132,8 @@ namespace DeToiServer.AutoMapper
             CreateMap<PostServiceTypeDto, ServiceType>().ReverseMap();
             CreateMap<PutServiceTypeDto, ServiceType>().ReverseMap();
 
+            CreateMap<ServiceType, GetServiceTypeWithCategoryDto>();
+
             CreateMap<ServiceCategory, GetServiceCategoryDto>()
                 .ForMember(dest => dest.ServiceClassName, opt => opt.MapFrom(src => Char.ToLowerInvariant(src.ServiceClassName[0]) + src.ServiceClassName.Substring(1)))
                 .ForMember(dest => dest.ServiceTypeCount, opt => opt.MapFrom(src => src.ServiceTypes != null ? src.ServiceTypes.Count() : 0));

@@ -1,5 +1,6 @@
 ﻿using DeToiServer.Dtos.AccountDtos;
 using DeToiServerCore.Models.Accounts;
+using DeToiServerCore.QueryModels.AccountQueryModels;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -54,6 +55,20 @@ public class AccountRepo : RepositoryBase<Account>, IAccountRepo
     {
         var query = _context.Accounts.AsSplitQuery().AsNoTracking()
             .Where(predictate);
+
+        return await query.ToListAsync();
+    }
+
+    public async Task<IEnumerable<Account>> QueryAccountByCreationTimeAndRoleAsync(AccountCreationDateAndRolesQuery queryData)
+    {
+        var checkMonth = queryData.Month != null;
+        var checkYear = queryData.Year != null;
+        var roleCount = queryData.Roles.Count != 0;
+
+        var query = _context.Accounts.AsSplitQuery().AsNoTracking()
+            .Where(acc => !checkMonth || acc.CreatedAt.Month != queryData.Month
+                || !checkYear || acc.CreatedAt.Year != queryData.Year
+                || !roleCount || queryData.Roles.Contains(acc.Role));
 
         return await query.ToListAsync();
     }

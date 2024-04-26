@@ -2,10 +2,12 @@
 using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Dtos.UIElementDtos;
+using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Services;
 using DeToiServerCore.Models.SevicesUIElement;
 using DeToiServerCore.QueryModels.ServiceTypeQueryModels;
 using DeToiServerData;
+using Newtonsoft.Json;
 
 namespace DeToiServer.Services.ServiceTypeService
 {
@@ -48,11 +50,30 @@ namespace DeToiServer.Services.ServiceTypeService
             await _uow.ServiceTypeRepo.DeleteAsync(id);
         }
 
-        public async Task<IEnumerable<GetServiceTypeDto>> GetAllServiceInfo(FilterServiceTypeQuery query)
+        public async Task<IEnumerable<GetServiceTypeWithCategoryDto>> GetAllServiceInfo(FilterServiceTypeQuery query)
         {
-            var rawAccounts = await _uow.ServiceTypeRepo.GetAllServiceTypeInfoAsync(query);
+            var rawResult = await _uow.ServiceTypeRepo.GetAllServiceTypeWithCategoryAsync();
+            var resultQuery = rawResult.AsQueryable();
 
-            return rawAccounts.Select(_mapper.Map<GetServiceTypeDto>);
+            List<ServiceType> result = [];
+            if (!string.IsNullOrEmpty(query.Name))
+            {
+                foreach (var st in rawResult)
+                {
+                    List<string> keyList = JsonConvert.DeserializeObject<List<string>>(st.Keys) ?? [];
+
+                    if (keyList.Any(item => item.CompareKey(query.Name)) || st.Name.Contains(query.Name))
+                    {
+                        result.Add(st);
+                    }
+                }
+
+                //resultQuery.Where(st => st.Name.Contains(query.Name)
+                //    || (JsonConvert.DeserializeObject<List<string>>(st.Keys) ?? new List<string>() {})
+                //        .Any(item => item.CompareKey(query.Name)));
+            }
+
+            return result.Select(_mapper.Map<GetServiceTypeWithCategoryDto>);
         }
 
         public async Task<GetServiceTypeDetailDto> GetServiceTypeDetailWithRequirements(Guid id)
