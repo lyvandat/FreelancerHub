@@ -42,7 +42,7 @@ namespace DeToiServer.Services.PaymentService
             return await _uow.PaymentRepo.AddFreelancePaymentHistoryAsync(toAddData);
         }
 
-        public async Task<GetFreelanceAccountShortDetailDto> UpdateFreelancerBalance(UpdateFreelanceBalanceDto toUpdate)
+        public async Task<GetFreelanceAccountShortDetailDto?> UpdateFreelancerBalance(UpdateFreelanceBalanceDto toUpdate, bool minus = false)
         {
             var rawFreelancer = await _uow.FreelanceAccountRepo.GetByAccId(toUpdate.Id);
             var freelancer = _mapper.Map<GetFreelanceAccountShortDetailDto>(rawFreelancer);
@@ -52,13 +52,27 @@ namespace DeToiServer.Services.PaymentService
                 double updatedValue = 0;
                 if (toUpdate.WalletType.Equals(GlobalConstant.Payment.Wallet.Personal))
                 {
-                    updatedValue = freelancer.Balance + toUpdate.Value;
+                    if (minus)
+                    {
+                        updatedValue = freelancer.Balance - toUpdate.Value;
+                    }
+                    else
+                    {
+                        updatedValue = freelancer.Balance + toUpdate.Value;
+                    }
+
+                    if (updatedValue < 0)
+                    {
+                        return null;
+                    }
+
                     rawFreelancer.Balance = AesEncryption.Encrypt(rawFreelancer.Id.ToString(), updatedValue.ToString());
                 }
                 else if (toUpdate.WalletType.Equals(GlobalConstant.Payment.Wallet.System))
                 {
                     updatedValue = freelancer.SystemBalance + toUpdate.Value;
                     rawFreelancer.SystemBalance = AesEncryption.Encrypt(rawFreelancer.Id.ToString(), updatedValue.ToString());
+                    rawFreelancer.Balance = AesEncryption.Encrypt(rawFreelancer.Id.ToString(), (freelancer.Balance + toUpdate.Value).ToString());
                 }
                 
                 if (updatedValue != 0)
@@ -67,6 +81,7 @@ namespace DeToiServer.Services.PaymentService
                     {
                         FreelanceAccountId = rawFreelancer.Id,
                         Method = toUpdate.Method,
+                        PaymentType = minus ? PaymentType.Subtract : PaymentType.Add,
                         Value = toUpdate.Value,
                         Wallet = toUpdate.WalletType,
                     });

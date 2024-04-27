@@ -120,14 +120,13 @@
 
         public static Dictionary<Guid, int> StatusConstOrder = new Dictionary<Guid, int>()
         {
-            {Created, -1},
-            {OnMatching, -1},
-
             {Canceled, -1},
-            {Waiting, 0},
-            {OnMoving, 1},
-            {OnDoingService, 2},
-            {Completed, 3},
+            {Created, 0},
+            {OnMatching, 1},
+            {Waiting, 2},
+            {OnMoving, 3},
+            {OnDoingService, 4},
+            {Completed, 5},
         };
 
         public static readonly IEnumerable<Guid> StatusIdCollections = [

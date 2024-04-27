@@ -8,7 +8,7 @@ namespace DeToiServer.Services.PaymentService
     {
         Task<IEnumerable<GetFreelancePaymentHistoryDto>> GetAllFreelancePayment();
         Task<IEnumerable<GetFreelancePaymentHistoryDto>> GetFreelancePaymentHistories(Guid freelanceId);
-        Task<GetFreelanceAccountShortDetailDto> UpdateFreelancerBalance(UpdateFreelanceBalanceDto toUpdate);
+        Task<GetFreelanceAccountShortDetailDto?> UpdateFreelancerBalance(UpdateFreelanceBalanceDto toUpdate, bool minus = false);
 
     }
 }

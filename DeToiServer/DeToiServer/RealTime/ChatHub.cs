@@ -3,16 +3,19 @@ using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.NotificationDtos;
 using DeToiServer.Dtos.OrderDtos;
+using DeToiServer.Dtos.PaymentDtos;
 using DeToiServer.Dtos.RealTimeDtos;
 using DeToiServer.Models;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.NotificationService;
 using DeToiServer.Services.OrderManagementService;
+using DeToiServer.Services.PaymentService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.Helper;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DeToiServer.RealTime
 {
@@ -23,16 +26,20 @@ namespace DeToiServer.RealTime
         private readonly IOrderManagementService _orderService;
         private readonly INotificationService _notificationService;
         private readonly IMapper _mapper;
+        private readonly IPaymentService _paymentService;
         private readonly DataContext _context;
+        private readonly UnitOfWork _uow;
 
-        public ChatHub(DataContext context, IFreelanceAccountService freelancerService, ICustomerAccountService customerService, IOrderManagementService orderService, INotificationService notificationService, IMapper mapper)
+        public ChatHub(UnitOfWork uow, DataContext context, IFreelanceAccountService freelancerService, ICustomerAccountService customerService, IOrderManagementService orderService, INotificationService notificationService, IPaymentService paymentService, IMapper mapper)
         {
             _freelancerService = freelancerService;
             _customerService = customerService;
             _orderService = orderService;
             _notificationService = notificationService;
             _mapper = mapper;
+            _paymentService = paymentService;
             _context = context;
+            _uow = uow;
         }
 
         public async Task SendMessageToFreelancer(PostOrderDto order)
@@ -147,14 +154,7 @@ namespace DeToiServer.RealTime
                 return;
             }
 
-                var customer = await _customerService.GetByIdWithAccount(order.CustomerId);
-
-            var user = await _context.Users
-                .AsNoTracking()
-                .Where(u => u.Phone.Equals(customer.Account.CombinedPhone))
-                .Include(u => u.Connections)
-                .FirstOrDefaultAsync();
-
+            var customer = await _customerService.GetByIdWithAccount(order.CustomerId);
             var biddingOrder = _mapper.Map<BiddingOrder>(matchingFreelancer);
             var existingBiddingOrder = await _context.BiddingOrders
                 .Where(bo => bo.OrderId == biddingOrder.OrderId && bo.FreelancerId == biddingOrder.FreelancerId)
@@ -172,16 +172,6 @@ namespace DeToiServer.RealTime
                 return;
             }
 
-            if (user?.Connections != null)
-            {
-                freelancer.PreviewPrice = matchingFreelancer.PreviewPrice;
-
-                foreach (var connection in user.Connections)
-                {
-                    await Clients.Client(connection.ConnectionId).ReceiveFreelancerResponse(freelancer);
-                }
-            }
-
             // Save bidding orders, update orderStatus.
             try
             {
@@ -190,7 +180,53 @@ namespace DeToiServer.RealTime
                     order.ServiceStatusId = StatusConst.OnMatching;
                 }
                 _context.BiddingOrders.Add(biddingOrder);
-                await _context.SaveChangesAsync();
+                var updated = await _paymentService
+                    .UpdateFreelancerBalance(new UpdateFreelanceBalanceDto()
+                    {
+                        Id = freelancer.AccountId,
+                        Method = GlobalConstant.Payment.Card,
+                        WalletType = GlobalConstant.Payment.Wallet.Personal,
+                        Value = matchingFreelancer.PreviewPrice,
+                    }, true);
+
+                if (updated == null)
+                {
+                    await Clients.Caller.ErrorOccurred(new NotificationDto()
+                    {
+                        NotificationType = NotificationType.Error.ToString(),
+                        Title = "Không thể báo giá",
+                        Body = "Tài khoản bạn không đủ tiền để báo giá đơn hàng này, hãy nạp tiền để tiếp tục"
+                    });
+                    return;
+                }
+
+                if (!await _uow.SaveChangesAsync())
+                {
+                    // Add Notification here for fe to catch
+                    await Clients.Caller.ErrorOccurred(new NotificationDto()
+                    {
+                        NotificationType = NotificationType.Error.ToString(),
+                        Title = "Không thể báo giá",
+                        Body = "Đã có lỗi trong quá trình báo giá, vui lòng thử lại"
+                    });
+                    return;
+                }
+
+                var user = await _context.Users
+                    .AsNoTracking()
+                    .Where(u => u.Phone.Equals(customer.Account.CombinedPhone))
+                    .Include(u => u.Connections)
+                    .FirstOrDefaultAsync();
+
+                if (user?.Connections != null)
+                {
+                    freelancer.PreviewPrice = matchingFreelancer.PreviewPrice;
+
+                    foreach (var connection in user.Connections)
+                    {
+                        await Clients.Client(connection.ConnectionId).ReceiveFreelancerResponse(freelancer);
+                    }
+                }
 
                 await _notificationService.PushNotificationAsync(new PushNotificationDto()
                 {

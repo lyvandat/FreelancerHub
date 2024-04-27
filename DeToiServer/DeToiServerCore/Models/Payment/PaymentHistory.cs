@@ -14,11 +14,16 @@ namespace DeToiServerCore.Models.Payment
         public string Method { get; set; } = GlobalConstant.Payment.CoD;
         public string Wallet { get; set; } = GlobalConstant.Payment.Wallet.Personal;
         public DateTime Timestamp { get; set; }
-
+        public PaymentType PaymentType { get; set; } = PaymentType.Add;
         public required Guid FreelanceAccountId { get; set; }
         public required FreelanceAccount FreelanceAccount { get; set; }
     }
 
+    public enum PaymentType
+    {
+        Add,
+        Subtract
+    }
 
     //public Guid? CustomerAccountId { get; set; }
     //public CustomerAccount? CustomerAccount { get; set; }

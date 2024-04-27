@@ -1,5 +1,6 @@
 ﻿using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Models.Accounts;
+using DeToiServerCore.Models.Payment;
 
 namespace DeToiServer.Dtos.PaymentDtos
 {
@@ -8,6 +9,7 @@ namespace DeToiServer.Dtos.PaymentDtos
         public double Value { get; set; }
         public string Method { get; set; } = GlobalConstant.Payment.CoD;
         public string Wallet { get; set; } = GlobalConstant.Payment.Wallet.Personal;
+        public PaymentType PaymentType { get; set; } = PaymentType.Add;
         public required Guid FreelanceAccountId { get; set; }
     }
 

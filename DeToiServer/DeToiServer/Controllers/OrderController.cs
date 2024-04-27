@@ -4,6 +4,7 @@ using DeToiServer.ConfigModels;
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.NotificationDtos;
 using DeToiServer.Dtos.OrderDtos;
+using DeToiServer.Dtos.PaymentDtos;
 using DeToiServer.Dtos.RealTimeDtos;
 using DeToiServer.HtmlTemplates;
 using DeToiServer.RealTime;
@@ -11,6 +12,7 @@ using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.NotificationService;
 using DeToiServer.Services.OrderManagementService;
+using DeToiServer.Services.PaymentService;
 using DeToiServer.Services.UserService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
@@ -18,6 +20,7 @@ using DeToiServerCore.QueryModels.OrderQueryModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DeToiServer.Controllers
 {
@@ -36,6 +39,7 @@ namespace DeToiServer.Controllers
         private readonly IMessageBusClient _messageBusClient;
         private readonly VnPayConfigModel _vnPayConfig;
         private readonly INotificationService _notificationService;
+        private readonly IPaymentService _paymentService;
 
         public OrderController(
             UnitOfWork uow,
@@ -48,6 +52,7 @@ namespace DeToiServer.Controllers
             IMessageBusClient messageBusClient,
             IOptions<VnPayConfigModel> vnPayConfig,
             INotificationService notificationService,
+            IPaymentService paymentService,
             IMapper mapper)
         {
             _uow = uow;
@@ -61,6 +66,7 @@ namespace DeToiServer.Controllers
             _messageBusClient = messageBusClient;
             _vnPayConfig = vnPayConfig.Value;
             _notificationService = notificationService;
+            _paymentService = paymentService;
         }
 
         [HttpGet("test-gateway")]
@@ -232,16 +238,16 @@ namespace DeToiServer.Controllers
         }
 
         //[HttpGet("test-notification-format")]
-        private ActionResult TestNotiFormat()
-        {
-            var html = HtmlGenerator.GenerateHtmlWithTitleMessageImages("Test voucher notification", "Xin chao ban da chuc mung thanh cong",
-                "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7",
-                "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7",
-                "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7",
-                "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7");
-            var htmlTag2 = HtmlGenerator.GenerateHtmlWithComponents("Test voucher notification big", "Xin chao ban da chuc mung thanh cong big", html);
-            return Ok(htmlTag2.ToString());
-        }
+        //private ActionResult TestNotiFormat()
+        //{
+        //    var html = HtmlGenerator.GenerateHtmlWithTitleMessageImages("Test voucher notification", "Xin chao ban da chuc mung thanh cong",
+        //        "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7",
+        //        "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7",
+        //        "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7",
+        //        "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7");
+        //    var htmlTag2 = HtmlGenerator.GenerateHtmlWithComponents("Test voucher notification big", "Xin chao ban da chuc mung thanh cong big", html);
+        //    return Ok(htmlTag2.ToString());
+        //}
 
         [HttpPut("order-moving-status"), AuthorizeRoles(GlobalConstant.Freelancer)]
         public async Task<ActionResult> UpdateOrderMovingStatus(PutOrderStatus putOrderStatus)
@@ -308,6 +314,18 @@ namespace DeToiServer.Controllers
                 {
                     Message = "Trạng thái đơn hàng không hợp lệ"
                 });
+            }
+
+            if (orderStatus == StatusConst.Completed)
+            {
+                var updated = await _paymentService
+                    .UpdateFreelancerBalance(new UpdateFreelanceBalanceDto()
+                    {
+                        Id = freelancer.Id,
+                        Method = GlobalConstant.Payment.Card,
+                        WalletType = GlobalConstant.Payment.Wallet.Personal,
+                        Value = order.EstimatedPrice,
+                    });
             }
 
             order.ServiceStatusId = orderStatus;
@@ -581,6 +599,14 @@ namespace DeToiServer.Controllers
             if (!freelancerId.Equals(Guid.Empty))
             {
                 var freelancerAcc = (await _freelancerAcc.GetByAccId(freelancerId)).Account;
+                //var updated = await _paymentService
+                //    .UpdateFreelancerBalance(new UpdateFreelanceBalanceDto()
+                //    {
+                //        Id = freelancerAcc.Id,
+                //        Method = GlobalConstant.Payment.Card,
+                //        WalletType = GlobalConstant.Payment.Wallet.Personal,
+                //        Value = order.Order.EstimatedPrice,
+                //    });
                 await _notificationService.PushNotificationAsync(new PushNotificationDto()
                 {
                     ExpoPushTokens = [freelancerAcc.ExpoPushToken],
