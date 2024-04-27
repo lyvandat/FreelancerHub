@@ -164,9 +164,30 @@ namespace DeToiServer.AutoMapper
             #endregion
 
             #region Order and Services for an order
+            CreateMap<OrderAddress, AddressDto>()
+                .ConvertUsing((src, dest, context) => {
+                    return context.Mapper.Map<AddressDto>(src.Address);
+                });
+            CreateMap<PostOrderAddressDto, OrderAddress>()
+                .ConvertUsing((src, dest, context) => {
+                    if (src.Id != null)
+                    {
+                        return new OrderAddress()
+                        {
+                            AddressId = src.Id ?? Guid.Empty,
+                        };
+                    }
+
+                    return new OrderAddress()
+                    {
+                        Address = context.Mapper.Map<Address>(src), 
+                    };
+                });
+
             CreateMap<Order, OrderPlacedDto>();
             CreateMap<PaymentStatusHistory, PostPaymentStatusHistoryDto>().ReverseMap();
             CreateMap<PostOrderDto, Order>()
+                .ForMember(dest => dest.OrderAddress, opt => opt.Ignore()) // MapFrom(src => src.Address)
                 .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartDate.ToDateTime(src.StartTime)));
             CreateMap<Order, GetOrderDto>()
                 .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.StartTime)))
@@ -177,7 +198,8 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.ServiceStatus, opt => opt.MapFrom(src => src.ServiceStatusId)) //  != null ? src.ServiceStatus.Name : "Chờ xử lí"
                 .ForMember(dest => dest.Services, opt => opt.MapFrom(src => src.OrderServices!.FirstOrDefault()))
                 .ForMember(dest => dest.ServiceTypes, opt => opt.MapFrom(src => src.OrderServiceTypes))
-                .ForMember(dest => dest.ServiceStatusList, opt => opt.MapFrom(src => src.OrderServiceTypes));
+                .ForMember(dest => dest.ServiceStatusList, opt => opt.MapFrom(src => src.OrderServiceTypes))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.OrderAddress));
 
             CreateMap<Order, GetCustomerOrderDto>()
                 .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.StartTime)))
@@ -188,7 +210,8 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.ServiceStatus, opt => opt.MapFrom(src => src.ServiceStatusId)) //  != null ? src.ServiceStatus.Name : "Chờ xử lí"
                 .ForMember(dest => dest.Services, opt => opt.MapFrom(src => src.OrderServices!.FirstOrDefault()))
                 .ForMember(dest => dest.ServiceTypes, opt => opt.MapFrom(src => src.OrderServiceTypes))
-                .ForMember(dest => dest.ServiceStatusList, opt => opt.MapFrom(src => src.OrderServiceTypes));
+                .ForMember(dest => dest.ServiceStatusList, opt => opt.MapFrom(src => src.OrderServiceTypes))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.OrderAddress));
 
             CreateMap<OrderServiceType, GetServiceTypeDto>()
                 .ConvertUsing((src, dest, context) => {

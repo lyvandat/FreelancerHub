@@ -22,6 +22,21 @@ namespace DeToiServer.Dtos.AuthDtos
         public string Phone { get; set; } = string.Empty;
     }
 
+    public class LoginAdminDto
+    {
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+
+    public class RegisterAdminDto
+    {
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string ConfirmPassword { get; set; } = string.Empty;
+    }
+
     public class ChangePasswordRequestDto
     {
         [Required]

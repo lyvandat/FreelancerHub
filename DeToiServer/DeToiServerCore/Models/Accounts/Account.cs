@@ -7,7 +7,7 @@ namespace DeToiServerCore.Models.Accounts
 {
     public class Account : ModelBase
     {
-        public string? Email { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty; // auto generated
         public DateOnly? DateOfBirth { get; set; } = null;
         public string CountryCode { get; set; } = string.Empty;

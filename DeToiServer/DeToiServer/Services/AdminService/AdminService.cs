@@ -184,5 +184,15 @@ namespace DeToiServer.Services.AdminService
 
             return result;
         }
+
+        public async Task<AdminAccount> GetAdminByAccId(Guid accId)
+        {
+            return await _unitOfWork.AdminRepo.GetAdminByAccIdAsync(accId);
+        }
+
+        public async Task<AdminAccount> Add(AdminAccount admin)
+        {
+            return await _unitOfWork.AdminRepo.CreateAsync(admin);
+        }
     }
 }

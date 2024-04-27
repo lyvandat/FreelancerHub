@@ -59,11 +59,13 @@ namespace DeToiServer.RealTime
 
                             if (freelanceAddress == null) return false;
 
+                            if (order.Address.Count == 0) return true;
+
                             return Helper.IsInAcceptableZone(
                                 new Coordination()
                                 {
-                                    Lat = order.Address.Lat,
-                                    Lon = order.Address.Lon
+                                    Lat = order.Address.First().Lat,
+                                    Lon = order.Address.First().Lon
                                 },
                                 new Coordination()
                                 {

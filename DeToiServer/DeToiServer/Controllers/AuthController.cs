@@ -4,6 +4,7 @@ using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.AuthDtos;
 using DeToiServer.Filters;
 using DeToiServer.Services.AccountService;
+using DeToiServer.Services.AdminService;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServerCore.Common.Constants;
@@ -14,6 +15,7 @@ using DeToiServerCore.Models.Accounts;
 using DeToiServerData;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -35,16 +37,26 @@ namespace DeToiServer.Controllers
         private readonly IAccountService _accService;
         private readonly ICustomerAccountService _customerAccService;
         private readonly IFreelanceAccountService _freelanceAccService;
+        private readonly IAdminService _adminService;
         private readonly LoginSocialSecret _socialSecret;
         private readonly UnitOfWork _uow;
         private readonly IMapper _mapper;
 
-        public AuthController(IConfiguration configuration, IAccountService accService, ICustomerAccountService customerAccountService, IFreelanceAccountService freelanceAccountService, IOptions<ApplicationSecretSettings> appSecret, IMapper mapper, UnitOfWork uow)
+        public AuthController(
+            IConfiguration configuration,
+            IAccountService accService,
+            ICustomerAccountService customerAccountService,
+            IFreelanceAccountService freelanceAccountService,
+            IAdminService adminService,
+            IOptions<ApplicationSecretSettings> appSecret,
+            IMapper mapper,
+            UnitOfWork uow)
         {
             _configuration = configuration;
             _accService = accService;
             _customerAccService = customerAccountService;
             _freelanceAccService = freelanceAccountService;
+            _adminService = adminService;
             _socialSecret = (appSecret.Value ?? throw new ArgumentException(null, nameof(appSecret))).LoginSocial;
             _uow = uow;
             _mapper = mapper;
@@ -97,7 +109,7 @@ namespace DeToiServer.Controllers
             var account = new Account()
             {
                 Id = Guid.NewGuid(),
-                Email = null,
+                Email = string.Empty,
                 FullName = request.FullName ?? $"Freelancer_{DateTime.Now:yyyyMMdd}_VIE",
                 DateOfBirth = request.DateOfBirth,
                 CountryCode = request.CountryCode,
@@ -204,7 +216,7 @@ namespace DeToiServer.Controllers
                 var account = new Account()
                 {
                     Id = Guid.NewGuid(),
-                    Email = null,
+                    Email = string.Empty,
                     FullName = $"Customer_{DateTime.Now:yyyyMMdd}_VIE",
                     CountryCode = request.CountryCode,
                     Phone = request.Phone,
@@ -235,6 +247,99 @@ namespace DeToiServer.Controllers
             return Ok(new
             {
                 message = "Mã OTP đã được gửi đến điện thoại của bạn! (Hết hạn sau 5 phút)",
+            });
+        }
+
+        [HttpPost("register-admin"), AuthorizeRoles(GlobalConstant.Admin)]
+        public async Task<ActionResult<Account>> RegisterAdmin(RegisterAdminDto request)
+        {
+            if (request.Password.Length < 6)
+                return BadRequest(new
+                {
+                    message = "Mật khẩu phải có ít nhất 6 ký tự."
+                });
+
+            var account = await _accService.GetByCondition(acc => acc.Email.Equals(request.Email));
+
+            if (account != null)
+            {
+                return BadRequest(new
+                {
+                    message = $"Tài khoản với Email: {request.Email} đã tồn tại!"
+                });
+            }
+
+            var accId = Guid.NewGuid();
+            var accountCreated = new Account()
+            {
+                Id = accId,
+                Email = request.Email,
+                FullName = $"Admin_{accId}",
+                Role = GlobalConstant.Admin,
+                Avatar = GlobalConstant.CustomerAvtMale,
+                IsVerified = true, // Temporary
+            };
+
+            await _accService.Add(accountCreated);
+
+            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            var adminAccount = new AdminAccount()
+            {
+                AccountId = accId,
+                Account = null!,
+            };
+
+            await _adminService.Add(adminAccount);
+            // await _uow.Sa
+
+            return Ok(new
+            {
+                message = "Tạo tài khoản mới thành công!"
+            });
+        }
+
+        [HttpPost("login/admin")]
+        public async Task<ActionResult<string>> LoginAdmin(LoginAdminDto request)
+        {
+            var account = await _accService
+                .GetByCondition(acc => acc.Email.Equals(request.Email));
+
+            if (account == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không tìm thấy tài khoản."
+                });
+            }
+            if (!account.Role.Equals(GlobalConstant.Admin))
+            {
+                return BadRequest(new
+                {
+                    Message = "Sai Email hoặc Mật khẩu."
+                });
+            }
+
+            var admin = await _adminService.GetAdminByAccId(account.Id);
+            if (!VerifyPasswordHash(request.Password, Helper.StringToByteArray(admin.PasswordHash), Helper.StringToByteArray(admin.PasswordSalt)))
+            {
+                return BadRequest(new
+                {
+                    message = "Sai thông tin tài khoản",
+                });
+            }
+
+            var token = CreateToken(account, account.Role);
+            var refreshToken = GenerateRefreshToken();
+            SetRefreshToken(refreshToken, account);
+            await _accService.Update(account);
+
+            // send OTP to phone
+
+            return Ok(new
+            {
+                message = "Đăng nhập thành công.",
+                token,
+                refreshToken
             });
         }
 
