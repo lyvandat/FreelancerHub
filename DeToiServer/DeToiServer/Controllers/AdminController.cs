@@ -49,7 +49,7 @@ namespace DeToiServer.Controllers
 
         
 
-        [HttpGet("overview")] // , AuthorizeRoles(GlobalConstant.Admin)
+        [HttpPost("overview")] // , AuthorizeRoles(GlobalConstant.Admin)
         public async Task<ActionResult<GetOverviewDataAdminDto>> GetOverviewDataAdmin(
             ServiceOverviewQueryDto query
         )

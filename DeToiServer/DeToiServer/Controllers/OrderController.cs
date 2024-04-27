@@ -87,20 +87,20 @@ namespace DeToiServer.Controllers
             }
 
             //Send Async Message
-            try
-            {
-                var publishedOrder = new OrderPlacedDto();
-                publishedOrder.Event = "OrderPlaced";
-                _messageBusClient.PublishNewOrder(publishedOrder);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"--> Could not send order asynchronously: {ex.Message}");
-                return BadRequest(new
-                {
-                    Message = $"--> Could not send order asynchronously: {ex.Message}"
-                });
-            }
+            //try
+            //{
+            //    var publishedOrder = new OrderPlacedDto();
+            //    publishedOrder.Event = "OrderPlaced";
+            //    _messageBusClient.PublishNewOrder(publishedOrder);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine($"--> Could not send order asynchronously: {ex.Message}");
+            //    return BadRequest(new
+            //    {
+            //        Message = $"--> Could not send order asynchronously: {ex.Message}"
+            //    });
+            //}
 
             await _rabbitMQConsumer.SendMessageToFreelancer(postOrder);
 
