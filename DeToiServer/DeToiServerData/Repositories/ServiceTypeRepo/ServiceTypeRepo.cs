@@ -43,6 +43,8 @@ namespace DeToiServerData.Repositories.ServiceTypeRepo
                     .ThenInclude(req => req.InputMethod)
                         .ThenInclude(im => im.Method)
                             .ThenInclude(med => med.Options)
+                                .ThenInclude(opt => opt.Info)
+                                    .ThenInclude(info => info.Validations)
                 .Include(st => st.AdditionalRequirements)
                 .FirstOrDefaultAsync(st => st.Id.Equals(id));
 

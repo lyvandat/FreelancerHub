@@ -1,4 +1,6 @@
-﻿namespace DeToiServer.Dtos.UIElementDtos
+﻿using DeToiServerCore.Models.SevicesUIElement;
+
+namespace DeToiServer.Dtos.UIElementDtos
 {
     public class UIElementValidationTypeDto
     {
@@ -8,11 +10,32 @@
         public dynamic? Value { get; set; }
     }
 
+    public class UIElementOptionInfoValidationDto
+    {
+        public required Guid Id { get; set; }
+        public required string Name { get; set; }
+        public string? Value { get; set; }
+        public required string Message { get; set; }
+        public required Guid InfoId { get; set; }
+    }
+    public class UIElementOptionInfoDto
+    {
+        public required Guid Id { get; set; }
+        public required string Type { get; set; }
+        public required string Label { get; set; }
+        public string Mask { get; set; } = "default";
+        public string DefaultValue { get; set; } = "default";
+        public IEnumerable<string> Buttons { get; set; } = null!;
+        public ICollection<UIElementOptionInfoValidationDto> Validations { get; set; } = null!;
+        public Guid OptionId { get; set; }
+    }
+
     public class UIElementInputOptionDto
     {
         public required Guid Id { get; set; }
         public required string Name { get; set; }
         public string? Description { get; set; }
+        public ICollection<UIElementOptionInfoDto> Info { get; set; } = null!;
     }
 
     public class UIElementInputMethodTypeDto

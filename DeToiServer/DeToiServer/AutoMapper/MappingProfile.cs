@@ -242,6 +242,9 @@ namespace DeToiServer.AutoMapper
             CreateMap<UIElementServiceRequirementInputMethod, UIElementServiceRequirementInputMethodDto>().ReverseMap();
 
             CreateMap<UIElementInputOption, UIElementInputOptionDto>().ReverseMap();
+            CreateMap<UIElementOptionInfo, UIElementOptionInfoDto>()
+                .ForMember(dest => dest.Buttons, opt => opt.MapFrom(src => !src.Buttons.Equals("default") ? JsonConvert.DeserializeObject<IEnumerable<string>>(src.Buttons) : new List<string>() {} ));
+            CreateMap<UIElementOptionInfoValidation, UIElementOptionInfoValidationDto>().ReverseMap();
             CreateMap<UIElementInputMethodType, UIElementInputMethodTypeDto>().ReverseMap();
             CreateMap<UIElementServiceRequirement, UIElementServiceRequirementDto>().ReverseMap();
             CreateMap<UIElementAdditionServiceRequirement, UIElementAdditionServiceRequirementDto>().ReverseMap();
