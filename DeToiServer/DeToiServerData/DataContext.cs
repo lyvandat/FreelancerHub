@@ -64,6 +64,8 @@ namespace DeToiServerData
             #region UI_Element_Config
             modelBuilder.ApplyConfiguration(new UIElementInputMethodTypeConfiguration());
             modelBuilder.ApplyConfiguration(new UIElementInputOptionConfiguration());
+            modelBuilder.ApplyConfiguration(new UIElementOptionInfoConfiguration());
+            modelBuilder.ApplyConfiguration(new UIElementOptionInfoValidationConfiguration());
             modelBuilder.ApplyConfiguration(new UIElementServiceRequirementInputMethodConfiguration());
             modelBuilder.ApplyConfiguration(new UIElementValidationTypeConfiguration());
             modelBuilder.ApplyConfiguration(new UIElementServiceRequirementConfiguration());
@@ -127,6 +129,8 @@ namespace DeToiServerData
         #region Service_UI_Element
         public DbSet<UIElementValidationType> UIElementValidationTypes { get; set; }
         public DbSet<UIElementInputOption> UIElementInputOptions { get; set; }
+        public DbSet<UIElementOptionInfo> UIElementInputOptionInfos { get; set; }
+        public DbSet<UIElementOptionInfoValidation> UIElementInputOptionInfoValidations { get; set; }
         public DbSet<UIElementInputMethodType> UIElementInputMethodTypes { get; set; }
         public DbSet<UIElementServiceRequirementInputMethod> UIElementServiceRequirementInputMethods { get; set; }
         public DbSet<UIElementServiceRequirement> UIElementServiceRequirements { get; set; }

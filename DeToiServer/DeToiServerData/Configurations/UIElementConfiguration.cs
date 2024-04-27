@@ -32,6 +32,28 @@ namespace DeToiServerData.Configurations
         }
     }
 
+    internal class UIElementOptionInfoConfiguration : EntityTypeConfigurationBase<UIElementOptionInfo>
+    {
+        protected override void OnConfigure(EntityTypeBuilder<UIElementOptionInfo> builder)
+        {
+            builder.HasOne(oInfo => oInfo.InputOption)
+                .WithMany(opt => opt.Info)
+                .HasForeignKey(oInfo => oInfo.OptionId)
+                .IsRequired();
+        }
+    }
+
+    internal class UIElementOptionInfoValidationConfiguration : EntityTypeConfigurationBase<UIElementOptionInfoValidation>
+    {
+        protected override void OnConfigure(EntityTypeBuilder<UIElementOptionInfoValidation> builder)
+        {
+            builder.HasOne(infoVal => infoVal.OptionInfo)
+                .WithMany(info => info.Validations)
+                .HasForeignKey(infoVal => infoVal.InfoId)
+                .IsRequired();
+        }
+    }
+
     internal class UIElementServiceRequirementInputMethodConfiguration : EntityTypeConfigurationBase<UIElementServiceRequirementInputMethod>
     {
         protected override void OnConfigure(EntityTypeBuilder<UIElementServiceRequirementInputMethod> builder)

@@ -157,7 +157,7 @@ namespace DeToiServer.Controllers
                     message = "Tài khoản Freelancer không tồn tại.",
                 });
             }
-            if (!freelance.Account.IsVerified)
+            if (!freelance.Account.IsVerified && !freelance.Account.Role.Equals(GlobalConstant.UnverifiedFreelancer))
             {
                 return BadRequest(new
                 {

@@ -20,12 +20,33 @@ namespace DeToiServerCore.Models.SevicesUIElement
         public required UIElementServiceRequirementInputMethod InputMethod { get; set; }
     }
 
+    public class UIElementOptionInfoValidation : ModelBase
+    {
+        public required string Name { get; set; }
+        public string? Value { get; set; }
+        public required string Message { get; set; }
+        public required Guid InfoId { get; set; }
+        public required UIElementOptionInfo OptionInfo { get; set; }
+    }
+    public class UIElementOptionInfo : ModelBase
+    {
+        public required string Type { get; set; }
+        public required string Label { get; set; }
+        public string Mask { get; set; } = "default";
+        public string DefaultValue { get; set; } = "default";
+        public string Buttons { get; set; } = "default";
+        public ICollection<UIElementOptionInfoValidation> Validations { get; set; } = null!;
+        public Guid OptionId { get; set; }
+        public UIElementInputOption InputOption { get; set; } = null!;
+    }
+
     public class UIElementInputOption : ModelBase
     {
         public required string Name { get; set; }
         public string? Description { get; set; }
         public required Guid InputMethodTypeId { get; set; }
         public required UIElementInputMethodType InputMethodType { get; set; }
+        public ICollection<UIElementOptionInfo> Info { get; set; } = null!;
     }
 
     public class UIElementInputMethodType : ModelBase
