@@ -2,6 +2,7 @@
 Delete from [OrderServiceTypes];
 Delete from [OrderService];
 Delete from [OrderSkillsRequired];
+Delete from [OrderAddresses];
 Delete from [Orders];
 Delete from [Services];
 
@@ -63,11 +64,11 @@ INSERT INTO [ServiceTypes] ([Id], [Name], [Description], [BasePrice], [Image], [
 ('c2523753-a16d-4839-910f-03b224019649', N'Giải đáp thắc mắc', '', 0, 'services/tuvanhoidap/giaidapthacmac.jpg', 'none', 'a4676a9d-7dfb-4d23-8cb5-8e2678c4c611', N'["Tư vấn","Dịch vụ","Giải đáp","Thắc mắc","Hỗ trợ","Tư vấn viên","Chuyên gia","Tư vấn trực tuyến","Tư vấn cá nhân","Tư vấn doanh nghiệp","Tư vấn tài chính","Tư vấn pháp lý","Tư vấn sức khỏe","Tư vấn hôn nhân","Tư vấn giáo dục","Tư vấn nghề nghiệp","Tư vấn kinh doanh","Tư vấn du lịch","Tư vấn công nghệ","Tư vấn sản phẩm"]'); 
 
 INSERT INTO [Accounts] ([Id], [Email], [FullName], [DateOfBirth], [Gender], [CountryCode], [Phone], [CombinedPhone], [Role], [Avatar], [RefreshToken], [LoginToken], [LoginTokenExpires], [TokenCreated], [TokenExpires], [IsActive], [IsVerified]) VALUES
-('d466c2a7-44e7-457d-a1ff-40646c4cf2c4', null, N'Hoàng Quỳnh Nhi', '1978-01-13', 'Female', '+84', '123456789', '+84123456789', 'Admin', 'customer_avt/default_customer_1.jpg', 'string', 'default', '2024-04-13T20:27:27.285403', '2024-04-13 20:17:27.285403', '2024-04-13 20:27:27.285403', 1, 1),
-('2695c848-8144-4a94-8d4d-763c5e768233', null, N'Ngô Vũ Lan Ngọc', '2006-02-17', 'Female', '+84', '337839146', '+84337839146', 'Freelancer', 'customer_avt/default_customer_2.jpg', 'string', 'default', '2024-04-13T20:27:27.242395', '2024-04-13 20:17:27.242395', '2024-04-13 20:27:27.242395', 1, 1),
-('a7a76113-1a12-46c5-abec-01b0cccd1dde', null, N'Dương Hồ Gia Uy', '1989-06-30', 'Male', '+84', '914510313', '+84914510313', 'Freelancer', 'customer_avt/default_customer_2.jpg', 'string', 'default', '2024-04-13T20:27:27.283402', '2024-04-13 20:17:27.283402', '2024-04-13 20:27:27.283402', 1, 1),
-('95be2640-b5ec-416b-9153-09cbc7ec60f8', null, N'Lê Nhất Duy', '2002-04-09', 'Male', '+84', '373344123', '+84373344123', 'Admin', 'customer_avt/default_customer_2.jpg', 'string', 'default', '2024-05-07T17:25:40.825617', '2024-04-07 17:15:40.825617', '2024-05-07 17:25:40.825617', 1, 1),
-('9a9ffdf1-0cc7-4efc-80b7-d34524010af5', null, N'Trương Xuân Hiền', '1998-02-11', 'Male', '+84', '795202798', '+84795202798', 'Customer', 'customer_avt/default_customer_1.jpg', 'string', 'default', '2024-04-13T20:27:27.323945', '2024-04-13 20:17:27.323945', '2024-04-13 20:27:27.323945', 1, 1);
+('d466c2a7-44e7-457d-a1ff-40646c4cf2c4', '', N'Hoàng Quỳnh Nhi', '1978-01-13', 'Female', '+84', '123456789', '+84123456789', 'Admin', 'customer_avt/user-avt%20(1).png', 'string', 'default', '2024-04-13T20:27:27.285403', '2024-04-13 20:17:27.285403', '2024-04-13 20:27:27.285403', 1, 1),
+('2695c848-8144-4a94-8d4d-763c5e768233', '', N'Ngô Vũ Lan Ngọc', '2006-02-17', 'Female', '+84', '337839146', '+84337839146', 'Freelancer', 'customer_avt/user-avt%20(2).png', 'string', 'default', '2024-04-13T20:27:27.242395', '2024-04-13 20:17:27.242395', '2024-04-13 20:27:27.242395', 1, 1),
+('a7a76113-1a12-46c5-abec-01b0cccd1dde', '', N'Dương Hồ Gia Uy', '1989-06-30', 'Male', '+84', '914510313', '+84914510313', 'Freelancer', 'customer_avt/user-avt%20(3).png', 'string', 'default', '2024-04-13T20:27:27.283402', '2024-04-13 20:17:27.283402', '2024-04-13 20:27:27.283402', 1, 1),
+('95be2640-b5ec-416b-9153-09cbc7ec60f8', '', N'Lê Nhất Duy', '2002-04-09', 'Male', '+84', '373344123', '+84373344123', 'Admin', 'customer_avt/user-avt%20(3).png', 'string', 'default', '2024-05-07T17:25:40.825617', '2024-04-07 17:15:40.825617', '2024-05-07 17:25:40.825617', 1, 1),
+('9a9ffdf1-0cc7-4efc-80b7-d34524010af5', '', N'Trương Xuân Hiền', '1998-02-11', 'Male', '+84', '795202798', '+84795202798', 'Customer', 'customer_avt/user-avt%20(3).png', 'string', 'default', '2024-04-13T20:27:27.323945', '2024-04-13 20:17:27.323945', '2024-04-13 20:27:27.323945', 1, 1);
 
 INSERT INTO [Freelancers] ([Id], [AccountId], [Rating], [TotalReviewCount], [Balance], [SystemBalance], [OrderCount], [LoveCount], [PositiveReviewCount], [IdentityNumber], [IsTeam], [Description], [TeamMemberCount]) VALUES
 ('89291984-3389-4fe8-8f58-9ec54f17b5bc', 'd466c2a7-44e7-457d-a1ff-40646c4cf2c4', 0, 0, 'mvmeUKFmBhX0hRIhHsbkrQ==', 'LMc/hborrsvOrM4sz6SVSA==', 0, 0, 0, '051200000011', 0, 'Beyond its particularly tree whom local tend. Artist truth trouble behavior style. Ability management test during foot that course nothing. Sound central myself before year. Your majority feeling fact by four two. White owner onto knowledge other.', 1),
@@ -741,3 +742,4 @@ INSERT INTO [UIElementServiceRequirements] ([Id], [Label], [LabelIcon], [Placeho
 ('294a2367-454d-4065-9171-7221c389ab12', N'Môn học', 'faBook', N'Chọn 1 môn học bạn muốn', 'c66a9ef1-d6d5-41ba-bdb8-0c55599916ee', 'mon_hoc', 0, 'eb765dba-ccb7-49f7-b43d-04ea15558ed4'),
 ('66ff4db1-be0c-4b5b-82ba-efb459241a8a', N'Hình thức', 'faLayerGroup', N'Bạn muốn giải bài tập theo hình thức nào?', '49805134-19a8-4fc5-9769-d3cdc4acbb7f', 'hinh_thuc', 1, 'eb765dba-ccb7-49f7-b43d-04ea15558ed4'),
 ('ce7e0448-9109-4d3d-9b5e-af150df7042f', N'Mô tả thêm (nếu có)', null, N'Thêm mô tả để nhân viên hiểu hơn nhé', 'af11aa4b-6e5f-4665-a537-0538eede8d5b', 'mo_ta_them_(neu_co)', 2, 'eb765dba-ccb7-49f7-b43d-04ea15558ed4'); 
+
