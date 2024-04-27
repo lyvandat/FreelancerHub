@@ -21,6 +21,7 @@ namespace DeToiServerData.Configurations
             builder.Property(b => b.CreatedAt)
                 .ValueGeneratedOnAdd()
                 .HasDefaultValueSql("GETDATE()");
+            builder.HasIndex(e => e.Phone).IsUnique();
         }
     }
 

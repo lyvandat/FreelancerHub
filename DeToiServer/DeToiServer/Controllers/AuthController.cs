@@ -23,6 +23,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using static DeToiServerCore.Common.Helper.Helper;
 
 namespace DeToiServer.Controllers
 {
@@ -123,8 +124,8 @@ namespace DeToiServer.Controllers
                 IdentityNumber = request.IdentityNumber,
                 IdentityCardImage = request.IdentityCardImage,
                 IdentityCardImageBack = request.IdentityCardImageBack,
-                Balance = Helper.AesEncryption.Encrypt(freelancerId.ToString(), "0"),
-                SystemBalance = Helper.AesEncryption.Encrypt(freelancerId.ToString(), "0"),
+                Balance = AesEncryption.Encrypt(freelancerId.ToString(), "0"),
+                SystemBalance = AesEncryption.Encrypt(freelancerId.ToString(), "0"),
             };
 
             await _accService.Add(account);
@@ -147,7 +148,7 @@ namespace DeToiServer.Controllers
         public async Task<ActionResult<string>> LoginFreelancer(LoginDto request)
         {
             var freelance = await _freelanceAccService
-                .GetByCondition(cus => cus.Account.Phone.Equals(request.Phone) 
+                .GetByCondition(cus => cus.Account.Phone.Equals(request.Phone)
                     && cus.Account.CountryCode.Equals(request.CountryCode));
 
             if (freelance == null)
@@ -180,12 +181,12 @@ namespace DeToiServer.Controllers
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
             var rawAccount = await _accService
-                .GetByCondition(acc => acc.Phone.Equals(request.Phone) 
+                .GetByCondition(acc => acc.Phone.Equals(request.Phone)
                     && acc.CountryCode.Equals(request.CountryCode));
 
             if (rawAccount != null && rawAccount.Role.Equals(GlobalConstant.Freelancer))
             {
-                return Unauthorized(new 
+                return Unauthorized(new
                 {
                     Message = "Số điện thoại đã được đăng ký." //  dưới định danh Freelancer
                 });

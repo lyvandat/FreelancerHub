@@ -30,4 +30,15 @@ namespace DeToiServer.Dtos.PaymentDtos
         public double Value { get; set; } = 0;
         public string WalletType { get; set; } = GlobalConstant.Payment.Wallet.Personal;
     }
+
+    public class PostFreelancePaymentDto
+    {
+        public Guid FreelancerId { get; set; }
+        public int Amount { get; set; }
+    }
+
+    public class ConfirmWebhook
+    {
+        public string Webhook_url { get; set; } = string.Empty;
+    }
 }

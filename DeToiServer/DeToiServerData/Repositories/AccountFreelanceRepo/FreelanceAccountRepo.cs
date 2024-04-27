@@ -33,6 +33,15 @@ public class FreelanceAccountRepo : RepositoryBase<FreelanceAccount>, IFreelance
             .FirstOrDefaultAsync();
     }
 
+    public async Task<FreelanceAccount> GetByAccPhone(string phone)
+    {
+        return await _context.Freelancers
+            .AsNoTracking()
+            .Include(fl => fl.Account)
+            .Where(fl => fl.Account.Phone.Contains(phone))
+            .FirstOrDefaultAsync();
+    }
+
     public new async Task<FreelanceAccount> GetByConditionsAsync(Expression<Func<FreelanceAccount, bool>> predicate)
     {
         return await _context.Freelancers

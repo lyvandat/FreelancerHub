@@ -6,6 +6,7 @@ namespace DeToiServerData.Repositories.AccountFreelanceRepo;
 public interface IFreelanceAccountRepo : IRepository<FreelanceAccount>
 {
     Task<FreelanceAccount> GetByAccId(Guid id);
+    Task<FreelanceAccount> GetByAccPhone(string phone);
     Task<FreelanceAccount> GetDetailByIdWithStatistic(Guid id);
     Task<IEnumerable<FreelanceAccount>> GetAllDetail();
     Task ChooseFreelancerServiceTypesAsync(IEnumerable<FreelanceServiceType> serviceTypes);

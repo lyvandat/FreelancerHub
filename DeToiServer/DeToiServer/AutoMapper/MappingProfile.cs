@@ -27,6 +27,7 @@ using DeToiServerCore.Models.Services;
 using DeToiServerCore.Models.SevicesUIElement;
 using DeToiServerCore.QueryModels.ServiceTypeQueryModels;
 using Newtonsoft.Json;
+using static DeToiServerCore.Common.Helper.Helper;
 
 namespace DeToiServer.AutoMapper
 {
@@ -99,14 +100,14 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
                 .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders))
-                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.Balance))))
+                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.Id.ToString(), src.Balance))))
                 .ForMember(dest => dest.SystemBalance, opt => opt.Ignore());
 
 
             CreateMap<FreelanceAccount, GetFreelanceAccountShortDetailDto>()
                 .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Account.Avatar ?? GlobalConstant.DefaultCommentAvt))
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Account.FullName ?? "Người dùng"))
-                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.Balance))))
+                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.Id.ToString(), src.Balance))))
                 .ForMember(dest => dest.SystemBalance, opt => opt.Ignore());
 
             CreateMap<BiddingOrder, GetFreelanceMatchingDto>()
@@ -119,11 +120,11 @@ namespace DeToiServer.AutoMapper
             #region Payment
             CreateMap<FreelancePaymentHistory, GetFreelancePaymentHistoryDto>()
                 .ForMember(dest => dest.Value, opt => opt
-                    .MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.FreelanceAccountId.ToString(), src.Value))));
+                    .MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.FreelanceAccountId.ToString(), src.Value))));
 
             CreateMap<AddFreelancePaymentHistoryDto, FreelancePaymentHistory>()
                 .ForMember(dest => dest.Value, opt => opt
-                    .MapFrom(src => Helper.AesEncryption.Encrypt(src.FreelanceAccountId.ToString(), src.Value.ToString())));
+                    .MapFrom(src => AesEncryption.Encrypt(src.FreelanceAccountId.ToString(), src.Value.ToString())));
             #endregion
 
             #region ServiceType and ServiceCategory
@@ -207,7 +208,7 @@ namespace DeToiServer.AutoMapper
             #region GeoCoding
             CreateMap<LocationAddressResultDto, RevGeoCodeResultDto>()
                 .ConvertUsing((src, dest, context) => {
-                    return new ()
+                    return new()
                     {
                         Country = "Việt Nam", // Default 
                         Province = Helper.GetLocationUnit(src.Formatted_address, 0) ?? GlobalConstant.GeoCodeDefault,
@@ -273,7 +274,7 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.OfSkills, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<ICollection<string>>(src.OfSkills)));
 
             CreateMap<FreelanceQuizQuestionDto, FreelanceQuizQuestion>()
-                .ForMember(dest => dest.OfSkills, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.OfSkills))); 
+                .ForMember(dest => dest.OfSkills, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.OfSkills)));
 
             CreateMap<QuizQuestion, FreelanceQuizQuestionDto>()
                 .ConvertUsing((src, dest, context) => {

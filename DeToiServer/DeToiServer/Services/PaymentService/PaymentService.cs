@@ -6,6 +6,7 @@ using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Payment;
 using Microsoft.EntityFrameworkCore;
+using static DeToiServerCore.Common.Helper.Helper;
 
 namespace DeToiServer.Services.PaymentService
 {
@@ -52,12 +53,12 @@ namespace DeToiServer.Services.PaymentService
                 if (toUpdate.WalletType.Equals(GlobalConstant.Payment.Wallet.Personal))
                 {
                     updatedValue = freelancer.Balance + toUpdate.Value;
-                    rawFreelancer.Balance = Helper.AesEncryption.Encrypt(rawFreelancer.Id.ToString(), updatedValue.ToString());
+                    rawFreelancer.Balance = AesEncryption.Encrypt(rawFreelancer.Id.ToString(), updatedValue.ToString());
                 }
                 else if (toUpdate.WalletType.Equals(GlobalConstant.Payment.Wallet.System))
                 {
                     updatedValue = freelancer.SystemBalance + toUpdate.Value;
-                    rawFreelancer.SystemBalance = Helper.AesEncryption.Encrypt(rawFreelancer.Id.ToString(), updatedValue.ToString());
+                    rawFreelancer.SystemBalance = AesEncryption.Encrypt(rawFreelancer.Id.ToString(), updatedValue.ToString());
                 }
                 
                 if (updatedValue != 0)

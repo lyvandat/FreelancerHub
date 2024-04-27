@@ -52,6 +52,11 @@ namespace DeToiServer.Services.FreelanceAccountService
             return await _unitOfWork.FreelanceAccountRepo.GetByAccId(id);
         }
 
+        public async Task<FreelanceAccount> GetByAccPhone(string phone)
+        {
+            return await _unitOfWork.FreelanceAccountRepo.GetByAccPhone(phone);
+        }
+
         public async Task<GetFreelanceMatchingDto> GetDetailWithStatistic(Guid id)
         {
             var rawResult = await _unitOfWork.FreelanceAccountRepo.GetDetailByIdWithStatistic(id);
