@@ -1,4 +1,5 @@
 ﻿using DeToiServer.Dtos.FreelanceDtos;
+using DeToiServer.Dtos.NotificationDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.RealTimeDtos;
 
@@ -10,5 +11,6 @@ namespace DeToiServer.RealTime
         Task ReceiveFreelancerResponse(GetFreelanceMatchingDto matchingFreelancer);
         Task ReceiveFreelancerStatusResponse(UpdateOnMovingOrderStatusDto onMovingStatusDto);
         Task ReceiveConfirmCustomerOrder(GetOrderDto getOrderDto);
+        Task ErrorOccurred(NotificationDto message);
     }
 }

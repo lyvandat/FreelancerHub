@@ -14,4 +14,18 @@ namespace DeToiServer.Dtos.NotificationDtos
         public required string Body { get; set; }
         public required PushNotificationDataDto Data { get; set; } = new();
     }
+
+    public class NotificationDto
+    {
+        public string NotificationType { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Body { get; set; } = string.Empty;
+    }
+
+    public enum NotificationType
+    {
+        Information,
+        Error,
+        Warning
+    }
 }

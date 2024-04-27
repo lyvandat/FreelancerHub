@@ -123,6 +123,12 @@ namespace DeToiServer.RealTime
             {
                 // Add Notification here for fe to catch
                 // Freelancer chưa verify 0 đc báo giá.
+                await Clients.Caller.ErrorOccurred(new NotificationDto()
+                {
+                    NotificationType = NotificationType.Information.ToString(),
+                    Title = "Tài khoản chưa xác thực không thể báo giá",
+                    Body = "Bạn chưa xác thực tài khoản, vui lòng xác thực tài khoản của bạn để tiếp tục"
+                });
                 return;
             }
 
@@ -130,7 +136,18 @@ namespace DeToiServer.RealTime
 
             if (order == null) return;
 
-            var customer = await _customerService.GetByIdWithAccount(order.CustomerId);
+            if (freelancer.Balance < order.EstimatedPrice)
+            {
+                await Clients.Caller.ErrorOccurred(new NotificationDto()
+                {
+                    NotificationType = NotificationType.Information.ToString(),
+                    Title = "Không đủ số tiền trong tài khoản",
+                    Body = "Tài khoản của bạn không đủ để báo giá đơn hàng này"
+                });
+                return;
+            }
+
+                var customer = await _customerService.GetByIdWithAccount(order.CustomerId);
 
             var user = await _context.Users
                 .AsNoTracking()
@@ -146,6 +163,12 @@ namespace DeToiServer.RealTime
             if (existingBiddingOrder != null)
             {
                 // Add Notification here for fe to catch
+                await Clients.Caller.ErrorOccurred(new NotificationDto()
+                {
+                    NotificationType = NotificationType.Information.ToString(),
+                    Title = "Đơn đã được báo giá",
+                    Body = "Bạn đã báo giá đơn hàng này, không thể tiếp tục báo giá"
+                });
                 return;
             }
 

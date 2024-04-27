@@ -584,11 +584,11 @@ namespace DeToiServer.Controllers
                 await _notificationService.PushNotificationAsync(new PushNotificationDto()
                 {
                     ExpoPushTokens = [freelancerAcc.ExpoPushToken],
-                    Title = "Bạn đã được chọn!",
-                    Body = "Customer đã chọn bạn! Hãy kiểm tra danh sách đơn nhé.",
+                    Title = $"Rất tiếc, khách hàng đã hủy 1 đơn hàng!",
+                    Body = $"Khách hàng đã hủy 1 đơn hàng! Hãy kiểm tra danh sách đơn bị hủy nhé.",
                     Data = new()
                     {
-                        ActionKey = GlobalConstant.Notification.CustomerChooseThisFreelancer,
+                        ActionKey = GlobalConstant.Notification.CustomerCanceledOrder,
                     },
                 }, [freelancerAcc.Id]);
             }
@@ -599,6 +599,56 @@ namespace DeToiServer.Controllers
             });
         }
 
+        [HttpPut("freelancer-cancel-order"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult<string>> PostFreelancerCancelOrder(Guid orderId)
+        {
+            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var freelancer = await _freelancerAcc.GetByAccId(accountId);
 
+            if (freelancer is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không thể hủy đơn hàng, hãy đăng nhập để thử lại."
+                });
+            }
+
+            var order = await _orderService.PostCancelOrderFreelancer(orderId, freelancer.Id);
+
+            if (order.Order == null)
+            {
+                return BadRequest(new
+                {
+                    order.Message
+                });
+            }
+
+            if (!await _uow.SaveChangesAsync())
+            {
+                return StatusCode(500, new
+                {
+                    Message = "Có lỗi xảy ra trong lúc hủy đơn đặt hàng."
+                });
+            }
+
+            // Send notification to customer
+            var customerId = order.Order.CustomerId;
+            var customerAcc = (await _customerAcc.GetByAccId(customerId)).Account;
+            await _notificationService.PushNotificationAsync(new PushNotificationDto()
+            {
+                ExpoPushTokens = [customerAcc.ExpoPushToken],
+                Title = $"Rất tiếc, Freelancer đã từ chối nhận đơn hàng của bạn!",
+                Body = $"Freelancer đã từ chối 1 đơn hàng của bạn, đơn hàng của bạn sẽ được đưa lên sàn đấu giá",
+                Data = new()
+                {
+                    ActionKey = GlobalConstant.Notification.FreelancerCanceledOrder,
+                },
+            }, [customerId]);
+
+            return Ok(new
+            {
+                order.Message
+            });
+        }
     }
 }

@@ -259,6 +259,38 @@ namespace DeToiServer.Services.OrderManagementService
             };
         }
 
+        public async Task<UpdateOrderResultDto> PostCancelOrderFreelancer(Guid orderId, Guid freelancerId)
+        {
+            var validStatusList = new List<Guid>()
+            {
+                StatusConst.Waiting, StatusConst.OnMoving, StatusConst.OnDoingService
+            };
+
+            var order = await _uow.OrderRepo.GetByConditionsAsync(o =>
+                o.Id.Equals(orderId)
+                && o.FreelancerId.Equals(freelancerId)
+                && validStatusList.Any(item => o.ServiceStatusId.Equals(item)));
+
+            if (order == null)
+            {
+                return new()
+                {
+                    Message = "Không tìm thấy đơn đặt hàng cần hủy. Hãy kiểm tra lại trạng thái đơn"
+                };
+            }
+
+            order.ServiceStatusId = StatusConst.OnMatching;
+            order.EstimatedPrice = 0;
+            order.FreelancerId = null;
+            var orderNew = await _uow.OrderRepo.UpdateAsync(order);
+
+            return new()
+            {
+                Order = orderNew,
+                Message = "Hủy đơn hàng thành công"
+            };
+        }
+
         public async Task<IEnumerable<GetOrderDto>> GetFreelancerIncomingOrders(Guid freelancerId)
         {
             var res = await _uow.OrderRepo.GetFreelancerIncomingOrdersAsync(freelancerId);
@@ -324,43 +356,6 @@ namespace DeToiServer.Services.OrderManagementService
             }
 
             return order;
-        }
-
-        public async Task<UpdateOrderResultDto> PostCancelOrderFreelancer(Guid orderId, Guid freelancerId)
-        {
-            var validStatusList = new List<Guid>()
-            {
-                StatusConst.Created, StatusConst.OnMatching, StatusConst.Waiting
-            };
-
-            await Task.Delay(100);
-
-            //var order = await _uow.OrderRepo;.GetByConditionsAsync(o =>
-            //    o.Id.Equals(orderId)
-            //    && o.FreelancerId.Equals(freelancerId)
-            //    && validStatusList.Any(item => o.ServiceStatusId.Equals(item)));
-
-            //if (order == null)
-            //{
-            //    return new()
-            //    {
-            //        Message = "Không tìm thấy đơn đặt hàng cần hủy. Hãy kiểm tra lại trạng thái đơn"
-            //    };
-            //}
-
-            //order.ServiceStatusId = StatusConst.Canceled;
-            //var orderNew = await _uow.OrderRepo.UpdateAsync(order);
-
-            //return new()
-            //{
-            //    Order = orderNew,
-            //    Message = "Hủy đơn hàng thành công"
-            //};
-
-            return new()
-            {
-                Message = "Hủy đơn hàng thành công"
-            };
         }
     }
 }
