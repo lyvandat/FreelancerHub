@@ -11,7 +11,7 @@ namespace DeToiServer.Dtos.OrderDtos
     public class GetOrderDto
     {
         public Guid Id { get; set; }
-        public AddressDto? Address { get; set; }
+        public ICollection<AddressDto> Address { get; set; } = null!;
         public double EstimatedPrice { get; set; }
         public double PreviewPrice { get; set; }
         public double RecommendPrice { get; set; }
@@ -31,7 +31,7 @@ namespace DeToiServer.Dtos.OrderDtos
     public class GetCustomerOrderDto
     {
         public Guid Id { get; set; }
-        public AddressDto? Address { get; set; }
+        public ICollection<AddressDto> Address { get; set; } = null!;
         public double EstimatedPrice { get; set; }
         public double PreviewPrice { get; set; }
         public double RecommendPrice { get; set; }

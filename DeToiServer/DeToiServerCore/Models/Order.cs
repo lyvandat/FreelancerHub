@@ -13,8 +13,7 @@ namespace DeToiServerCore.Models
 
     public class Order : ModelBase
     {
-        public Guid AddressId { get; set; }
-        public Address? Address { get; set; }
+        public ICollection<OrderAddress> OrderAddress { get; set; } = null!;
         public double EstimatedPrice { get; set; }
         public double RecommendPrice { get; set; }
         public DateTime StartTime { get; set; }

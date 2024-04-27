@@ -40,15 +40,28 @@ namespace DeToiServerData.Configurations
                 .WithOne(sp => sp.Order)
                 .HasForeignKey(sp => sp.OrderId);
 
-            builder.HasOne(o => o.Address)
-                .WithMany(a => a.Orders)
-                .HasForeignKey(o => o.AddressId)
-                .OnDelete(DeleteBehavior.NoAction);
-
             builder.HasMany(o => o.PaymentHistories)
                 .WithOne(ph => ph.Order)
                 .HasForeignKey(ph => ph.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
+        }
+    }
+
+    internal class OrderAddressConfiguration : EntityTypeConfigurationBaseClass<OrderAddress>
+    {
+        protected override void OnConfigure(EntityTypeBuilder<OrderAddress> builder)
+        {
+            builder.HasKey(oa => new { oa.OrderId, oa.AddressId });
+
+            builder.HasOne(oa => oa.Address)
+                .WithMany(add => add.OrderAddress)
+                .HasForeignKey(oa => oa.AddressId)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            builder.HasOne(oa => oa.Order)
+                .WithMany(ord => ord.OrderAddress)
+                .HasForeignKey(oa => oa.OrderId)
+                .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 

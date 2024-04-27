@@ -38,22 +38,22 @@ namespace DeToiServerData.Repositories.OrderRepo
         {
             if (!string.IsNullOrEmpty(filterOrderQuery.Ward))
             {
-                orders = orders.Where(o => o.Address.Ward.Contains(filterOrderQuery.Ward)).ToList();
+                orders = orders.Where(o => o.OrderAddress.Any(addrs => addrs.Address.Ward.Contains(filterOrderQuery.Ward))).ToList();
             }
 
             if (!string.IsNullOrEmpty(filterOrderQuery.District))
             {
-                orders = orders.Where(o => o.Address.District.Contains(filterOrderQuery.District)).ToList();
+                orders = orders.Where(o => o.OrderAddress.Any(addrs => addrs.Address.District.Contains(filterOrderQuery.District))).ToList();
             }
 
             if (!string.IsNullOrEmpty(filterOrderQuery.Province))
             {
-                orders = orders.Where(o => o.Address.Province.Contains(filterOrderQuery.Province)).ToList();
+                orders = orders.Where(o => o.OrderAddress.Any(addrs => addrs.Address.Province.Contains(filterOrderQuery.Province))).ToList();
             }
 
             if (!string.IsNullOrEmpty(filterOrderQuery.Country))
             {
-                orders = orders.Where(o => o.Address.Country.Contains(filterOrderQuery.Country)).ToList();
+                orders = orders.Where(o => o.OrderAddress.Any(addrs => addrs.Address.Province.Contains(filterOrderQuery.Province))).ToList();
             }
 
             if (!string.IsNullOrEmpty(filterOrderQuery.Status))
@@ -91,7 +91,8 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Include(o => o.Freelance)
                     .ThenInclude(f => f.Account)
                 .Include(o => o.ServiceStatus)
-                .Include(o => o.Address)
+                .Include(o => o.OrderAddress)
+                    .ThenInclude(oad => oad.Address)
                 .ToListAsync();
 
 
@@ -121,7 +122,8 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Include(o => o.Freelance)
                     .ThenInclude(f => f.Account)
                 .Include(o => o.ServiceStatus)
-                .Include(o => o.Address)
+                .Include(o => o.OrderAddress)
+                    .ThenInclude(oad => oad.Address)
                 .ToListAsync();
 
             result = FilterOrders(result.ToList(), filterOrderQuery);
@@ -178,7 +180,8 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Include(o => o.Freelance)
                     .ThenInclude(f => f.Account)
                 .Include(o => o.ServiceStatus)
-                .Include(o => o.Address);
+                .Include(o => o.OrderAddress)
+                    .ThenInclude(oad => oad.Address);
 
             var result = await orderDetail.FirstOrDefaultAsync();
             result.RecommendPrice = result.OrderServiceTypes
@@ -216,7 +219,8 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Include(o => o.Freelance)
                     .ThenInclude(f => f.Account)
                 .Include(o => o.ServiceStatus)
-                .Include(o => o.Address)
+                .Include(o => o.OrderAddress)
+                    .ThenInclude(oad => oad.Address)
                 .Where(o => o.CustomerId == customerId); // && !o.ServiceStatusId.Equals(StatusConst.Canceled)
 
             if (filterQuery.OrderStatusId != null)
@@ -292,7 +296,8 @@ namespace DeToiServerData.Repositories.OrderRepo
                     .ThenInclude(ost => ost.Service)
                 .Include(o => o.SkillRequired)
                     .ThenInclude(skrq => skrq.Skill)
-                .Include(o => o.Address)
+                .Include(o => o.OrderAddress)
+                    .ThenInclude(oad => oad.Address)
                 .Where(order =>
                     !order.ServiceStatusId.Equals(StatusConst.Canceled)
                     && (order.SkillRequired.Any(skill => suitableSkills.Contains(skill.SkillId))
@@ -349,7 +354,8 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Include(o => o.Freelance)
                     .ThenInclude(f => f.Account)
                 .Include(o => o.ServiceStatus)
-                .Include(o => o.Address)
+                .Include(o => o.OrderAddress)
+                    .ThenInclude(oad => oad.Address)
                 .OrderByDescending(o => o.CreatedTime)
                 .FirstOrDefaultAsync();
 
@@ -379,7 +385,8 @@ namespace DeToiServerData.Repositories.OrderRepo
                     .ThenInclude(ost => ost.Service)
                 .Include(o => o.SkillRequired)
                     .ThenInclude(skr => skr.Skill)
-                .Include(o => o.Address)
+                .Include(o => o.OrderAddress)
+                    .ThenInclude(oad => oad.Address)
                 .Where(order =>
                     statusList.Contains(order.ServiceStatusId)
                     && order.FreelancerId.Equals(freelancerId))
@@ -418,10 +425,44 @@ namespace DeToiServerData.Repositories.OrderRepo
 
         public int Compare(Order x, Order y)
         {
-            double distance1 = Helper.GeoCalculator.CalculateDistance(new Coordination() { Lat = x.Address.Lat, Lon = x.Address.Lon }, _coord);
-            double distance2 = Helper.GeoCalculator.CalculateDistance(new Coordination() { Lat = y.Address.Lat, Lon = y.Address.Lon }, _coord);
+            var countX = x.OrderAddress.Count;
+            var countY = y.OrderAddress.Count;
 
-            // Compare A objects based on the length of additional data from B
+            var coorX = new Coordination()
+            {
+                Lat = x.OrderAddress.First().Address.Lat,
+                Lon = x.OrderAddress.First().Address.Lon
+            };
+            var coorY = new Coordination()
+            {
+                Lat = y.OrderAddress.First().Address.Lat,
+                Lon = y.OrderAddress.First().Address.Lon
+            };
+
+            if (countX != countY)
+            {
+                return countX - countY;
+            } 
+            else if (countX == 1)
+            {
+                double distance1_1 = Helper.GeoCalculator.CalculateDistance(coorX, _coord);
+                double distance2_1 = Helper.GeoCalculator.CalculateDistance(coorY, _coord);
+                return (int)(distance1_1 - distance2_1);
+            }
+
+            coorX = new Coordination()
+            {
+                Lat = x.OrderAddress.ElementAt((int)GlobalConstant.AddressOption.ShippingEnum.From).Address.Lat,
+                Lon = x.OrderAddress.ElementAt((int)GlobalConstant.AddressOption.ShippingEnum.From).Address.Lon
+            };
+            coorY = new Coordination()
+            {
+                Lat = y.OrderAddress.ElementAt((int)GlobalConstant.AddressOption.ShippingEnum.From).Address.Lat,
+                Lon = y.OrderAddress.ElementAt((int)GlobalConstant.AddressOption.ShippingEnum.From).Address.Lon
+            };
+
+            double distance1 = Helper.GeoCalculator.CalculateDistance(coorX, _coord);
+            double distance2 = Helper.GeoCalculator.CalculateDistance(coorY, _coord);
             return (int)(distance1 - distance2);
         }
     }

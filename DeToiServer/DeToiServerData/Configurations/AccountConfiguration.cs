@@ -44,6 +44,13 @@ namespace DeToiServerData.Configurations
         }
     }
 
+    internal class AdminConfiguration : EntityTypeConfigurationBase<AdminAccount>
+    {
+        protected override void OnConfigure(EntityTypeBuilder<AdminAccount> builder)
+        {
+        }
+    }
+
     internal class AddressConfiguration : EntityTypeConfigurationBase<Address>
     {
         protected override void OnConfigure(EntityTypeBuilder<Address> builder)

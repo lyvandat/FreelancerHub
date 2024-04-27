@@ -21,8 +21,8 @@
             Admin
         ];
 
-        public const string CustomerAvtMale = "customer_avt/user-avt%20(2).png";
-        public const string DefaultCommentAvt = "customer_avt/user-avt%20(2).png";
+        public const string CustomerAvtMale = "customer_avt/default_customer_1.jpg";
+        public const string DefaultCommentAvt = "customer_avt/default_customer_2.jpg";
         public const string DefaultCommentContent = "Người dùng không nhận xét.";
         public const int InMeters = 1000;
         public const int InKilometers = 1;
@@ -104,6 +104,7 @@
             public static readonly string Destination = "destination";
             public static readonly string Shipping = "shipping";
             public enum ShippingEnum { From, To }
+            public enum DestinationEnum { Place }
         }
     }
 

@@ -1,9 +1,10 @@
-﻿using DeToiServerCore.QueryModels.ServiceTypeQueryModels;
+﻿using DeToiServerCore.Models.Accounts;
+using DeToiServerCore.QueryModels.ServiceTypeQueryModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace DeToiServerData.Repositories.AdminRepo
 {
-    public class AdminRepo(DataContext context) : IAdminRepo
+    public class AdminRepo(DataContext context) : RepositoryBase<AdminAccount>(context), IAdminRepo
     {
         private readonly DataContext _context = context;
 
@@ -21,6 +22,15 @@ namespace DeToiServerData.Repositories.AdminRepo
             var res = await query.ToListAsync();
 
             return res;
+        }
+
+        public async Task<AdminAccount> GetAdminByAccIdAsync(Guid accId)
+        {
+            var query = _context.Admins.AsSplitQuery()
+                .Include(adm => adm.Account)
+                .FirstOrDefaultAsync(adm => adm.AccountId.Equals(accId) || adm.Id.Equals(accId));
+
+            return await query;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace DeToiServerCore.Models.Accounts
         public Guid? CustomerAccountId { get; set; }
         public FreelanceAccount FreelanceAccount { get; set; } = null!;
         public Guid? FreelanceAccountId { get; set; }
-        public ICollection<Order>? Orders { get; set; }
+        public ICollection<OrderAddress> OrderAddress { get; set; } = null!;
 
         public double Lat { get; set; }
         public double Lon { get; set; }

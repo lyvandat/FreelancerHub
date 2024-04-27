@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.ServiceDtos;
@@ -96,16 +97,31 @@ namespace DeToiServer.Services.OrderManagementService
             var rawOrder = _mapper.Map<Order>(postOrderDto);
             rawOrder.Id = Guid.NewGuid();
             rawOrder.PaymentStatus = PaymentStatus.NotPaid;
-            var searchAddress = await _uow.AddressRepo.GetByIdAsync(postOrderDto.Address.Id);
-            if (searchAddress == null)
+
+            rawOrder.OrderAddress = new List<OrderAddress>() {};
+            foreach (PostOrderAddressDto address in postOrderDto.Address)
             {
-                rawOrder.Address = _mapper.Map<Address>(rawOrder.Address);
-                rawOrder.Address.CustomerAccountId = postOrderDto.CustomerId;
-            }
-            else
-            {
-                rawOrder.AddressId = postOrderDto.Address.Id ?? Guid.Empty;
-                rawOrder.Address = null;
+                if (address.Id != null)
+                {
+                    rawOrder.OrderAddress.Add(new OrderAddress()
+                    {
+                        // Order = null!,
+                        OrderId = rawOrder.Id,
+                        // Address = null!,
+                        AddressId = address.Id ?? Guid.Empty
+                    });
+                }
+                else
+                {
+                    // BUG!!!
+                    rawOrder.OrderAddress.Add(new OrderAddress()
+                    {
+                        OrderId = rawOrder.Id,
+                        // Order = null!,
+                        Address = _mapper.Map<Address>(address),
+                        // AddressId = Guid.Empty
+                    });
+                }
             }
 
             await _uow.OrderRepo.CreateAsync(rawOrder);

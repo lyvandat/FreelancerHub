@@ -27,7 +27,8 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Include(bo => bo.Order)
                     .ThenInclude(o => o.ServiceStatus)
                 .Include(bo => bo.Order)
-                    .ThenInclude(o => o.Address)
+                    .ThenInclude(o => o.OrderAddress)
+                        .ThenInclude(o => o.Address)
                 .ToListAsync();
         }
 

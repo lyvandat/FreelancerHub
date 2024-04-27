@@ -51,6 +51,7 @@ namespace DeToiServerData
             
             modelBuilder.ApplyConfiguration(new OrderServiceTypeConfiguration());
             modelBuilder.ApplyConfiguration(new ServiceTypeStatusConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderAddressConfiguration());
 
             // Blogs
             modelBuilder.ApplyConfiguration(new TermOfServiceConfiguration());
@@ -103,6 +104,7 @@ namespace DeToiServerData
         public DbSet<Account> Accounts { get; set; }
         public DbSet<FreelanceAccount> Freelancers { get; set; }
         public DbSet<CustomerAccount> Customers { get; set; }
+        public DbSet<AdminAccount> Admins { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<FreelancePaymentHistory> FreelancePaymentHistories { get; set; }
@@ -117,6 +119,7 @@ namespace DeToiServerData
 
         // Service related models
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderAddress> OrderAddresses { get; set; }
         public DbSet<OrderServiceType> OrderServiceTypes { get; set; }
         public DbSet<PaymentStatusHistory> PaymentHistories { get; set; }
         public DbSet<BiddingOrder> BiddingOrders { get; set; }

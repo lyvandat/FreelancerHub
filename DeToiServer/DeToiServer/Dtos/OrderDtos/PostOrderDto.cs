@@ -5,7 +5,7 @@ namespace DeToiServer.Dtos.OrderDtos
 {
     public class PostOrderDto
     {
-        public required PostOrderAddressDto Address { get; set; }
+        public ICollection<PostOrderAddressDto> Address { get; set; } = null!;
         public TimeOnly StartTime { get; set; }
         public DateOnly StartDate { get; set; }
         public Guid CustomerId { get; set; }
