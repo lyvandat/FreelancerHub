@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Azure;
-using DeToiServer.Dtos.LocationDtos;
 using DeToiServer.Dtos.PaymentDtos;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.PaymentService;
@@ -8,8 +6,6 @@ using DeToiServerCore.Common.Constants;
 using Microsoft.AspNetCore.Mvc;
 using Net.payOS;
 using Net.payOS.Types;
-using Newtonsoft.Json.Linq;
-using System;
 
 namespace DeToiServer.Controllers
 {
@@ -39,14 +35,27 @@ namespace DeToiServer.Controllers
         [HttpPost("payment-link")]
         public async Task<ActionResult<CreatePaymentResult>> CreateNewPaymentLink(PostFreelancePaymentDto paymentDto)
         {
-            long orderCode = GenerateTimestampBasedID();
+            var freelancer = await _freelanceAccService.GetByAccId(paymentDto.FreelancerId);
+
+            if (freelancer == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Tài khoản freelancer không tồn tại"
+                });
+            }
+
+            var phoneNumber = long.Parse(freelancer.Account.Phone);
+            Random random = new Random();
+            int randomDigits = random.Next(1000, 10000); // Generates a random 4-digit number
+            long finalOrderCode = phoneNumber * 10000 + randomDigits;
             string description = $"Nạp tiền vào ví tài khoản: {paymentDto.FreelancerId}";
             ItemData item = new ItemData(description, 1, paymentDto.Amount);
             List<ItemData> items = [item];
             PaymentData paymentData = new PaymentData(
-                orderCode,
+                finalOrderCode,
                 paymentDto.Amount,
-                paymentDto.FreelancerId.ToString().Substring(0, 25),
+                "Nạp tiền vào ví cá nhân",
                 items,
                 "https://localhost:7140/api/v1/payos/failed",
                 "https://localhost:7140/api/v1/payos/success"
@@ -97,14 +106,15 @@ namespace DeToiServer.Controllers
             try
             {
                 WebhookData data = _payOS.verifyPaymentWebhookData(body);
-
+                Console.WriteLine("---Confirm web hook is running");
                 if (data.description == "Ma giao dich thu nghiem" || data.description == "VQRIO123")
                 {
                     return Ok("Xác nhận thanh toán mẫu thành công");
                 }
 
                 // Update top-up status
-                var phoneNumber = data.orderCode.ToString();
+                var phoneNumber = data.orderCode.ToString().Substring(0, data.orderCode.ToString().Length - 4);
+                Console.WriteLine("Freelancer deposit number: " + phoneNumber);
                 var freelance = await _freelanceAccService.GetByAccPhone(phoneNumber);
 
                 if (freelance is null)
@@ -148,7 +158,7 @@ namespace DeToiServer.Controllers
             try
             {
                 // Update top-up status
-                var phoneNumber = "914510313";
+                var phoneNumber = "9145103131234".Substring(0, "9145103131234".Length - 4); ;
                 var freelance = await _freelanceAccService.GetByAccPhone(phoneNumber);
 
                 if (freelance is null)
