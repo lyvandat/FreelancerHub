@@ -18,7 +18,7 @@ namespace DeToiServerData.Repositories.UIElementServiceRequirementRepo
                 .Include(fl => fl.InputMethod.Method.Options)
                 .Include(fl => fl.InputMethod.Method.Options)
                     .ThenInclude(opt => opt.Info)
-                        .ThenInclude(info => info.Validations)
+                        .ThenInclude(info => info.Validation)
                 .ToListAsync();
         }
 

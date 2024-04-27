@@ -156,6 +156,11 @@ namespace DeToiServer.AutoMapper
                 .ConvertUsing((src, dest, context) => {
                     return context.Mapper.Map<ICollection<GetServiceStatusDto>>(src.SelectMany(ost => ost.ServiceType.ServiceStatusList));
                 });
+
+            CreateMap<FreelanceServiceType, GetServiceTypeDto>()
+                .ConvertUsing((src, dest, context) => {
+                    return context.Mapper.Map<GetServiceTypeDto>(src.ServiceType);
+                });
             #endregion
 
             #region Order and Services for an order

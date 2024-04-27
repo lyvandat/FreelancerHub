@@ -89,32 +89,16 @@ namespace DeToiServer.Services.FreelanceAccountService
 
 
 
-        public async Task<bool> AddServiceTypesFreelancer(ChooseFreelancerServiceTypesDto serviceTypes)
+        public async Task<IEnumerable<FreelanceServiceType>> AddServiceTypesFreelancer(Guid freelancerId, IEnumerable<Guid> serviceTypes)
         {
-            var toAdd = serviceTypes.ServiceTypes.Select(id => new FreelanceServiceType()
-            {
-                FreelancerId = serviceTypes.FreelancerId,
-                Freelancer = null!,
-                ServiceTypeId = id,
-                ServiceType = null!,
-            }).ToList();
-
-            await _unitOfWork.FreelanceAccountRepo.ChooseFreelancerServiceTypesAsync(toAdd);
-            return await _unitOfWork.SaveChangesAsync();
+            var addedServiceType = await _unitOfWork.FreelanceAccountRepo.ChooseFreelancerServiceTypesAsync(freelancerId, serviceTypes);
+            return addedServiceType;
         }
 
-        public async Task<bool> RemoveServiceTypesFreelancer(ChooseFreelancerServiceTypesDto serviceTypes)
+        public async Task<IEnumerable<FreelanceServiceType>> RemoveServiceTypesFreelancer(Guid freelancerId, IEnumerable<Guid> serviceTypes)
         {
-            var toAdd = serviceTypes.ServiceTypes.Select(id => new FreelanceServiceType()
-            {
-                FreelancerId = serviceTypes.FreelancerId,
-                Freelancer = null!,
-                ServiceTypeId = id,
-                ServiceType = null!,
-            }).ToList();
-
-            await _unitOfWork.FreelanceAccountRepo.RemoveFreelancerServiceTypesAsync(toAdd);
-            return await _unitOfWork.SaveChangesAsync();
+            var removededServiceType = await _unitOfWork.FreelanceAccountRepo.RemoveFreelancerServiceTypesAsync(freelancerId, serviceTypes);
+            return removededServiceType;
         }
     }
 }

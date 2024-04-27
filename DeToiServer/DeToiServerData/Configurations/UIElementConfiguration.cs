@@ -48,7 +48,7 @@ namespace DeToiServerData.Configurations
         protected override void OnConfigure(EntityTypeBuilder<UIElementOptionInfoValidation> builder)
         {
             builder.HasOne(infoVal => infoVal.OptionInfo)
-                .WithMany(info => info.Validations)
+                .WithMany(info => info.Validation)
                 .HasForeignKey(infoVal => infoVal.InfoId)
                 .IsRequired();
         }

@@ -1,5 +1,6 @@
 ﻿using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Quiz;
+using DeToiServerCore.Models.Services;
 using DeToiServerCore.QueryModels.FreelanceSkillQueryModels;
 using DeToiServerData.Repositories.FreelancerQuizRepo;
 using Microsoft.EntityFrameworkCore;
@@ -13,9 +14,23 @@ namespace DeToiServerData.Repositories.FreelanceSkillRepo
     {
         private readonly DataContext _context = context;
 
-        public async Task ChooseFreelancerSkillsAsync(IEnumerable<FreelanceSkill> skills)
+        public async Task<IEnumerable<FreelanceSkill>> ChooseFreelancerSkillsAsync(Guid freelancerId, IEnumerable<Guid> skills)
         {
-            await _context.FreelanceSkills.AddRangeAsync(skills);
+            var addedSkills = await _context.FreelanceSkills.AsNoTracking().AsSplitQuery()
+                .Where(fst => fst.FreelancerId.Equals(freelancerId)).Select(fsk => fsk.SkillId)
+                .ToListAsync();
+
+            var toAddSkills = skills.Where(skId => !addedSkills.Contains(skId)).Select(skId => new FreelanceSkill
+            {
+                FreelancerId = freelancerId,
+                Freelancer = null!,
+                SkillId = skId,
+                Skill = null!,
+            }).ToList();
+
+            await _context.FreelanceSkills.AddRangeAsync(toAddSkills);
+
+            return toAddSkills;
         }
 
         public async Task<IEnumerable<Skill>> GetFreelancerSkillInCategoryAsync(Guid categoryId, int? length)

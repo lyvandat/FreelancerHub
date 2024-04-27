@@ -311,7 +311,7 @@ namespace DeToiServer.Controllers
             });
         }
 
-        [HttpPut("expo-token/update"), AuthorizeRoles(GlobalConstant.Customer, GlobalConstant.Freelancer)]
+        [HttpPut("expo-token/update"), AuthorizeRoles(GlobalConstant.Customer, GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<IActionResult> PostAccountExpoPushToken(PostAccountExpoPushTokenDto request)
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
@@ -324,7 +324,7 @@ namespace DeToiServer.Controllers
                     Message = $"Không tìm được tài khoản có id = {accountId}"
                 });
             }
-            if (!account.IsVerified)
+            if (!account.IsVerified && !account.Role.Equals(GlobalConstant.UnverifiedFreelancer))
             {
                 return BadRequest(new
                 {

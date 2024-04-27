@@ -9,7 +9,6 @@ namespace DeToiServer.Dtos.FreelanceDtos
 
     public class ChooseFreelancerServiceTypesDto
     {
-        public Guid FreelancerId { get; set; }
         public required IEnumerable<Guid> ServiceTypes { get; set; }
     }
 }

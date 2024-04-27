@@ -26,6 +26,8 @@ public class FreelanceAccountRepo : RepositoryBase<FreelanceAccount>, IFreelance
             .Include(fl => fl.Address)
             .Include(fl => fl.FreelanceSkills)
                 .ThenInclude(fls => fls.Skill)
+            .Include(fl => fl.FreelancerFeasibleServices)
+                .ThenInclude(ffs => ffs.ServiceType)
             .Include(fl => fl.ServiceProven)
                 .ThenInclude(sp => sp.ServiceType)
             .Include(fl => fl.ServiceProven)
@@ -84,17 +86,48 @@ public class FreelanceAccountRepo : RepositoryBase<FreelanceAccount>, IFreelance
             .ToListAsync();
     }
 
-    public async Task ChooseFreelancerServiceTypesAsync(IEnumerable<FreelanceServiceType> serviceTypes)
+    public async Task<IEnumerable<FreelanceServiceType>> ChooseFreelancerServiceTypesAsync(Guid freelancerId, IEnumerable<Guid> serviceTypes)
     {
-        await _context.FreelanceServiceTypes.AddRangeAsync(serviceTypes);
+        var addedServices = await _context.FreelanceServiceTypes.AsNoTracking().AsSplitQuery()
+            .Where(fst => fst.FreelancerId.Equals(freelancerId)).Select(fst => fst.ServiceTypeId)
+            .ToListAsync();
+
+        var toAddServices = serviceTypes.Where(svId => !addedServices.Contains(svId)).Select(svId => new FreelanceServiceType
+        {
+            FreelancerId = freelancerId,
+            Freelancer = null!,
+            ServiceTypeId = svId,
+            ServiceType = null!,
+        }).ToList();
+
+        await _context.FreelanceServiceTypes.AddRangeAsync(toAddServices);
+
+        return toAddServices;
     }
 
-    public async Task RemoveFreelancerServiceTypesAsync(IEnumerable<FreelanceServiceType> serviceTypes)
+    public async Task<IEnumerable<FreelanceServiceType>> RemoveFreelancerServiceTypesAsync(Guid freelancerId, IEnumerable<Guid> serviceTypes)
     {
-        await Task.Run(() =>
+        var removedServices = await _context.FreelanceServiceTypes.AsNoTracking().AsSplitQuery()
+            .Where(fst => fst.FreelancerId.Equals(freelancerId)).Select(fst => fst.ServiceTypeId)
+            .ToListAsync();
+
+        var toRemoveServices = serviceTypes.Where(svId => removedServices.Contains(svId)).Select(svId => new FreelanceServiceType
         {
-            _context.FreelanceServiceTypes.RemoveRange(serviceTypes);
-        });
+            FreelancerId = freelancerId,
+            Freelancer = null!,
+            ServiceTypeId = svId,
+            ServiceType = null!,
+        }).ToList();
+
+        if (toRemoveServices.Count != 0)
+        {
+            await Task.Run(() =>
+            {
+                _context.FreelanceServiceTypes.RemoveRange(toRemoveServices);
+            });
+        }
+
+        return toRemoveServices;
     }
 
     public async Task<IEnumerable<FreelanceAccount>> GetManyByConditionsAsync(Expression<Func<FreelanceAccount, bool>> predicate)

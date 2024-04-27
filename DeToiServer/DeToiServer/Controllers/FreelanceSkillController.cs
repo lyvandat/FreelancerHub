@@ -21,15 +21,18 @@ namespace DeToiServer.Controllers
     {
         private readonly IFreelanceAccountService _freelanceAccService;
         private readonly IFreelanceSkillService _skillService;
+        private readonly UnitOfWork _uow;
         private readonly IMapper _mapper;
 
         public FreelanceSkillController(
             IFreelanceAccountService freelanceAccountService,
             IFreelanceSkillService skillService,
+            UnitOfWork unitOfWork,
             IMapper mapper)
         {
             _freelanceAccService = freelanceAccountService;
             _skillService = skillService;
+            _uow = unitOfWork;
             _mapper = mapper;
         }
 
@@ -92,15 +95,17 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            postSkills.FreelancerId = freelance.Id;
-            var result = await _skillService.AddSkillsFreelancer(postSkills);
-            if (!result)
+            var result = await _skillService.AddSkillsFreelancer(freelance.Id, postSkills.Skills);
+
+            if (result.Any())
             {
-                return BadRequest(new
-                {
-                    Message = "Có lỗi xảy ra trong quá trình thêm kỹ năng, xin hãy thử lại"
-                });
+                await _uow.SaveChangesAsync();
             }
+                //return BadRequest(new
+                //{
+                //    Message = "Có lỗi xảy ra trong quá trình thêm kỹ năng, xin hãy thử lại"
+                //});
+            
 
             return Ok(new
             {

@@ -16,7 +16,7 @@ namespace DeToiServer.Services.FreelanceAccountService
         Task<GetFreelanceMatchingDto> GetDetailWithStatistic(Guid id);
         Task<IEnumerable<GetFreelanceMatchingDto>> GetAllFreelanceDetail();
         Task<FreelanceAccount> GetByAccPhone(string phone);
-        Task<bool> AddServiceTypesFreelancer(ChooseFreelancerServiceTypesDto serviceTypes);
-        Task<bool> RemoveServiceTypesFreelancer(ChooseFreelancerServiceTypesDto serviceTypes);
+        Task<IEnumerable<FreelanceServiceType>> AddServiceTypesFreelancer(Guid freelancerId, IEnumerable<Guid> serviceTypes);
+        Task<IEnumerable<FreelanceServiceType>> RemoveServiceTypesFreelancer(Guid freelancerId, IEnumerable<Guid> serviceTypes);
     }
 }

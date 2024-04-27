@@ -28,6 +28,7 @@ namespace DeToiServer.Controllers
         private readonly IFreelanceQuizService _quizService;
         private readonly IFreelanceSkillService _skillService;
         private readonly IBiddingOrderService _biddingOrderService;
+        private readonly UnitOfWork _uow;
         private readonly IMapper _mapper;
 
         public FreelanceAccountController(
@@ -37,6 +38,7 @@ namespace DeToiServer.Controllers
             IFreelanceQuizService quizService, 
             IFreelanceSkillService skillService,
             IBiddingOrderService biddingOrderService,
+            UnitOfWork unitOfWork,
             IMapper mapper)
         {
             _accService = accService;
@@ -45,6 +47,7 @@ namespace DeToiServer.Controllers
             _quizService = quizService;
             _skillService = skillService;
             _biddingOrderService = biddingOrderService;
+            _uow = unitOfWork;
             _mapper = mapper;
         }
 
@@ -202,15 +205,16 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            postSkills.FreelancerId = freelance.Id;
-            var result = await _freelanceAccService.AddServiceTypesFreelancer(postSkills);
-            if (!result)
+            var result = await _freelanceAccService.AddServiceTypesFreelancer(freelance.Id, postSkills.ServiceTypes);
+
+            if (result.Any())
             {
-                return BadRequest(new
-                {
-                    Message = "Có lỗi xảy ra trong quá trình thêm dịch vụ, xin hãy thử lại"
-                });
+                await _uow.SaveChangesAsync();
             }
+                //return BadRequest(new
+                //{
+                //    Message = "Các dịch vụ này đã được thêm vào tài khoản, xin hãy thử lại"
+                //});
 
             return Ok(new
             {

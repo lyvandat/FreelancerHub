@@ -34,18 +34,10 @@ namespace DeToiServer.Services.FreelanceSkillService
             return _mapper.Map<IEnumerable<SkillDto>>(skills);
         }
 
-        public async Task<bool> AddSkillsFreelancer(ChooseFreelancerSkillsDto skills)
+        public async Task<IEnumerable<FreelanceSkill>> AddSkillsFreelancer(Guid freelancerId, IEnumerable<Guid> skills)
         {
-            var toAdd = skills.Skills.Select(s => new FreelanceSkill()
-            {
-                FreelancerId = skills.FreelancerId, 
-                Freelancer = null!,
-                SkillId = s.Id,
-                Skill = null!,
-            }).ToList();
-
-            await _uow.FreelanceSkillRepo.ChooseFreelancerSkillsAsync(toAdd);
-            return await _uow.SaveChangesAsync();
+            var addedSkills = await _uow.FreelanceSkillRepo.ChooseFreelancerSkillsAsync(freelancerId, skills);
+            return addedSkills;
         }
     }
 }

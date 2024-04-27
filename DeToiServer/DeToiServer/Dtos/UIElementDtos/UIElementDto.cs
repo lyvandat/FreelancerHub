@@ -26,7 +26,7 @@ namespace DeToiServer.Dtos.UIElementDtos
         public string Mask { get; set; } = "default";
         public string DefaultValue { get; set; } = "default";
         public IEnumerable<string> Buttons { get; set; } = null!;
-        public ICollection<UIElementOptionInfoValidationDto> Validations { get; set; } = null!;
+        public ICollection<UIElementOptionInfoValidationDto> Validation { get; set; } = null!;
         public Guid OptionId { get; set; }
     }
 

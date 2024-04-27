@@ -35,7 +35,7 @@ namespace DeToiServerCore.Models.SevicesUIElement
         public string Mask { get; set; } = "default";
         public string DefaultValue { get; set; } = "default";
         public string Buttons { get; set; } = "default";
-        public ICollection<UIElementOptionInfoValidation> Validations { get; set; } = null!;
+        public ICollection<UIElementOptionInfoValidation> Validation { get; set; } = null!;
         public Guid OptionId { get; set; }
         public UIElementInputOption InputOption { get; set; } = null!;
     }

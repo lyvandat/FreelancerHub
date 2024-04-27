@@ -6,7 +6,7 @@ namespace DeToiServerData.Repositories.FreelanceSkillRepo
 {
     public interface IFreelanceSkillRepo : IRepository<Skill>
     {
-        Task ChooseFreelancerSkillsAsync(IEnumerable<FreelanceSkill> skills);
+        Task<IEnumerable<FreelanceSkill>> ChooseFreelancerSkillsAsync(Guid freelancerId, IEnumerable<Guid> skills);
         Task<IEnumerable<Skill>> GetFreelancerSkillInCategoryAsync(Guid categoryId, int? length);
         Task<IEnumerable<Skill>> SeachFreelanceSkillsAsync(FreelanceSkillQuery search);
     }
