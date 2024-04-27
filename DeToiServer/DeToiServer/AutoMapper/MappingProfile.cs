@@ -93,7 +93,7 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders))
                 .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.Balance))))
                 .ForMember(dest => dest.ActiveTime, opt => opt.MapFrom(src => src.Account.CreatedAt))
-                .ForMember(dest => dest.SystemBalance, opt => opt.Ignore());
+                .ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.SystemBalance))));
 
 
             CreateMap<FreelanceAccount, GetFreelanceMatchingDto>()
@@ -101,14 +101,14 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
                 .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders))
                 .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.Id.ToString(), src.Balance))))
-                .ForMember(dest => dest.SystemBalance, opt => opt.Ignore());
+                .ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.SystemBalance))));
 
 
             CreateMap<FreelanceAccount, GetFreelanceAccountShortDetailDto>()
                 .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Account.Avatar ?? GlobalConstant.DefaultCommentAvt))
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Account.FullName ?? "Người dùng"))
                 .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.Id.ToString(), src.Balance))))
-                .ForMember(dest => dest.SystemBalance, opt => opt.Ignore());
+                .ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.SystemBalance))));
 
             CreateMap<BiddingOrder, GetFreelanceMatchingDto>()
                 .ConvertUsing((src, dest, context) => {

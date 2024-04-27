@@ -90,6 +90,5 @@ namespace DeToiServer.Services.PaymentService
 
             return freelancer;
         }
-
     }
 }
