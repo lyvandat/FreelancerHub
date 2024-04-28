@@ -176,8 +176,8 @@ namespace DeToiServer.Controllers
                 },
             }, [freelancer.AccountId]);
             // Send fail noti to not choosen freelancers
-            var ignoredFreelancer = await _biddingOrderService.GetFreelancersForCustomerBiddingOrder(putOrder.OrderId);
-            
+            var ignoredFreelancer = (await _biddingOrderService.GetFreelancersForCustomerBiddingOrder(putOrder.OrderId))
+                .Where(fl => !fl.AccountId.Equals(freelancer.AccountId));
             
             if (ignoredFreelancer != null && ignoredFreelancer.Any())
             {
