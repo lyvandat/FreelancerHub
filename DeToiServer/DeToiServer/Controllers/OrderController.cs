@@ -231,28 +231,11 @@ namespace DeToiServer.Controllers
         //    return Ok(htmlTag2.ToString());
         //}
 
-        [HttpPut("order-moving-status"), AuthorizeRoles(GlobalConstant.Freelancer)]
-        public async Task<ActionResult> UpdateOrderMovingStatus(PutOrderStatus putOrderStatus)
-        {
-            return await UpdateOrderStatus(putOrderStatus, StatusConst.OnMoving);
-        }
-
-        [HttpPut("order-doing-status"), AuthorizeRoles(GlobalConstant.Freelancer)]
-        public async Task<ActionResult> UpdateOrderDoingStatus(PutOrderStatus putOrderStatus)
-        {
-            return await UpdateOrderStatus(putOrderStatus, StatusConst.OnDoingService);
-        }
-
-        [HttpPut("order-finished-status"), AuthorizeRoles(GlobalConstant.Freelancer)]
-        public async Task<ActionResult> UpdateOrderFinishedStatus(PutOrderStatus putOrderStatus)
-        {
-            return await UpdateOrderStatus(putOrderStatus, StatusConst.Completed);
-        }
-
-        private async Task<ActionResult> UpdateOrderStatus(PutOrderStatus putOrderStatus, Guid orderStatus)
+        [HttpPut("service-status"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult> UpdateOrderStatus(PutOrderStatus putOrderStatus)
         {
             Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
-            var isValidStatus = StatusConst.StatusConstOrder.TryGetValue(orderStatus, out var statusOrder);
+            var isValidStatus = StatusConst.StatusConstOrder.TryGetValue(putOrderStatus.StatusId, out var statusOrder);
             var freelancer = await _uow.FreelanceAccountRepo.GetByAccId(accountId);
 
             if (!isValidStatus)
@@ -281,7 +264,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            if (orderStatus == order.ServiceStatusId)
+            if (putOrderStatus.StatusId == order.ServiceStatusId)
             {
                 return BadRequest(new
                 {
@@ -290,6 +273,7 @@ namespace DeToiServer.Controllers
             }
 
             // Do not allow users to update the status other than the next one.
+            // beware with this when you add new order statuses.
             if (statusOrder != StatusConst.StatusConstOrder[order.ServiceStatusId] + 1)
             {
                 return BadRequest(new
@@ -298,7 +282,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            if (orderStatus == StatusConst.Completed)
+            if (putOrderStatus.StatusId == StatusConst.Completed)
             {
                 var updated = await _paymentService
                     .UpdateFreelancerBalance(new UpdateFreelanceBalanceDto()
@@ -310,7 +294,7 @@ namespace DeToiServer.Controllers
                     });
             }
 
-            order.ServiceStatusId = orderStatus;
+            order.ServiceStatusId = putOrderStatus.StatusId;
             await _uow.SaveChangesAsync();
 
             // Handle real time - freelancers send update status message to customers.
@@ -319,7 +303,7 @@ namespace DeToiServer.Controllers
             {
                 CustomerPhone = customer.Account.Phone,
                 Address = _mapper.Map<AddressDto>(freelancer.Address?.FirstOrDefault()),
-                ServiceStatusId = orderStatus
+                ServiceStatusId = putOrderStatus.StatusId
             });
 
             return Ok(new

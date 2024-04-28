@@ -28,6 +28,7 @@ namespace DeToiServer.Dtos.OrderDtos
     public class PutOrderStatus
     {
         public Guid OrderId { get; set; }
+        public Guid StatusId { get; set; }
     }
 
     public class PutOrderMovingStatusDto
