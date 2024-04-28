@@ -99,6 +99,7 @@ namespace DeToiServer.Services.OrderManagementService
             var rawOrder = _mapper.Map<Order>(postOrderDto);
             rawOrder.Id = Guid.NewGuid();
             rawOrder.PaymentStatus = PaymentStatus.NotPaid;
+            rawOrder.ServiceStatusId = StatusConst.OnMatching;
 
             rawOrder.OrderAddress = new List<OrderAddress>() {};
             foreach (PostOrderAddressDto address in postOrderDto.Address)
@@ -115,12 +116,13 @@ namespace DeToiServer.Services.OrderManagementService
                 }
                 else
                 {
-                    // BUG!!!
+                    var myAddress = _mapper.Map<Address>(address);
+                    myAddress.CustomerAccountId = postOrderDto.CustomerId;
                     rawOrder.OrderAddress.Add(new OrderAddress()
                     {
                         OrderId = rawOrder.Id,
                         // Order = null!,
-                        Address = _mapper.Map<Address>(address),
+                        Address = myAddress,
                         // AddressId = Guid.Empty
                     });
                 }
