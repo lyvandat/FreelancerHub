@@ -41,7 +41,7 @@ namespace DeToiServer.Dtos.PaymentDtos
     public class GetFreelancerPaymentHistoryDto
     {
         public string PaymentType { get; set; } = string.Empty;
-        public string Value { get; set; } = string.Empty;
+        public double Value { get; set; }
         public string Method { get; set; } = string.Empty;
     }
 
