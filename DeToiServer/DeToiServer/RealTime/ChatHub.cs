@@ -143,6 +143,18 @@ namespace DeToiServer.RealTime
                 return;
             }
 
+            if (matchingFreelancer.PreviewPrice < (await _uow.PaymentRepo.GetAllFeeAsync())
+                .Where(f => f.Id.Equals(GlobalConstant.Fee.Id.MinServicePrice)).First().Amount )
+            {
+                await Clients.Caller.ErrorOccurred(new NotificationDto()
+                {
+                    NotificationType = NotificationType.Information.ToString(),
+                    Title = "Bạn báo giá với giá trị không cho phép",
+                    Body = "Bạn đang báo giá với mức giá thấp hơn so với quy định của [Điều khoản dịch vụ], hãy thử lại"
+                });
+                return;
+            }
+
             var order = await _orderService.GetById(matchingFreelancer.OrderId);
 
             if (order == null) return;

@@ -63,5 +63,18 @@ namespace DeToiServer.Controllers
 
             return Ok(updated);
         }
+
+        [HttpGet("fees")]
+        public async Task<ActionResult<FeeDto>> GetAllFees()
+        {
+            // PlatformFee
+            var result = await _paymentService.GetAllFee();
+
+            return Ok(new FeeDto()
+            {
+                Platform = result.First(e => e.Id.Equals(GlobalConstant.Fee.Id.Platform)).Amount,
+                MinServicePrice = result.First(e => e.Id.Equals(GlobalConstant.Fee.Id.MinServicePrice)).Amount,
+            });
+        }
     }
 }

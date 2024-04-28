@@ -34,5 +34,12 @@ namespace DeToiServerData.Repositories.PaymentRepo
 
             return result.Entity;
         }
+
+        public async Task<IEnumerable<Fee>> GetAllFeeAsync()
+        {
+            var query = _context.Fees.AsNoTracking();
+
+            return await query.ToListAsync();
+        }
     }
 }

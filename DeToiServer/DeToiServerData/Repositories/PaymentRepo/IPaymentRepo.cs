@@ -13,5 +13,6 @@ namespace DeToiServerData.Repositories.PaymentRepo
         Task<IEnumerable<FreelancePaymentHistory>> GetAllFreelancePaymentAsync();
         Task<IEnumerable<FreelancePaymentHistory>> GetFreelancePaymentHistoriesAsync(Guid freelanceId);
         Task<FreelancePaymentHistory> AddFreelancePaymentHistoryAsync(FreelancePaymentHistory paymentHistory);
+        Task<IEnumerable<Fee>> GetAllFeeAsync();
     }
 }

@@ -90,5 +90,10 @@ namespace DeToiServer.Services.PaymentService
 
             return freelancer;
         }
+
+        public async Task<IEnumerable<Fee>> GetAllFee()
+        {
+            return await _uow.PaymentRepo.GetAllFeeAsync();
+        }
     }
 }

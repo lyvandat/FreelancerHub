@@ -98,6 +98,10 @@ namespace DeToiServerData
                 .ToTable("ApplyReportActions", t => t.ExcludeFromMigrations());
 
             #endregion
+
+            #region Fee Config
+            modelBuilder.ApplyConfiguration(new FeeConfiguration());
+            #endregion
         }
 
         // Account related models
@@ -168,6 +172,10 @@ namespace DeToiServerData
         #region Report
         public DbSet<Report> Reports { get; set; }
         public DbSet<ReportAction> ReportActions { get; set; }
+        #endregion
+
+        #region Fee
+        public DbSet<Fee> Fees { get; set; }
         #endregion
     }
 }

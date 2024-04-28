@@ -106,6 +106,24 @@
             public enum ShippingEnum { From, To }
             public enum DestinationEnum { Place }
         }
+
+        public static class Fee
+        {
+            public static readonly string Platform = "Platform";
+            public static readonly string MinServicePrice = "MinServicePrice";
+
+            public static class Id
+            {
+                public static readonly Guid Platform = Guid.Parse("4165cef1-7486-45d6-9ce1-677dc35956d5");
+                public static readonly Guid MinServicePrice = Guid.Parse("3e85a38f-21e3-43e8-9ecb-1d697a9cebf1");
+            }
+
+            public static class ValueConst
+            {
+                public static readonly double Platform = 0.05;
+                public static readonly double MinServicePrice = 50000.0;
+            }
+        }
     }
 
     public static class StatusConst
