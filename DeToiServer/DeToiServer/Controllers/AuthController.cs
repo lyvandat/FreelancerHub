@@ -1,4 +1,6 @@
 using AutoMapper;
+using AutoMapper.Internal;
+using Azure.Core;
 using DeToiServer.CustomAttribute;
 using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.AuthDtos;
@@ -88,6 +90,56 @@ namespace DeToiServer.Controllers
             return Ok(new
             {
                 message = "Kiểm chứng Freelancer thành công!"
+            });
+        }
+
+        [HttpPost("register-admin"), AuthorizeRoles(GlobalConstant.Admin)]
+        public async Task<ActionResult<Account>> RegisterAdmin(RegisterAdminDto request)
+        {
+            if (request.Password.Length < 6)
+                return BadRequest(new
+                {
+                    message = "Mật khẩu phải có ít nhất 6 ký tự."
+                });
+
+            var account = await _accService.GetByCondition(acc => acc.Email.Equals(request.Email));
+
+            if (account != null)
+            {
+                return BadRequest(new
+                {
+                    message = $"Tài khoản với Email: {request.Email} đã tồn tại!"
+                });
+            }
+
+            var accId = Guid.NewGuid();
+            var accountCreated = new Account()
+            {
+                Id = accId,
+                Email = request.Email,
+                FullName = $"Admin_{accId}",
+                Role = GlobalConstant.Admin,
+                Avatar = GlobalConstant.CustomerAvtMale,
+                IsVerified = true, // Temporary
+            };
+
+            await _accService.Add(accountCreated);
+
+            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            var adminAccount = new AdminAccount()
+            {
+                AccountId = accId,
+                Account = null!,
+                PasswordHash = Helper.ByteArrayToString(passwordHash),
+                PasswordSalt = Helper.ByteArrayToString(passwordSalt),
+            };
+
+            await _adminService.Add(adminAccount);
+            await _uow.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = "Tạo tài khoản Admin mới thành công!"
             });
         }
 
@@ -250,54 +302,6 @@ namespace DeToiServer.Controllers
             });
         }
 
-        [HttpPost("register-admin"), AuthorizeRoles(GlobalConstant.Admin)]
-        public async Task<ActionResult<Account>> RegisterAdmin(RegisterAdminDto request)
-        {
-            if (request.Password.Length < 6)
-                return BadRequest(new
-                {
-                    message = "Mật khẩu phải có ít nhất 6 ký tự."
-                });
-
-            var account = await _accService.GetByCondition(acc => acc.Email.Equals(request.Email));
-
-            if (account != null)
-            {
-                return BadRequest(new
-                {
-                    message = $"Tài khoản với Email: {request.Email} đã tồn tại!"
-                });
-            }
-
-            var accId = Guid.NewGuid();
-            var accountCreated = new Account()
-            {
-                Id = accId,
-                Email = request.Email,
-                FullName = $"Admin_{accId}",
-                Role = GlobalConstant.Admin,
-                Avatar = GlobalConstant.CustomerAvtMale,
-                IsVerified = true, // Temporary
-            };
-
-            await _accService.Add(accountCreated);
-
-            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-            var adminAccount = new AdminAccount()
-            {
-                AccountId = accId,
-                Account = null!,
-            };
-
-            await _adminService.Add(adminAccount);
-            // await _uow.Sa
-
-            return Ok(new
-            {
-                message = "Tạo tài khoản mới thành công!"
-            });
-        }
-
         [HttpPost("login/admin")]
         public async Task<ActionResult<string>> LoginAdmin(LoginAdminDto request)
         {
@@ -340,6 +344,51 @@ namespace DeToiServer.Controllers
                 message = "Đăng nhập thành công.",
                 token,
                 refreshToken
+            });
+        }
+
+        [HttpPost("login/admin/forgot-password")]
+        public async Task<IActionResult> ForgotPassword(EmailDto request)
+        {
+            var account = await _accService
+                .GetByCondition(acc => acc.Email.Equals(request.Email));
+            var admin = await _adminService.GetAdminByAccId(account.Id);
+
+            if (account == null || admin == null)
+            {
+                return NotFound("Tài khoản không tồn tại.");
+            }
+
+            admin.PasswordResetToken = GenerateOTP();
+            admin.ResetTokenExpires = DateTime.Now.AddMinutes(5);
+            await _uow.SaveChangesAsync();
+
+            //string contentRootPath = _hostingEnvironment.ContentRootPath;
+            //string folderPath = Path.Combine(contentRootPath, "EmailTemplate");
+            //Setup mail
+            //MailRequest mailRequest = new()
+            //{
+            //    ToEmail = emailDto.Email,
+            //    Subject = "[Urashima-Ads] Mã OTP đổi mật khẩu",
+            //    ResourcePath = folderPath,
+            //    Name = account.FullName,
+            //    Otp = account.PasswordResetToken
+            //};
+            //try
+            //{
+            //    await _emailService.SendOtpEmailAsync(mailRequest);
+            //}
+            //catch
+            //{
+            //    return BadRequest(new
+            //    {
+            //        Message = "Không thể gửi email"
+            //    });
+            //}
+
+            return Ok(new
+            {
+                Message = "Mã Otp đã được gửi đến địa chỉ email của bạn"
             });
         }
 
