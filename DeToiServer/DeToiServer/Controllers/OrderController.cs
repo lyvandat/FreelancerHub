@@ -48,7 +48,7 @@ namespace DeToiServer.Controllers
             IFreelanceAccountService freelancerAcc,
             IUserService userService,
             RealtimeConsumer rabbitMQConsumer,
-            IMessageBusClient messageBusClient,
+            //IMessageBusClient messageBusClient,
             IOptions<VnPayConfigModel> vnPayConfig,
             INotificationService notificationService,
             IPaymentService paymentService,
