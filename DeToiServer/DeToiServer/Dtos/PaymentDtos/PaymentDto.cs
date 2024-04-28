@@ -35,8 +35,14 @@ namespace DeToiServer.Dtos.PaymentDtos
 
     public class PostFreelancePaymentDto
     {
-        public Guid FreelancerId { get; set; }
         public int Amount { get; set; }
+    }
+
+    public class GetFreelancerPaymentHistoryDto
+    {
+        public string PaymentType { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
+        public string Method { get; set; } = string.Empty;
     }
 
     public class ConfirmWebhook

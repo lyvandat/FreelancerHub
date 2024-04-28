@@ -115,6 +115,10 @@ namespace DeToiServer.AutoMapper
                     return context.Mapper.Map<GetFreelanceMatchingDto>(src.Freelancer);
                 });
 
+            CreateMap<GetFreelanceMatchingDto, GetFreelancerWalletDto>();
+            CreateMap<FreelancePaymentHistory, GetFreelancerPaymentHistoryDto>()
+                .ForMember(dest => dest.PaymentType, opt => opt.MapFrom(src => src.PaymentType.ToString()));
+
             #endregion
 
             #region Payment

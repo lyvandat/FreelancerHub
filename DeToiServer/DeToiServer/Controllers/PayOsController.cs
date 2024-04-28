@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.PaymentDtos;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.PaymentService;
 using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Common.CustomAttribute;
 using Microsoft.AspNetCore.Mvc;
 using Net.payOS;
 using Net.payOS.Types;
+using System.Security.Claims;
 
 namespace DeToiServer.Controllers
 {
@@ -34,10 +37,11 @@ namespace DeToiServer.Controllers
             return long.Parse(DateTimeOffset.Now.ToString("ffffff"));
         }
 
-        [HttpPost("payment-link")]
+        [HttpPost("payment-link"), AuthorizeRoles(GlobalConstant.Freelancer)]
         public async Task<ActionResult<CreatePaymentResult>> CreateNewPaymentLink(PostFreelancePaymentDto paymentDto)
         {
-            var freelancer = await _freelanceAccService.GetByAccId(paymentDto.FreelancerId);
+            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var freelancer = await _freelanceAccService.GetByAccId(accountId);
 
             if (freelancer == null)
             {
@@ -51,7 +55,7 @@ namespace DeToiServer.Controllers
             Random random = new Random();
             int randomDigits = random.Next(1000, 10000); // Generates a random 4-digit number
             long finalOrderCode = phoneNumber * 10000 + randomDigits;
-            string description = $"Nạp tiền vào ví tài khoản: {paymentDto.FreelancerId}";
+            string description = $"Nạp tiền vào ví tài khoản: {accountId}";
             ItemData item = new ItemData(description, 1, paymentDto.Amount);
             List<ItemData> items = [item];
             PaymentData paymentData = new PaymentData(

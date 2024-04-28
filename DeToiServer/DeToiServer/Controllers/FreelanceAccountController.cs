@@ -74,6 +74,23 @@ namespace DeToiServer.Controllers
             return Ok(freelance);
         }
 
+        [HttpGet("wallet"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult<GetFreelancerWalletDto>> GetCurrentFreelancerWallet()
+        {
+            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var freelance = await _freelanceAccService.GetDetailWithStatistic(accountId);
+            var freelancerWallet = _mapper.Map<GetFreelancerWalletDto>(freelance);
+            if (freelance is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không tìm thấy tài khoản Freelancer"
+                });
+            }
+
+            return Ok(freelancerWallet);
+        }
+
         [HttpGet("short-detail"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<GetFreelanceAccountShortDetailDto>> GetFreelancerShortDetail()
         {

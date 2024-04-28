@@ -1,5 +1,6 @@
 ﻿using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.AddressDtos;
+using DeToiServer.Dtos.PaymentDtos;
 using DeToiServer.Dtos.ServiceProvenDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Dtos.SkillDtos;
@@ -51,6 +52,12 @@ namespace DeToiServer.Dtos.FreelanceDtos
         public ICollection<GetServiceProvenDto>? ServiceProven { get; set; }
         public ICollection<GetFreelanceReviewDto>? Reviews { get; set; }
         public ICollection<GetServiceTypeDto>? FreelancerFeasibleServices { get; set; }
+    }
+
+    public class GetFreelancerWalletDto
+    {
+        public double Balance { get; set; }
+        public IEnumerable<GetFreelancerPaymentHistoryDto> PaymentHistory { get; set; } = Enumerable.Empty<GetFreelancerPaymentHistoryDto>();
     }
 
     public class GetFreelancerAndPreviewPriceDto
