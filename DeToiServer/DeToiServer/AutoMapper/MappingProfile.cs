@@ -118,7 +118,7 @@ namespace DeToiServer.AutoMapper
             CreateMap<GetFreelanceMatchingDto, GetFreelancerWalletDto>();
             CreateMap<FreelancePaymentHistory, GetFreelancerPaymentHistoryDto>()
                 .ForMember(dest => dest.PaymentType, opt => opt.MapFrom(src => src.PaymentType.ToString()))
-                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.FreelanceAccount.Id.ToString(), src.Value)));
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.FreelanceAccount.Id.ToString(), src.Value))));
 
             #endregion
 
