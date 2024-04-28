@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeToiServerData.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240428140016_V1.6.23_UpdateFee")]
+    [Migration("20240428145124_V1.6.23_UpdateFee")]
     partial class V1623_UpdateFee
     {
         /// <inheritdoc />

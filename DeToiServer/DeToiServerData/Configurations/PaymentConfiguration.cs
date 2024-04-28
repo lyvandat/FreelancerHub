@@ -29,9 +29,9 @@ namespace DeToiServerData.Configurations
             builder.HasData(new List<Fee>()
             {
                 new() {
-                    Id = GlobalConstant.Fee.Id.Platform,
-                    Type = GlobalConstant.Fee.Platform,
-                    Amount = GlobalConstant.Fee.ValueConst.Platform
+                    Id = GlobalConstant.Fee.Id.PlatformFee,
+                    Type = GlobalConstant.Fee.PlatformFee,
+                    Amount = GlobalConstant.Fee.ValueConst.PlatformFee
                 },
                 new() {
                     Id = GlobalConstant.Fee.Id.MinServicePrice,

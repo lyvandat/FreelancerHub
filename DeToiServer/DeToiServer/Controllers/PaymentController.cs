@@ -72,7 +72,7 @@ namespace DeToiServer.Controllers
 
             return Ok(new FeeDto()
             {
-                Platform = result.First(e => e.Id.Equals(GlobalConstant.Fee.Id.Platform)).Amount,
+                PlatformFee = result.First(e => e.Id.Equals(GlobalConstant.Fee.Id.PlatformFee)).Amount,
                 MinServicePrice = result.First(e => e.Id.Equals(GlobalConstant.Fee.Id.MinServicePrice)).Amount,
             });
         }

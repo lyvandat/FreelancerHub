@@ -2,7 +2,7 @@
 {
     public class FeeDto
     {
-        public double Platform { get; set; }
+        public double PlatformFee { get; set; }
         public double MinServicePrice { get; set; }
     }
 }
