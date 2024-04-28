@@ -29,8 +29,9 @@ namespace DeToiServer.RealTime
         private readonly IPaymentService _paymentService;
         private readonly DataContext _context;
         private readonly UnitOfWork _uow;
+        private readonly ILogger<ChatHub> _logger;
 
-        public ChatHub(UnitOfWork uow, DataContext context, IFreelanceAccountService freelancerService, ICustomerAccountService customerService, IOrderManagementService orderService, INotificationService notificationService, IPaymentService paymentService, IMapper mapper)
+        public ChatHub(UnitOfWork uow, DataContext context, IFreelanceAccountService freelancerService, ICustomerAccountService customerService, IOrderManagementService orderService, INotificationService notificationService, IPaymentService paymentService, IMapper mapper, ILogger<ChatHub> logger)
         {
             _freelancerService = freelancerService;
             _customerService = customerService;
@@ -40,6 +41,7 @@ namespace DeToiServer.RealTime
             _paymentService = paymentService;
             _context = context;
             _uow = uow;
+            _logger = logger;
         }
 
         public async Task SendMessageToFreelancer(PostOrderDto order)
@@ -241,9 +243,9 @@ namespace DeToiServer.RealTime
                     },
                 }, [customer.AccountId]);
             }
-            catch(Exception)
+            catch(Exception ex)
             {
-                Console.WriteLine("Cannot save bidding order");
+                _logger.LogError("Cannot save bidding order: " + ex.Message);
             }
         }
 
@@ -297,10 +299,11 @@ namespace DeToiServer.RealTime
 
                 await _context.SaveChangesAsync();
             }
-            else
-            {
-                await Groups.AddToGroupAsync(Context.ConnectionId, "guests");
-            }
+
+            //else
+            //{
+            //    await Groups.AddToGroupAsync(Context.ConnectionId, "guests");
+            //}
 
             await base.OnConnectedAsync();
         }
@@ -334,10 +337,10 @@ namespace DeToiServer.RealTime
             }
 
             // Remove guests from the guests group
-            if (string.IsNullOrEmpty(phone))
-            {
-                await Groups.RemoveFromGroupAsync(Context.ConnectionId, "guests");
-            }
+            //if (string.IsNullOrEmpty(phone))
+            //{
+            //    await Groups.RemoveFromGroupAsync(Context.ConnectionId, "guests");
+            //}
 
             await _context.SaveChangesAsync();
             await base.OnDisconnectedAsync(ex);

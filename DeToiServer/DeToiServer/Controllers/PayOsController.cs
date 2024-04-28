@@ -18,13 +18,15 @@ namespace DeToiServer.Controllers
         private readonly IPaymentService _paymentService;
         private readonly UnitOfWork _uow;
         private readonly IMapper _mapper;
+        private readonly ILogger<PayOsController> _logger;
 
-        public PayOsController(UnitOfWork uow, IFreelanceAccountService freelanceAccService, IPaymentService paymentService, IMapper mapper)
+        public PayOsController(UnitOfWork uow, IFreelanceAccountService freelanceAccService, IPaymentService paymentService, IMapper mapper, ILogger<PayOsController> logger)
         {
             _freelanceAccService = freelanceAccService;
             _paymentService = paymentService;
             _uow = uow;
             _mapper = mapper;
+            _logger = logger;
         }
 
         private long GenerateTimestampBasedID()
@@ -92,7 +94,7 @@ namespace DeToiServer.Controllers
             }
             catch (System.Exception exception)
             {
-                Console.WriteLine(exception.Message);
+                _logger.LogError(exception.Message);
                 return BadRequest(new
                 {
                     Message = "Không thể xác nhận webhook"
@@ -106,7 +108,7 @@ namespace DeToiServer.Controllers
             try
             {
                 WebhookData data = _payOS.verifyPaymentWebhookData(body);
-                Console.WriteLine("---Confirm web hook is running");
+                _logger.LogInformation("---Confirm web hook is running");
                 if (data.description == "Ma giao dich thu nghiem" || data.description == "VQRIO123")
                 {
                     return Ok("Xác nhận thanh toán mẫu thành công");
@@ -114,7 +116,7 @@ namespace DeToiServer.Controllers
 
                 // Update top-up status
                 var phoneNumber = data.orderCode.ToString().Substring(0, data.orderCode.ToString().Length - 4);
-                Console.WriteLine("Freelancer deposit number: " + phoneNumber);
+                _logger.LogInformation("Freelancer deposit number: " + phoneNumber);
                 var freelance = await _freelanceAccService.GetByAccPhone(phoneNumber);
 
                 if (freelance is null)
@@ -146,7 +148,7 @@ namespace DeToiServer.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                _logger.LogError(e.Message);
                 return Ok("Xác nhận thanh toán thất bại");
             }
 
@@ -190,7 +192,7 @@ namespace DeToiServer.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                _logger.LogError(e.Message);
                 return Ok("Xác nhận thanh toán thất bại");
             }
 

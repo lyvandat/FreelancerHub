@@ -15,12 +15,14 @@ namespace DeToiServer.Services.OrderManagementService
     {
         private readonly UnitOfWork _uow;
         private readonly IMapper _mapper;
+        private readonly ILogger<OrderManagementService> _logger;
         private const int MAX_SERVICE = 50;
 
-        public OrderManagementService(UnitOfWork uow, IMapper mapper)
+        public OrderManagementService(UnitOfWork uow, IMapper mapper, ILogger<OrderManagementService> logger)
         {
             _uow = uow;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public Service? AddService(ServiceDto? postService, Guid orderId, Order order)
@@ -367,7 +369,7 @@ namespace DeToiServer.Services.OrderManagementService
 
             if (!await _uow.SaveChangesAsync())
             {
-                Console.WriteLine($"Cannot update payment status for order: {paymentStatusHistory.OrderId}");
+                _logger.LogError($"Cannot update payment status for order: {paymentStatusHistory.OrderId}");
                 return null;
             }
 

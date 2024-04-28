@@ -36,7 +36,6 @@ namespace DeToiServer.Controllers
         private readonly IUserService _userService;
         private readonly RealtimeConsumer _rabbitMQConsumer;
         private readonly IMapper _mapper;
-        private readonly IMessageBusClient _messageBusClient;
         private readonly VnPayConfigModel _vnPayConfig;
         private readonly INotificationService _notificationService;
         private readonly IPaymentService _paymentService;
@@ -63,7 +62,6 @@ namespace DeToiServer.Controllers
             _userService = userService;
             _rabbitMQConsumer = rabbitMQConsumer;
             _mapper = mapper;
-            _messageBusClient = messageBusClient;
             _vnPayConfig = vnPayConfig.Value;
             _notificationService = notificationService;
             _paymentService = paymentService;
@@ -91,22 +89,6 @@ namespace DeToiServer.Controllers
                     Message = "Tạo đơn đặt hàng không thành công"
                 });
             }
-
-            //Send Async Message
-            //try
-            //{
-            //    var publishedOrder = new OrderPlacedDto();
-            //    publishedOrder.Event = "OrderPlaced";
-            //    _messageBusClient.PublishNewOrder(publishedOrder);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine($"--> Could not send order asynchronously: {ex.Message}");
-            //    return BadRequest(new
-            //    {
-            //        Message = $"--> Could not send order asynchronously: {ex.Message}"
-            //    });
-            //}
 
             await _rabbitMQConsumer.SendMessageToFreelancer(postOrder);
 
@@ -218,24 +200,24 @@ namespace DeToiServer.Controllers
             return Ok(order);
         }
 
-        [HttpGet("test-post-order")]
-        public ActionResult TestPostOrder()
-        {
-            var publishedOrder = new OrderPlacedDto();
-            publishedOrder.Comment = "Test published";
-            //Send Async Message
-            try
-            {
-                publishedOrder.Event = "OrderPlaced";
-                _messageBusClient.PublishNewOrder(publishedOrder);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"--> Could not send asynchronously: {ex.Message}");
-                return BadRequest();
-            }
-            return Ok();
-        }
+        //[HttpGet("test-post-order")]
+        //public ActionResult TestPostOrder()
+        //{
+        //    var publishedOrder = new OrderPlacedDto();
+        //    publishedOrder.Comment = "Test published";
+        //    //Send Async Message
+        //    try
+        //    {
+        //        publishedOrder.Event = "OrderPlaced";
+        //        _messageBusClient.PublishNewOrder(publishedOrder);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"--> Could not send asynchronously: {ex.Message}");
+        //        return BadRequest();
+        //    }
+        //    return Ok();
+        //}
 
         //[HttpGet("test-notification-format")]
         //private ActionResult TestNotiFormat()

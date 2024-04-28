@@ -9,12 +9,14 @@ namespace DeToiServer.AsyncDataServices
     public class MessageBusClient : IMessageBusClient
     {
         private readonly IConfiguration _configuration;
+        private readonly ILogger<MessageBusClient> _logger;
         private readonly IConnection? _connection;
         private readonly IModel? _channel;
 
-        public MessageBusClient(IConfiguration configuration)
+        public MessageBusClient(IConfiguration configuration, ILogger<MessageBusClient> logger)
         {
             _configuration = configuration;
+            _logger = logger;
             var factory = new ConnectionFactory()
             {
                 HostName = _configuration["RabbitMQHost"],
@@ -30,12 +32,12 @@ namespace DeToiServer.AsyncDataServices
 
                 _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
 
-                Console.WriteLine("--> Connected to MessageBus");
+                _logger.LogInformation("--> Connected to MessageBus");
 
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"--> Could not connect to the Message Bus: {ex.Message}");
+                _logger.LogError($"--> Could not connect to the Message Bus: {ex.Message}");
             }
         }
 
@@ -45,12 +47,12 @@ namespace DeToiServer.AsyncDataServices
 
             if (_connection != null && _connection.IsOpen)
             {
-                Console.WriteLine("--> RabbitMQ Connection Open, sending message...");
+                _logger.LogInformation("--> RabbitMQ Connection Open, sending message...");
                 SendMessage(message);
             }
             else
             {
-                Console.WriteLine("--> RabbitMQ connectionis closed, not sending");
+                _logger.LogInformation("--> RabbitMQ connections closed, not sending");
             }
         }
 
@@ -62,12 +64,12 @@ namespace DeToiServer.AsyncDataServices
                             routingKey: "",
                             basicProperties: null,
                             body: body);
-            Console.WriteLine($"--> We have sent {message}");
+            _logger.LogInformation($"--> We have sent {message}");
         }
 
         public void Dispose()
         {
-            Console.WriteLine("MessageBus Disposed");
+            _logger.LogInformation("MessageBus Disposed");
             if (_channel != null && _channel.IsOpen)
             {
                 _channel.Close();
@@ -77,7 +79,7 @@ namespace DeToiServer.AsyncDataServices
 
         private void RabbitMQ_ConnectionShutdown(object? sender, ShutdownEventArgs e)
         {
-            Console.WriteLine("--> RabbitMQ Connection Shutdown");
+            _logger.LogInformation("--> RabbitMQ Connection Shutdown");
         }
     }
 }

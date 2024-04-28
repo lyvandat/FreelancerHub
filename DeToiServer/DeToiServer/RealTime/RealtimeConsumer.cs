@@ -10,10 +10,12 @@ namespace DeToiServer.RealTime
     public class RealtimeConsumer
     {
         static HubConnection? _connectionSignalR;
+        private readonly ILogger<RealtimeConsumer> _logger;
         readonly IConfiguration _configuration;
 
-        public RealtimeConsumer(IConfiguration configuration)
+        public RealtimeConsumer(IConfiguration configuration, ILogger<RealtimeConsumer> logger)
         {
+            _logger = logger;
             _configuration = configuration;
 
             try
@@ -22,7 +24,7 @@ namespace DeToiServer.RealTime
             }
             catch(Exception ex)
             {
-                Console.WriteLine($"ERROR: Cannot connect to real time endpoints: {ex.Message}");
+                _logger.LogError($"ERROR: Cannot connect to real time endpoints: {ex.Message}");
             }
         }
 
@@ -32,14 +34,14 @@ namespace DeToiServer.RealTime
             {
                 if (_connectionSignalR == null)
                 {
-                    Console.WriteLine("Cannot send real time messages due to connection error");
+                    _logger.LogError("Cannot send real time messages due to connection error");
                     return;
                 }
                 await _connectionSignalR.InvokeAsync("SendMessageToFreelancer", postOrderDto);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{ex.Message} | {ex.StackTrace}");
+                _logger.LogError($"{ex.Message} | {ex.StackTrace}");
             }
         }
 
@@ -49,13 +51,13 @@ namespace DeToiServer.RealTime
             {
                 if (_connectionSignalR == null)
                 {
-                    Console.WriteLine("Cannot send real time messages due to connection error");
+                    _logger.LogError("Cannot send real time messages due to connection error");
                     return;
                 }
 
                 if (getOrderDto == null)
                 {
-                    Console.WriteLine("Cannot send real time messages due to data error");
+                    _logger.LogError("Cannot send real time messages due to data error");
                     return;
                 }
 
@@ -63,7 +65,7 @@ namespace DeToiServer.RealTime
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{ex.Message} | {ex.StackTrace}");
+                _logger.LogError($"{ex.Message} | {ex.StackTrace}");
             }
         }
 
@@ -73,14 +75,14 @@ namespace DeToiServer.RealTime
             {
                 if (_connectionSignalR == null)
                 {
-                    Console.WriteLine("Cannot send real time messages due to connection error");
+                    _logger.LogError("Cannot send real time messages due to connection error");
                     return;
                 }
                 await _connectionSignalR.InvokeAsync("SendOrderStatusToCustomer", orderStatusRealTimeDto);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{ex.Message} | {ex.StackTrace}");
+                _logger.LogError($"{ex.Message} | {ex.StackTrace}");
             }
         }
 
@@ -88,7 +90,7 @@ namespace DeToiServer.RealTime
         {
             // build deployment: _configuration["RealTimeHub"] ?? Helper.GetDockerHostUrl()
             _connectionSignalR = new HubConnectionBuilder()
-               .WithUrl(Helper.GetDockerHostUrl())
+               .WithUrl("e")
                .Build();
             await _connectionSignalR.StartAsync();
         }

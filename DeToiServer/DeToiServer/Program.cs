@@ -4,22 +4,20 @@ using DeToiServer;
 using DeToiServer.AsyncDataServices;
 using DeToiServer.AutoMapper;
 using DeToiServer.ConfigModels;
-using DeToiServer.EventProcessing;
 using DeToiServer.Middlewares;
 using DeToiServer.RealTime;
 using DeToiServer.WorkerServices;
-using DeToiServerCore.Common.Helper;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.AddLoggingScheme();
 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
     .AddEnvironmentVariables();
 builder.Services.Configure<ApplicationSecretSettings>(builder.Configuration.GetSection("ApplicationSecrets"));
 
-builder.Services.AddLogging();
 builder.Services.AddControllers()
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -41,9 +39,10 @@ builder.Services.AddUnitOfWork(options =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<RealtimeConsumer>();
-builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
-builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
-builder.Services.AddHostedService<MessageBusSubscriber>();
+// Message queue to communicate between services (in microservice architecture)
+//builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
+//builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
+//builder.Services.AddHostedService<MessageBusSubscriber>();
 builder.Services.Configure<VnPayConfigModel>(builder.Configuration.GetSection("VnPayConfig"));
 builder.Services.AddHostedService<NotificationDataCleanupService>();
 var app = builder.Build();

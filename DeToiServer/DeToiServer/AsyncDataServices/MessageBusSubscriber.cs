@@ -8,14 +8,16 @@ namespace DeToiServer.AsyncDataServices
     public class MessageBusSubscriber : BackgroundService
     {
         private readonly IConfiguration _configuration;
+        private readonly ILogger<MessageBusSubscriber> _logger;
         private readonly IEventProcessor _eventProcessor;
         private IConnection? _connection;
         private IModel? _channel;
         private string? _queueName;
 
-        public MessageBusSubscriber(IConfiguration configuration, IEventProcessor eventProcessor)
+        public MessageBusSubscriber(IConfiguration configuration, IEventProcessor eventProcessor, ILogger<MessageBusSubscriber> logger)
         {
             _configuration = configuration;
+            _logger = logger;
             _eventProcessor = eventProcessor;
 
             var factory = new ConnectionFactory() { HostName = _configuration["RabbitMQHost"], Port = int.Parse(_configuration["RabbitMQPort"] ?? "5672") };
@@ -30,19 +32,19 @@ namespace DeToiServer.AsyncDataServices
                     exchange: "trigger",
                     routingKey: "");
 
-                Console.WriteLine("--> Listenting on the Message Bus...");
+                _logger.LogInformation("--> Listenting on the Message Bus...");
 
                 _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
             } 
             catch (Exception ex)
             {
-                Console.WriteLine($"ERROR: Cannot create message bus connection: {ex.Message}");
+                _logger.LogError($"ERROR: Cannot create message bus connection: {ex.Message}");
             }
         }
 
         private void RabbitMQ_ConnectionShutdown(object? sender, ShutdownEventArgs e)
         {
-            Console.WriteLine("--> Connection Shutdown");
+            _logger.LogInformation("--> Connection Shutdown");
         }
 
 
@@ -56,7 +58,7 @@ namespace DeToiServer.AsyncDataServices
 
                 consumer.Received += (ModuleHandle, ea) =>
                 {
-                    Console.WriteLine("--> Event Received!");
+                    _logger.LogInformation("--> Event Received!");
 
                     var body = ea.Body;
                     var notificationMessage = Encoding.UTF8.GetString(body.ToArray());

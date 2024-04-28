@@ -42,6 +42,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
@@ -147,20 +148,39 @@ namespace DeToiServerData
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var dbContext = serviceScope.ServiceProvider.GetRequiredService<DataContext>();
+                var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<IApplicationBuilder>>();
 
                 try
                 {
                     var databaseCreator = dbContext.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
                     if (dbContext.Database.GetPendingMigrations().Any() || !databaseCreator!.CanConnect() || !databaseCreator!.HasTables())
                     {
+                        logger.LogInformation("Applying migrations and execute example data");
                         dbContext.Database.Migrate();
                         ExecuteSqlFromFile(dbContext, filePath);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message, ex.StackTrace);
+                    logger.LogError(ex.Message, ex.StackTrace);
                 }
+            }
+        }
+
+        public static void AddLoggingScheme(this IHostApplicationBuilder builder)
+        {
+            if (builder.Environment.IsDevelopment())
+            {
+                builder.Services.AddLogging();
+            }
+            else
+            {
+                var logger = new LoggerConfiguration()
+                    .ReadFrom.Configuration(builder.Configuration)
+                    .Enrich.FromLogContext()
+                    .CreateLogger();
+                            builder.Logging.ClearProviders();
+                            builder.Logging.AddSerilog(logger);
             }
         }
 
