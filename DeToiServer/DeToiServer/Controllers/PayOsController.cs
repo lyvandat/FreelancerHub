@@ -73,9 +73,9 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("order")]
-        public async Task<ActionResult<PaymentLinkInformation>> GetOrder(int orderId)
+        public async Task<ActionResult<PaymentLinkInformation>> GetOrder(long orderCode)
         {
-            PaymentLinkInformation paymentLinkInformation = await _payOS.getPaymentLinkInfomation(orderId);
+            PaymentLinkInformation paymentLinkInformation = await _payOS.getPaymentLinkInfomation(orderCode);
 
             return Ok(paymentLinkInformation);
         }
