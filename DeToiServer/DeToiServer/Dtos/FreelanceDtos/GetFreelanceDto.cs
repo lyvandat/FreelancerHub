@@ -12,8 +12,8 @@ namespace DeToiServer.Dtos.FreelanceDtos
         public required GetAccountDto Account { get; set; }
         public Guid AccountId { get; set; }
         public double Rating { get; set; }
-        public double Balance { get; set; }
-        public double SystemBalance { get; set; }
+        //public double Balance { get; set; }
+        //public double SystemBalance { get; set; }
         public int OrderCount { get; set; } // orderCount tổng số đơn
         public int LoveCount { get; set; } // loveCount tổng yêu thích
         public int PositiveReviewCount { get; set; } // positiveReviewCount tổng đánh giá ôk.

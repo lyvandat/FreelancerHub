@@ -66,14 +66,14 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<ActionResult<GetFreelanceMatchingDto>> GetAllFreelancer()
+        public async Task<ActionResult<GetFreelanceDto>> GetAllFreelancer()
         {
             var freelance = await _freelanceAccService.GetAllFreelanceDetail();
-            return Ok(freelance);
+            return Ok(_mapper.Map<IEnumerable<GetFreelanceDto>>(freelance));
         }
 
         [HttpGet("detail")] // , AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)
-        public async Task<ActionResult<GetFreelanceMatchingDto>> GetFreelancerDetail(Guid id)
+        public async Task<ActionResult<GetFreelanceDto>> GetFreelancerDetail(Guid id)
         {
             var freelance = await _freelanceAccService.GetDetailWithStatistic(id);
 
@@ -85,7 +85,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            return Ok(freelance);
+            return Ok(_mapper.Map<GetFreelanceDto>(freelance));
         }
 
         [HttpGet("wallet"), AuthorizeRoles(GlobalConstant.Freelancer)]
@@ -123,7 +123,7 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("current"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
-        public async Task<ActionResult<GetFreelanceMatchingDto>> GetCurrentFreelancerDetail()
+        public async Task<ActionResult<GetFreelanceDto>> GetCurrentFreelancerDetail()
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerId);
             var freelance = await _freelanceAccService.GetByAccId(freelancerId);
@@ -137,7 +137,7 @@ namespace DeToiServer.Controllers
             }
             var result = await _freelanceAccService.GetDetailWithStatistic(freelancerId);
 
-            return Ok(result);
+            return Ok(_mapper.Map<GetFreelanceDto>(result));
         }
 
         /// <summary>
