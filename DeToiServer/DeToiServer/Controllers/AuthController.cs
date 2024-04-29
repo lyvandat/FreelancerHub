@@ -248,14 +248,9 @@ namespace DeToiServer.Controllers
                 .GetByCondition(acc => acc.Phone.Equals(request.Phone)
                     && acc.CountryCode.Equals(request.CountryCode));
 
-            if (rawAccount != null && rawAccount.Role.Equals(GlobalConstant.Freelancer))
-            {
-                return Unauthorized(new
-                {
-                    Message = "Số điện thoại đã được đăng ký." //  dưới định danh Freelancer
-                });
-            }
-            if (rawAccount != null && rawAccount.Role.Equals(GlobalConstant.Admin))
+            if (rawAccount != null 
+                && (rawAccount.Role.Equals(GlobalConstant.Freelancer)
+                || rawAccount.Role.Equals(GlobalConstant.Admin)))
             {
                 return Unauthorized(new
                 {
@@ -403,7 +398,7 @@ namespace DeToiServer.Controllers
             {
                 return NotFound(new
                 {
-                    Message = $"Không tìm thấy tài khoản với số điện thoại: {request.Phone}."
+                    Message = $"Không tìm thấy tài khoản với số điện thoại: {request.CountryCode}:{request.Phone}."
                 });
             }
 
