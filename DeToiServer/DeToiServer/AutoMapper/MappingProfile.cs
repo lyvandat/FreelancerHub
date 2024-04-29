@@ -91,8 +91,8 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
                 .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders))
-                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.Balance))))
                 .ForMember(dest => dest.ActiveTime, opt => opt.MapFrom(src => src.Account.CreatedAt))
+                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.Balance))))
                 .ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.SystemBalance))));
 
 
@@ -100,9 +100,11 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
                 .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders))
+                .ForMember(dest => dest.ActiveTime, opt => opt.MapFrom(src => src.Account.CreatedAt))
                 .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.Id.ToString(), src.Balance))))
                 .ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.SystemBalance))));
 
+            CreateMap<GetFreelanceMatchingDto, GetFreelanceDto>();
 
             CreateMap<FreelanceAccount, GetFreelanceAccountShortDetailDto>()
                 .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Account.Avatar ?? GlobalConstant.DefaultCommentAvt))
@@ -162,7 +164,8 @@ namespace DeToiServer.AutoMapper
 
             CreateMap<ICollection<OrderServiceType>, ICollection<GetServiceStatusDto>>()
                 .ConvertUsing((src, dest, context) => {
-                    return context.Mapper.Map<ICollection<GetServiceStatusDto>>(src.SelectMany(ost => ost.ServiceType.ServiceStatusList));
+                    return context.Mapper.Map<ICollection<GetServiceStatusDto>>(src.SelectMany(ost => ost.ServiceType.ServiceStatusList)
+                        .OrderBy(stt => stt.ServiceStatus.Priority));
                 });
 
             CreateMap<FreelanceServiceType, GetServiceTypeDto>()

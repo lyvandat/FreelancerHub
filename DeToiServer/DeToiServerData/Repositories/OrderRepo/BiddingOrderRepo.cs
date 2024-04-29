@@ -15,12 +15,14 @@ namespace DeToiServerData.Repositories.OrderRepo
 
         public async Task<IEnumerable<BiddingOrder>> GetByFreelancerIdWithOrderDetail(Guid freelancerId)
         {
-            return await _dataContext.BiddingOrders
-                .AsNoTracking()
-                .Where(bo => bo.FreelancerId == freelancerId)
+            var query = _dataContext.BiddingOrders
+                .AsNoTracking().AsSplitQuery()
+                .Where(bo => bo.FreelancerId.Equals(freelancerId))
                 .Include(bo => bo.Order)
                     .ThenInclude(o => o.OrderServiceTypes)
                         .ThenInclude(ost => ost.ServiceType)
+                            .ThenInclude(st => st.ServiceStatusList)
+                                .ThenInclude(stl => stl.ServiceStatus)
                 .Include(bo => bo.Order)
                     .ThenInclude(o => o.OrderServices)
                         .ThenInclude(ost => ost.Service)
@@ -28,8 +30,9 @@ namespace DeToiServerData.Repositories.OrderRepo
                     .ThenInclude(o => o.ServiceStatus)
                 .Include(bo => bo.Order)
                     .ThenInclude(o => o.OrderAddress)
-                        .ThenInclude(o => o.Address)
-                .ToListAsync();
+                        .ThenInclude(o => o.Address);
+
+            return await query.ToListAsync();
         }
 
         public async Task<IEnumerable<BiddingOrder>> GetMatchingFreelancersByOrderId(Guid orderId)

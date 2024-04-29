@@ -406,7 +406,7 @@ namespace DeToiServer.Controllers
         {
             var query = new FilterCustomerOrderQuery()
             {
-                OrderStatusId = [StatusConst.OnDoingService],
+                OrderStatusId = [StatusConst.OnDoingService, StatusConst.OnDelivering, StatusConst.OnMoving],
             };
             return await GetCustomerOrders(query);
         }
@@ -416,7 +416,7 @@ namespace DeToiServer.Controllers
         {
             var query = new FilterCustomerOrderQuery()
             {
-                OrderStatusId = [StatusConst.OnMatching],
+                OrderStatusId = [StatusConst.OnMatching, StatusConst.Created],
             };
             return await GetCustomerOrders(query);
         }
@@ -464,7 +464,9 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            return Ok(await _biddingOrderService.GetFreelancerBiddingOrders(freelancer.Id));
+            var result = await _biddingOrderService.GetFreelancerBiddingOrders(freelancer.Id);
+
+            return Ok(result);
         }
 
         [HttpPost("customer-review"), AuthorizeRoles(GlobalConstant.Customer)]

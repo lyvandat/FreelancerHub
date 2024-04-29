@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.FreelanceDtos;
+using DeToiServer.Dtos.NotificationDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.PaymentDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Dtos.SkillDtos;
 using DeToiServer.Services.AccountService;
+using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.FreelanceQuizService;
 using DeToiServer.Services.FreelanceSkillService;
@@ -16,6 +18,7 @@ using DeToiServerCore.Common.CustomAttribute;
 using DeToiServerCore.Common.Helper;
 using DeToiServerCore.QueryModels.OrderQueryModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace DeToiServer.Controllers
@@ -26,32 +29,38 @@ namespace DeToiServer.Controllers
     {
         private readonly IAccountService _accService;
         private readonly IFreelanceAccountService _freelanceAccService;
+        //private readonly ICustomerAccountService _customerAccountService;
         private readonly IOrderManagementService _orderService;
         private readonly IFreelanceQuizService _quizService;
         private readonly IFreelanceSkillService _skillService;
         private readonly IBiddingOrderService _biddingOrderService;
         private readonly IPaymentService _paymentService;
+        //private readonly DataContext _context;
         private readonly UnitOfWork _uow;
         private readonly IMapper _mapper;
 
         public FreelanceAccountController(
-            IAccountService accService, 
-            IFreelanceAccountService freelanceAccountService, 
-            IOrderManagementService orderService, 
-            IFreelanceQuizService quizService, 
+            IAccountService accService,
+            IFreelanceAccountService freelanceAccountService,
+            //ICustomerAccountService customerAccountService,
+            IOrderManagementService orderService,
+            IFreelanceQuizService quizService,
             IFreelanceSkillService skillService,
             IBiddingOrderService biddingOrderService,
             IPaymentService paymentService,
+            //DataContext context,
             UnitOfWork unitOfWork,
             IMapper mapper)
         {
             _accService = accService;
             _freelanceAccService = freelanceAccountService;
+            //_customerAccountService = customerAccountService;
             _orderService = orderService;
             _quizService = quizService;
             _skillService = skillService;
             _biddingOrderService = biddingOrderService;
             _paymentService = paymentService;
+            //_context = context;
             _uow = unitOfWork;
             _mapper = mapper;
         }
@@ -234,15 +243,95 @@ namespace DeToiServer.Controllers
             {
                 await _uow.SaveChangesAsync();
             }
-                //return BadRequest(new
-                //{
-                //    Message = "Các dịch vụ này đã được thêm vào tài khoản, xin hãy thử lại"
-                //});
+            //return BadRequest(new
+            //{
+            //    Message = "Các dịch vụ này đã được thêm vào tài khoản, xin hãy thử lại"
+            //});
 
             return Ok(new
             {
                 Message = "Thêm dịch vụ cho Freelancer thành công"
             });
         }
+
+        //[HttpPost("bid-test"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        //public async Task<ActionResult<string>> TestBid(GetFreelancerAndPreviewPriceDto bid)
+        //{
+        //    _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+        //    var freelancer = await _freelanceAccService.GetDetailWithStatistic(accountId);
+
+        //    if (bid.PreviewPrice < (await _uow.PaymentRepo.GetAllFeeAsync())
+        //        .Where(f => f.Id.Equals(GlobalConstant.Fee.Id.MinServicePrice)).First().Amount)
+        //    {
+        //        return BadRequest(new
+        //        {
+        //            Message = "Baos gia sai"
+        //        });
+        //    }
+
+        //    var order = await _orderService.GetById(bid.OrderId);
+
+        //    if (order == null) return BadRequest(new
+        //    {
+        //        Message = "sai OrderId"
+        //    });
+
+        //    if (freelancer.Balance < order.EstimatedPrice || freelancer.Balance < bid.PreviewPrice)
+        //    {
+        //        return BadRequest(new
+        //        {
+        //            Message = "khong du tienf"
+        //        });
+        //    }
+
+        //    var customer = await _customerAccountService.GetByIdWithAccount(order.CustomerId);
+        //    var biddingOrder = _mapper.Map<BiddingOrder>(new GetFreelancerAndPreviewPriceDto()
+        //    {
+        //        PreviewPrice = bid.PreviewPrice,
+        //        OrderId = bid.OrderId,
+        //        FreelancerId = freelancer.Id,
+        //    });
+        //    var existingBiddingOrder = await _context.BiddingOrders
+        //        .Where(bo => bo.OrderId == biddingOrder.OrderId && bo.FreelancerId == biddingOrder.FreelancerId)
+        //        .FirstOrDefaultAsync();
+
+        //    if (existingBiddingOrder != null)
+        //    {
+        //        // Add Notification here for fe to catch
+        //        return BadRequest(new
+        //        {
+        //            Message = "bid don nay roi"
+        //        });
+        //    }
+
+        //    // Save bidding orders, update orderStatus.
+        //    try
+        //    {
+        //        if (order.ServiceStatusId.Equals(StatusConst.Created))
+        //        {
+        //            order.ServiceStatusId = StatusConst.OnMatching;
+        //        }
+        //        _context.BiddingOrders.Add(biddingOrder);
+                
+
+        //        if (!await _uow.SaveChangesAsync())
+        //        {
+        //            // Add Notification here for fe to catch
+        //            return BadRequest(new
+        //            {
+        //                Message = "loi bao gia"
+        //            });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine("Cannot save bidding order: " + ex.Message);
+        //    }
+
+        //    return Ok(new
+        //    {
+        //        Message = "Bid ok"
+        //    });
+        //}
     }
 }

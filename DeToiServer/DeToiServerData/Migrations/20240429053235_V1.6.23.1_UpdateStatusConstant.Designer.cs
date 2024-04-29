@@ -4,6 +4,7 @@ using DeToiServerData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeToiServerData.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240429053235_V1.6.23.1_UpdateStatusConstant")]
+    partial class V16231_UpdateStatusConstant
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -630,11 +633,7 @@ namespace DeToiServerData.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("FreelancerId")
+                    b.Property<Guid>("FreelanceAccountId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Method")
@@ -659,7 +658,7 @@ namespace DeToiServerData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FreelancerId");
+                    b.HasIndex("FreelanceAccountId");
 
                     b.ToTable("FreelancePaymentHistories");
                 });
@@ -1768,8 +1767,8 @@ namespace DeToiServerData.Migrations
             modelBuilder.Entity("DeToiServerCore.Models.Payment.FreelancePaymentHistory", b =>
                 {
                     b.HasOne("DeToiServerCore.Models.Accounts.FreelanceAccount", "FreelanceAccount")
-                        .WithMany("PaymentHistory")
-                        .HasForeignKey("FreelancerId")
+                        .WithMany("PaymentHistories")
+                        .HasForeignKey("FreelanceAccountId")
                         .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
@@ -2145,7 +2144,7 @@ namespace DeToiServerData.Migrations
 
                     b.Navigation("Orders");
 
-                    b.Navigation("PaymentHistory");
+                    b.Navigation("PaymentHistories");
 
                     b.Navigation("QuizCollection");
 

@@ -32,6 +32,7 @@ namespace DeToiServer.Dtos.FreelanceDtos
 
     public class GetFreelanceMatchingDto
     {
+        public Guid Id { get; set; }
         public required GetAccountDto Account { get; set; }
         public Guid AccountId { get; set; }
         public double Rating { get; set; }
