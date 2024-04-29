@@ -233,7 +233,6 @@ namespace DeToiServer.RealTime
 
                 var user = await _context.Users
                     .AsNoTracking()
-                    .Where(u => u.Phone.Equals(customer.Account.CombinedPhone))
                     .Include(u => u.Connections)
                     .FirstOrDefaultAsync();
 
