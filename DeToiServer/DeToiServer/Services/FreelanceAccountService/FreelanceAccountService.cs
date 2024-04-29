@@ -106,5 +106,10 @@ namespace DeToiServer.Services.FreelanceAccountService
             var removededServiceType = await _unitOfWork.FreelanceAccountRepo.RemoveFreelancerServiceTypesAsync(freelancerId, serviceTypes);
             return removededServiceType;
         }
+
+        public async Task<bool> RefundAuctionBalance(IEnumerable<Guid> accountIds, IDictionary<Guid, double> auctionPrice)
+        {
+            return await _unitOfWork.FreelanceAccountRepo.RefundAuctionBalance(accountIds, auctionPrice);
+        }
     }
 }

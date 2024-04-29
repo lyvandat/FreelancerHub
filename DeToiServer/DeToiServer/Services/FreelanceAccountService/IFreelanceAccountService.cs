@@ -19,5 +19,6 @@ namespace DeToiServer.Services.FreelanceAccountService
         Task<FreelanceAccount> GetByAccPhone(string phone);
         Task<IEnumerable<FreelanceServiceType>> AddServiceTypesFreelancer(Guid freelancerId, IEnumerable<Guid> serviceTypes);
         Task<IEnumerable<FreelanceServiceType>> RemoveServiceTypesFreelancer(Guid freelancerId, IEnumerable<Guid> serviceTypes);
+        Task<bool> RefundAuctionBalance(IEnumerable<Guid> accountIds, IDictionary<Guid, double> auctionPrice);
     }
 }

@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
-using DeToiServer.AsyncDataServices;
 using DeToiServer.ConfigModels;
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.NotificationDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.PaymentDtos;
 using DeToiServer.Dtos.RealTimeDtos;
-using DeToiServer.HtmlTemplates;
 using DeToiServer.RealTime;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
@@ -20,7 +18,6 @@ using DeToiServerCore.QueryModels.OrderQueryModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DeToiServer.Controllers
 {
@@ -39,6 +36,7 @@ namespace DeToiServer.Controllers
         private readonly VnPayConfigModel _vnPayConfig;
         private readonly INotificationService _notificationService;
         private readonly IPaymentService _paymentService;
+        private readonly ILogger<OrderController> _logger;
 
         public OrderController(
             UnitOfWork uow,
@@ -52,7 +50,8 @@ namespace DeToiServer.Controllers
             IOptions<VnPayConfigModel> vnPayConfig,
             INotificationService notificationService,
             IPaymentService paymentService,
-            IMapper mapper)
+            IMapper mapper, 
+            ILogger<OrderController> logger)
         {
             _uow = uow;
             _orderService = orderService;
@@ -65,6 +64,7 @@ namespace DeToiServer.Controllers
             _vnPayConfig = vnPayConfig.Value;
             _notificationService = notificationService;
             _paymentService = paymentService;
+            _logger = logger;
         }
 
         [HttpGet("test-gateway")]
@@ -171,7 +171,32 @@ namespace DeToiServer.Controllers
             {
                 order.ServiceStatusId = StatusConst.Waiting;
             }
-            
+
+
+            var ignoredFreelancer = (await _biddingOrderService.GetFreelancersForCustomerBiddingOrder(putOrder.OrderId))
+                .Where(fl => !fl.AccountId.Equals(freelancer.AccountId));
+            var ignoredAccIds = ignoredFreelancer.Select(igfl => igfl.AccountId).ToList();
+
+            //// Refund 'AuctionBalance' for the other freelancers
+            //try
+            //{
+            //    var biddingOrders = await _biddingOrderService.GetAllBiddingInfoByOrderId(order.Id);
+            //    biddingOrders = biddingOrders.Where(bo => bo.FreelancerId != freelancer.Id);
+            //    if (biddingOrders != null && biddingOrders.Any())
+            //    {
+            //        var aunctionDict = biddingOrders.ToDictionary(bo => bo.FreelancerId, bo => bo.PreviewPrice);
+            //        await _freelancerAcc.RefundAuctionBalance(ignoredAccIds, aunctionDict);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.LogError(ex.Message, ex.StackTrace);
+            //    return BadRequest(new
+            //    {
+            //        Message = "Hoàn tiền cho freelancers thất bại, vui lòng thử lại"
+            //    });
+            //}
+
             if (!await _uow.SaveChangesAsync())
             {
                 return BadRequest(new
@@ -193,10 +218,10 @@ namespace DeToiServer.Controllers
                 },
             }, [freelancer.AccountId]);
             // Send fail noti to not choosen freelancers
-            var ignoredFreelancer = biddingFreelancers.Where(fl => !fl.AccountId.Equals(freelancer.AccountId));
             
             if (ignoredFreelancer != null && ignoredFreelancer.Any())
             {
+                // Send fail noti to not choosen freelancers
                 await _notificationService.PushNotificationAsync(new PushNotificationDto()
                 {
                     ExpoPushTokens = ignoredFreelancer.Select(igfl => igfl.Account.ExpoPushToken).ToList(),
@@ -206,11 +231,8 @@ namespace DeToiServer.Controllers
                     {
                         ActionKey = GlobalConstant.Notification.CustomerNotChooseThisFreelancer,
                     },
-                },
-                ignoredFreelancer.Select(igfl => igfl.AccountId).ToList());
+                }, ignoredAccIds);
             }
-            //var html = HtmlGenerator.GenerateHtmlWithTitleMessageImage("Test voucher notification", "Xin chao ban da chuc mung thanh cong", "https://th.bing.com/th/id/OIP.FisuRuJ80bgWGBe9z-SW8wHaNK?w=187&h=333&c=7&r=0&o=5&pid=1.7");
-
             var getOrderDto = await _orderService.GetOrderDetailById(putOrder.OrderId);
             await _rabbitMQConsumer.SendReceiveOrderMessageToFreelancer(freelancer, getOrderDto);
             return Ok(order);

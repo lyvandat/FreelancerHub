@@ -1,4 +1,5 @@
-﻿using DeToiServerCore.Models.Accounts;
+﻿using DeToiServerCore.Common.Helper;
+using DeToiServerCore.Models.Accounts;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using static DeToiServerCore.Common.Helper.Helper;
 
 namespace DeToiServerData.Repositories.AccountFreelanceRepo;
 
@@ -146,5 +148,16 @@ public class FreelanceAccountRepo : RepositoryBase<FreelanceAccount>, IFreelance
             .Include(c => c.Address)
             .Where(predicate)
             .ToListAsync();
+    }
+
+    public async Task<bool> RefundAuctionBalance(IEnumerable<Guid> accIds, IDictionary<Guid, double> auctionPrice)
+    {
+
+        var result = await _context.Freelancers
+            .Where(f => accIds.Contains(f.AccountId))
+            .ExecuteUpdateAsync(s => s.SetProperty(f => f.AuctionBalance,
+                f => AesEncryption.Encrypt(f.Id.ToString(), $"{Convert.ToDouble(AesEncryption.Decrypt(f.Id.ToString(), f.AuctionBalance) + auctionPrice[f.AccountId])}")));
+
+        return result > 0;
     }
 }

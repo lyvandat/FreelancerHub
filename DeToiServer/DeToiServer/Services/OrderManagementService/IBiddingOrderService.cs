@@ -7,5 +7,6 @@ namespace DeToiServer.Services.OrderManagementService
     {
         Task<IEnumerable<GetOrderDto>> GetFreelancerBiddingOrders(Guid freelancerId);
         Task<IEnumerable<GetFreelanceMatchingDto>> GetFreelancersForCustomerBiddingOrder(Guid orderId);
+        Task<IEnumerable<BiddingOrder>> GetAllBiddingInfoByOrderId(Guid orderId);
     }
 }

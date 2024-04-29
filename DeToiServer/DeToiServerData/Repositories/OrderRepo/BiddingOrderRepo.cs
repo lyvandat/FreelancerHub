@@ -56,5 +56,13 @@ namespace DeToiServerData.Repositories.OrderRepo
 
             return await query.ToListAsync();
         }
+
+        public async Task<IEnumerable<BiddingOrder>> GetAllBiddingInfoByOrderId(Guid orderId)
+        {
+            return await _dataContext.BiddingOrders
+                .AsNoTracking().AsSplitQuery()
+                .Where(bo => bo.OrderId == orderId)
+                .ToListAsync();
+        }
     }
 }

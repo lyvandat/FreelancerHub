@@ -49,5 +49,10 @@ namespace DeToiServer.Services.OrderManagementService
                 return freelancer;
             });
         }
+
+        public async Task<IEnumerable<BiddingOrder>> GetAllBiddingInfoByOrderId(Guid orderId)
+        {
+            return await _uow.BiddingOrderRepo.GetAllBiddingInfoByOrderId(orderId);
+        }
     }
 }

@@ -143,8 +143,11 @@ namespace DeToiServer.RealTime
                 return;
             }
 
-            if (matchingFreelancer.PreviewPrice < (await _uow.PaymentRepo.GetAllFeeAsync())
-                .Where(f => f.Id.Equals(GlobalConstant.Fee.Id.MinServicePrice)).First().Amount )
+            var minPrice = (await _uow.PaymentRepo.GetAllFeeAsync())
+                .Where(f => f.Id.Equals(GlobalConstant.Fee.Id.MinServicePrice)).First().Amount;
+            var commissionFee = (await _uow.PaymentRepo.GetAllFeeAsync())
+                .Where(f => f.Id.Equals(GlobalConstant.Fee.Id.PlatformFee)).First().Amount;
+            if (matchingFreelancer.PreviewPrice < minPrice)
             {
                 await Clients.Caller.ErrorOccurred(new NotificationDto()
                 {
@@ -159,7 +162,7 @@ namespace DeToiServer.RealTime
 
             if (order == null) return;
 
-            if (freelancer.Balance < order.EstimatedPrice)
+            if (freelancer.Balance < matchingFreelancer.PreviewPrice * commissionFee)
             {
                 await Clients.Caller.ErrorOccurred(new NotificationDto()
                 {
@@ -202,7 +205,7 @@ namespace DeToiServer.RealTime
                         Id = freelancer.AccountId,
                         Method = GlobalConstant.Payment.Card,
                         WalletType = GlobalConstant.Payment.Wallet.Personal,
-                        Value = matchingFreelancer.PreviewPrice,
+                        Value = matchingFreelancer.PreviewPrice * commissionFee,
                     }, true);
 
                 if (updated == null)

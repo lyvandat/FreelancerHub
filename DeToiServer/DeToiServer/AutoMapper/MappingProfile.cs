@@ -135,7 +135,7 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.Value, opt => opt
                     .MapFrom(src => AesEncryption.Encrypt(src.FreelancerId.ToString(), src.Value.ToString())))
                 .ForMember(dest => dest.Description, opt => opt
-                    .MapFrom(src => GlobalConstant.Payment.PaymentTypeDictionary[src.PaymentType.ToString()]));
+                    .MapFrom(src => GlobalConstant.Payment.PaymentTypeDictionary[src.Method.ToString()]));
             #endregion
 
             #region ServiceType and ServiceCategory

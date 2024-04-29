@@ -5,6 +5,7 @@ Delete from [OrderSkillsRequired];
 Delete from [OrderAddresses];
 Delete from [Orders];
 Delete from [Services];
+delete from [BiddingOrders]
 
 DELETE from [FreelancePaymentHistories];
 DELETE from [FreelanceServiceTypes];
@@ -70,10 +71,10 @@ INSERT INTO [Accounts] ([Id], [Email], [FullName], [DateOfBirth], [Gender], [Cou
 ('95be2640-b5ec-416b-9153-09cbc7ec60f8', '', N'Lê Nhất Duy', '2002-04-09', 'Male', '84', '373344123', '84373344123', 'Admin', 'customer_avt/default_customer_2.jpg', 'string', 'default', '2024-05-07T17:25:40.825617', '2024-04-07 17:15:40.825617', '2024-05-07 17:25:40.825617', 1, 1),
 ('9a9ffdf1-0cc7-4efc-80b7-d34524010af5', '', N'Trương Xuân Hiền', '1998-02-11', 'Male', '84', '795202798', '84795202798', 'Customer', 'customer_avt/default_customer_1.jpg', 'string', 'default', '2024-04-13T20:27:27.323945', '2024-04-13 20:17:27.323945', '2024-04-13 20:27:27.323945', 1, 1);
 
-INSERT INTO [Freelancers] ([Id], [AccountId], [Rating], [TotalReviewCount], [Balance], [SystemBalance], [OrderCount], [LoveCount], [PositiveReviewCount], [IdentityNumber], [IsTeam], [Description], [TeamMemberCount]) VALUES
-('89291984-3389-4fe8-8f58-9ec54f17b5bc', 'd466c2a7-44e7-457d-a1ff-40646c4cf2c4', 0, 0, '0cI/bQOd6vVAjSV1NOB8hg==', 'LMc/hborrsvOrM4sz6SVSA==', 0, 0, 0, '051200000011', 0, 'Beyond its particularly tree whom local tend. Artist truth trouble behavior style. Ability management test during foot that course nothing. Sound central myself before year. Your majority feeling fact by four two. White owner onto knowledge other.', 1),
-('75968ca3-4984-41ac-bbcd-dc899e4215b6', '2695c848-8144-4a94-8d4d-763c5e768233', 0, 0, 'ABMRE6/X4iiACAAcoR2T/Q==', 'a201S3x4D6GyLyKzRPu2dw==', 0, 0, 0, '051200000012', 1, 'Party prevent live. Quickly candidate change although. Together type music hospital. Every speech support time operation wear often.', 5),
-('e7784f3c-b89c-4d7f-a2b6-4cc66e917535', 'a7a76113-1a12-46c5-abec-01b0cccd1dde', 0, 0, 'c5jpjoAQU5UGh4YOnU7XlQ==', '29psh5iNvVDThfvYDMHNIw==', 0, 0, 0, '051200000013', 1, 'Picture suddenly drug rule bring determine some forward. Beyond chair recently and. Plant view own available buy country store. Hospital have wonder already. Create wife responsibility. Decision song view age international big employee.', 3);
+INSERT INTO [Freelancers] ([Id], [AccountId], [Rating], [TotalReviewCount], [Balance], [SystemBalance], [AuctionBalance], [OrderCount], [LoveCount], [PositiveReviewCount], [IdentityNumber], [IsTeam], [Description], [TeamMemberCount]) VALUES
+('89291984-3389-4fe8-8f58-9ec54f17b5bc', 'd466c2a7-44e7-457d-a1ff-40646c4cf2c4', 0, 0, '0cI/bQOd6vVAjSV1NOB8hg==', 'LMc/hborrsvOrM4sz6SVSA==', 'LMc/hborrsvOrM4sz6SVSA==', 0, 0, 0, '051200000011', 0, 'Beyond its particularly tree whom local tend. Artist truth trouble behavior style. Ability management test during foot that course nothing. Sound central myself before year. Your majority feeling fact by four two. White owner onto knowledge other.', 1),
+('75968ca3-4984-41ac-bbcd-dc899e4215b6', '2695c848-8144-4a94-8d4d-763c5e768233', 0, 0, 'ABMRE6/X4iiACAAcoR2T/Q==', 'a201S3x4D6GyLyKzRPu2dw==', 'a201S3x4D6GyLyKzRPu2dw==', 0, 0, 0, '051200000012', 1, 'Party prevent live. Quickly candidate change although. Together type music hospital. Every speech support time operation wear often.', 5),
+('e7784f3c-b89c-4d7f-a2b6-4cc66e917535', 'a7a76113-1a12-46c5-abec-01b0cccd1dde', 0, 0, 'c5jpjoAQU5UGh4YOnU7XlQ==', '29psh5iNvVDThfvYDMHNIw==', '29psh5iNvVDThfvYDMHNIw==', 0, 0, 0, '051200000013', 1, 'Picture suddenly drug rule bring determine some forward. Beyond chair recently and. Plant view own available buy country store. Hospital have wonder already. Create wife responsibility. Decision song view age international big employee.', 3);
 
 INSERT INTO [Customers] ([Id], [AccountId], [CustomerRank], [MemberPoint]) VALUES
 ('badc9643-88e7-4f4d-997a-c31229ac9816', '9a9ffdf1-0cc7-4efc-80b7-d34524010af5', 'Unranked', 0); 
