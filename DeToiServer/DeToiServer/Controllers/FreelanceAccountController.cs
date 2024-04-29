@@ -2,6 +2,7 @@
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.OrderDtos;
+using DeToiServer.Dtos.PaymentDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Dtos.SkillDtos;
 using DeToiServer.Services.AccountService;
@@ -9,6 +10,7 @@ using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.FreelanceQuizService;
 using DeToiServer.Services.FreelanceSkillService;
 using DeToiServer.Services.OrderManagementService;
+using DeToiServer.Services.PaymentService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
 using DeToiServerCore.Common.Helper;
@@ -28,6 +30,7 @@ namespace DeToiServer.Controllers
         private readonly IFreelanceQuizService _quizService;
         private readonly IFreelanceSkillService _skillService;
         private readonly IBiddingOrderService _biddingOrderService;
+        private readonly IPaymentService _paymentService;
         private readonly UnitOfWork _uow;
         private readonly IMapper _mapper;
 
@@ -38,6 +41,7 @@ namespace DeToiServer.Controllers
             IFreelanceQuizService quizService, 
             IFreelanceSkillService skillService,
             IBiddingOrderService biddingOrderService,
+            IPaymentService paymentService,
             UnitOfWork unitOfWork,
             IMapper mapper)
         {
@@ -47,6 +51,7 @@ namespace DeToiServer.Controllers
             _quizService = quizService;
             _skillService = skillService;
             _biddingOrderService = biddingOrderService;
+            _paymentService = paymentService;
             _uow = unitOfWork;
             _mapper = mapper;
         }
@@ -78,9 +83,10 @@ namespace DeToiServer.Controllers
         public async Task<ActionResult<GetFreelancerWalletDto>> GetCurrentFreelancerWallet()
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
-            var freelance = await _freelanceAccService.GetDetailWithStatistic(accountId);
-            var freelancerWallet = _mapper.Map<GetFreelancerWalletDto>(freelance);
-            if (freelance is null)
+            var freelanceWallet = await _freelanceAccService.GetByAccIdWithWallet(accountId);
+
+
+            if (freelanceWallet is null)
             {
                 return BadRequest(new
                 {
@@ -88,7 +94,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            return Ok(freelancerWallet);
+            return Ok(freelanceWallet);
         }
 
         [HttpGet("short-detail"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]

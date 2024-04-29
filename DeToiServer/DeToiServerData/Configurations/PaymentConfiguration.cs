@@ -14,8 +14,8 @@ namespace DeToiServerData.Configurations
                 .HasDefaultValueSql("GETDATE()");
 
             builder.HasOne(fph => fph.FreelanceAccount)
-                .WithMany(fl => fl.PaymentHistories)
-                .HasForeignKey(fph => fph.FreelanceAccountId)
+                .WithMany(fl => fl.PaymentHistory)
+                .HasForeignKey(fph => fph.FreelancerId)
                 .OnDelete(DeleteBehavior.ClientNoAction);
         }
     }

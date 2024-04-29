@@ -5,7 +5,6 @@ using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Payment;
-using Microsoft.EntityFrameworkCore;
 using static DeToiServerCore.Common.Helper.Helper;
 
 namespace DeToiServer.Services.PaymentService
@@ -79,7 +78,7 @@ namespace DeToiServer.Services.PaymentService
                 {
                     await AddFreelancePaymentHistory(new AddFreelancePaymentHistoryDto()
                     {
-                        FreelanceAccountId = rawFreelancer.Id,
+                        FreelancerId = rawFreelancer.Id,
                         Method = toUpdate.Method,
                         PaymentType = minus ? PaymentType.Subtract : PaymentType.Add,
                         Value = toUpdate.Value,

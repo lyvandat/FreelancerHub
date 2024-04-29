@@ -630,7 +630,11 @@ namespace DeToiServerData.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("FreelanceAccountId")
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("FreelancerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Method")
@@ -655,7 +659,7 @@ namespace DeToiServerData.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FreelanceAccountId");
+                    b.HasIndex("FreelancerId");
 
                     b.ToTable("FreelancePaymentHistories");
                 });
@@ -1747,8 +1751,8 @@ namespace DeToiServerData.Migrations
             modelBuilder.Entity("DeToiServerCore.Models.Payment.FreelancePaymentHistory", b =>
                 {
                     b.HasOne("DeToiServerCore.Models.Accounts.FreelanceAccount", "FreelanceAccount")
-                        .WithMany("PaymentHistories")
-                        .HasForeignKey("FreelanceAccountId")
+                        .WithMany("PaymentHistory")
+                        .HasForeignKey("FreelancerId")
                         .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
@@ -2124,7 +2128,7 @@ namespace DeToiServerData.Migrations
 
                     b.Navigation("Orders");
 
-                    b.Navigation("PaymentHistories");
+                    b.Navigation("PaymentHistory");
 
                     b.Navigation("QuizCollection");
 

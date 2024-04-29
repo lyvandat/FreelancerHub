@@ -36,13 +36,28 @@
 
         public static class Payment
         {
-            public static readonly string CoD = "CoD";
+            public static Dictionary<string, string> PaymentTypeDictionary = new()
+            {
+                { "MoMo", "Nạp tiền vào ví cá nhân với ví điện tử Momo" },
+                { "Card", "Nạp tiền vào ví cá nhân với thẻ ngân hàng" },
+                { "AppFee", "Hệ thống trừ tiền hoa hồng dịch vụ" },
+                { "Withdrawal", "Rút toàn bộ tiền khỏi tài khoản" },
+
+            };
+
             public static readonly string MoMo = "Momo";
             public static readonly string Card = "Card";
+            public static readonly string AppFee = "AppFee"; // we charge a small commision fee on freelancers' wallet
+            public static readonly string Withdrawal = "AppFee"; // Freelancers leave and withdraw money
 
             public static class Wallet {
                 public static readonly string Personal = "Personal";
                 public static readonly string System = "System";
+            }
+
+            public static class Description
+            {
+
             }
         }
 

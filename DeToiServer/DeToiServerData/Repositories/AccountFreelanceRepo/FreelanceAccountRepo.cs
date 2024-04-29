@@ -35,6 +35,15 @@ public class FreelanceAccountRepo : RepositoryBase<FreelanceAccount>, IFreelance
             .FirstOrDefaultAsync();
     }
 
+    public async Task<FreelanceAccount> GetByAccIdWithWallet(Guid id)
+    {
+        var query = _context.Freelancers.AsNoTracking(); // perfomance
+        return await query.Where(fl => fl.AccountId.Equals(id) || fl.Id.Equals(id))
+            .Include(fl => fl.Account)
+            .Include(fl => fl.PaymentHistory)
+            .FirstOrDefaultAsync();
+    }
+
     public async Task<FreelanceAccount> GetByAccPhone(string phone)
     {
         return await _context.Freelancers

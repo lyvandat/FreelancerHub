@@ -22,7 +22,7 @@ namespace DeToiServerData.Repositories.PaymentRepo
             var query = _context.FreelancePaymentHistories
                 .AsNoTracking().AsSplitQuery()
                 .Include(p => p.FreelanceAccount)
-                .Where(p => p.FreelanceAccountId.Equals(freelanceId)
+                .Where(p => p.FreelancerId.Equals(freelanceId)
                     || p.FreelanceAccount.AccountId.Equals(freelanceId));
 
             return await query.ToListAsync();

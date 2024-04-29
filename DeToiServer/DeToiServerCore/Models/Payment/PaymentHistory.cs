@@ -11,11 +11,12 @@ namespace DeToiServerCore.Models.Payment
     public class FreelancePaymentHistory : ModelBase
     {
         public string Value { get; set; } = string.Empty;
-        public string Method { get; set; } = GlobalConstant.Payment.CoD;
+        public string Method { get; set; } = GlobalConstant.Payment.Card;
         public string Wallet { get; set; } = GlobalConstant.Payment.Wallet.Personal;
+        public string Description { get; set; } = string.Empty;
         public DateTime Timestamp { get; set; }
         public PaymentType PaymentType { get; set; } = PaymentType.Add;
-        public required Guid FreelanceAccountId { get; set; }
+        public required Guid FreelancerId { get; set; }
         public required FreelanceAccount FreelanceAccount { get; set; }
     }
 
@@ -24,7 +25,4 @@ namespace DeToiServerCore.Models.Payment
         Add,
         Subtract
     }
-
-    //public Guid? CustomerAccountId { get; set; }
-    //public CustomerAccount? CustomerAccount { get; set; }
 }

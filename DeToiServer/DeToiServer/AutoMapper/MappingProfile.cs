@@ -115,21 +115,24 @@ namespace DeToiServer.AutoMapper
                     return context.Mapper.Map<GetFreelanceMatchingDto>(src.Freelancer);
                 });
 
-            CreateMap<GetFreelanceMatchingDto, GetFreelancerWalletDto>();
-            CreateMap<FreelancePaymentHistory, GetFreelancerPaymentHistoryDto>()
+            CreateMap<FreelanceAccount, GetFreelancerWalletDto>()
+                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.Balance))));
+            CreateMap<FreelancePaymentHistory, GetFreelanceShortPaymentHistoryDto>()
                 .ForMember(dest => dest.PaymentType, opt => opt.MapFrom(src => src.PaymentType.ToString()))
-                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.FreelanceAccount.Id.ToString(), src.Value))));
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.FreelancerId.ToString(), src.Value))));
 
             #endregion
 
             #region Payment
             CreateMap<FreelancePaymentHistory, GetFreelancePaymentHistoryDto>()
                 .ForMember(dest => dest.Value, opt => opt
-                    .MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.FreelanceAccountId.ToString(), src.Value))));
+                    .MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.FreelancerId.ToString(), src.Value))));
 
             CreateMap<AddFreelancePaymentHistoryDto, FreelancePaymentHistory>()
                 .ForMember(dest => dest.Value, opt => opt
-                    .MapFrom(src => AesEncryption.Encrypt(src.FreelanceAccountId.ToString(), src.Value.ToString())));
+                    .MapFrom(src => AesEncryption.Encrypt(src.FreelancerId.ToString(), src.Value.ToString())))
+                .ForMember(dest => dest.Description, opt => opt
+                    .MapFrom(src => GlobalConstant.Payment.PaymentTypeDictionary[src.PaymentType.ToString()]));
             #endregion
 
             #region ServiceType and ServiceCategory

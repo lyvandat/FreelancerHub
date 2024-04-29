@@ -52,6 +52,12 @@ namespace DeToiServer.Services.FreelanceAccountService
             return await _unitOfWork.FreelanceAccountRepo.GetByAccId(id);
         }
 
+        public async Task<GetFreelancerWalletDto> GetByAccIdWithWallet(Guid id)
+        {
+            var accWithWallet = await _unitOfWork.FreelanceAccountRepo.GetByAccIdWithWallet(id);
+            return _mapper.Map<GetFreelancerWalletDto>(accWithWallet);
+        }
+
         public async Task<FreelanceAccount> GetByAccPhone(string phone)
         {
             return await _unitOfWork.FreelanceAccountRepo.GetByAccPhone(phone);

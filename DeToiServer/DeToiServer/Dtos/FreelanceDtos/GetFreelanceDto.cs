@@ -57,7 +57,7 @@ namespace DeToiServer.Dtos.FreelanceDtos
     public class GetFreelancerWalletDto
     {
         public double Balance { get; set; }
-        public IEnumerable<GetFreelancerPaymentHistoryDto> PaymentHistory { get; set; } = Enumerable.Empty<GetFreelancerPaymentHistoryDto>();
+        public IEnumerable<GetFreelanceShortPaymentHistoryDto> PaymentHistory { get; set; } = Enumerable.Empty<GetFreelanceShortPaymentHistoryDto>();
     }
 
     public class GetFreelancerAndPreviewPriceDto

@@ -13,6 +13,7 @@ namespace DeToiServer.Services.FreelanceAccountService
         Task<FreelanceAccount> Add(FreelanceAccount acc);
         Task<FreelanceAccount> Update(FreelanceAccount acc);
         Task<FreelanceAccount> GetByAccId(Guid id);
+        Task<GetFreelancerWalletDto> GetByAccIdWithWallet(Guid id);
         Task<GetFreelanceMatchingDto> GetDetailWithStatistic(Guid id);
         Task<IEnumerable<GetFreelanceMatchingDto>> GetAllFreelanceDetail();
         Task<FreelanceAccount> GetByAccPhone(string phone);

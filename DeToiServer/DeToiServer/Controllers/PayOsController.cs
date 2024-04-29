@@ -81,9 +81,9 @@ namespace DeToiServer.Controllers
         }
 
         [HttpDelete("order")]
-        public async Task<IActionResult> CancelOrder(int orderId)
+        public async Task<IActionResult> CancelOrder(long orderCode)
         {
-            PaymentLinkInformation paymentLinkInformation = await _payOS.cancelPaymentLink(orderId);
+            PaymentLinkInformation paymentLinkInformation = await _payOS.cancelPaymentLink(orderCode);
 
             return Ok(paymentLinkInformation);
         }
