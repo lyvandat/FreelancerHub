@@ -162,6 +162,14 @@ namespace DeToiServer.Controllers
             {
                 order.ServiceStatusId = StatusConst.Waiting;
             }
+            
+            if (!await _uow.SaveChangesAsync())
+            {
+                return BadRequest(new
+                {
+                    Message = "Đã có lỗi trong quá trình cập nhật giá đơn hàng, vui lòng thử lại sau"
+                });
+            }
 
             // Add notification content
             // Send success noti to choosen freelancer
@@ -450,6 +458,9 @@ namespace DeToiServer.Controllers
             return Ok(order);
         }
 
+        /// <summary>
+        /// Get a list of orders that a freelancer has auctioned
+        /// </summary>
         [HttpGet("freelancer-bidding"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<GetOrderDto>> GetBiddingOrders()
         {

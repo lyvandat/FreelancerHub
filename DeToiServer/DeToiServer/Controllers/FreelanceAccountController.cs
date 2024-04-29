@@ -140,6 +140,9 @@ namespace DeToiServer.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// get a list of orders which are waiting to be picked
+        /// </summary>
         [HttpGet("orders"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetCurrentFreelancerMatchingOrders([FromQuery] FilterFreelancerOrderQuery filterQuery)
         {
@@ -160,6 +163,9 @@ namespace DeToiServer.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// get incoming orders for the current freelancer
+        /// </summary>
         [HttpGet("orders/incoming"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetFreelancerIncomingOrders()
         {
@@ -204,7 +210,9 @@ namespace DeToiServer.Controllers
         }
 
 
-
+        /// <summary>
+        /// get a list of freelancers who have auctioned an order
+        /// </summary>
         [HttpGet("customer-bidding"), AuthorizeRoles(GlobalConstant.Customer)]
         public async Task<ActionResult<GetOrderDto>> GetBiddingOrders(Guid orderId)
         {
