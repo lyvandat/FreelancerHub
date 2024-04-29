@@ -157,7 +157,8 @@ namespace DeToiServer.Controllers
             }
 
             var biddingFreelancers = await _biddingOrderService.GetFreelancersForCustomerBiddingOrder(putOrder.OrderId);
-            if (!biddingFreelancers.Select(fl => fl.Id).ToList().Contains(putOrder.FreelancerId))
+            if (!biddingFreelancers.Select(fl => fl.Id).ToList().Contains(putOrder.FreelancerId) && 
+                !biddingFreelancers.Select(fl => fl.AccountId).ToList().Contains(putOrder.FreelancerId))
             {
                 return BadRequest(new
                 {
