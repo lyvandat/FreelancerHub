@@ -156,6 +156,15 @@ namespace DeToiServer.Controllers
                 });
             }
 
+            var biddingFreelancers = await _biddingOrderService.GetFreelancersForCustomerBiddingOrder(putOrder.OrderId);
+            if (!biddingFreelancers.Select(fl => fl.Id).ToList().Contains(putOrder.FreelancerId))
+            {
+                return BadRequest(new
+                {
+                    Message = "Freelancer này chưa báo giá cho đơn hàng của bạn, không thể chọn."
+                });
+            }
+
             order.EstimatedPrice = putOrder.ActualPrice;
             order.FreelancerId = putOrder.FreelancerId;
             if (order.ServiceStatusId.Equals(StatusConst.OnMatching))
@@ -184,8 +193,7 @@ namespace DeToiServer.Controllers
                 },
             }, [freelancer.AccountId]);
             // Send fail noti to not choosen freelancers
-            var ignoredFreelancer = (await _biddingOrderService.GetFreelancersForCustomerBiddingOrder(putOrder.OrderId))
-                .Where(fl => !fl.AccountId.Equals(freelancer.AccountId));
+            var ignoredFreelancer = biddingFreelancers.Where(fl => !fl.AccountId.Equals(freelancer.AccountId));
             
             if (ignoredFreelancer != null && ignoredFreelancer.Any())
             {

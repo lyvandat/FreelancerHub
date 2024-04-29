@@ -262,6 +262,9 @@ namespace DeToiServer.Controllers
             });
         }
 
+        /// <summary>
+        /// Need to delete.
+        /// </summary>
         [HttpPost("bid-test"), AuthorizeRoles(GlobalConstant.Freelancer)]
         public async Task<ActionResult<string>> TestBid(GetFreelancerAndPreviewPriceDto bid)
         {

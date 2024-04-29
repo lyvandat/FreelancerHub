@@ -146,11 +146,13 @@ namespace DeToiServer.Controllers
         [HttpPost("register-freelance")]
         public async Task<ActionResult<Account>> RegisterFreelance(RegisterFreelanceDto request)
         {
-            var freelance = await _freelanceAccService
-                .GetByCondition(flc => flc.Account.Phone.Equals(request.Phone)
-                    && flc.Account.CountryCode.Equals(request.CountryCode));
+            string formatedPhone = request.Phone[0].Equals('0') ? // request.Phone.Length == 10 && 
+                request.Phone[1..] : request.Phone;
+            var account = await _accService
+                .GetByCondition(flc => flc.Phone.Equals(formatedPhone)
+                    && flc.CountryCode.Equals(request.CountryCode));
 
-            if (freelance != null)
+            if (account != null)
             {
                 return BadRequest(new
                 {
@@ -158,7 +160,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            var account = new Account()
+            account = new Account()
             {
                 Id = Guid.NewGuid(),
                 Email = string.Empty,
@@ -174,7 +176,7 @@ namespace DeToiServer.Controllers
             };
 
             var freelancerId = Guid.NewGuid();
-            freelance = new FreelanceAccount()
+            var freelance = new FreelanceAccount()
             {
                 Id = freelancerId,
                 Account = null!,
@@ -211,9 +213,13 @@ namespace DeToiServer.Controllers
         [HttpPost("login/freelancer")]
         public async Task<ActionResult<string>> LoginFreelancer(LoginDto request)
         {
-            var freelance = await _freelanceAccService
-                .GetByCondition(cus => cus.Account.Phone.Equals(request.Phone)
-                    && cus.Account.CountryCode.Equals(request.CountryCode));
+            string formatedPhone = request.Phone[0].Equals('0') ? // request.Phone.Length == 10 && 
+                request.Phone[1..] : request.Phone;
+            var freelance = await _accService
+                .GetByCondition(frl => frl.Phone.Equals(formatedPhone)
+                    && (new List<string>() { GlobalConstant.UnverifiedFreelancer, GlobalConstant.Freelancer })
+                        .Contains(frl.Role)
+                    && frl.CountryCode.Equals(request.CountryCode));
 
             if (freelance == null)
             {
@@ -222,7 +228,7 @@ namespace DeToiServer.Controllers
                     message = "Tài khoản Freelancer không tồn tại.",
                 });
             }
-            if (!freelance.Account.IsVerified && !freelance.Account.Role.Equals(GlobalConstant.UnverifiedFreelancer))
+            if (!freelance.IsVerified && !freelance.Role.Equals(GlobalConstant.UnverifiedFreelancer))
             {
                 return BadRequest(new
                 {
@@ -230,9 +236,9 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            freelance.Account.LoginToken = GenerateOTP();
-            freelance.Account.LoginTokenExpires = DateTime.Now.AddMinutes(5);
-            await _accService.Update(freelance.Account);
+            freelance.LoginToken = GenerateOTP();
+            freelance.LoginTokenExpires = DateTime.Now.AddMinutes(5);
+            await _accService.Update(freelance);
             // send OTP to phone
 
             return Ok(new
@@ -244,8 +250,10 @@ namespace DeToiServer.Controllers
         [HttpPost("login/customer")]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
+            string formatedPhone = request.Phone[0].Equals('0') ? // request.Phone.Length == 10 && 
+                request.Phone[1..] : request.Phone;
             var rawAccount = await _accService
-                .GetByCondition(acc => acc.Phone.Equals(request.Phone)
+                .GetByCondition(acc => acc.Phone.Equals(formatedPhone)
                     && acc.CountryCode.Equals(request.CountryCode));
 
             if (rawAccount != null 
@@ -390,8 +398,10 @@ namespace DeToiServer.Controllers
         [HttpPost("verify-otp/register-login")]
         public async Task<IActionResult> VerifyOtpToken(PhoneAndOtpDto request)
         {
+            string formatedPhone = request.Phone[0].Equals('0') ?
+                request.Phone[1..] : request.Phone;
             var account = await _accService
-                .GetByCondition(acc => acc.Phone.Equals(request.Phone)
+                .GetByCondition(acc => acc.Phone.Equals(formatedPhone)
                     && acc.CountryCode.Equals(request.CountryCode));
 
             if (account == null)
@@ -439,9 +449,11 @@ namespace DeToiServer.Controllers
         [HttpPost("resend-otp/register-login")]
         public async Task<IActionResult> ResendOtpToken(ResendOtpDto request)
         {
+            string formatedPhone = request.Phone[0].Equals('0') ?
+                request.Phone[1..] : request.Phone;
             var account = await _accService
-                .GetByCondition(acc => acc.Phone == request.Phone
-                    && acc.CountryCode == request.CountryCode);
+                .GetByCondition(acc => acc.Phone.Equals(formatedPhone)
+                    && acc.CountryCode.Equals(request.CountryCode));
 
             if (account == null)
             {
