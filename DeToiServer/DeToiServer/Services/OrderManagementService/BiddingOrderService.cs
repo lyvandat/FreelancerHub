@@ -54,5 +54,10 @@ namespace DeToiServer.Services.OrderManagementService
         {
             return await _uow.BiddingOrderRepo.GetAllBiddingInfoByOrderId(orderId);
         }
+
+        public async Task<BiddingOrder?> GetSpecificBiddingFreelancerForOrder(Guid orderId, Guid freelancerId)
+        {
+            return await _uow.BiddingOrderRepo.GetSpecificBiddingFreelancerForOrder(orderId, freelancerId);
+        }
     }
 }

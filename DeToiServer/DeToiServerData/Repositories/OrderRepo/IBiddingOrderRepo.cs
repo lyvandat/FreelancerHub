@@ -8,5 +8,6 @@ namespace DeToiServerData.Repositories.OrderRepo
         Task<IEnumerable<BiddingOrder>> GetByFreelancerIdWithOrderDetail(Guid freelancerId);
         Task<IEnumerable<BiddingOrder>> GetMatchingFreelancersByOrderId(Guid orderId);
         Task<IEnumerable<BiddingOrder>> GetAllBiddingInfoByOrderId(Guid orderId);
+        Task<BiddingOrder?> GetSpecificBiddingFreelancerForOrder(Guid orderId, Guid freelancerId);
     }
 }

@@ -24,6 +24,7 @@ DELETE from FreelanceQuizResults;
 Delete from [Addresses];
 Delete from [Freelancers];
 Delete from [Customers];
+Delete from [NotificationAccounts];
 Delete from [Accounts];
 
 Delete from [UIElementAdditionServiceRequirements];
@@ -1327,4 +1328,3 @@ INSERT INTO [UIElementServiceRequirements] ([Id], [Label], [LabelIcon], [Placeho
 ('66ff4db1-be0c-4b5b-82ba-efb459241a8a', N'Hình thức', 'faLayerGroup', N'Bạn muốn giải bài tập theo hình thức nào?', '49805134-19a8-4fc5-9769-d3cdc4acbb7f', 'hinh_thuc', 1, 'eb765dba-ccb7-49f7-b43d-04ea15558ed4'),
 ('ce7e0448-9109-4d3d-9b5e-af150df7042f', N'Mô tả thêm (nếu có)', null, N'Thêm mô tả để nhân viên hiểu hơn nhé', 'af11aa4b-6e5f-4665-a537-0538eede8d5b', 'mo_ta_them_(neu_co)', 2, 'eb765dba-ccb7-49f7-b43d-04ea15558ed4'),
 ('6d02f2ee-6a2f-4ff0-82c8-07ef310e2552', N'Mô tả thêm (nếu có thêm)', null, N'Thêm mô tả để nhân viên hiểu hơn nhé', 'af11aa4b-6e5f-4665-a537-0538eede8d5b', 'mo_ta_them_(neu_co)', 2, '96a7c6f2-73c2-4330-9629-c3441598ab94');
-

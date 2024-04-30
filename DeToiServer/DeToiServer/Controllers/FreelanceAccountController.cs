@@ -142,6 +142,8 @@ namespace DeToiServer.Controllers
 
         /// <summary>
         /// get a list of orders which are waiting to be picked
+        /// TODO: Optimize this if necessary
+        /// TODO: Orders that the freelancer has finished ?
         /// </summary>
         [HttpGet("orders"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetCurrentFreelancerMatchingOrders([FromQuery] FilterFreelancerOrderQuery filterQuery)
@@ -214,7 +216,7 @@ namespace DeToiServer.Controllers
         /// get a list of freelancers who have auctioned an order
         /// </summary>
         [HttpGet("customer-bidding"), AuthorizeRoles(GlobalConstant.Customer)]
-        public async Task<ActionResult<GetOrderDto>> GetBiddingOrders(Guid orderId)
+        public async Task<ActionResult<IEnumerable<GetFreelanceMatchingDto>>> GetBiddingOrders(Guid orderId)
         {
             Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
             var customerAcc = await _accService.GetById(accountId);

@@ -389,7 +389,8 @@ namespace DeToiServerData.Repositories.OrderRepo
                     .ThenInclude(oad => oad.Address)
                 .Where(order =>
                     statusList.Contains(order.ServiceStatusId)
-                    && order.FreelancerId.Equals(freelancerId))
+                    && order.FreelancerId.Equals(freelancerId)
+                    && order.StartTime > DateTime.Now.AddDays(-2)) // withn 2 days after the start day
                 .OrderByDescending(o => o.CreatedTime)
                 .ToListAsync();
 

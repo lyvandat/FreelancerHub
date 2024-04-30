@@ -17,6 +17,7 @@ using DeToiServerCore.Common.CustomAttribute;
 using DeToiServerCore.QueryModels.OrderQueryModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Linq;
 using System.Security.Claims;
 
 namespace DeToiServer.Controllers
@@ -116,6 +117,7 @@ namespace DeToiServer.Controllers
             return Ok(_mapper.Map<IEnumerable<GetOrderDto>>(order));
         }
 
+        // TODO: Finish refund, do not save records when temporarily charge commission on auctioning freelancers
         [HttpPut("order-price"), AuthorizeRoles(GlobalConstant.Customer)]
         public async Task<ActionResult<Order>> UpdateOrderActualPriceAndFreelancer(PutOrderPriceAndFreelancerDto putOrder)
         {
@@ -156,18 +158,24 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            var biddingFreelancers = await _biddingOrderService.GetFreelancersForCustomerBiddingOrder(putOrder.OrderId);
-            if (!biddingFreelancers.Select(fl => fl.Id).ToList().Contains(putOrder.FreelancerId) && 
-                !biddingFreelancers.Select(fl => fl.AccountId).ToList().Contains(putOrder.FreelancerId))
+            var biddingFreelancer = await _biddingOrderService.GetSpecificBiddingFreelancerForOrder(putOrder.OrderId, freelancer.Id);
+            if (biddingFreelancer == null)
             {
                 return BadRequest(new
                 {
                     Message = "Freelancer này chưa báo giá cho đơn hàng của bạn, không thể chọn."
                 });
             }
+            else if (biddingFreelancer.PreviewPrice != putOrder.ActualPrice)
+            {
+                return BadRequest(new
+                {
+                    Message = $"Freelancer không báo giá: {putOrder.ActualPrice}đ cho đơn này"
+                });
+            }
 
             order.EstimatedPrice = putOrder.ActualPrice;
-            order.FreelancerId = putOrder.FreelancerId;
+            order.FreelancerId = freelancer.Id;
             if (order.ServiceStatusId.Equals(StatusConst.OnMatching))
             {
                 order.ServiceStatusId = StatusConst.Waiting;
@@ -274,14 +282,14 @@ namespace DeToiServer.Controllers
         public async Task<ActionResult> UpdateOrderStatus(PutOrderStatus putOrderStatus)
         {
             Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
-            var isValidStatus = StatusConst.StatusConstOrder.TryGetValue(putOrderStatus.StatusId, out var statusOrder);
+            var isValidStatus = StatusConst.SupportedStatuses.Contains(putOrderStatus.StatusId);
             var freelancer = await _uow.FreelanceAccountRepo.GetByAccId(accountId);
 
             if (!isValidStatus)
             {
                 return BadRequest(new
                 {
-                    Message = "Trạng thái đơn hàng không hợp lệ"
+                    Message = "Trạng thái đơn hàng không được hỗ trợ"
                 });
             }
 
@@ -311,9 +319,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            // Do not allow users to update the status other than the next one.
-            // beware with this when you add new order statuses.
-            if (statusOrder != StatusConst.StatusConstOrder[order.ServiceStatusId] + 1)
+            if (StatusConst.SystemStatuses.Contains(putOrderStatus.StatusId))
             {
                 return BadRequest(new
                 {

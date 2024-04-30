@@ -64,5 +64,13 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Where(bo => bo.OrderId == orderId)
                 .ToListAsync();
         }
+
+        public async Task<BiddingOrder> GetSpecificBiddingFreelancerForOrder(Guid orderId, Guid freelancerId)
+        {
+            return await _dataContext.BiddingOrders
+                .AsNoTracking().AsSplitQuery()
+                .Where(bo => bo.OrderId == orderId && bo.FreelancerId == freelancerId)
+                .FirstOrDefaultAsync();
+        }
     }
 }

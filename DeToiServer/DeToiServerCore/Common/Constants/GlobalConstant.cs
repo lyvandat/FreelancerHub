@@ -152,17 +152,15 @@
         public readonly static Guid Completed = Guid.Parse("a7d1f0e8-2a6f-4b9d-aa1c-10f58a1d5d32");
         public readonly static Guid Canceled = Guid.Parse("0774e101-f1a3-4186-af1e-af95a26e9ead");
 
-
-        public static Dictionary<Guid, int> StatusConstOrder = new Dictionary<Guid, int>()
+        // IMPORTANT: the order matters as we cannot update the status to any value other than the next one
+        public static List<Guid> SupportedStatuses = new List<Guid>()
         {
-            {Canceled, -1},
-            {Created, 0},
-            {OnMatching, 1},
-            {Waiting, 2},
-            {OnDoingService, 3},
-            {OnMoving, 3},
-            {OnDelivering, 3},
-            {Completed, 4},
+            Canceled, Created, OnMatching, Waiting, OnMoving, OnDoingService, OnDelivering, Completed
+        };
+
+        public static List<Guid> SystemStatuses = new List<Guid>()
+        {
+            Canceled, Created, Waiting
         };
 
         public static readonly IEnumerable<Guid> StatusIdCollections = [
