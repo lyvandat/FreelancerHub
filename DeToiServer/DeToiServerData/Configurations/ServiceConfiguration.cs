@@ -129,11 +129,11 @@ namespace DeToiServerData.Configurations
                 {
                     new ServiceStatus { Id = StatusConst.Created, Name = "Đơn vừa tạo", Icon = "faWandMagicSparkles", Priority = 0 },
                     new ServiceStatus { Id = StatusConst.OnMatching, Name = "Đang ghép cặp", Icon = "faHandshake", Priority = 1 },
-                    new ServiceStatus { Id = StatusConst.Waiting, Name = "Chưa đến giờ hoạt động", Icon = "faRoadCircleXmark", Priority = 2 },
+                    new ServiceStatus { Id = StatusConst.Waiting, Name = "Chưa hoạt động", Icon = "faRoadCircleXmark", Priority = 2 },
                     new ServiceStatus { Id = StatusConst.OnDoingService, Name = "Đang làm việc", Icon = "faPersonDigging", Priority = 3 },
                     new ServiceStatus { Id = StatusConst.OnMoving, Name = "Đang di chuyển", Icon = "faPersonRunning", Priority = 3 },
                     new ServiceStatus { Id = StatusConst.OnDelivering, Name = "Đang vận chuyển", Icon = "faTruckFast", Priority = 3 },
-                    new ServiceStatus { Id = StatusConst.Completed, Name = "Đã hoàn thành nhiệm vụ", Icon = "faPersonCircleCheck", Priority = 4 },
+                    new ServiceStatus { Id = StatusConst.Completed, Name = "Đã hoàn thành", Icon = "faPersonCircleCheck", Priority = 4 },
                     new ServiceStatus { Id = StatusConst.Canceled, Name = "Đơn đã hủy", Icon = "faHandshakeSimpleSlash", Priority = 5 }
                 }
             );

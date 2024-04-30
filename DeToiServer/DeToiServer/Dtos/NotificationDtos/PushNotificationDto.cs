@@ -12,6 +12,9 @@ namespace DeToiServer.Dtos.NotificationDtos
         public required List<string> ExpoPushTokens { get; set; }
         public required string Title { get; set; }
         public required string Body { get; set; }
+        public string Sound { get; set; } = "default"; // 'default' | 'defaultCritical' | 'custom' | null
+        public string SubTitle { get; set; } = string.Empty;
+        public int? Badge { get; set; } = null;
         public required PushNotificationDataDto Data { get; set; } = new();
     }
 

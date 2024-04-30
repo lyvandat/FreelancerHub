@@ -15,9 +15,9 @@ namespace DeToiServerCore.Models.Notifications
         //public int? PushTTL { get; set; }
         //public int? PushExpiration { get; set; }
         //public string PushPriority { get; set; } = "default";
-        //public string PushSubTitle { get; set; } = null!;
-        //public string PushSound { get; set; } = "default";
-        //public int? PushBadgeCount { get; set; }
+        public string PushSubTitle { get; set; } = null!;
+        public string PushSound { get; set; } = "default";
+        public int? PushBadgeCount { get; set; } = null;
         //public string PushChannelId { get; set; } = null!;
         //public string PushCategoryId { get; set; } = null!;
     }

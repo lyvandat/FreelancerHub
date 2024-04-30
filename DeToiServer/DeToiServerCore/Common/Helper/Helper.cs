@@ -1,4 +1,5 @@
 ﻿using DeToiServerCore.Common.Constants;
+using System;
 using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
@@ -110,6 +111,11 @@ namespace DeToiServerCore.Common.Helper
         public static bool CompareKey(this string _this, string cpmr)
         {
             return _this.Contains(cpmr, StringComparison.CurrentCultureIgnoreCase);
+        }
+
+        public static long ToTimeNumber(DateTime input)
+        {
+            return (long)(input - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
         }
 
         public class AesEncryption

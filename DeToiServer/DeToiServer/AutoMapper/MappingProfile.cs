@@ -79,6 +79,11 @@ namespace DeToiServer.AutoMapper
             #endregion
 
             #region Freelance
+            CreateMap<FreelanceServiceType, GetServiceTypeDto>()
+                .ConvertUsing((src, dest, context) => {
+                    return context.Mapper.Map<GetServiceTypeDto>(src.ServiceType);
+                });
+
             CreateMap<Order, GetFreelanceReviewDto>()
                 .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.Customer!.Id))
                 .ForMember(dest => dest.Avt, opt => opt.MapFrom(src => src.Customer!.Account.Avatar ?? GlobalConstant.DefaultCommentAvt))
@@ -94,8 +99,7 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.ActiveTime, opt => opt.MapFrom(src => src.Account.CreatedAt))
                 //.ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.Balance))))
                 //.ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.SystemBalance))))
-                ;
-
+                .ForMember(dest => dest.FreelancerFeasibleServices, opt => opt.MapFrom(src => src.FreelancerFeasibleServices));
 
             CreateMap<FreelanceAccount, GetFreelanceMatchingDto>()
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
@@ -103,7 +107,8 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders))
                 .ForMember(dest => dest.ActiveTime, opt => opt.MapFrom(src => src.Account.CreatedAt))
                 .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.Id.ToString(), src.Balance))))
-                .ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.SystemBalance))));
+                .ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.SystemBalance))))
+                .ForMember(dest => dest.FreelancerFeasibleServices, opt => opt.MapFrom(src => src.FreelancerFeasibleServices ));
 
             CreateMap<GetFreelanceMatchingDto, GetFreelanceDto>();
 
@@ -341,29 +346,56 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.PushTo, opt => opt.MapFrom(src => src.ExpoPushTokens))
                 .ForMember(dest => dest.PushTitle, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dest => dest.PushBody, opt => opt.MapFrom(src => src.Body))
+                .ForMember(dest => dest.PushSound, opt => opt.MapFrom(src => src.Sound))
+                .ForMember(dest => dest.PushSubTitle, opt => opt.MapFrom(src => src.SubTitle))
+                .ForMember(dest => dest.PushBadgeCount, opt => opt.MapFrom(src => src.Badge))
                 .ForMember(dest => dest.PushData, opt => opt.MapFrom(src => src.Data));
 
             CreateMap<PushNotificationDto, Notification>()
                 .ForMember(dest => dest.PushTo, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.ExpoPushTokens)))
                 .ForMember(dest => dest.PushTitle, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dest => dest.PushBody, opt => opt.MapFrom(src => src.Body))
+                .ForMember(dest => dest.PushSound, opt => opt.MapFrom(src => src.Sound))
+                .ForMember(dest => dest.PushSubTitle, opt => opt.MapFrom(src => src.SubTitle))
+                .ForMember(dest => dest.PushBadgeCount, opt => opt.MapFrom(src => src.Badge))
                 .ForMember(dest => dest.PushData, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Data)));
 
             CreateMap<Notification, PushNotificationDto>()
                 .ForMember(dest => dest.ExpoPushTokens, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<IEnumerable<string>>(src.PushTo)))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.PushTitle))
                 .ForMember(dest => dest.Body, opt => opt.MapFrom(src => src.PushBody))
+                .ForMember(dest => dest.Sound, opt => opt.MapFrom(src => src.PushSound))
+                .ForMember(dest => dest.SubTitle, opt => opt.MapFrom(src => src.PushSubTitle))
+                .ForMember(dest => dest.Badge, opt => opt.MapFrom(src => src.PushBadgeCount))
                 .ForMember(dest => dest.Data, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<PushNotificationDataDto>(src.PushData)));
 
             CreateMap<Notification, GetNotificationDto>()
-                .ForMember(dest => dest.ExpoPushTokens, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<IEnumerable<string>>(src.PushTo)))
-                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.PushTitle))
-                .ForMember(dest => dest.Body, opt => opt.MapFrom(src => src.PushBody))
-                .ForMember(dest => dest.Data, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<PushNotificationDataDto>(src.PushData)));
+                .ConvertUsing((src, dest, context) => {
+                    var result = new GetNotificationDto()
+                    {
+                        Date = Helper.ToTimeNumber(src.CreatedAt),
+                        Request = new NotificationRequestDto()
+                        {
+                            Content = new NotificationContentDto()
+                            {
+                                Data = JsonConvert.DeserializeObject<PushNotificationDataDto>(src.PushData)!,
+                                Title = src.PushTitle,
+                                Body = src.PushBody,
+                                Sound = src.PushSound,
+                                Subtitle = src.PushSubTitle,
+                                Badge = src.PushBadgeCount,
+                            },
+                            Identifier = null,
+                            Trigger = null,
+                        }
+                    };
+
+                    return result;
+                });
 
             CreateMap<NotificationAccount, GetNotificationDto>()
                 .ConvertUsing((src, dest, context) => {
-                    return context.Mapper.Map<GetNotificationDto>(src);
+                    return context.Mapper.Map<GetNotificationDto>(src.Notification);
                 });
 
             #endregion
