@@ -45,10 +45,10 @@ namespace DeToiServerCore.Common.Helper
             return Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost";
         }
 
-        public static string GetDockerHostUrl()
+        public static string GetRealtimeConnectionString()
         {
             return Environment.GetEnvironmentVariable("MQ_HOST") != null
-                ? "http://localhost:8080/chat-hub"
+                ? "http://localhost:8000/chat-hub"
                 : "https://localhost:7140/chat-hub";
         }
 
