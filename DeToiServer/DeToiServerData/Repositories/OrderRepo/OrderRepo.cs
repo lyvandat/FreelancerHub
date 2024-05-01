@@ -359,9 +359,12 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .OrderByDescending(o => o.CreatedTime)
                 .FirstOrDefaultAsync();
 
-            result.RecommendPrice = result.OrderServiceTypes
-                .Select(async ost => await CalcAvgOrderPriceByServiceType(ost.ServiceTypeId))
-                .ToList().Sum(price => price.Result);
+            if (result != null)
+            {
+                result.RecommendPrice = result.OrderServiceTypes
+                    .Select(async ost => await CalcAvgOrderPriceByServiceType(ost.ServiceTypeId))
+                    .ToList().Sum(price => price.Result);
+            }
 
             return result;
         }

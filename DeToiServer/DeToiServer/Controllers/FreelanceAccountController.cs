@@ -229,7 +229,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            return Ok(await _biddingOrderService.GetFreelancersForCustomerBiddingOrder(orderId));
+            return Ok(await _biddingOrderService.GetFreelancersForCustomerBiddingOrder(orderId, Guid.Empty));
         }
 
 

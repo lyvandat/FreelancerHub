@@ -2,8 +2,6 @@
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.PaymentDtos;
 using DeToiServerCore.Common.Constants;
-using DeToiServerCore.Common.Helper;
-using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Payment;
 using static DeToiServerCore.Common.Helper.Helper;
 
@@ -34,14 +32,14 @@ namespace DeToiServer.Services.PaymentService
             return _mapper.Map<IEnumerable<GetFreelancePaymentHistoryDto>>(result);
         }
 
-        private async Task<FreelancePaymentHistory> AddFreelancePaymentHistory(AddFreelancePaymentHistoryDto paymentHistory)
+        public async Task<FreelancePaymentHistory> AddFreelancePaymentHistory(AddFreelancePaymentHistoryDto paymentHistory)
         {
             var toAddData = _mapper.Map<FreelancePaymentHistory>(paymentHistory);
 
             return await _uow.PaymentRepo.AddFreelancePaymentHistoryAsync(toAddData);
         }
 
-        public async Task<GetFreelanceAccountShortDetailDto?> UpdateFreelancerBalance(UpdateFreelanceBalanceDto toUpdate, bool minus = false)
+        public async Task<GetFreelanceAccountShortDetailDto?> UpdateFreelancerBalance(UpdateFreelanceBalanceDto toUpdate, bool minus = false, bool addRecord = true)
         {
             var rawFreelancer = await _uow.FreelanceAccountRepo.GetByAccId(toUpdate.Id);
             var freelancer = _mapper.Map<GetFreelanceAccountShortDetailDto>(rawFreelancer);
@@ -74,7 +72,7 @@ namespace DeToiServer.Services.PaymentService
                     rawFreelancer.Balance = AesEncryption.Encrypt(rawFreelancer.Id.ToString(), (freelancer.Balance + toUpdate.Value).ToString());
                 }
                 
-                if (updatedValue != 0)
+                if (updatedValue > 0 && addRecord)
                 {
                     await AddFreelancePaymentHistory(new AddFreelancePaymentHistoryDto()
                     {
@@ -93,6 +91,20 @@ namespace DeToiServer.Services.PaymentService
         public async Task<IEnumerable<Fee>> GetAllFee()
         {
             return await _uow.PaymentRepo.GetAllFeeAsync();
+        }
+
+        public async Task<double> GetCommission()
+        {
+            var allFees = await _uow.PaymentRepo.GetAllFeeAsync();
+
+            return allFees.First(e => e.Id.Equals(GlobalConstant.Fee.Id.PlatformFee)).Amount;
+        }
+
+        public async Task<double> GetMinServicePrice() 
+        {
+            var allFees = await _uow.PaymentRepo.GetAllFeeAsync();
+
+            return allFees.First(e => e.Id.Equals(GlobalConstant.Fee.Id.MinServicePrice)).Amount;
         }
     }
 }

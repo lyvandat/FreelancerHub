@@ -14,11 +14,11 @@ namespace DeToiServer.Services.FreelanceAccountService
         Task<FreelanceAccount> Update(FreelanceAccount acc);
         Task<FreelanceAccount> GetByAccId(Guid id);
         Task<GetFreelancerWalletDto> GetByAccIdWithWallet(Guid id);
-        Task<GetFreelanceMatchingDto> GetDetailWithStatistic(Guid id);
+        Task<GetFreelanceMatchingDto?> GetDetailWithStatistic(Guid id);
         Task<IEnumerable<GetFreelanceMatchingDto>> GetAllFreelanceDetail();
         Task<FreelanceAccount> GetByAccPhone(string phone);
         Task<IEnumerable<FreelanceServiceType>> AddServiceTypesFreelancer(Guid freelancerId, IEnumerable<Guid> serviceTypes);
         Task<IEnumerable<FreelanceServiceType>> RemoveServiceTypesFreelancer(Guid freelancerId, IEnumerable<Guid> serviceTypes);
-        Task<bool> RefundAuctionBalance(IEnumerable<Guid> accountIds, IDictionary<Guid, double> auctionPrice);
+        Task RefundAuctionBalance(IDictionary<Guid, string> auctionPrice);
     }
 }

@@ -32,15 +32,17 @@
         public static class Order
         {
             public static readonly double DefaultRecommendPrice = 100000d;
+            public static readonly double MaximumTimeBeforeStartTimeForFreelancerCancel = 30; 
         }
 
         public static class Payment
         {
-            public static Dictionary<string, string> PaymentTypeDictionary = new()
+            public static Dictionary<string, string> MethodTypeDictionary = new()
             {
                 { "MoMo", "Nạp tiền vào ví cá nhân với ví điện tử Momo" },
                 { "Card", "Nạp tiền vào ví cá nhân với thẻ ngân hàng" },
                 { "AppFee", "Hệ thống trừ tiền hoa hồng dịch vụ" },
+                { "BackAppFee", "Hệ thống hoàn tiền hoa hồng dịch vụ" },
                 { "Withdrawal", "Rút toàn bộ tiền khỏi tài khoản" },
 
             };
@@ -48,16 +50,12 @@
             public static readonly string MoMo = "Momo";
             public static readonly string Card = "Card";
             public static readonly string AppFee = "AppFee"; // we charge a small commision fee on freelancers' wallet
-            public static readonly string Withdrawal = "AppFee"; // Freelancers leave and withdraw money
+            public static readonly string BackAppFee = "BackAppFee"; // we charge a small commision fee on freelancers' wallet
+            public static readonly string Withdrawal = "Withdrawal"; // Freelancers leave and withdraw money
 
             public static class Wallet {
                 public static readonly string Personal = "Personal";
                 public static readonly string System = "System";
-            }
-
-            public static class Description
-            {
-
             }
         }
 

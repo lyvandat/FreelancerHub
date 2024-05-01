@@ -245,10 +245,6 @@ namespace DeToiServerData.Migrations
                     b.Property<Guid>("AccountId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AuctionBalance")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Balance")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

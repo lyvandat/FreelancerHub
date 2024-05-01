@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos.AddressDtos;
-using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.ServiceDtos;
-using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
@@ -157,7 +155,6 @@ namespace DeToiServer.Services.OrderManagementService
             if (rawOrder == null) return null;
 
             var order = _mapper.Map<GetOrderDto>(rawOrder);
-            //order.ServiceTypes = rawOrder.OrderServiceTypes?.Select(ost => _mapper.Map<GetServiceTypeDto>(ost.ServiceType)).ToList();
 
             return order;
         }
@@ -192,7 +189,6 @@ namespace DeToiServer.Services.OrderManagementService
             }
 
             var order = _mapper.Map<GetOrderDto>(rawOrder);
-            // order.ServiceTypes = rawOrder.OrderServiceTypes?.Select(ost => _mapper.Map<GetServiceTypeDto>(ost.ServiceType)).ToList();
 
             return order;
         }
@@ -258,38 +254,38 @@ namespace DeToiServer.Services.OrderManagementService
 
             var order = await _uow.OrderRepo.GetByConditionsAsync(o =>
                 o.Id.Equals(orderId)
-                && o.CustomerId.Equals(customerId)
-                && validStatusList.Any(item => o.ServiceStatusId.Equals(item)));
+                && o.CustomerId.Equals(customerId));
 
             if (order == null)
             {
                 return new()
                 {
                     Message = "Không tìm thấy đơn đặt hàng cần hủy. Hãy kiểm tra lại trạng thái đơn"
+                };
+            }
+
+            if (!validStatusList.Any(item => order.ServiceStatusId.Equals(item)))
+            {
+                return new()
+                {
+                    Message = "Không thể hủy đơn hàng này do Freelancer đang thực hiện đơn hàng, vui lòng liên hệ admin để được giải quyết!"
                 };
             }
 
             order.ServiceStatusId = StatusConst.Canceled;
-            var orderNew = await _uow.OrderRepo.UpdateAsync(order);
 
             return new()
             {
-                Order = orderNew,
+                Order = order,
                 Message = "Hủy đơn hàng thành công"
             };
         }
 
-        public async Task<UpdateOrderResultDto> PostCancelOrderFreelancer(Guid orderId, Guid freelancerId)
+        public async Task<UpdateOrderResultWithOldPreviewPriceDto> PostCancelOrderFreelancer(Guid orderId, Guid freelancerId)
         {
-            var validStatusList = new List<Guid>()
-            {
-                StatusConst.Waiting, StatusConst.OnMoving, StatusConst.OnDoingService
-            };
-
             var order = await _uow.OrderRepo.GetByConditionsAsync(o =>
                 o.Id.Equals(orderId)
-                && o.FreelancerId.Equals(freelancerId)
-                && validStatusList.Any(item => o.ServiceStatusId.Equals(item)));
+                && o.FreelancerId.Equals(freelancerId));
 
             if (order == null)
             {
@@ -299,14 +295,15 @@ namespace DeToiServer.Services.OrderManagementService
                 };
             }
 
+            var oldPreviewPrice = order.EstimatedPrice;
             order.ServiceStatusId = StatusConst.OnMatching;
             order.EstimatedPrice = 0;
             order.FreelancerId = null;
-            var orderNew = await _uow.OrderRepo.UpdateAsync(order);
 
             return new()
             {
-                Order = orderNew,
+                Order = order,
+                OldPreviewPrice = oldPreviewPrice,
                 Message = "Hủy đơn hàng thành công"
             };
         }

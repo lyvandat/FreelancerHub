@@ -8,8 +8,11 @@ namespace DeToiServer.Services.PaymentService
     {
         Task<IEnumerable<GetFreelancePaymentHistoryDto>> GetAllFreelancePayment();
         Task<IEnumerable<GetFreelancePaymentHistoryDto>> GetFreelancePaymentHistories(Guid freelanceId);
-        Task<GetFreelanceAccountShortDetailDto?> UpdateFreelancerBalance(UpdateFreelanceBalanceDto toUpdate, bool minus = false);
+        Task<FreelancePaymentHistory> AddFreelancePaymentHistory(AddFreelancePaymentHistoryDto paymentHistory);
+        Task<GetFreelanceAccountShortDetailDto?> UpdateFreelancerBalance(UpdateFreelanceBalanceDto toUpdate, bool minus = false, bool addRecord = true);
         Task<IEnumerable<Fee>> GetAllFee();
+        Task<double> GetCommission();
+        Task<double> GetMinServicePrice();
 
     }
 }

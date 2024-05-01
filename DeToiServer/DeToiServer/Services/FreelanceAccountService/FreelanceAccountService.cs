@@ -63,9 +63,14 @@ namespace DeToiServer.Services.FreelanceAccountService
             return await _unitOfWork.FreelanceAccountRepo.GetByAccPhone(phone);
         }
 
-        public async Task<GetFreelanceMatchingDto> GetDetailWithStatistic(Guid id)
+        public async Task<GetFreelanceMatchingDto?> GetDetailWithStatistic(Guid id)
         {
             var rawResult = await _unitOfWork.FreelanceAccountRepo.GetDetailByIdWithStatistic(id);
+
+            if (rawResult == null)
+            {
+                return null;
+            }
 
             var orders = rawResult.Orders;
             if (orders != null && orders.Any())
@@ -107,9 +112,9 @@ namespace DeToiServer.Services.FreelanceAccountService
             return removededServiceType;
         }
 
-        public async Task<bool> RefundAuctionBalance(IEnumerable<Guid> accountIds, IDictionary<Guid, double> auctionPrice)
+        public async Task RefundAuctionBalance(IDictionary<Guid, string> newBalance)
         {
-            return await _unitOfWork.FreelanceAccountRepo.RefundAuctionBalance(accountIds, auctionPrice);
+            await _unitOfWork.FreelanceAccountRepo.RefundAuctionBalance(newBalance);
         }
     }
 }

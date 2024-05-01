@@ -32,7 +32,7 @@ namespace DeToiServer.Controllers
         }
 
         [HttpPut("personal"), AuthorizeRoles(GlobalConstant.Freelancer)]
-        public async Task<ActionResult<GetFreelanceAccountShortDetailDto>> UpdatePersonalWallet(double value)
+        private async Task<ActionResult<GetFreelanceAccountShortDetailDto>> UpdatePersonalWallet(double value)
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerAccountId);
             var freelance = await _freelanceAccService.GetByAccId(freelancerAccountId);

@@ -156,14 +156,17 @@ public class FreelanceAccountRepo : RepositoryBase<FreelanceAccount>, IFreelance
             .ToListAsync();
     }
 
-    public async Task<bool> RefundAuctionBalance(IEnumerable<Guid> accIds, IDictionary<Guid, double> auctionPrice)
+    public async Task RefundAuctionBalance(IDictionary<Guid, string> newBalance)
     {
+        var allFreelancers = await _context.Freelancers.ToListAsync();
 
-        var result = await _context.Freelancers
-            .Where(f => accIds.Contains(f.AccountId))
-            .ExecuteUpdateAsync(s => s.SetProperty(f => f.AuctionBalance,
-                f => AesEncryption.Encrypt(f.Id.ToString(), $"{Convert.ToDouble(AesEncryption.Decrypt(f.Id.ToString(), f.AuctionBalance) + auctionPrice[f.AccountId])}")));
+        var freelancersToUpdate = allFreelancers
+            .Where(f => newBalance.ContainsKey(f.Id))
+            .ToList();
 
-        return result > 0;
+        foreach (var freelancer in freelancersToUpdate)
+        {
+            freelancer.Balance = newBalance[freelancer.Id];
+        }
     }
 }

@@ -13,5 +13,5 @@ public interface IFreelanceAccountRepo : IRepository<FreelanceAccount>
     Task<IEnumerable<FreelanceServiceType>> ChooseFreelancerServiceTypesAsync(Guid freelancerId, IEnumerable<Guid> serviceTypes);
     Task<IEnumerable<FreelanceServiceType>> RemoveFreelancerServiceTypesAsync(Guid freelancerId, IEnumerable<Guid> serviceTypes);
     Task<IEnumerable<FreelanceAccount>> GetManyByConditionsAsync(Expression<Func<FreelanceAccount, bool>> predicate);
-    Task<bool> RefundAuctionBalance(IEnumerable<Guid> accIds, IDictionary<Guid, double> aunctionPrice);
+    Task RefundAuctionBalance(IDictionary<Guid, string> newBalance);
 }

@@ -192,7 +192,6 @@ namespace DeToiServer.Controllers
                 IdentityCardImageBack = request.IdentityCardImageBack,
                 Balance = AesEncryption.Encrypt(freelancerId.ToString(), "0"),
                 SystemBalance = AesEncryption.Encrypt(freelancerId.ToString(), "0"),
-                AuctionBalance = AesEncryption.Encrypt(freelancerId.ToString(), "0"),
             };
 
             await _accService.Add(account);

@@ -130,6 +130,18 @@ namespace DeToiServer.RealTime
         public async Task SendMessageToCustomer(GetFreelancerAndPreviewPriceDto matchingFreelancer)
         {
             var freelancer = await _freelancerService.GetDetailWithStatistic(matchingFreelancer.FreelancerId);
+
+            if (freelancer == null)
+            {
+                await Clients.Caller.ErrorOccurred(new NotificationDto()
+                {
+                    NotificationType = NotificationType.Information.ToString(),
+                    Title = "Không tìm thấy Freelancer",
+                    Body = "Rất tiếc, Freelancer này không tồn tại trong hệ thống của chúng tôi"
+                });
+                return;
+            }
+
             if (freelancer.Account.Role.Equals(GlobalConstant.UnverifiedFreelancer))
             {
                 // Add Notification here for fe to catch
@@ -143,10 +155,8 @@ namespace DeToiServer.RealTime
                 return;
             }
 
-            var minPrice = (await _uow.PaymentRepo.GetAllFeeAsync())
-                .Where(f => f.Id.Equals(GlobalConstant.Fee.Id.MinServicePrice)).First().Amount;
-            var commissionFee = (await _uow.PaymentRepo.GetAllFeeAsync())
-                .Where(f => f.Id.Equals(GlobalConstant.Fee.Id.PlatformFee)).First().Amount;
+            var minPrice = await _paymentService.GetMinServicePrice();
+            var commissionFee = await _paymentService.GetCommission();
             if (matchingFreelancer.PreviewPrice < minPrice)
             {
                 await Clients.Caller.ErrorOccurred(new NotificationDto()
@@ -160,7 +170,16 @@ namespace DeToiServer.RealTime
 
             var order = await _orderService.GetById(matchingFreelancer.OrderId);
 
-            if (order == null) return;
+            if (order == null)
+            {
+                await Clients.Caller.ErrorOccurred(new NotificationDto()
+                {
+                    NotificationType = NotificationType.Information.ToString(),
+                    Title = "Đơn hàng không tồn tại",
+                    Body = "Đơn hàng này không tồn tại, vui lòng báo giá đơn khác"
+                });
+                return;
+            }
 
             if (freelancer.Balance < matchingFreelancer.PreviewPrice * commissionFee)
             {
@@ -203,10 +222,10 @@ namespace DeToiServer.RealTime
                     .UpdateFreelancerBalance(new UpdateFreelanceBalanceDto()
                     {
                         Id = freelancer.AccountId,
-                        Method = GlobalConstant.Payment.Card,
+                        Method = GlobalConstant.Payment.AppFee,
                         WalletType = GlobalConstant.Payment.Wallet.Personal,
                         Value = matchingFreelancer.PreviewPrice * commissionFee,
-                    }, true);
+                    }, minus: true, addRecord: false);
 
                 if (updated == null)
                 {

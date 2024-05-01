@@ -14,10 +14,11 @@ using DeToiServer.Services.PaymentService;
 using DeToiServer.Services.UserService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
+using DeToiServerCore.Common.Helper;
+using DeToiServerCore.Models.Payment;
 using DeToiServerCore.QueryModels.OrderQueryModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Linq;
 using System.Security.Claims;
 
 namespace DeToiServer.Controllers
@@ -38,6 +39,7 @@ namespace DeToiServer.Controllers
         private readonly INotificationService _notificationService;
         private readonly IPaymentService _paymentService;
         private readonly ILogger<OrderController> _logger;
+        private readonly double _commissionRate = 0;
 
         public OrderController(
             UnitOfWork uow,
@@ -66,6 +68,16 @@ namespace DeToiServer.Controllers
             _notificationService = notificationService;
             _paymentService = paymentService;
             _logger = logger;
+
+            try
+            {
+                _commissionRate = _paymentService.GetCommission().GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Cannot read commission rate, commission rate will be set to default ({GlobalConstant.Fee.ValueConst.PlatformFee}). Error: {ex.Message}", ex.StackTrace);
+                _commissionRate = GlobalConstant.Fee.ValueConst.PlatformFee;
+            }
         }
 
         [HttpGet("test-gateway")]
@@ -176,35 +188,42 @@ namespace DeToiServer.Controllers
 
             order.EstimatedPrice = putOrder.ActualPrice;
             order.FreelancerId = freelancer.Id;
+            var commisionValue = _commissionRate * putOrder.ActualPrice;
+
             if (order.ServiceStatusId.Equals(StatusConst.OnMatching))
             {
                 order.ServiceStatusId = StatusConst.Waiting;
             }
 
+            await _paymentService.AddFreelancePaymentHistory(new AddFreelancePaymentHistoryDto()
+            {
+                FreelancerId = freelancer.Id,
+                Method = GlobalConstant.Payment.AppFee,
+                PaymentType = PaymentType.Subtract,
+                Value = commisionValue,
+                Wallet = GlobalConstant.Payment.Wallet.Personal,
+            });
 
-            var ignoredFreelancer = (await _biddingOrderService.GetFreelancersForCustomerBiddingOrder(putOrder.OrderId))
-                .Where(fl => !fl.AccountId.Equals(freelancer.AccountId));
+            var ignoredFreelancer = await _biddingOrderService.GetFreelancersForCustomerBiddingOrder(putOrder.OrderId, freelancer.Id);
             var ignoredAccIds = ignoredFreelancer.Select(igfl => igfl.AccountId).ToList();
 
-            //// Refund 'AuctionBalance' for the other freelancers
-            //try
-            //{
-            //    var biddingOrders = await _biddingOrderService.GetAllBiddingInfoByOrderId(order.Id);
-            //    biddingOrders = biddingOrders.Where(bo => bo.FreelancerId != freelancer.Id);
-            //    if (biddingOrders != null && biddingOrders.Any())
-            //    {
-            //        var aunctionDict = biddingOrders.ToDictionary(bo => bo.FreelancerId, bo => bo.PreviewPrice);
-            //        await _freelancerAcc.RefundAuctionBalance(ignoredAccIds, aunctionDict);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    _logger.LogError(ex.Message, ex.StackTrace);
-            //    return BadRequest(new
-            //    {
-            //        Message = "Hoàn tiền cho freelancers thất bại, vui lòng thử lại"
-            //    });
-            //}
+            // Refund 'Balance' for the other freelancers and schedule jobs to remove bidding orders
+            try
+            {
+                if (ignoredFreelancer != null && ignoredFreelancer.Any())
+                {
+                    var newBalanceDict = ignoredFreelancer.ToDictionary(bf => bf.Id, bf => Helper.AesEncryption.Encrypt(bf.Id.ToString(), (bf.Balance + (_commissionRate * bf.PreviewPrice)).ToString()));
+                    await _freelancerAcc.RefundAuctionBalance(newBalanceDict);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex.StackTrace);
+                return BadRequest(new
+                {
+                    Message = "Hoàn tiền cho freelancers thất bại, vui lòng thử lại"
+                });
+            }
 
             if (!await _uow.SaveChangesAsync())
             {
@@ -327,18 +346,6 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            if (putOrderStatus.StatusId == StatusConst.Completed)
-            {
-                var updated = await _paymentService
-                    .UpdateFreelancerBalance(new UpdateFreelanceBalanceDto()
-                    {
-                        Id = freelancer.Id,
-                        Method = GlobalConstant.Payment.Card,
-                        WalletType = GlobalConstant.Payment.Wallet.Personal,
-                        Value = order.EstimatedPrice,
-                    });
-            }
-
             order.ServiceStatusId = putOrderStatus.StatusId;
             await _uow.SaveChangesAsync();
 
@@ -346,7 +353,7 @@ namespace DeToiServer.Controllers
             var customer = await _customerAcc.GetByCondition(cus => cus.Id == order.CustomerId);
             await _rabbitMQConsumer.SendOrderStatusToCustomer(new UpdateOrderStatusRealTimeDto
             {
-                CustomerPhone = customer.Account.Phone,
+                CustomerPhone = customer.Account.CombinedPhone,
                 Address = _mapper.Map<AddressDto>(freelancer.Address?.FirstOrDefault()),
                 ServiceStatusId = putOrderStatus.StatusId
             });
@@ -602,6 +609,17 @@ namespace DeToiServer.Controllers
                 });
             }
 
+            var freelancerId = order.Order.FreelancerId ?? Guid.Empty;
+
+            var updated = await _paymentService
+                .UpdateFreelancerBalance(new UpdateFreelanceBalanceDto()
+                {
+                    Id = freelancerId,
+                    Method = GlobalConstant.Payment.BackAppFee,
+                    WalletType = GlobalConstant.Payment.Wallet.Personal,
+                    Value = order.Order.EstimatedPrice * _commissionRate,
+                });
+
             if (!await _uow.SaveChangesAsync())
             {
                 return StatusCode(500, new
@@ -611,18 +629,10 @@ namespace DeToiServer.Controllers
             }
 
             // Send notification to freelancer
-            var freelancerId = order.Order.FreelancerId ?? Guid.Empty;
             if (!freelancerId.Equals(Guid.Empty))
             {
                 var freelancerAcc = (await _freelancerAcc.GetByAccId(freelancerId)).Account;
-                //var updated = await _paymentService
-                //    .UpdateFreelancerBalance(new UpdateFreelanceBalanceDto()
-                //    {
-                //        Id = freelancerAcc.Id,
-                //        Method = GlobalConstant.Payment.Card,
-                //        WalletType = GlobalConstant.Payment.Wallet.Personal,
-                //        Value = order.Order.EstimatedPrice,
-                //    });
+
                 await _notificationService.PushNotificationAsync(new PushNotificationDto()
                 {
                     ExpoPushTokens = [freelancerAcc.ExpoPushToken],
@@ -665,6 +675,18 @@ namespace DeToiServer.Controllers
                 });
             }
 
+            if (DateTime.Now.AddMinutes(GlobalConstant.Order.MaximumTimeBeforeStartTimeForFreelancerCancel) < order.Order.StartTime)
+            {
+                await _paymentService
+                .UpdateFreelancerBalance(new UpdateFreelanceBalanceDto()
+                {
+                    Id = freelancer.Id,
+                    Method = GlobalConstant.Payment.BackAppFee,
+                    WalletType = GlobalConstant.Payment.Wallet.Personal,
+                    Value = order.OldPreviewPrice * _commissionRate,
+                });
+            } 
+
             if (!await _uow.SaveChangesAsync())
             {
                 return StatusCode(500, new
@@ -685,7 +707,7 @@ namespace DeToiServer.Controllers
                 {
                     ActionKey = GlobalConstant.Notification.FreelancerCanceledOrder,
                 },
-            }, [customerId]);
+            }, [customerAcc.Id]);
 
             return Ok(new
             {

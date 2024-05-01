@@ -51,6 +51,13 @@ namespace DeToiServer.Dtos.OrderDtos
         public string Message { get; set; } = string.Empty;
     }
 
+    public class UpdateOrderResultWithOldPreviewPriceDto
+    {
+        public Order? Order { get; set; } = null;
+        public double OldPreviewPrice{ get; set; }
+        public string Message { get; set; } = string.Empty;
+    }
+
     public class PostOrderFreelancerReviewDto
     {
         public Guid OrderId { get; set; }

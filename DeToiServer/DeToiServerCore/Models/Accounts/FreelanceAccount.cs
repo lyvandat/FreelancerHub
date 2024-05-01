@@ -11,8 +11,6 @@ namespace DeToiServerCore.Models.Accounts
         public double Rating { get; set; }
         public string Balance { get; set; } = string.Empty;
         public string SystemBalance { get; set; } = string.Empty;
-        // Store a temp balance so that the amount of money the freelancer has auctioned do not exceed the limit
-        public string AuctionBalance { get; set; } = string.Empty;
         public int OrderCount { get; set; }
         public int LoveCount { get; set; }
         public int PositiveReviewCount { get; set; }
