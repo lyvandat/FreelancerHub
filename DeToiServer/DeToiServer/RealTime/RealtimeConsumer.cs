@@ -20,10 +20,11 @@ namespace DeToiServer.RealTime
 
             try
             {
-                Connect().Wait();
+                Connect(string.Empty).Wait();
             }
             catch(Exception ex)
             {
+                Connect("http://127.0.0.1:8000").Wait();
                 _logger.LogError($"ERROR: Cannot connect to real time endpoints: {ex.Message}");
             }
         }
@@ -86,11 +87,11 @@ namespace DeToiServer.RealTime
             }
         }
 
-        public async Task Connect()
+        public async Task Connect(string newTry)
         {
             // build deployment: _configuration["RealTimeHub"] ?? Helper.GetDockerHostUrl()
             _connectionSignalR = new HubConnectionBuilder()
-               .WithUrl(Helper.GetRealtimeConnectionString())
+               .WithUrl(string.IsNullOrEmpty(newTry) ? Helper.GetRealtimeConnectionString() : newTry)
                .Build();
             await _connectionSignalR.StartAsync();
         }
