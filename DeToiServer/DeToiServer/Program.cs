@@ -30,6 +30,7 @@ builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
     {
         policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
         policy.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+        policy.WithOrigins("http://localhost:8000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
     })
 );
 
@@ -55,7 +56,6 @@ app.ApplyDatabaseMigrations(app.Environment);
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 // Add other configurations
-app.UseHttpsRedirection();
 app.MapHub<ChatHub>("chat-hub");
 app.UseAuthorization();
 app.MapControllers();
