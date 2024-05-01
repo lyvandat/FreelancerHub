@@ -90,7 +90,7 @@ namespace DeToiServer.RealTime
         {
             // build deployment: _configuration["RealTimeHub"] ?? Helper.GetDockerHostUrl()
             _connectionSignalR = new HubConnectionBuilder()
-               .WithUrl(_configuration["RealTimeHub"] ?? Helper.GetRealtimeConnectionString())
+               .WithUrl(Helper.GetRealtimeConnectionString())
                .Build();
             await _connectionSignalR.StartAsync();
         }
