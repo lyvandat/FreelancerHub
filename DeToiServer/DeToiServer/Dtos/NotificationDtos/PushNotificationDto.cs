@@ -3,7 +3,8 @@
 namespace DeToiServer.Dtos.NotificationDtos
 {
     public class PushNotificationDataDto
-    {// ActionKey
+    {
+        public Guid NotificationId { get; set; }
         public string ActionKey { get; set; } = GlobalConstant.Notification.CustomerChooseThisFreelancer;
     }
 

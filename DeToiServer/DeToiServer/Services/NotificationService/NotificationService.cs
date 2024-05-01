@@ -44,8 +44,13 @@ namespace DeToiServer.Services.NotificationService
             {
                 UnitOfWork _unitOfWork = scope.ServiceProvider.GetRequiredService<UnitOfWork>();
 
+                var notificationId = Guid.NewGuid();
+                notificationDto.Data.NotificationId = notificationId;
                 var notiToAdd = _mapper.Map<Notification>(notificationDto);
+
                 notiToAdd.NotificationAccounts = [];
+                notiToAdd.Id = notificationId;
+
                 foreach (var accId in accountIds)
                 {
                     notiToAdd.NotificationAccounts.Add(new()
