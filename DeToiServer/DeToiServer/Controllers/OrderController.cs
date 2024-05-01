@@ -674,7 +674,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            if (DateTime.Now.AddMinutes(GlobalConstant.Order.MaximumTimeBeforeStartTimeForFreelancerCancel) < order.Order.StartTime)
+            if (DateTime.Now.AddMinutes(GlobalConstant.OrderConst.MaximumTimeBeforeStartTimeForFreelancerCancel) < order.Order.StartTime)
             {
                 await _paymentService
                 .UpdateFreelancerBalance(new UpdateFreelanceBalanceDto()
@@ -713,5 +713,11 @@ namespace DeToiServer.Controllers
                 order.Message
             });
         }
+
+        //[HttpGet("freelancer-for-order")]
+        //public async Task<IActionResult> GetFreelanceOrder(Guid orderId)
+        //{
+        //    return Ok(await _orderService.FilterFeasibleFreelancerForOrder(orderId));
+        //}
     }
 }

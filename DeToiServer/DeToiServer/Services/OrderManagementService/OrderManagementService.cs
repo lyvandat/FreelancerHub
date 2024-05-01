@@ -2,6 +2,7 @@
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.ServiceDtos;
+using DeToiServer.RealTime;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
@@ -14,6 +15,7 @@ namespace DeToiServer.Services.OrderManagementService
         private readonly UnitOfWork _uow;
         private readonly IMapper _mapper;
         private readonly ILogger<OrderManagementService> _logger;
+        private readonly RealtimeConsumer _consumer;
         private const int MAX_SERVICE = 50;
 
         public OrderManagementService(UnitOfWork uow, IMapper mapper, ILogger<OrderManagementService> logger)
@@ -136,7 +138,24 @@ namespace DeToiServer.Services.OrderManagementService
             // Save changes within the transaction scope
             if (!await _uow.SaveChangesAsync()) return null;
 
+            var filerData = await FilterFeasibleFreelancerForOrder(rawOrder.Id);
+            if (filerData != null && filerData.FreelancerPhones != null)
+            {
+                await _consumer.SendFeasibleOrderToFreelancer(new()
+                {
+                    FreelancerPhones = filerData.FreelancerPhones,
+                    OrderToSend = _mapper.Map<GetOrderDto>(filerData.OrderDetail),
+                });
+
+            }
+
             return rawOrder;
+        }
+
+        private async Task<OrderFeasibleFreelancersQuery> FilterFeasibleFreelancerForOrder(Guid orderId)
+        {
+            var res = await _uow.OrderRepo.GetSuitableFreelancerForOrderById(orderId);
+            return res;
         }
 
         public async Task<IEnumerable<GetOrderDto>> GetFreelancerSuitableOrders(Guid freelancerId, FilterFreelancerOrderQuery filterQuery)

@@ -29,7 +29,7 @@
         public const string GeoCodeDefault = "Dữ liệu bản đồ chưa có.";
         public const int DefaultDelayTime = 1000;
 
-        public static class Order
+        public static class OrderConst
         {
             public static readonly double DefaultRecommendPrice = 100000d;
             public static readonly double MaximumTimeBeforeStartTimeForFreelancerCancel = 30; 

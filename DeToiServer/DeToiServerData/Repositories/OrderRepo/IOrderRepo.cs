@@ -14,5 +14,6 @@ namespace DeToiServerData.Repositories.OrderRepo
         Task<IEnumerable<Order>> GetFreelancerIncomingOrdersAsync(Guid freelancerId);
         Task<IEnumerable<Order>> GetCustomerOrders(Guid customerId, FilterCustomerOrderQuery filterQuery);
         Task<IEnumerable<Order>> QueryOrdersByMonthAsync(int month, int year);
+        Task<OrderFeasibleFreelancersQuery> GetSuitableFreelancerForOrderById(Guid orderId);
     }
 }

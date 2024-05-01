@@ -86,6 +86,23 @@ namespace DeToiServer.RealTime
             }
         }
 
+        public async Task SendFeasibleOrderToFreelancer(SendFeasibleOrderFreelancerDto orderToSend)
+        {
+            try
+            {
+                if (_connectionSignalR == null)
+                {
+                    _logger.LogError("Cannot send real time messages due to connection error");
+                    return;
+                }
+                await _connectionSignalR.InvokeAsync("ReceiveFreelancerFeasibleOrder", orderToSend);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{ex.Message} | {ex.StackTrace}");
+            }
+        }
+
         public async Task Connect()
         {
             // build deployment: _configuration["RealTimeHub"] ?? Helper.GetDockerHostUrl()

@@ -303,6 +303,27 @@ namespace DeToiServer.RealTime
             }
         }
 
+        public async Task SendFeasibleOrdersToFreelancer(SendFeasibleOrderFreelancerDto orderData)
+        {
+            var userList = await _context.Users
+                .AsNoTracking()
+                .Where(u => orderData.FreelancerPhones.Contains(u.Phone))
+                .Include(u => u.Connections)
+                .ToListAsync();
+
+            foreach (var user in userList)
+            {
+                if (user?.Connections != null)
+                {
+                    foreach (var connection in user.Connections)
+                    {
+                        await Clients.Client(connection.ConnectionId)
+                            .ReceiveFreelancerFeasibleOrder(orderData.OrderToSend);
+                    }
+                }
+            }
+        }
+
         public override async Task OnConnectedAsync()
         {
             var phone = Context.GetHttpContext()?.Request.Query["phone"].ToString();

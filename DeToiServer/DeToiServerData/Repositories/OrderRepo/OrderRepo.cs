@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using static DeToiServerCore.Common.Constants.GlobalConstant;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DeToiServerData.Repositories.OrderRepo
@@ -31,7 +32,7 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Select(ost => ost.Order.EstimatedPrice)
                 .ToListAsync();
 
-            return query.IsNullOrEmpty() ? GlobalConstant.Order.DefaultRecommendPrice : query.Average();
+            return query.IsNullOrEmpty() ? GlobalConstant.OrderConst.DefaultRecommendPrice : query.Average();
         }
 
         public List<Order> FilterOrders(List<Order> orders, FilterOrderQuery filterOrderQuery)
@@ -259,6 +260,61 @@ namespace DeToiServerData.Repositories.OrderRepo
             "created_at" => ord => ord.CreatedTime,
             _ => ord => ord.CreatedTime,
         };
+
+        public async Task<OrderFeasibleFreelancersQuery> GetSuitableFreelancerForOrderById(Guid orderId)
+        {
+            var orderDetail = await _context.Orders
+                .AsNoTracking().AsSplitQuery()
+                .Include(o => o.OrderServiceTypes)
+                    .ThenInclude(ost => ost.ServiceType)
+                        .ThenInclude(svt => svt.ServiceStatusList)
+                            .ThenInclude(sts => sts.ServiceStatus)
+                .Include(o => o.OrderServices)
+                    .ThenInclude(ost => ost.Service)
+                .Include(o => o.SkillRequired)
+                    .ThenInclude(skrq => skrq.Skill)
+                .Include(o => o.OrderAddress)
+                    .ThenInclude(oad => oad.Address)
+                .FirstOrDefaultAsync(o => o.Id.Equals(orderId));
+
+            if (orderDetail == null)
+            {
+                return new() {};
+            }
+
+            orderDetail.RecommendPrice = orderDetail.OrderServiceTypes
+                    .Select(async ost => await CalcAvgOrderPriceByServiceType(ost.ServiceTypeId))
+                    .ToList().Sum(price => price.Result);
+
+            var serviceTypeIds = orderDetail.OrderServiceTypes.Select(ost => ost.ServiceTypeId).ToList();
+            var skillIds = orderDetail.SkillRequired.Select(ost => ost.SkillId).ToList();
+
+            var realQuery = _context.FreelanceServiceTypes
+                .AsNoTracking().AsSplitQuery()
+                .Where(fst => serviceTypeIds.Contains(fst.ServiceTypeId))
+                .Include(fst => fst.Freelancer)
+                    .ThenInclude(fl => fl.Account)
+                .Select(fst => fst.Freelancer.Account.CombinedPhone)
+                .Distinct();
+
+            var realSkillQuery = _context.SkillServiceTypes
+                .AsNoTracking().AsSplitQuery()
+                .Where(sst => serviceTypeIds.Contains(sst.ServiceTypeId)
+                    || skillIds.Contains(sst.SkillId))
+                .Include(sst => sst.Skill)
+                    .ThenInclude(sk => sk.FreelanceSkills)
+                        .ThenInclude(fls => fls.Freelancer)
+                            .ThenInclude(fl => fl.Account)
+                .SelectMany(sst => sst.Skill.FreelanceSkills.Select(fl_sk => fl_sk.Freelancer.Account.CombinedPhone))
+                .Distinct();
+
+            return new()
+            {
+                FreelancerPhones = (await realQuery.ToListAsync())
+                    .Concat(await realSkillQuery.ToListAsync()),
+                OrderDetail = orderDetail
+            };
+        }
 
         public async Task<IEnumerable<Order>> GetFreelancerSuitableOrders(Guid freelancerId, FilterFreelancerOrderQuery filterQuery)
         {
