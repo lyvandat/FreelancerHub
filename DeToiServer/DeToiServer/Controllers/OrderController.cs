@@ -237,7 +237,7 @@ namespace DeToiServer.Controllers
             await _notificationService.PushNotificationAsync(new PushNotificationDto()
             {
                 ExpoPushTokens = [freelancer.Account.ExpoPushToken],
-                Title = "Bạn đã được chọn!",
+                Title = "📣 Bạn đã được chọn!",
                 Body = "Customer đã chọn bạn! Hãy kiểm tra danh sách đơn nhé.",
                 Data = new()
                 {
@@ -252,7 +252,7 @@ namespace DeToiServer.Controllers
                 await _notificationService.PushNotificationAsync(new PushNotificationDto()
                 {
                     ExpoPushTokens = ignoredFreelancer.Select(igfl => igfl.Account.ExpoPushToken).ToList(),
-                    Title = "[DetoiVN] Customer đã chọn người khác.",
+                    Title = "📣 Customer đã chọn người khác.",
                     Body = "Bạn hãy tiếp tục cố gắng nhé.",
                     Data = new()
                     {
@@ -447,7 +447,7 @@ namespace DeToiServer.Controllers
 
 
         [HttpGet("customer-all"), AuthorizeRoles(GlobalConstant.Customer)]
-        public async Task<ActionResult<IEnumerable<GetCustomerOrderDto>>> GetAllCustomerOrders([FromQuery] FilterCustomerOrderQuery query)
+        public async Task<ActionResult<IEnumerable<GetCustomerOrderDto>>> ControllerGetAllCustomerOrders([FromQuery] FilterCustomerOrderQuery query)
         {
             return await GetCustomerOrders(query);
         }
@@ -457,7 +457,7 @@ namespace DeToiServer.Controllers
         {
             var query = new FilterCustomerOrderQuery()
             {
-                OrderStatusId = [StatusConst.OnDoingService, StatusConst.OnDelivering, StatusConst.OnMoving],
+                OrderStatusId = [StatusConst.Waiting, StatusConst.OnDoingService, StatusConst.OnDelivering, StatusConst.OnMoving],
             };
             return await GetCustomerOrders(query);
         }
@@ -635,7 +635,7 @@ namespace DeToiServer.Controllers
                 await _notificationService.PushNotificationAsync(new PushNotificationDto()
                 {
                     ExpoPushTokens = [freelancerAcc.ExpoPushToken],
-                    Title = $"Rất tiếc, khách hàng đã hủy 1 đơn hàng!",
+                    Title = $"📣 Rất tiếc, khách hàng đã hủy 1 đơn hàng!",
                     Body = $"Khách hàng đã hủy 1 đơn hàng! Hãy kiểm tra danh sách đơn bị hủy nhé.",
                     Data = new()
                     {
@@ -700,7 +700,7 @@ namespace DeToiServer.Controllers
             await _notificationService.PushNotificationAsync(new PushNotificationDto()
             {
                 ExpoPushTokens = [customerAcc.ExpoPushToken],
-                Title = $"Rất tiếc, Freelancer đã từ chối nhận đơn hàng của bạn!",
+                Title = $"📣 Rất tiếc, Freelancer đã từ chối nhận đơn hàng của bạn!",
                 Body = $"Freelancer đã từ chối 1 đơn hàng của bạn, đơn hàng của bạn sẽ được đưa lên sàn đấu giá",
                 Data = new()
                 {

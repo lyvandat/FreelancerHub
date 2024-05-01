@@ -269,7 +269,7 @@ namespace DeToiServer.RealTime
                 await _notificationService.PushNotificationAsync(new PushNotificationDto()
                 {
                     ExpoPushTokens = [customer.Account.ExpoPushToken],
-                    Title = "Đã có Freelancer báo giá!",
+                    Title = "📣 Đã có Freelancer báo giá!",
                     Body = "Freelancer đã báo giá cho đơn của bạn! Hãy kiểm tra danh sách đơn nhé.",
                     Data = new()
                     {
