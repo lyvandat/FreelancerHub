@@ -44,6 +44,9 @@ namespace DeToiServerData.Configurations
                 .WithOne(ph => ph.Order)
                 .HasForeignKey(ph => ph.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Property(o => o.IsCustomerRated)
+                .HasDefaultValue(false);
         }
     }
 

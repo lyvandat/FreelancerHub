@@ -168,18 +168,18 @@ namespace DeToiServer.Services.OrderManagementService
                 if (item.ServiceStatusId.Equals(StatusConst.OnMatching))
                 {
                     var freelancers = await _uow.BiddingOrderRepo.GetMatchingFreelancersByOrderId(item.Id);
-                    item.NumberOfPricing = freelancers.Count();
+                    item.QuotedFreelancerCount = freelancers.Count();
                 }
                 else
                 {
-                    item.NumberOfPricing = 0;
+                    item.QuotedFreelancerCount = 0;
                 }
             }
 
             return result;
         }
 
-        public async Task<GetOrderDto?> GetLatestCustomerOrders(Guid customerId)
+        public async Task<GetCustomerOrderDto?> GetLatestCustomerOrders(Guid customerId)
         {
             var rawOrder = await _uow.OrderRepo.GetLatestCustomerOrders(customerId);
 
@@ -188,7 +188,10 @@ namespace DeToiServer.Services.OrderManagementService
                 return null;
             }
 
-            var order = _mapper.Map<GetOrderDto>(rawOrder);
+            var freelancers = await _uow.BiddingOrderRepo.GetMatchingFreelancersByOrderId(rawOrder.Id);
+
+            var order = _mapper.Map<GetCustomerOrderDto>(rawOrder);
+            order.QuotedFreelancerCount = freelancers.Count();
 
             return order;
         }
@@ -236,6 +239,7 @@ namespace DeToiServer.Services.OrderManagementService
 
             order.Rating = review.Rating;
             order.Comment = review.Comment;
+            order.IsCustomerRated = true;
             var orderNew = await _uow.OrderRepo.UpdateAsync(order);
 
             return new()

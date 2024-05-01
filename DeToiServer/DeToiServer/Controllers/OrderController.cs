@@ -233,8 +233,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            // Add notification content
-            // Send success noti to choosen freelancer
+            // Send success to choosen freelancer
             await _notificationService.PushNotificationAsync(new PushNotificationDto()
             {
                 ExpoPushTokens = [freelancer.Account.ExpoPushToken],
@@ -245,8 +244,8 @@ namespace DeToiServer.Controllers
                     ActionKey = GlobalConstant.Notification.CustomerChooseThisFreelancer,
                 },
             }, [freelancer.AccountId]);
-            // Send fail noti to not choosen freelancers
-            
+
+            // Send failed to not choosen freelancers
             if (ignoredFreelancer != null && ignoredFreelancer.Any())
             {
                 // Send fail noti to not choosen freelancers
@@ -428,7 +427,7 @@ namespace DeToiServer.Controllers
         }
 
 
-        private async Task<ActionResult> GetCustomerOrders(FilterCustomerOrderQuery query)
+        private async Task<ActionResult<IEnumerable<GetCustomerOrderDto>>> GetCustomerOrders(FilterCustomerOrderQuery query)
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
             var customer = await _customerAcc.GetByAccId(accountId);
@@ -448,13 +447,13 @@ namespace DeToiServer.Controllers
 
 
         [HttpGet("customer-all"), AuthorizeRoles(GlobalConstant.Customer)]
-        public async Task<ActionResult<GetCustomerOrderDto>> GetAllCustomerOrders([FromQuery] FilterCustomerOrderQuery query)
+        public async Task<ActionResult<IEnumerable<GetCustomerOrderDto>>> GetAllCustomerOrders([FromQuery] FilterCustomerOrderQuery query)
         {
             return await GetCustomerOrders(query);
         }
 
         [HttpGet("customer/on-service"), AuthorizeRoles(GlobalConstant.Customer)]
-        public async Task<ActionResult<GetCustomerOrderDto>> GetCustomerOnServiceOrders()
+        public async Task<ActionResult<IEnumerable<GetCustomerOrderDto>>> GetCustomerOnServiceOrders()
         {
             var query = new FilterCustomerOrderQuery()
             {
@@ -464,7 +463,7 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("customer/on-matching"), AuthorizeRoles(GlobalConstant.Customer)]
-        public async Task<ActionResult<GetCustomerOrderDto>> GetCustomerOnMatchingOrders()
+        public async Task<ActionResult<IEnumerable<GetCustomerOrderDto>>> GetCustomerOnMatchingOrders()
         {
             var query = new FilterCustomerOrderQuery()
             {
@@ -474,7 +473,7 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("customer/completed"), AuthorizeRoles(GlobalConstant.Customer)]
-        public async Task<ActionResult<GetCustomerOrderDto>> GetCustomerCompletedOrders()
+        public async Task<ActionResult<IEnumerable<GetCustomerOrderDto>>> GetCustomerCompletedOrders()
         {
             var query = new FilterCustomerOrderQuery()
             {
@@ -484,7 +483,7 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("customer-latest"), AuthorizeRoles(GlobalConstant.Customer)]
-        public async Task<ActionResult<GetOrderDto>> GetCustomerLatestOrders()
+        public async Task<ActionResult<GetCustomerOrderDto>> GetCustomerLatestOrders()
         {
             Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
             var customer = await _customerAcc.GetByAccId(accountId);

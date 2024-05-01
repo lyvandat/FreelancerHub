@@ -94,6 +94,7 @@
             public static readonly string CustomerChooseThisFreelancer = "CUSTOMER_CHOSE_THIS_FREELANCER";
             public static readonly string CustomerNotChooseThisFreelancer = "CUSTOMER_NOT_CHOSE_THIS_FREELANCER";
             public static readonly string FreelancerQuoteServiceToCustomer = "FREELANCER_QUOTE_SERVICE_TO_CUSTOMER";
+            public static readonly string FreelancerUpdateOrderStatus = "FREELANCER_UPDATE_ORDER_STATUS";
             public static readonly string FreelancerCanceledOrder = "FREELANCER_CANCELED_ORDER";
             public static readonly string CustomerCanceledOrder = "CUSTOMER_CANCELED_ORDER";
             public static readonly int TimeSpan = 30;

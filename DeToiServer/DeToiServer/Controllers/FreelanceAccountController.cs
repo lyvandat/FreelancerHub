@@ -273,6 +273,14 @@ namespace DeToiServer.Controllers
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
             var freelancer = await _freelanceAccService.GetDetailWithStatistic(accountId);
 
+            if (freelancer == null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Sai Id freelancer"
+                });
+            }    
+
             if (bid.PreviewPrice < (await _uow.PaymentRepo.GetAllFeeAsync())
                 .Where(f => f.Id.Equals(GlobalConstant.Fee.Id.MinServicePrice)).First().Amount)
             {

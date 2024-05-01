@@ -10,7 +10,7 @@ namespace DeToiServerCore.Models.Services
         public double BasePrice { get; set; }
         public string? Description { get; set; }
         public string? Image { get; set; }
-        public string Keys { get; set; } = null!; // Thêm field createdAt, 
+        public string Keys { get; set; } = string.Empty; // Thêm field createdAt, 
         public DateTime CreatedAt { get; set; }
         public bool IsActivated { get; set; }
         public string AddressRequireOption { get; set; } = GlobalConstant.AddressOption.Destination;

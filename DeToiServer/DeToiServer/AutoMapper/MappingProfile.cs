@@ -97,8 +97,8 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
                 .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders))
                 .ForMember(dest => dest.ActiveTime, opt => opt.MapFrom(src => src.Account.CreatedAt))
-                //.ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.Balance))))
-                //.ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.SystemBalance))))
+                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.Balance))))
+                .ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Id.ToString(), src.SystemBalance))))
                 .ForMember(dest => dest.FreelancerFeasibleServices, opt => opt.MapFrom(src => src.FreelancerFeasibleServices));
 
             CreateMap<FreelanceAccount, GetFreelanceMatchingDto>()

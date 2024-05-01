@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos.AccountDtos;
+using DeToiServer.Dtos.ServiceCategoryDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Dtos.UIElementDtos;
 using DeToiServerCore.Common.Helper;
@@ -50,21 +51,36 @@ namespace DeToiServer.Services.ServiceTypeService
             await _uow.ServiceTypeRepo.DeleteAsync(id);
         }
 
-        public async Task<IEnumerable<GetServiceTypeWithCategoryDto>> GetAllServiceInfo(FilterServiceTypeQuery query)
+        public async Task<SearchServiceTypeAndCategoryDto> GetAllServiceInfo(FilterServiceTypeQuery query)
         {
             var rawResult = await _uow.ServiceTypeRepo.GetAllServiceTypeWithCategoryAsync();
+            var rawCategories = await _uow.ServiceCategoryRepo.GetAllAsync();
+
             var resultQuery = rawResult.AsQueryable();
 
-            List<ServiceType> result = [];
+            List<ServiceType> services = [];
+            List<ServiceCategory> categories = [];
             if (!string.IsNullOrEmpty(query.Name))
             {
                 foreach (var st in rawResult)
                 {
                     List<string> keyList = JsonConvert.DeserializeObject<List<string>>(st.Keys) ?? [];
 
-                    if (keyList.Any(item => item.CompareKey(query.Name)) || st.Name.Contains(query.Name))
+                    if (keyList.Any(item => item.CompareKey(query.Name))
+                        || st.Name.Contains(query.Name))
                     {
-                        result.Add(st);
+                        services.Add(st);
+                    }
+                }
+
+                foreach (var cate in rawCategories)
+                {
+                    List<string> categoryKeyList = JsonConvert.DeserializeObject<List<string>>(cate.Keys) ?? [];
+
+                    if (categoryKeyList.Any(item => item.CompareKey(query.Name))
+                        || cate.Name.Contains(query.Name))
+                    {
+                        categories.Add(cate);
                     }
                 }
 
@@ -73,7 +89,11 @@ namespace DeToiServer.Services.ServiceTypeService
                 //        .Any(item => item.CompareKey(query.Name)));
             }
 
-            return result.Select(_mapper.Map<GetServiceTypeWithCategoryDto>);
+            return new SearchServiceTypeAndCategoryDto()
+            {
+                Services = services.Select(_mapper.Map<GetServiceTypeWithCategoryDto>),
+                Categories = categories.Select(_mapper.Map<GetServiceCategoryDto>),
+            }; 
         }
 
         public async Task<GetServiceTypeDetailDto> GetServiceTypeDetailWithRequirements(Guid id)

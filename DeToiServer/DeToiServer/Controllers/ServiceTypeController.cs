@@ -72,14 +72,13 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<GetServiceTypeWithCategoryDto>>> SearchService(
+        public async Task<ActionResult<SearchServiceTypeAndCategoryDto>> SearchService(
             [FromQuery] FilterServiceTypeQuery query
         )
         {
             var result = await _service.GetAllServiceInfo(query);
-            var accPage = PageList<GetServiceTypeWithCategoryDto>.ToPageList(result, query.Page, query.PageSize);
 
-            return Ok(accPage);
+            return Ok(result);
         }
     }
 }

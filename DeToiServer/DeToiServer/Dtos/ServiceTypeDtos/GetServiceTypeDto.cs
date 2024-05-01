@@ -36,4 +36,10 @@ namespace DeToiServer.Dtos.ServiceTypeDtos
         public GetServiceCategoryDto ServiceCategory { get; set; } = null!;
     }
 
+    public class SearchServiceTypeAndCategoryDto
+    {
+        public IEnumerable<GetServiceCategoryDto> Categories { get; set; } = null!;
+        public IEnumerable<GetServiceTypeWithCategoryDto> Services { get; set; } = null!;
+    }
+
 }

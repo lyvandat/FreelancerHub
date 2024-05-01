@@ -21,6 +21,7 @@ namespace DeToiServer.Dtos.OrderDtos
         public DateOnly FinishDate { get; set; }
         [JsonPropertyName("freelancer")]
         public GetFreelanceAccountInOrderDto? Freelance { get; set; }
+        public bool IsCustomerRated { get; set; }
         public string ServiceStatus { get; set; } = string.Empty;
         public ICollection<GetServiceTypeDto>? ServiceTypes { get; set; }
         public ICollection<SkillDto>? SkillRequired { get; set; }
@@ -35,13 +36,16 @@ namespace DeToiServer.Dtos.OrderDtos
         public double EstimatedPrice { get; set; }
         public double PreviewPrice { get; set; }
         public double RecommendPrice { get; set; }
-        public int NumberOfPricing { get; set; }
+        public int QuotedFreelancerCount { get; set; }
         public TimeOnly StartTime { get; set; }
         public DateOnly StartDate { get; set; }
         public TimeOnly FinishTime { get; set; }
         public DateOnly FinishDate { get; set; }
         [JsonPropertyName("freelancer")]
         public GetFreelanceAccountInOrderDto? Freelance { get; set; }
+        public bool IsCustomerRated { get; set; }
+        public double Rating { get; set; }
+        public string? Comment { get; set; }
         public Guid ServiceStatusId { get; set; }
         public string ServiceStatus { get; set; } = string.Empty;
         public ICollection<GetServiceTypeDto>? ServiceTypes { get; set; }
