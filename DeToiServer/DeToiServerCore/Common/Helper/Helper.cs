@@ -48,7 +48,7 @@ namespace DeToiServerCore.Common.Helper
         public static string GetRealtimeConnectionString()
         {
             return Environment.GetEnvironmentVariable("MQ_HOST") != null
-                ? "http://localhost:8000/chat-hub"
+                ? "http://detoidb:8000/chat-hub"
                 : "https://localhost:7140/chat-hub";
         }
 
