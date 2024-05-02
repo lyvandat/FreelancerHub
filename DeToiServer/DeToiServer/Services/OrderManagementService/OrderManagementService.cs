@@ -18,10 +18,15 @@ namespace DeToiServer.Services.OrderManagementService
         private readonly RealtimeConsumer _consumer;
         private const int MAX_SERVICE = 50;
 
-        public OrderManagementService(UnitOfWork uow, IMapper mapper, ILogger<OrderManagementService> logger)
+        public OrderManagementService(
+            UnitOfWork uow, 
+            IMapper mapper,
+            RealtimeConsumer consumer,
+            ILogger<OrderManagementService> logger)
         {
             _uow = uow;
             _mapper = mapper;
+            _consumer = consumer;
             _logger = logger;
         }
 
@@ -146,7 +151,6 @@ namespace DeToiServer.Services.OrderManagementService
                     FreelancerPhones = filerData.FreelancerPhones,
                     OrderToSend = _mapper.Map<GetOrderDto>(filerData.OrderDetail),
                 });
-
             }
 
             return rawOrder;

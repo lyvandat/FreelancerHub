@@ -1,10 +1,13 @@
 ﻿using DeToiServerCore.Common.Constants;
+using Newtonsoft.Json;
 
 namespace DeToiServer.Dtos.NotificationDtos
 {
     public class PushNotificationDataDto
     {
+        [JsonProperty(PropertyName = "notificationId")]
         public Guid NotificationId { get; set; }
+        [JsonProperty(PropertyName = "actionKey")]
         public string ActionKey { get; set; } = GlobalConstant.Notification.CustomerChooseThisFreelancer;
     }
 

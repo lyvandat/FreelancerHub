@@ -149,7 +149,8 @@ namespace DeToiServer.Controllers
             string formatedPhone = request.Phone[0].Equals('0') ? // request.Phone.Length == 10 && 
                 request.Phone[1..] : request.Phone;
             var account = await _accService
-                .GetByCondition(flc => flc.Phone.Equals(formatedPhone)
+                .GetByCondition(flc => (flc.Phone.Equals(formatedPhone)
+                    || flc.Phone.Substring(1).Equals(formatedPhone))
                     && flc.CountryCode.Equals(request.CountryCode));
 
             if (account != null)
@@ -216,7 +217,8 @@ namespace DeToiServer.Controllers
             string formatedPhone = request.Phone[0].Equals('0') ? // request.Phone.Length == 10 && 
                 request.Phone[1..] : request.Phone;
             var freelance = await _accService
-                .GetByCondition(frl => frl.Phone.Equals(formatedPhone)
+                .GetByCondition(frl => (frl.Phone.Equals(formatedPhone)
+                    || frl.Phone.Substring(1).Equals(formatedPhone))
                     && (new List<string>() { GlobalConstant.UnverifiedFreelancer, GlobalConstant.Freelancer })
                         .Contains(frl.Role)
                     && frl.CountryCode.Equals(request.CountryCode));
@@ -253,7 +255,8 @@ namespace DeToiServer.Controllers
             string formatedPhone = request.Phone[0].Equals('0') ? // request.Phone.Length == 10 && 
                 request.Phone[1..] : request.Phone;
             var rawAccount = await _accService
-                .GetByCondition(acc => acc.Phone.Equals(formatedPhone)
+                .GetByCondition(acc => (acc.Phone.Equals(formatedPhone)
+                    || acc.Phone.Substring(1).Equals(formatedPhone))
                     && acc.CountryCode.Equals(request.CountryCode));
 
             if (rawAccount != null 
@@ -401,7 +404,8 @@ namespace DeToiServer.Controllers
             string formatedPhone = request.Phone[0].Equals('0') ?
                 request.Phone[1..] : request.Phone;
             var account = await _accService
-                .GetByCondition(acc => acc.Phone.Equals(formatedPhone)
+                .GetByCondition(acc => (acc.Phone.Equals(formatedPhone) 
+                    || acc.Phone.Substring(1).Equals(formatedPhone))
                     && acc.CountryCode.Equals(request.CountryCode));
 
             if (account == null)
@@ -452,7 +456,8 @@ namespace DeToiServer.Controllers
             string formatedPhone = request.Phone[0].Equals('0') ?
                 request.Phone[1..] : request.Phone;
             var account = await _accService
-                .GetByCondition(acc => acc.Phone.Equals(formatedPhone)
+                .GetByCondition(acc => (acc.Phone.Equals(formatedPhone)
+                    || acc.Phone.Substring(1).Equals(formatedPhone))
                     && acc.CountryCode.Equals(request.CountryCode));
 
             if (account == null)
