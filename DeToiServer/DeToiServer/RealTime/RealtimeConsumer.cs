@@ -95,7 +95,7 @@ namespace DeToiServer.RealTime
                     _logger.LogError("Cannot send real time messages due to connection error");
                     return;
                 }
-                await _connectionSignalR.InvokeAsync("ReceiveFreelancerFeasibleOrder", orderToSend);
+                await _connectionSignalR.InvokeAsync("SendFeasibleOrderToFreelancer", orderToSend);
             }
             catch (Exception ex)
             {

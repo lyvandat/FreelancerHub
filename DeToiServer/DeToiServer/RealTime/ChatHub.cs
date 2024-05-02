@@ -303,7 +303,7 @@ namespace DeToiServer.RealTime
             }
         }
 
-        public async Task SendFeasibleOrdersToFreelancer(SendFeasibleOrderFreelancerDto orderData)
+        public async Task SendFeasibleOrderToFreelancer(SendFeasibleOrderFreelancerDto orderData)
         {
             var userList = await _context.Users
                 .AsNoTracking()
@@ -320,6 +320,40 @@ namespace DeToiServer.RealTime
                         await Clients.Client(connection.ConnectionId)
                             .ReceiveFreelancerFeasibleOrder(orderData.OrderToSend);
                     }
+                }
+            }
+        }
+
+        public async Task SendMovingStatusToCustomer(UpdateMovingStatusDto orderStatus)
+        {
+            var order = await _orderService.GetById(orderStatus.OrderId);
+
+            if (order == null)
+            {
+                await Clients.Caller.ErrorOccurred(new NotificationDto()
+                {
+                    NotificationType = NotificationType.Error.ToString(),
+                    Title = "Gửi vị trí thât bại",
+                    Body = "Gửi vị trí thất bại, vui lòng thử lại"
+                });
+                return;
+            }
+
+            var customer = await _customerService.GetByAccId(order.CustomerId);
+            var user = await _context.Users
+                .AsNoTracking()
+                .Include(u => u.Connections)
+                .FirstOrDefaultAsync(user => user.Phone.Equals(customer.Account.CombinedPhone));
+
+            if (user?.Connections != null)
+            {
+                foreach (var connection in user.Connections)
+                {
+                    await Clients.Client(connection.ConnectionId).ReceiveFreelancerPositionResponse(new UpdateMovingStatusDto()
+                    {
+                        Address = orderStatus.Address,
+                        OrderId = orderStatus.OrderId
+                    });
                 }
             }
         }
