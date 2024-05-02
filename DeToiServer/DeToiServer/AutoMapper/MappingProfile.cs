@@ -2,6 +2,7 @@
 using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.AdminDto;
+using DeToiServer.Dtos.ChattingDtos;
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.LocationDtos;
 using DeToiServer.Dtos.NotificationDtos;
@@ -19,6 +20,7 @@ using DeToiServer.Dtos.UIElementDtos;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Accounts;
+using DeToiServerCore.Models.Chat;
 using DeToiServerCore.Models.Notifications;
 using DeToiServerCore.Models.Payment;
 using DeToiServerCore.Models.Quiz;
@@ -409,6 +411,22 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Percentage, opt => opt.MapFrom(src => src.Percentage));
+            #endregion
+
+            #region Chatting
+            CreateMap<Account, MessageSenderDto>()
+                .ForMember(dest => dest.Type, opt => opt.Ignore());
+            CreateMap<Message, MessageDto>();
+            CreateMap<Message, MessagePreviewDto>();
+            CreateMap<Message, GetMessagePreviewDto>()
+                .ConvertUsing((src, dest, context) => {
+                    var senderDetail = context.Mapper.Map<MessageSenderDto>(src.Sender);
+                    return new GetMessagePreviewDto()
+                    {
+                        LatestMessage = context.Mapper.Map<MessagePreviewDto>(src),
+                        Sender = senderDetail,
+                    };
+                });
             #endregion
         }
     }

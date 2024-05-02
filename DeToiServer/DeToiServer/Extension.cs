@@ -1,6 +1,7 @@
 ﻿using DeToiServer.Services.AccountService;
 using DeToiServer.Services.AddressService;
 using DeToiServer.Services.AdminService;
+using DeToiServer.Services.ChattingService;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FavoriteService;
 using DeToiServer.Services.FreelanceAccountService;
@@ -26,6 +27,7 @@ using DeToiServerData.Repositories.AdminRepo;
 using DeToiServerData.Repositories.FreelanceQuizRepo;
 using DeToiServerData.Repositories.FreelancerQuizRepo;
 using DeToiServerData.Repositories.FreelanceSkillRepo;
+using DeToiServerData.Repositories.MessageRepo;
 using DeToiServerData.Repositories.OrderRepo;
 using DeToiServerData.Repositories.PaymentRepo;
 using DeToiServerData.Repositories.PromotionRepo;
@@ -109,6 +111,7 @@ namespace DeToiServerData
             services.AddScoped<IPaymentRepo, PaymentRepo>();
             services.AddScoped<IReportRepo, ReportRepo>();
             services.AddScoped<IAdminRepo, AdminRepo>();
+            services.AddScoped<IMessageRepo, MessageRepo>();
 
 
             services.AddScoped<UnitOfWork>();
@@ -138,6 +141,7 @@ namespace DeToiServerData
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<INotificationDataService, NotificationDataService>();
             services.AddScoped<IReportService, ReportService>();
+            services.AddScoped<IChattingService, ChattingService>();
             return services;
         }
 

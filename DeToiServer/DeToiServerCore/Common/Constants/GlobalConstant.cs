@@ -59,6 +59,13 @@
             }
         }
 
+        public static class ChatConst
+        {
+            public static readonly string Me = "me";
+            public static readonly string They = "they";
+            public static readonly int LoadCount = 10;
+        }
+
         public static class SqlFiles
         {
             public static readonly string DataFile = "insert_data.sql";

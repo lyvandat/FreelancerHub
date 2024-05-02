@@ -1,4 +1,5 @@
 ﻿using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Models.Chat;
 using DeToiServerCore.Models.Notifications;
 using DeToiServerCore.Models.Reports;
 using System.Collections.ObjectModel;
@@ -26,7 +27,9 @@ namespace DeToiServerCore.Models.Accounts
         public string ExpoPushToken { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public Collection<NotificationAccount>? NotificationAccounts { get; set; }
-        public Collection<Report>? ReportAccounts { get; set; }
-        public Collection<Report>? ReportedBy { get; set; }
+        public Collection<Report> ReportAccounts { get; set; } = null!;
+        public Collection<Report> ReportedBy { get; set; } = null!;
+        public Collection<Message> SentMessage { get; set; } = null!;
+        public Collection<Message> ReceivedMessage { get; set; } = null!;
     }
 }

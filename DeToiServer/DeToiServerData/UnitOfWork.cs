@@ -6,6 +6,7 @@ using DeToiServerData.Repositories.AdminRepo;
 using DeToiServerData.Repositories.FreelanceQuizRepo;
 using DeToiServerData.Repositories.FreelancerQuizRepo;
 using DeToiServerData.Repositories.FreelanceSkillRepo;
+using DeToiServerData.Repositories.MessageRepo;
 using DeToiServerData.Repositories.NotificationRepo;
 using DeToiServerData.Repositories.OrderRepo;
 using DeToiServerData.Repositories.PaymentRepo;
@@ -295,6 +296,18 @@ namespace DeToiServerData
             {
                 _adminRepo ??= new AdminRepo(_dataContext);
                 return _adminRepo;
+            }
+        }
+        #endregion
+
+        #region Message
+        private IMessageRepo _messageRepo;
+        public IMessageRepo MessageRepo
+        {
+            get
+            {
+                _messageRepo ??= new MessageRepo(_dataContext);
+                return _messageRepo;
             }
         }
         #endregion

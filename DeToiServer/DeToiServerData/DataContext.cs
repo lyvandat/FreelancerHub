@@ -9,6 +9,7 @@ using DeToiServerData.Configurations;
 using Microsoft.EntityFrameworkCore;
 using DeToiServerCore.Models.Notifications;
 using DeToiServerCore.Models.Reports;
+using DeToiServerCore.Models.Chat;
 
 namespace DeToiServerData
 {
@@ -102,6 +103,10 @@ namespace DeToiServerData
             #region Fee Config
             modelBuilder.ApplyConfiguration(new FeeConfiguration());
             #endregion
+
+            #region Message Config
+            modelBuilder.ApplyConfiguration(new MessageConfiguration());
+            #endregion
         }
 
         // Account related models
@@ -176,6 +181,10 @@ namespace DeToiServerData
 
         #region Fee
         public DbSet<Fee> Fees { get; set; }
+        #endregion
+
+        #region Message
+        public DbSet<Message> Messages { get; set; }
         #endregion
     }
 }
