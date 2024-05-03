@@ -61,8 +61,8 @@
 
         public static class ChatConst
         {
-            public static readonly string Me = "me";
-            public static readonly string They = "they";
+            public static readonly int Freelancer = 0;
+            public static readonly int Customer = 1;
             public static readonly int LoadCount = 10;
         }
 

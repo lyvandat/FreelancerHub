@@ -494,7 +494,6 @@ namespace DeToiServer.RealTime
             await _uow.SaveChangesAsync();
 
             var receiveUser = await _context.Accounts.FirstOrDefaultAsync(a => a.Id.Equals(sendMessage.SendTo));
-
             if (receiveUser != null)
             {
                 var connectTo = await _context.Users.AsNoTracking().Include(u => u.Connections)

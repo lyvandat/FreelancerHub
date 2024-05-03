@@ -47,7 +47,7 @@ namespace DeToiServer.Dtos.ChattingDtos
         public string Avatar { get; set; } = null!;
 
         [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; } = GlobalConstant.ChatConst.Me;
+        public int Type { get; set; } = GlobalConstant.ChatConst.Customer;
     }
 
     public class GetMessagePreviewDto

@@ -1,6 +1,7 @@
 ﻿using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.ServiceStatusDtos;
+using Newtonsoft.Json;
 
 namespace DeToiServer.Dtos.RealTimeDtos
 {
@@ -19,7 +20,7 @@ namespace DeToiServer.Dtos.RealTimeDtos
 
     public class UpdateMovingStatusDto
     {
-        public RealTimeAddressDto Address { get; set; }
+        public RealTimeAddressDto Address { get; set; } = null!;
         public Guid OrderId { get; set; }
     }
 
@@ -31,8 +32,14 @@ namespace DeToiServer.Dtos.RealTimeDtos
 
     public class RealtimeResponseDto
     {
+
+        [JsonProperty(PropertyName = "status")]
         public bool Status { get; set; } = true;
+
+        [JsonProperty(PropertyName = "message")]
         public string Message { get; set; } = null!;
+
+        [JsonProperty(PropertyName = "data")]
         public object Data { get; set; } = null!;
     }
 }

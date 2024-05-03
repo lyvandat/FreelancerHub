@@ -2,6 +2,7 @@
 using DeToiServer.Dtos.ChattingDtos;
 using DeToiServer.RealTime;
 using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Chat;
 
 namespace DeToiServer.Services.ChattingService
@@ -38,9 +39,9 @@ namespace DeToiServer.Services.ChattingService
             foreach (var item in data)
             {
                 var mapped = _mapper.Map<MessageDto>(item);
-                if (item.Sender.Id.Equals(toId))
+                if (item.Sender.Role.Equals(GlobalConstant.Freelancer))
                 {
-                    mapped.Sender.Type = GlobalConstant.ChatConst.They;
+                    mapped.Sender.Type = GlobalConstant.ChatConst.Freelancer;
                 }
                 result.Add(mapped);
             }
@@ -60,6 +61,13 @@ namespace DeToiServer.Services.ChattingService
             };
 
             var sentMsg = await _unitOfWork.MessageRepo.CreateAsync(msgToSend);
+            var currentAcc = await _unitOfWork.AccountRepo.GetByIdAsync(fromId);
+            sentMsg.Sender = currentAcc ?? new Account()
+            {
+                FullName = "Default",
+                Avatar = GlobalConstant.DefaultCommentAvt,
+                Role = GlobalConstant.Customer
+            };
 
             return _mapper.Map<MessageDto>(sentMsg);
         }
@@ -74,14 +82,15 @@ namespace DeToiServer.Services.ChattingService
                 if (!item.Sender.Id.Equals(accountId))
                 {
                     mapped.ConversationId = item.SenderId;
-                    mapped.Sender.Type = GlobalConstant.ChatConst.They;
+                    if (item.Sender.Role.Equals(GlobalConstant.Freelancer))
+                        mapped.Sender.Type = GlobalConstant.ChatConst.Freelancer;
                 }
                 else
                 {
                     mapped.ConversationId = item.ReceiverId;
                     mapped.Sender = _mapper.Map<MessageSenderDto>(item.Receiver);
-
-                    mapped.Sender.Type = GlobalConstant.ChatConst.They;
+                    if (item.Receiver.Role.Equals(GlobalConstant.Freelancer))
+                        mapped.Sender.Type = GlobalConstant.ChatConst.Freelancer;
                 }
                 result.Add(mapped);
             }
