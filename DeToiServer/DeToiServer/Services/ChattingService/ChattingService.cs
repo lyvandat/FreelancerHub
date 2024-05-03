@@ -79,6 +79,9 @@ namespace DeToiServer.Services.ChattingService
                 else
                 {
                     mapped.ConversationId = item.ReceiverId;
+                    mapped.Sender = _mapper.Map<MessageSenderDto>(item.Receiver);
+
+                    mapped.Sender.Type = GlobalConstant.ChatConst.They;
                 }
                 result.Add(mapped);
             }

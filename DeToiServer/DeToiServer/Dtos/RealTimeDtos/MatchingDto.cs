@@ -28,4 +28,11 @@ namespace DeToiServer.Dtos.RealTimeDtos
         public IEnumerable<string> FreelancerPhones { get; set; } = null!;
         public GetOrderDto OrderToSend { get; set; } = null!;
     }
+
+    public class RealtimeResponseDto
+    {
+        public bool Status { get; set; } = true;
+        public string Message { get; set; } = null!;
+        public object Data { get; set; } = null!;
+    }
 }

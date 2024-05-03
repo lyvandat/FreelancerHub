@@ -15,11 +15,14 @@ using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.PaymentService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.Helper;
+using DeToiServerCore.Models;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Chat;
 using DeToiServerData;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DeToiServer.RealTime
@@ -61,7 +64,7 @@ namespace DeToiServer.RealTime
             _logger = logger;
         }
 
-        public async Task SendMessageToFreelancer(PostOrderDto order)
+        public async Task<RealtimeResponseDto> SendMessageToFreelancer(PostOrderDto order)
         {
             // Get freelance accounts that are in the acceptable zone.
             var freelanceAccounts = await _context.Freelancers
@@ -118,9 +121,15 @@ namespace DeToiServer.RealTime
                     }
                 }
             }
+
+            return new RealtimeResponseDto
+            {
+                Message = "Thành công.",
+                Data = order
+            };
         }
 
-        public async Task SendReceiveOrderMessageToFreelancer(string freelancerPhone, GetOrderDto getOrderDto)
+        public async Task<RealtimeResponseDto> SendReceiveOrderMessageToFreelancer(string freelancerPhone, GetOrderDto getOrderDto)
         {
             // Online users that are connecting to SignalR
             var users = await _context.Users
@@ -142,9 +151,15 @@ namespace DeToiServer.RealTime
                     }
                 }
             }
+
+            return new RealtimeResponseDto
+            {
+                Message = "Thành công.",
+                Data = getOrderDto
+            };
         }
 
-        public async Task SendMessageToCustomer(GetFreelancerAndPreviewPriceDto matchingFreelancer)
+        public async Task<RealtimeResponseDto> SendMessageToCustomer(GetFreelancerAndPreviewPriceDto matchingFreelancer)
         {
             var freelancer = await _freelancerService.GetDetailWithStatistic(matchingFreelancer.FreelancerId);
 
@@ -156,7 +171,12 @@ namespace DeToiServer.RealTime
                     Title = "Không tìm thấy Freelancer",
                     Body = "Rất tiếc, Freelancer này không tồn tại trong hệ thống của chúng tôi"
                 });
-                return;
+                return new RealtimeResponseDto
+                {
+                    Status = false,
+                    Message = "Rất tiếc, Freelancer này không tồn tại trong hệ thống của chúng tôi",
+                    Data = new { Message = "Không tìm thấy Freelancer" }
+                };
             }
 
             if (freelancer.Account.Role.Equals(GlobalConstant.UnverifiedFreelancer))
@@ -169,7 +189,12 @@ namespace DeToiServer.RealTime
                     Title = "Tài khoản chưa xác thực không thể báo giá",
                     Body = "Bạn chưa xác thực tài khoản, vui lòng xác thực tài khoản của bạn để tiếp tục"
                 });
-                return;
+                return new RealtimeResponseDto
+                {
+                    Status = false,
+                    Message = "Bạn chưa xác thực tài khoản, vui lòng xác thực tài khoản của bạn để tiếp tục",
+                    Data = new { Message = "Tài khoản chưa xác thực không thể báo giá" }
+                };
             }
 
             var minPrice = await _paymentService.GetMinServicePrice();
@@ -182,7 +207,12 @@ namespace DeToiServer.RealTime
                     Title = "Bạn báo giá với giá trị không cho phép",
                     Body = "Bạn đang báo giá với mức giá thấp hơn so với quy định của [Điều khoản dịch vụ], hãy thử lại"
                 });
-                return;
+                return new RealtimeResponseDto
+                {
+                    Status = false,
+                    Message = "Bạn đang báo giá với mức giá thấp hơn so với quy định của [Điều khoản dịch vụ], hãy thử lại",
+                    Data = new { Message = "Bạn báo giá với giá trị không cho phép" }
+                };
             }
 
             var order = await _orderService.GetById(matchingFreelancer.OrderId);
@@ -195,7 +225,12 @@ namespace DeToiServer.RealTime
                     Title = "Đơn hàng không tồn tại",
                     Body = "Đơn hàng này không tồn tại, vui lòng báo giá đơn khác"
                 });
-                return;
+                return new RealtimeResponseDto
+                {
+                    Status = false,
+                    Message = "Đơn hàng này không tồn tại, vui lòng báo giá đơn khác",
+                    Data = new { Message = "Đơn hàng không tồn tại" }
+                };
             }
 
             if (freelancer.Balance < matchingFreelancer.PreviewPrice * commissionFee)
@@ -206,7 +241,12 @@ namespace DeToiServer.RealTime
                     Title = "Không đủ số tiền trong tài khoản",
                     Body = "Tài khoản của bạn không đủ để báo giá đơn hàng này"
                 });
-                return;
+                return new RealtimeResponseDto
+                {
+                    Status = false,
+                    Message = "Tài khoản của bạn không đủ để báo giá đơn hàng này",
+                    Data = new { Message = "Không đủ số tiền trong tài khoản" }
+                };
             }
 
             var customer = await _customerService.GetByIdWithAccount(order.CustomerId);
@@ -224,7 +264,12 @@ namespace DeToiServer.RealTime
                     Title = "Đơn đã được báo giá",
                     Body = "Bạn đã báo giá đơn hàng này, không thể tiếp tục báo giá"
                 });
-                return;
+                return new RealtimeResponseDto
+                {
+                    Status = false,
+                    Message = "Bạn đã báo giá đơn hàng này, không thể tiếp tục báo giá",
+                    Data = new { Message = "Đơn đã được báo giá" }
+                };
             }
 
             // Save bidding orders, update orderStatus.
@@ -252,7 +297,12 @@ namespace DeToiServer.RealTime
                         Title = "Không thể báo giá",
                         Body = "Tài khoản bạn không đủ tiền để báo giá đơn hàng này, hãy nạp tiền để tiếp tục"
                     });
-                    return;
+                    return new RealtimeResponseDto
+                    {
+                        Status = false,
+                        Message = "Tài khoản bạn không đủ tiền để báo giá đơn hàng này, hãy nạp tiền để tiếp tục",
+                        Data = new { Message = "Không thể báo giá" }
+                    };
                 }
 
                 if (!await _uow.SaveChangesAsync())
@@ -264,7 +314,12 @@ namespace DeToiServer.RealTime
                         Title = "Không thể báo giá",
                         Body = "Đã có lỗi trong quá trình báo giá, vui lòng thử lại"
                     });
-                    return;
+                    return new RealtimeResponseDto
+                    {
+                        Status = false,
+                        Message = "Đã có lỗi trong quá trình báo giá, vui lòng thử lại",
+                        Data = new { Message = "Không thể báo giá" }
+                    };
                 }
 
                 var user = await _context.Users
@@ -293,14 +348,26 @@ namespace DeToiServer.RealTime
                         ActionKey = GlobalConstant.Notification.FreelancerQuoteServiceToCustomer,
                     },
                 }, [customer.AccountId]);
+
+                return new RealtimeResponseDto
+                {
+                    Message = "Báo giá thành công.",
+                    Data = updated
+                };
             }
             catch(Exception ex)
             {
                 _logger.LogError("Cannot save bidding order: " + ex.Message);
+                return new RealtimeResponseDto
+                {
+                    Status = false,
+                    Message = "Có lỗi xảy ra trong quá trình lưu kết quả báo giá.",
+                    Data = new { Message = ex.Message }
+                };
             }
         }
 
-        public async Task SendOrderStatusToCustomer(UpdateOrderStatusRealTimeDto orderStatus)
+        public async Task<RealtimeResponseDto> SendOrderStatusToCustomer(UpdateOrderStatusRealTimeDto orderStatus)
         {
             var user = await _context.Users
                 .AsNoTracking()
@@ -318,6 +385,12 @@ namespace DeToiServer.RealTime
                     });
                 }
             }
+
+            return new RealtimeResponseDto
+            {
+                Message = "Thành công.",
+                Data = new { Message = "Gửi trạng thái đơn hàng thành công." }
+            };
         }
 
         public async Task SendFeasibleOrderToFreelancer(SendFeasibleOrderFreelancerDto orderData)
@@ -341,7 +414,7 @@ namespace DeToiServer.RealTime
             }
         }
 
-        public async Task SendMovingStatusToCustomer(UpdateMovingStatusDto orderStatus)
+        public async Task<RealtimeResponseDto> SendMovingStatusToCustomer(UpdateMovingStatusDto orderStatus)
         {
             var order = await _orderService.GetById(orderStatus.OrderId);
 
@@ -353,7 +426,12 @@ namespace DeToiServer.RealTime
                     Title = "Gửi vị trí thât bại",
                     Body = "Gửi vị trí thất bại, vui lòng thử lại"
                 });
-                return;
+                return new RealtimeResponseDto
+                {
+                    Status = false,
+                    Message = "Gửi vị trí thất bại, vui lòng thử lại",
+                    Data = new { Message = "Gửi vị trí thất bại, vui lòng thử lại" }
+                };
             }
 
             var customer = await _customerService.GetByAccId(order.CustomerId);
@@ -373,9 +451,15 @@ namespace DeToiServer.RealTime
                     });
                 }
             }
+
+            return new RealtimeResponseDto
+            {
+                Message = "Thành công.",
+                Data = new { Message = "Gửi vị trí thành công" }
+            };
         }
 
-        public async Task SendChatMessageToAccount(PostSendMessageRealtimeDto sendMessage)
+        public async Task<RealtimeResponseDto> SendChatMessageToAccount(PostSendMessageRealtimeDto sendMessage)
         {
             var freelance = await _context.Freelancers.AsNoTracking().AsSplitQuery().Include(fl => fl.Account)
                 .FirstOrDefaultAsync(fl => fl.Id.Equals(sendMessage.Id) || fl.AccountId.Equals(sendMessage.Id));
@@ -390,7 +474,12 @@ namespace DeToiServer.RealTime
                     Title = "Gửi tin nhắn thât bại",
                     Body = $"Không tìm được tài khoản có Id:{sendMessage.Id}"
                 });
-                return;
+                return new RealtimeResponseDto
+                {
+                    Status = false,
+                    Message = $"Không tìm được tài khoản có Id:{sendMessage.Id}",
+                    Data = sendMessage
+                };
             }
 
             Account currentAccount = freelance != null ? freelance.Account : customer!.Account;
@@ -420,6 +509,13 @@ namespace DeToiServer.RealTime
                     }
                 }
             }
+
+            return new RealtimeResponseDto
+            {
+                Status = true,
+                Message = "Gửi tin nhắn thành công",
+                Data = sendMessage
+            };
         }
 
         public override async Task OnConnectedAsync()
