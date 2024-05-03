@@ -416,7 +416,8 @@ namespace DeToiServer.AutoMapper
             #region Chatting
             CreateMap<Account, MessageSenderDto>()
                 .ForMember(dest => dest.Type, opt => opt.Ignore());
-            CreateMap<Message, MessageDto>();
+            CreateMap<Message, MessageDto>()
+                .ForMember(dest => dest.TimeReceived, opt => opt.MapFrom(src => src.Time));
             CreateMap<Message, MessagePreviewDto>()
                 .ForMember(dest => dest.TimeReceived, opt => opt.MapFrom(src => src.Time));
 

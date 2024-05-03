@@ -11,8 +11,8 @@ namespace DeToiServer.Dtos.ChattingDtos
         [JsonProperty(PropertyName = "content")]
         public string Content { get; set; } = null!;
 
-        [JsonProperty(PropertyName = "time")]
-        public DateTime Time { get; set; }
+        [JsonProperty(PropertyName = "timeReceived")]
+        public DateTime TimeReceived { get; set; }
 
         [JsonProperty(PropertyName = "sender")]
         public MessageSenderDto Sender { get; set; } = null!;
