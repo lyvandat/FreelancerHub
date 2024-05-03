@@ -61,15 +61,14 @@ namespace DeToiServer.Services.ChattingService
             };
 
             var sentMsg = await _unitOfWork.MessageRepo.CreateAsync(msgToSend);
-            var currentAcc = await _unitOfWork.AccountRepo.GetByIdAsync(fromId);
-            sentMsg.Sender = currentAcc ?? new Account()
-            {
-                FullName = "Default",
-                Avatar = GlobalConstant.DefaultCommentAvt,
-                Role = GlobalConstant.Customer
-            };
 
-            return _mapper.Map<MessageDto>(sentMsg);
+            var mapped = _mapper.Map<MessageDto>(sentMsg);
+            var currentAcc = await _unitOfWork.AccountRepo.GetByIdAsync(fromId);
+            mapped.Sender = _mapper.Map<MessageSenderDto>(currentAcc);
+            if (currentAcc.Role.Equals(GlobalConstant.Freelancer))
+                mapped.Sender.Type = GlobalConstant.ChatConst.Freelancer;
+
+            return mapped;
         }
 
         public async Task<IEnumerable<GetMessagePreviewDto>> GetMessageHistoryByAccountId(Guid accountId)

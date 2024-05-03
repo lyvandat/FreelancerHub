@@ -503,8 +503,7 @@ namespace DeToiServer.RealTime
                 {
                     foreach (var connection in connectTo.Connections)
                     {
-                        await Clients.Client(connection.ConnectionId)
-                            .ReceiveRealtimeMessageFromAccount(sentMsg);
+                        await Clients.Client(connection.ConnectionId).ReceiveRealtimeMessageFromAccount(sentMsg);
                     }
                 }
             }

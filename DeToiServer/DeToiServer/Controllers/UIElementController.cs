@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using DeToiServer.Dtos.ChattingDtos;
 using DeToiServer.Dtos.NotificationDtos;
 using DeToiServer.Dtos.ServiceDtos;
 using DeToiServer.Dtos.UIElementDtos;
+using DeToiServer.RealTime;
 using DeToiServer.Services.NotificationService;
 using DeToiServer.Services.UIElementService;
 using DeToiServerCore.Common.Constants;
@@ -21,16 +23,19 @@ namespace DeToiServer.Controllers
         private readonly IUIElementServiceRequirementService _requirementService;
         private readonly INotificationService _notificationService;
         private readonly INotificationDataService _notificationDataService;
+        private readonly RealtimeConsumer _consumer;
         private readonly IMapper _mapper;
         public UIElementController(
             IUIElementServiceRequirementService requirementService,
             INotificationService notiService,
             INotificationDataService notificationDataService,
+            RealtimeConsumer consumer,
             IMapper mapper)
         {
             _requirementService = requirementService;
             _notificationService = notiService;
             _notificationDataService = notificationDataService;
+            _consumer = consumer;
             _mapper = mapper;
         }
 
@@ -118,6 +123,14 @@ namespace DeToiServer.Controllers
             }
 
             return Ok(list);
+        }
+
+        [HttpPost("test7")]
+        public async Task<ActionResult<string>> Test7(PostSendMessageRealtimeDto post)
+        {
+            await _consumer.SendRealtimeMessageToAccount(post);
+
+            return Ok();
         }
 
     }

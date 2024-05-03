@@ -21,7 +21,7 @@ namespace DeToiServerData.Repositories.MessageRepo
                 .AsNoTracking().AsSplitQuery()
                 .Where(m => (m.SenderId.Equals(session.FromId) && m.ReceiverId.Equals(session.ToId))
                     || (m.SenderId.Equals(session.ToId) && m.ReceiverId.Equals(session.FromId)))
-                .OrderBy(m => m.Time)
+                .OrderByDescending(m => m.Time)
                 .Skip((session.Page - 1) * session.PageSize).Take(session.PageSize)
                 .Include(m => m.Sender)
                 .Include(m => m.Receiver);
