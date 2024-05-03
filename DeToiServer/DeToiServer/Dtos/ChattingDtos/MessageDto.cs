@@ -67,4 +67,11 @@ namespace DeToiServer.Dtos.ChattingDtos
         public Guid SendTo { get; set; }
         public string Content { get; set; } = null!;
     }
+
+    public class PostSendMessageRealtimeDto
+    {
+        public string MyPhone { get; set; } = null!;
+        public string SendTo { get; set; } = null!;
+        public string Content { get; set; } = null!;
+    }
 }

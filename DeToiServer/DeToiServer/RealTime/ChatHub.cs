@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos.AddressDtos;
+using DeToiServer.Dtos.ChattingDtos;
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.NotificationDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.PaymentDtos;
 using DeToiServer.Dtos.RealTimeDtos;
 using DeToiServer.Models;
+using DeToiServer.Services.ChattingService;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.NotificationService;
@@ -13,6 +15,8 @@ using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.PaymentService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.Helper;
+using DeToiServerCore.Models.Chat;
+using DeToiServerData;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -25,18 +29,30 @@ namespace DeToiServer.RealTime
         private readonly ICustomerAccountService _customerService;
         private readonly IOrderManagementService _orderService;
         private readonly INotificationService _notificationService;
+        private readonly IChattingService _chattingService;
         private readonly IMapper _mapper;
         private readonly IPaymentService _paymentService;
         private readonly DataContext _context;
         private readonly UnitOfWork _uow;
         private readonly ILogger<ChatHub> _logger;
 
-        public ChatHub(UnitOfWork uow, DataContext context, IFreelanceAccountService freelancerService, ICustomerAccountService customerService, IOrderManagementService orderService, INotificationService notificationService, IPaymentService paymentService, IMapper mapper, ILogger<ChatHub> logger)
+        public ChatHub(
+            UnitOfWork uow,
+            DataContext context,
+            IFreelanceAccountService freelancerService,
+            ICustomerAccountService customerService,
+            IOrderManagementService orderService,
+            INotificationService notificationService,
+            IChattingService chattingService,
+            IPaymentService paymentService,
+            IMapper mapper,
+            ILogger<ChatHub> logger)
         {
             _freelancerService = freelancerService;
             _customerService = customerService;
             _orderService = orderService;
             _notificationService = notificationService;
+            _chattingService = chattingService;
             _mapper = mapper;
             _paymentService = paymentService;
             _context = context;
@@ -354,6 +370,45 @@ namespace DeToiServer.RealTime
                         Address = orderStatus.Address,
                         OrderId = orderStatus.OrderId
                     });
+                }
+            }
+        }
+
+        public async Task SendChatMessageToAccount(PostSendMessageRealtimeDto sendMessage)
+        {
+            var currentAccount = await _context.Accounts.AsNoTracking()
+                .FirstOrDefaultAsync(u => sendMessage.MyPhone.Contains(u.Phone));
+            var receiveAccount = await _context.Accounts.AsNoTracking()
+                .FirstOrDefaultAsync(u => sendMessage.SendTo.Contains(u.Phone));
+
+            var receiveUser = await _context.Users
+                .AsNoTracking().Include(u => u.Connections)
+                .FirstOrDefaultAsync(u => sendMessage.SendTo.Contains(u.Phone));
+
+            if (currentAccount == null || receiveAccount == null)
+            {
+                await Clients.Caller.ErrorOccurred(new NotificationDto()
+                {
+                    NotificationType = NotificationType.Error.ToString(),
+                    Title = "Gửi tin nhắn thât bại",
+                    Body = "Không tìm được số điện thoại người nhận hoặc người gửi."
+                });
+                return;
+            }
+
+            var sentMsg = await _chattingService.PostSendMessageByAccountId(currentAccount.Id, new()
+            {
+                Content = sendMessage.Content,
+                SendTo = receiveAccount.Id
+            });
+            await _uow.SaveChangesAsync();
+
+            if (receiveUser?.Connections != null)
+            {
+                foreach (var connection in receiveUser.Connections)
+                {
+                    await Clients.Client(connection.ConnectionId)
+                        .ReceiveRealtimeMessageFromAccount(sentMsg);
                 }
             }
         }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using DeToiServer.Dtos.RealTimeDtos;
 using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Accounts;
+using DeToiServer.Dtos.ChattingDtos;
 
 namespace DeToiServer.RealTime
 {
@@ -96,6 +97,23 @@ namespace DeToiServer.RealTime
                     return;
                 }
                 await _connectionSignalR.InvokeAsync("SendFeasibleOrderToFreelancer", orderToSend);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{ex.Message} | {ex.StackTrace}");
+            }
+        }
+
+        public async Task SendRealtimeMessageToAccount(PostSendMessageRealtimeDto message)
+        {
+            try
+            {
+                if (_connectionSignalR == null)
+                {
+                    _logger.LogError("Cannot send real time messages due to connection error");
+                    return;
+                }
+                await _connectionSignalR.InvokeAsync("SendChatMessageToAccount", message);
             }
             catch (Exception ex)
             {
