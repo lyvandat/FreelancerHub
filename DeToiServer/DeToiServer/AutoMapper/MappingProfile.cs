@@ -417,7 +417,9 @@ namespace DeToiServer.AutoMapper
             CreateMap<Account, MessageSenderDto>()
                 .ForMember(dest => dest.Type, opt => opt.Ignore());
             CreateMap<Message, MessageDto>();
-            CreateMap<Message, MessagePreviewDto>();
+            CreateMap<Message, MessagePreviewDto>()
+                .ForMember(dest => dest.TimeReceived, opt => opt.MapFrom(src => src.Time));
+
             CreateMap<Message, GetMessagePreviewDto>()
                 .ConvertUsing((src, dest, context) => {
                     var senderDetail = context.Mapper.Map<MessageSenderDto>(src.Sender);
