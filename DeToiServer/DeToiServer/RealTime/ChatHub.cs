@@ -15,6 +15,7 @@ using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.PaymentService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.Helper;
+using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Chat;
 using DeToiServerData;
 using Microsoft.AspNetCore.SignalR;
@@ -376,39 +377,47 @@ namespace DeToiServer.RealTime
 
         public async Task SendChatMessageToAccount(PostSendMessageRealtimeDto sendMessage)
         {
-            var currentAccount = await _context.Accounts.AsNoTracking()
-                .FirstOrDefaultAsync(u => sendMessage.MyPhone.Contains(u.Phone));
-            var receiveAccount = await _context.Accounts.AsNoTracking()
-                .FirstOrDefaultAsync(u => sendMessage.SendTo.Contains(u.Phone));
+            var freelance = await _context.Freelancers.AsNoTracking().AsSplitQuery().Include(fl => fl.Account)
+                .FirstOrDefaultAsync(fl => fl.Id.Equals(sendMessage.Id) || fl.AccountId.Equals(sendMessage.Id));
+            var customer = await _context.Customers.AsNoTracking().AsSplitQuery().Include(fl => fl.Account)
+                .FirstOrDefaultAsync(cs => cs.Id.Equals(sendMessage.Id) || cs.AccountId.Equals(sendMessage.Id));
 
-            var receiveUser = await _context.Users
-                .AsNoTracking().Include(u => u.Connections)
-                .FirstOrDefaultAsync(u => sendMessage.SendTo.Contains(u.Phone));
-
-            if (currentAccount == null || receiveAccount == null)
+            if (freelance == null && customer == null)
             {
                 await Clients.Caller.ErrorOccurred(new NotificationDto()
                 {
                     NotificationType = NotificationType.Error.ToString(),
                     Title = "Gửi tin nhắn thât bại",
-                    Body = "Không tìm được số điện thoại người nhận hoặc người gửi."
+                    Body = $"Không tìm được tài khoản có Id:{sendMessage.Id}"
                 });
                 return;
             }
 
-            var sentMsg = await _chattingService.PostSendMessageByAccountId(currentAccount.Id, new()
+            Account currentAccount = freelance != null ? freelance.Account : customer!.Account;
+
+            var sentMsg = await _chattingService.PostSendMessageByAccountId(sendMessage.Id, new()
             {
-                Content = sendMessage.Content,
-                SendTo = receiveAccount.Id
+                Image = sendMessage.Image,
+                IsSystem = sendMessage.IsSystem,
+                Content = sendMessage.Content ?? "",
+                SendTo = sendMessage.SendTo
             });
             await _uow.SaveChangesAsync();
 
-            if (receiveUser?.Connections != null)
+            var receiveUser = await _context.Accounts.FirstOrDefaultAsync(a => a.Id.Equals(sendMessage.SendTo));
+
+            if (receiveUser != null)
             {
-                foreach (var connection in receiveUser.Connections)
+                var connectTo = await _context.Users.AsNoTracking().Include(u => u.Connections)
+                    .FirstOrDefaultAsync(user => user.Phone.Contains(receiveUser.Phone));
+
+                if (connectTo?.Connections != null)
                 {
-                    await Clients.Client(connection.ConnectionId)
-                        .ReceiveRealtimeMessageFromAccount(sentMsg);
+                    foreach (var connection in connectTo.Connections)
+                    {
+                        await Clients.Client(connection.ConnectionId)
+                            .ReceiveRealtimeMessageFromAccount(sentMsg);
+                    }
                 }
             }
         }

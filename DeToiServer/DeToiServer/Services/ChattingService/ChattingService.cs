@@ -52,6 +52,8 @@ namespace DeToiServer.Services.ChattingService
         {
             var msgToSend = new Message()
             {
+                IsSystem = sendDto.IsSystem,
+                Image = sendDto.Image,
                 Content = sendDto.Content,
                 SenderId = fromId,
                 ReceiverId = sendDto.SendTo

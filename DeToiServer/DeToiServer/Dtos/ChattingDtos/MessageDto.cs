@@ -19,7 +19,7 @@ namespace DeToiServer.Dtos.ChattingDtos
 
         [JsonProperty(PropertyName = "isSystem")]
         public bool IsSystem { get; set; } = false;
-        [JsonProperty(PropertyName = "sender")]
+        [JsonProperty(PropertyName = "image")]
         public string? Image { get; set; } = null;
     }
 
@@ -65,13 +65,17 @@ namespace DeToiServer.Dtos.ChattingDtos
     public class PostSendMessageDto
     {
         public Guid SendTo { get; set; }
+        public bool IsSystem { get; set; } = false;
+        public string? Image { get; set; } = null;
         public string Content { get; set; } = null!;
     }
 
     public class PostSendMessageRealtimeDto
     {
-        public string MyPhone { get; set; } = null!;
-        public string SendTo { get; set; } = null!;
-        public string Content { get; set; } = null!;
+        public Guid Id { get; set; }
+        public Guid SendTo { get; set; }
+        public bool IsSystem { get; set; } = false;
+        public string? Image { get; set; } = null;
+        public string? Content { get; set; } = null!;
     }
 }
