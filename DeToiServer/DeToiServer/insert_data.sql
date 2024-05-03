@@ -90,6 +90,13 @@ INSERT INTO [Addresses] ([Id], [Lat], [Lon], [CustomerAccountId], [FreelanceAcco
 ('505fe2c8-403b-499a-8925-f7ce984b23c6', 10.666776428111056, 106.95662047595832, null, 'e7784f3c-b89c-4d7f-a2b6-4cc66e917535', N'227 Nguyễn Văn Cừ, phường 4, Quận 5, Thành phố Hồ Chí Minh, Việt Nam', N'Phường 15', N'Quận Gò Vấp', N'Thành phố Hồ Chí Minh', N'Việt Nam'),
 ('9dd88994-8e5d-445e-83cb-9ff64014a833', 10.578521824021678, 106.61148366903966, 'badc9643-88e7-4f4d-997a-c31229ac9816', null, N'227 Nguyễn Văn Cừ, phường 4, Quận 5, Thành phố Hồ Chí Minh, Việt Nam', N'Phường 7', N'Quận 5', N'Thành phố Hồ Chí Minh', N'Việt Nam'); 
 
+INSERT INTO [Messages] ([Id], [Content], [Time], [IsSystem], [Image], [SenderId], [ReceiverId]) VALUES
+('6ea872e2-8300-4f2c-be5b-f12e3d5e8dc2', N'Chào em', '2024-05-03 08:06:04.170', 0, null, '2695c848-8144-4a94-8d4d-763c5e768233', '44baa879-e243-4593-93ea-bb3fd0f0aa44'),
+('f7554752-e3ec-4e77-b8e9-9be9afaa47cd', N'Anh đứng đây từ tối', '2024-05-03 08:06:05.170', 0, null, '2695c848-8144-4a94-8d4d-763c5e768233', '44baa879-e243-4593-93ea-bb3fd0f0aa44'),
+('918abbf3-6ce6-40ae-b4f7-7bc1f8ab068d', N'Chơi Minecraft không', '2024-05-03 08:06:06.170', 0, null, '2695c848-8144-4a94-8d4d-763c5e768233', '44baa879-e243-4593-93ea-bb3fd0f0aa44'),
+('02f4ebb6-584f-46a1-be09-c1f25843d870', N'Chơi cái cc j', '2024-05-03 08:06:07.170', 0, null, '44baa879-e243-4593-93ea-bb3fd0f0aa44', '2695c848-8144-4a94-8d4d-763c5e768233'),
+('43ea7884-bd16-4693-ae5f-44807f5ce6d2', N'T fan Ngọt 30 năm', '2024-05-03 08:06:08.170', 0, null, '44baa879-e243-4593-93ea-bb3fd0f0aa44', '2695c848-8144-4a94-8d4d-763c5e768233');
+
 INSERT INTO [Skills] ([Id], [Name], [Description]) VALUES
 ('d4c95511-492f-46aa-8326-84299acbe8fd', N'Vận chuyển hàng hóa', N'Xếp dỡ hàng hóa một cách an toàn và chuyên nghiệp'),
 ('510acfa4-eddb-4d08-b4ce-30ebf132922f', N'Quản lý lộ trình vận chuyển', N'Lập kế hoạch và điều chỉnh lộ trình vận chuyển hiệu quả'),
