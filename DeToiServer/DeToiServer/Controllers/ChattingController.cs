@@ -37,15 +37,15 @@ namespace DeToiServer.Controllers
         [HttpGet("detail"), AuthorizeRoles(GlobalConstant.Customer, GlobalConstant.Freelancer)]
         public async Task<ActionResult<IEnumerable<MessageDto>>> GetAccountChatSession(
             [FromQuery] Guid receiverId,
-            [FromQuery] int Page = 1,
-            [FromQuery] int PageSize = 30
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 30
         )
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
             
 
 
-            var result = await _chattingService.GetCurrentChatSession(accountId, receiverId, Page, PageSize);
+            var result = await _chattingService.GetCurrentChatSession(accountId, receiverId, page, pageSize);
             return Ok(result);
         }
 

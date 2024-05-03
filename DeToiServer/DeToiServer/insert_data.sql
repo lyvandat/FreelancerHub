@@ -21,6 +21,7 @@ delete from FreelanceQuizQuestions;
 delete from FreelanceQuizzes;
 DELETE from FreelanceQuizResults;
 
+Delete from [Messages];
 Delete from [Addresses];
 Delete from [Freelancers];
 Delete from [Customers];
@@ -70,6 +71,7 @@ INSERT INTO [Accounts] ([Id], [Email], [FullName], [DateOfBirth], [Gender], [Cou
 ('2695c848-8144-4a94-8d4d-763c5e768233', '', N'Ngô Vũ Lan Ngọc', '2006-02-17', 'Female', '84', '337839146', '84337839146', 'Freelancer', 'customer_avt/default_customer_2.jpg', 'string', 'default', '2024-04-13T20:27:27.242395', '2024-04-13 20:17:27.242395', '2024-04-13 20:27:27.242395', 1, 1),
 ('a7a76113-1a12-46c5-abec-01b0cccd1dde', '', N'Dương Hồ Gia Uy', '1989-06-30', 'Male', '84', '914510313', '84914510313', 'Freelancer', 'customer_avt/default_customer_2.jpg', 'string', 'default', '2024-04-13T20:27:27.283402', '2024-04-13 20:17:27.283402', '2024-04-13 20:27:27.283402', 1, 1),
 ('95be2640-b5ec-416b-9153-09cbc7ec60f8', '', N'Lê Nhất Duy', '2002-04-09', 'Male', '84', '373344123', '84373344123', 'Admin', 'customer_avt/default_customer_2.jpg', 'string', 'default', '2024-05-07T17:25:40.825617', '2024-04-07 17:15:40.825617', '2024-05-07 17:25:40.825617', 1, 1),
+('44baa879-e243-4593-93ea-bb3fd0f0aa44', '', N'Trương Ðan Khanh', '1999-01-19', 'Male', '+84', '708662390', '+84708662390', 'Customer', 'customer_avt/default_customer_2.jpg', 'string', 'default', '2024-05-03T14:11:26.884131', '2024-05-03 14:01:26.884131', '2024-05-03 14:11:26.884131', 1, 1),
 ('9a9ffdf1-0cc7-4efc-80b7-d34524010af5', '', N'Trương Xuân Hiền', '1998-02-11', 'Male', '84', '795202798', '84795202798', 'Customer', 'customer_avt/default_customer_1.jpg', 'string', 'default', '2024-04-13T20:27:27.323945', '2024-04-13 20:17:27.323945', '2024-04-13 20:27:27.323945', 1, 1);
 
 INSERT INTO [Freelancers] ([Id], [AccountId], [Rating], [TotalReviewCount], [Balance], [SystemBalance], [OrderCount], [LoveCount], [PositiveReviewCount], [IdentityNumber], [IsTeam], [Description], [TeamMemberCount]) VALUES
@@ -78,10 +80,12 @@ INSERT INTO [Freelancers] ([Id], [AccountId], [Rating], [TotalReviewCount], [Bal
 ('e7784f3c-b89c-4d7f-a2b6-4cc66e917535', 'a7a76113-1a12-46c5-abec-01b0cccd1dde', 0, 0, 'c5jpjoAQU5UGh4YOnU7XlQ==', 'c5jpjoAQU5UGh4YOnU7XlQ==', 0, 0, 0, '051200000013', 1, 'Picture suddenly drug rule bring determine some forward. Beyond chair recently and. Plant view own available buy country store. Hospital have wonder already. Create wife responsibility. Decision song view age international big employee.', 3);
 
 INSERT INTO [Customers] ([Id], [AccountId], [CustomerRank], [MemberPoint]) VALUES
+('37dc6a4f-2544-4467-ac60-fd6dfbd99f8a', '44baa879-e243-4593-93ea-bb3fd0f0aa44', 'Unranked', 0),
 ('badc9643-88e7-4f4d-997a-c31229ac9816', '9a9ffdf1-0cc7-4efc-80b7-d34524010af5', 'Unranked', 0); 
 
 INSERT INTO [Addresses] ([Id], [Lat], [Lon], [CustomerAccountId], [FreelanceAccountId], [AddressLine], [Ward], [District], [Province], [Country]) VALUES
 ('27e60c9b-36ff-45cb-a0cf-553f0e502d6d', 10.537583154037922, 106.9838823422087, null, '89291984-3389-4fe8-8f58-9ec54f17b5bc', N'227 Nguyễn Văn Cừ, phường 4, Quận 5, Thành phố Hồ Chí Minh, Việt Nam', N'Phường 17', N'Quận Gò Vấp', N'Thành phố Hồ Chí Minh', N'Việt Nam'),
+('bcf08d5a-8f96-403c-8279-523556893198', 10.849538203300169, 106.97146741421668, '37dc6a4f-2544-4467-ac60-fd6dfbd99f8a', null, N'227 Nguyễn Văn Cừ, phường 4, Quận 5, Thành phố Hồ Chí Minh, Việt Nam', N'Phường 10', N'Quận Gò Vấp', N'Thành phố Hồ Chí Minh', N'Việt Nam'),
 ('83e38f4d-707d-4f01-bd47-df02eb095dbc', 10.67563583577821, 106.73320667367813, null, '75968ca3-4984-41ac-bbcd-dc899e4215b6', N'227 Nguyễn Văn Cừ, phường 4, Quận 5, Thành phố Hồ Chí Minh, Việt Nam', N'Phường 6', N'Quận 4', N'Thành phố Hồ Chí Minh', N'Việt Nam'),
 ('505fe2c8-403b-499a-8925-f7ce984b23c6', 10.666776428111056, 106.95662047595832, null, 'e7784f3c-b89c-4d7f-a2b6-4cc66e917535', N'227 Nguyễn Văn Cừ, phường 4, Quận 5, Thành phố Hồ Chí Minh, Việt Nam', N'Phường 15', N'Quận Gò Vấp', N'Thành phố Hồ Chí Minh', N'Việt Nam'),
 ('9dd88994-8e5d-445e-83cb-9ff64014a833', 10.578521824021678, 106.61148366903966, 'badc9643-88e7-4f4d-997a-c31229ac9816', null, N'227 Nguyễn Văn Cừ, phường 4, Quận 5, Thành phố Hồ Chí Minh, Việt Nam', N'Phường 7', N'Quận 5', N'Thành phố Hồ Chí Minh', N'Việt Nam'); 
