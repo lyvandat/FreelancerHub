@@ -15,7 +15,7 @@
             {
                 httpContext.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
                 httpContext.Response.Headers.Append("Access-Control-Allow-Headers", "x-requested-with");
-                httpContext.Response.Headers.Append("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
+                httpContext.Response.Headers.Append("Access-Control-Allow-Methods", "POST,GET,PUT,DELETE,OPTIONS");
                 httpContext.Response.Headers.Append("Access-Control-Allow-Origin", originValue);
 
                 if (httpContext.Request.Method == "OPTIONS")
