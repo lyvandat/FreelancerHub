@@ -28,11 +28,12 @@ builder.Services.AddJwtBearerAuthentication(builder.Configuration);
 builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
     policy =>
     {
-        policy.AllowAnyOrigin().AllowAnyMethod().SetIsOriginAllowed(host => true).AllowAnyHeader().AllowCredentials();
-        policy.WithOrigins("http://localhost:2014").AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(host => true).AllowCredentials();
-        policy.WithOrigins("http://localhost:2016").AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(host => true).AllowCredentials();
-        policy.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(host => true).AllowCredentials();
-        policy.WithOrigins("http://localhost:8000").AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(host => true).AllowCredentials();
+        //policy.WithOrigins("http://localhost:2014").AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(host => true).SetIsOriginAllowedToAllowWildcardSubdomains().AllowCredentials();
+        //policy.WithOrigins("http://localhost:2016").AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(host => true).SetIsOriginAllowedToAllowWildcardSubdomains().AllowCredentials();
+        //policy.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(host => true).SetIsOriginAllowedToAllowWildcardSubdomains().AllowCredentials();
+        //policy.WithOrigins("http://localhost:8000").AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(host => true).SetIsOriginAllowedToAllowWildcardSubdomains().AllowCredentials();
+        //policy.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(host => true).AllowCredentials();
+        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(host => true).AllowCredentials();
     })
 );
 
@@ -55,6 +56,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseCors("NgOrigins");
 app.ApplyDatabaseMigrations(app.Environment);
+//app.UseMiddleware<CorsMiddleware>();
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 // Add other configurations
