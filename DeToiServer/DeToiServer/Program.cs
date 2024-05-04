@@ -1,4 +1,4 @@
-global using DeToiServerCore.Models;
+﻿global using DeToiServerCore.Models;
 global using DeToiServerData;
 using DeToiServer;
 using DeToiServer.AsyncDataServices;
@@ -10,6 +10,7 @@ using DeToiServer.WorkerServices;
 using DeToiServerCore.Common.Helper;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +51,34 @@ builder.Services.AddSingleton<RealtimeConsumer>();
 //builder.Services.AddHostedService<MessageBusSubscriber>();
 builder.Services.Configure<VnPayConfigModel>(builder.Configuration.GetSection("VnPayConfig"));
 builder.Services.AddHostedService<NotificationDataCleanupService>();
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.OnRejected = (context, cancellationToken) =>
+    {
+        _ = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter);
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.HttpContext.Response.WriteAsJsonAsync(
+            value: new
+            {
+                Message = $"Quá nhiều yêu cầu, xin hãy thử lại sau. {retryAfter}"
+            },
+            cancellationToken: cancellationToken);
+
+        return new ValueTask();
+    };
+
+    options.AddPolicy("fixedWindow", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromSeconds(30),
+                QueueLimit = 0
+            }));
+});
+
 var app = builder.Build();
 
 app.UseSwagger();
@@ -58,6 +87,8 @@ app.UseCors("NgOrigins");
 app.ApplyDatabaseMigrations(app.Environment);
 //app.UseMiddleware<CorsMiddleware>();
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+
+app.UseRateLimiter();
 
 // Add other configurations
 app.MapHub<ChatHub>("chat-hub");

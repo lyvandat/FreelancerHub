@@ -17,6 +17,7 @@ using DeToiServerCore.Models.Accounts;
 using DeToiServerData;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -211,7 +212,7 @@ namespace DeToiServer.Controllers
             });
         }
 
-        [HttpPost("login/freelancer")]
+        [HttpPost("login/freelancer"), EnableRateLimiting("fixedWindow")]
         public async Task<ActionResult<string>> LoginFreelancer(LoginDto request)
         {
             string formatedPhone = request.Phone[0].Equals('0') ? // request.Phone.Length == 10 && 
@@ -249,7 +250,7 @@ namespace DeToiServer.Controllers
             });
         }
 
-        [HttpPost("login/customer")]
+        [HttpPost("login/customer"), EnableRateLimiting("fixedWindow")]
         public async Task<ActionResult<string>> Login(LoginDto request)
         {
             string formatedPhone = request.Phone[0].Equals('0') ? // request.Phone.Length == 10 && 
