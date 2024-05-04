@@ -63,8 +63,8 @@ namespace DeToiServer.Controllers
                 paymentDto.Amount,
                 "Nạp tiền vào ví cá nhân",
                 items,
-                "https://localhost:7140/api/v1/payos/failed",
-                "https://localhost:7140/api/v1/payos/success"
+                "https://www.detoi.company/",
+                "https://www.detoi.company/"
             );
 
             CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
