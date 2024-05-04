@@ -29,6 +29,8 @@ builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
     policy =>
     {
         policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        policy.WithOrigins("http://localhost:2014").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+        policy.WithOrigins("http://localhost:2016").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
         policy.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
         policy.WithOrigins("http://localhost:8000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
     })
