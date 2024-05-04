@@ -14,7 +14,7 @@ namespace DeToiServer.Dtos.UIElementDtos
     {
         public required Guid Id { get; set; }
         public required string Name { get; set; }
-        public string? Value { get; set; }
+        public dynamic? Value { get; set; }
         public required string Message { get; set; }
         public required Guid InfoId { get; set; }
     }

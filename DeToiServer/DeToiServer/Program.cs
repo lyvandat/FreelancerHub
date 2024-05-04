@@ -33,7 +33,7 @@ builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
         //policy.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(host => true).SetIsOriginAllowedToAllowWildcardSubdomains().AllowCredentials();
         //policy.WithOrigins("http://localhost:8000").AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(host => true).SetIsOriginAllowedToAllowWildcardSubdomains().AllowCredentials();
         //policy.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(host => true).AllowCredentials();
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(host => true).AllowCredentials();
+        policy.AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(host => true).AllowCredentials();
     })
 );
 

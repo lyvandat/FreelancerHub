@@ -88,7 +88,7 @@ namespace DeToiServer.Controllers
             return Ok(_mapper.Map<GetFreelanceDto>(freelance));
         }
 
-        [HttpGet("wallet"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        [HttpGet("wallet"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<GetFreelancerWalletDto>> GetCurrentFreelancerWallet()
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);

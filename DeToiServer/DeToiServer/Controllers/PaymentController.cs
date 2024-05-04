@@ -31,38 +31,38 @@ namespace DeToiServer.Controllers
             return Ok(await _paymentService.GetAllFreelancePayment());
         }
 
-        [HttpPut("personal"), AuthorizeRoles(GlobalConstant.Freelancer)]
-        private async Task<ActionResult<GetFreelanceAccountShortDetailDto>> UpdatePersonalWallet(double value)
-        {
-            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerAccountId);
-            var freelance = await _freelanceAccService.GetByAccId(freelancerAccountId);
+        //[HttpPut("personal"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        //private async Task<ActionResult<GetFreelanceAccountShortDetailDto>> UpdatePersonalWallet(double value)
+        //{
+        //    _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerAccountId);
+        //    var freelance = await _freelanceAccService.GetByAccId(freelancerAccountId);
 
-            if (freelance is null)
-            {
-                return BadRequest(new
-                {
-                    Message = "Không tìm thấy tài khoản, hãy đăng nhập để thử lại"
-                });
-            }
+        //    if (freelance is null)
+        //    {
+        //        return BadRequest(new
+        //        {
+        //            Message = "Không tìm thấy tài khoản, hãy đăng nhập để thử lại"
+        //        });
+        //    }
 
-            var updated = await _paymentService
-                .UpdateFreelancerBalance(new UpdateFreelanceBalanceDto() {
-                    Id = freelancerAccountId,
-                    Method = GlobalConstant.Payment.Card,
-                    WalletType = GlobalConstant.Payment.Wallet.Personal,
-                    Value = value,
-                });
+        //    var updated = await _paymentService
+        //        .UpdateFreelancerBalance(new UpdateFreelanceBalanceDto() {
+        //            Id = freelancerAccountId,
+        //            Method = GlobalConstant.Payment.Card,
+        //            WalletType = GlobalConstant.Payment.Wallet.Personal,
+        //            Value = value,
+        //        });
 
-            if (!await _uow.SaveChangesAsync())
-            {
-                return BadRequest(new
-                {
-                    Message = $"Lỗi lưu lịch sử thanh toán cho Freelancer với Id = {freelance.Id}"
-                });
-            }
+        //    if (!await _uow.SaveChangesAsync())
+        //    {
+        //        return BadRequest(new
+        //        {
+        //            Message = $"Lỗi lưu lịch sử thanh toán cho Freelancer với Id = {freelance.Id}"
+        //        });
+        //    }
 
-            return Ok(updated);
-        }
+        //    return Ok(updated);
+        //}
 
         [HttpGet("fees")]
         public async Task<ActionResult<FeeDto>> GetAllFees()
