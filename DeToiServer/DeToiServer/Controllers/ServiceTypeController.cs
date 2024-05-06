@@ -1,4 +1,5 @@
-﻿using DeToiServer.Dtos.AccountDtos;
+﻿using AutoMapper;
+using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Services.ServiceTypeService;
 using DeToiServerCore.Common.Constants;
@@ -15,11 +16,16 @@ namespace DeToiServer.Controllers
     public class ServiceTypeController : Controller
     {
         private readonly IServiceTypeService _service;
+        private readonly IMapper _mapper;
         private readonly UnitOfWork _uow;
 
-        public ServiceTypeController(IServiceTypeService service, UnitOfWork uow)
+        public ServiceTypeController(
+            IServiceTypeService service,
+            IMapper mapper,
+            UnitOfWork uow)
         {
             _service = service;
+            _mapper = mapper;
             _uow = uow;
         }
 
@@ -34,8 +40,6 @@ namespace DeToiServer.Controllers
         {
             var serviceType = await _service.GetServiceTypeDetailWithRequirements(id);
 
-
-
             if (serviceType is null)
             {
                 return BadRequest(new
@@ -48,19 +52,63 @@ namespace DeToiServer.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ServiceType>> CreateService(PostServiceTypeDto serviceTypeDto)
+        public async Task<ActionResult<ServiceType>> CreateService(PostServiceTypeWithRequirementDto serviceTypeDto)
         {
-            var serviceType = await _service.Add(serviceTypeDto);
+            if (!GlobalConstant.AddressOption.All.Contains(serviceTypeDto.AddressRequireOption))
+            {
+                return BadRequest(new
+                {
+                    Message = "Loại địa chỉ cho dịch vụ không đúng định dạng"
+                });
+            }
+
+            // TODO: Check CategoryId
+            //if (!GlobalConstant.AddressOption.All.Contains(serviceTypeDto.AddressRequireOption))
+            //{
+            //    return BadRequest(new
+            //    {
+            //        Message = "Loại địa chỉ cho dịch vụ không đúng định dạng"
+            //    });
+            //}
+
+            var serviceType = await _service.AddWithRequirement(serviceTypeDto);
             await _uow.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetServiceById), new { id = serviceType.Id }, serviceType);
+
+            return CreatedAtAction(nameof(GetServiceById), new { id = serviceType.Id }, new { 
+                Message = "Thêm Dịch vụ mới thành công",
+                serviceType
+            });
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateService(PutServiceTypeDto putServiceTypeDto)
+        public async Task<IActionResult> UpdateService(PutServiceTypeWithRequirementDto putServiceTypeDto)
         {
-            await _service.Update(putServiceTypeDto);
+            var serviceToUpdate = await _service.GetServiceTypeDetailWithRequirementsTracking(putServiceTypeDto.Id);
+
+            if (serviceToUpdate == null)
+            {
+                return BadRequest(new
+                {
+                    Message = $"Không tìm thấy Service với id:{putServiceTypeDto.Id}"
+                });
+            }
+
+            // TODO: Check CategoryId
+            //if (!(serviceTypeDto.AddressRequireOption))
+            //{
+            //    return BadRequest(new
+            //    {
+            //        Message = "Loại địa chỉ cho dịch vụ không đúng định dạng"
+            //    });
+            //}
+
+            _mapper.Map(source: putServiceTypeDto, destination: serviceToUpdate);
+
             await _uow.SaveChangesAsync();
-            return Ok(new { Message = "Cập nhật dịch vụ thành công" });
+            return Ok(new
+            { 
+                Message = "Cập nhật dịch vụ thành công"
+            });
         }
 
         [HttpDelete]

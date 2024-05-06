@@ -9,6 +9,7 @@ namespace DeToiServer.Dtos.ServiceCategoryDtos
         public string Name { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public ICollection<string> Keys { get; set; } = null!;
         public string ServiceClassName { get; set; } = string.Empty;
         public int ServiceTypeCount { get; set; } = 0;
     }
@@ -19,6 +20,7 @@ namespace DeToiServer.Dtos.ServiceCategoryDtos
         public string Name { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public ICollection<string> Keys { get; set; } = null!;
         public string ServiceClassName { get; set; } = string.Empty;
         public int ServiceTypeCount { get; set; } = 0;
         public ICollection<GetServiceTypeDto>? ServiceTypes { get; set; }

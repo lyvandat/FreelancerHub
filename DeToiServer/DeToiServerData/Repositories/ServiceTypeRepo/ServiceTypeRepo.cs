@@ -32,10 +32,11 @@ namespace DeToiServerData.Repositories.ServiceTypeRepo
             return await serviceQueryable.ToListAsync();
         }
 
-        public async Task<ServiceType> GetServiceTypeDetailWithRequirements(Guid id)
+        public async Task<ServiceType> GetServiceTypeDetailWithRequirementsAsync(Guid id)
         {
-            var query = _context.ServiceTypes.AsSplitQuery(); // perfomance
+            var query = _context.ServiceTypes.AsNoTracking().AsSplitQuery(); // perfomance
             var result = await query
+                .Where(st => st.Id.Equals(id))
                 .Include(st => st.Requirements)
                     .ThenInclude(req => req.InputMethod)
                         .ThenInclude(im => im.Validation)
@@ -46,7 +47,30 @@ namespace DeToiServerData.Repositories.ServiceTypeRepo
                                 .ThenInclude(opt => opt.Info)
                                     .ThenInclude(info => info.Validation)
                 .Include(st => st.AdditionalRequirements)
-                .FirstOrDefaultAsync(st => st.Id.Equals(id));
+                .FirstOrDefaultAsync();
+
+            result.Requirements = result.Requirements.OrderBy(req => req.Priority).ToList();
+            result.AdditionalRequirements = result.AdditionalRequirements.OrderBy(areq => areq.Priority).ToList();
+
+            return result;
+        }
+
+        public async Task<ServiceType> GetServiceTypeDetailWithRequirementsTrackingAsync(Guid id)
+        {
+            var query = _context.ServiceTypes.AsSplitQuery(); // perfomance
+            var result = await query
+                .Where(st => st.Id.Equals(id))
+                .Include(st => st.Requirements)
+                    .ThenInclude(req => req.InputMethod)
+                        .ThenInclude(im => im.Validation)
+                .Include(st => st.Requirements)
+                    .ThenInclude(req => req.InputMethod)
+                        .ThenInclude(im => im.Method)
+                            .ThenInclude(med => med.Options)
+                                .ThenInclude(opt => opt.Info)
+                                    .ThenInclude(info => info.Validation)
+                .Include(st => st.AdditionalRequirements)
+                .FirstOrDefaultAsync();
 
             result.Requirements = result.Requirements.OrderBy(req => req.Priority).ToList();
             result.AdditionalRequirements = result.AdditionalRequirements.OrderBy(areq => areq.Priority).ToList();

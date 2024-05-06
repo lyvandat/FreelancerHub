@@ -121,6 +121,17 @@ namespace DeToiServerCore.Common.Helper
             return (long)(input - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
         }
 
+        public static string RequirementLabelToKey(string label)
+        {
+            return VieToEngName(label).Replace(' ', '_');
+        }
+
+        public static string GetServiceClassName(string className)
+        {
+            if (string.IsNullOrEmpty(className)) return string.Empty;
+            return char.ToLowerInvariant(className[0]) + className[1..];
+        }
+
         public class AesEncryption
         {
             public static string Encrypt(string encryptionKey, string plainText)

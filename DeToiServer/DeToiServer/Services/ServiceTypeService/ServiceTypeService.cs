@@ -98,9 +98,23 @@ namespace DeToiServer.Services.ServiceTypeService
 
         public async Task<GetServiceTypeDetailDto> GetServiceTypeDetailWithRequirements(Guid id)
         {
-            var rawDetail = await _uow.ServiceTypeRepo.GetServiceTypeDetailWithRequirements(id);
+            var rawDetail = await _uow.ServiceTypeRepo.GetServiceTypeDetailWithRequirementsAsync(id);
 
             return _mapper.Map<GetServiceTypeDetailDto>(rawDetail);
+        }
+
+        public async Task<ServiceType> AddWithRequirement(PostServiceTypeWithRequirementDto postServiceDto)
+        {
+            var service = _mapper.Map<ServiceType>(postServiceDto);
+            await _uow.ServiceTypeRepo.CreateAsync(service);
+            return service;
+        }
+
+        public async Task<ServiceType> GetServiceTypeDetailWithRequirementsTracking(Guid id)
+        {
+            var rawDetail = await _uow.ServiceTypeRepo.GetServiceTypeDetailWithRequirementsTrackingAsync(id);
+
+            return rawDetail;
         }
     }
 }

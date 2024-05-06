@@ -14,5 +14,7 @@ namespace DeToiServer.Services.ServiceTypeService
         public Task Delete(Guid id);
         public Task<SearchServiceTypeAndCategoryDto> GetAllServiceInfo(FilterServiceTypeQuery query);
         public Task<GetServiceTypeDetailDto> GetServiceTypeDetailWithRequirements(Guid id);
+        public Task<ServiceType> AddWithRequirement(PostServiceTypeWithRequirementDto postServiceDto);
+        public Task<ServiceType> GetServiceTypeDetailWithRequirementsTracking(Guid id);
     }
 }

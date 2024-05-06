@@ -24,7 +24,7 @@ namespace DeToiServer.Dtos.UIElementDtos
         public required string Type { get; set; }
         public required string Label { get; set; }
         public string Mask { get; set; } = "default";
-        public string DefaultValue { get; set; } = "default";
+        public dynamic DefaultValue { get; set; } = null!;
         public IEnumerable<string> Buttons { get; set; } = null!;
         public ICollection<UIElementOptionInfoValidationDto> Validation { get; set; } = null!;
         public Guid OptionId { get; set; }
@@ -40,21 +40,14 @@ namespace DeToiServer.Dtos.UIElementDtos
 
     public class UIElementInputMethodTypeDto
     {
-        //public required Guid Id { get; set; }
+        public required Guid Id { get; set; }
         public required string Name { get; set; }
         public ICollection<UIElementInputOptionDto>? Options { get; set; } = null;
     }
 
-    public class UIElementServiceRequirementInputMethodMidwayDto
-    {
-        //public required Guid Id { get; set; }
-        public required string DataType { get; set; }
-        public required UIElementInputMethodTypeDto Method { get; set; }
-    }
-
     public class UIElementServiceRequirementInputMethodDto
     {
-        //public required Guid Id { get; set; }
+        public required Guid Id { get; set; }
         public required string DataType { get; set; } 
         public required UIElementInputMethodTypeDto Method { get; set; }
         public required ICollection<UIElementValidationTypeDto> Validation { get; set; }

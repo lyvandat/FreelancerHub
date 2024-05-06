@@ -7,6 +7,8 @@ namespace DeToiServer.Dtos.ServiceCategoryDtos
         public string Name { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
         public string? Description { get; set; } = string.Empty;
-        public ICollection<PostServiceTypeDto>? ServiceTypes { get; set; }
+        public bool IsActivated { get; set; }
+        public string ServiceClassName { get; set; } = string.Empty;
+        public ICollection<string>? Keys { get; set; }
     }
 }

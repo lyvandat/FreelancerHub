@@ -147,21 +147,34 @@ namespace DeToiServer.AutoMapper
 
             #region ServiceType and ServiceCategory
             CreateMap<GetServiceTypeDto, ServiceType>().ReverseMap();
-            CreateMap<GetServiceTypeDetailDto, ServiceType>().ReverseMap();
+            CreateMap<ServiceType, GetServiceTypeDetailDto>()
+                .ForMember(dest => dest.Keys, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<List<string>>(src.Keys)));
             CreateMap<PostServiceTypeDto, ServiceType>().ReverseMap();
             CreateMap<PutServiceTypeDto, ServiceType>().ReverseMap();
+
+            CreateMap<PostServiceTypeWithRequirementDto, ServiceType>()
+                .ForMember(dest => dest.Keys, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Keys)));
+
+            CreateMap<PutServiceTypeWithRequirementDto, ServiceType>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Keys, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Keys)));
 
             CreateMap<ServiceType, GetServiceTypeWithCategoryDto>();
 
             CreateMap<ServiceCategory, GetServiceCategoryDto>()
-                .ForMember(dest => dest.ServiceClassName, opt => opt.MapFrom(src => Char.ToLowerInvariant(src.ServiceClassName[0]) + src.ServiceClassName.Substring(1)))
+                .ForMember(dest => dest.Keys, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<List<string>>(src.Keys)))
+                .ForMember(dest => dest.ServiceClassName, opt => opt.MapFrom(src => Helper.GetServiceClassName(src.ServiceClassName)))
                 .ForMember(dest => dest.ServiceTypeCount, opt => opt.MapFrom(src => src.ServiceTypes != null ? src.ServiceTypes.Count() : 0));
             CreateMap<ServiceCategory, GetServiceCategoryWithChildDto>()
-                .ForMember(dest => dest.ServiceClassName, opt => opt.MapFrom(src => Char.ToLowerInvariant(src.ServiceClassName[0]) + src.ServiceClassName.Substring(1)))
+                .ForMember(dest => dest.Keys, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<List<string>>(src.Keys)))
+                .ForMember(dest => dest.ServiceClassName, opt => opt.MapFrom(src => Helper.GetServiceClassName(src.ServiceClassName)))
                 .ForMember(dest => dest.ServiceTypeCount, opt => opt.MapFrom(src => src.ServiceTypes != null ? src.ServiceTypes.Count() : 0));
 
-            CreateMap<PostServiceCategoryDto, ServiceCategory>().ReverseMap();
-            CreateMap<PutServiceCategoryDto, ServiceCategory>().ReverseMap();
+            CreateMap<PostServiceCategoryDto, ServiceCategory>()
+                .ForMember(dest => dest.Keys, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Keys ?? new List<string>() { })))
+                .ForMember(dest => dest.ServiceClassName, opt => opt.MapFrom(src => ""));
+            CreateMap<PutServiceCategoryDto, ServiceCategory>()
+                .ForMember(dest => dest.Keys, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Keys ?? new List<string>() { })));
 
             CreateMap<GetServiceStatusDto, ServiceStatus>().ReverseMap();
 
@@ -288,14 +301,34 @@ namespace DeToiServer.AutoMapper
 
             #endregion
             CreateMap<UIElementServiceRequirementInputMethod, UIElementServiceRequirementInputMethodDto>().ReverseMap();
-
+            CreateMap<UIElementValidationType, UIElementValidationTypeDto>();
             CreateMap<UIElementInputOption, UIElementInputOptionDto>().ReverseMap();
             CreateMap<UIElementOptionInfo, UIElementOptionInfoDto>()
-                .ForMember(dest => dest.Buttons, opt => opt.MapFrom(src => !src.Buttons.Equals("default") ? JsonConvert.DeserializeObject<IEnumerable<string>>(src.Buttons) : new List<string>() {} ));
+                .ForMember(dest => dest.Buttons, opt => opt.MapFrom(src => !src.Buttons.Equals("default") ? JsonConvert.DeserializeObject<IEnumerable<string>>(src.Buttons) : new List<string>() { }))
+                .ForMember(dest => dest.DefaultValue, opt => opt.MapFrom(src => Helper.StringToNum(src.DefaultValue)));
+
             CreateMap<UIElementOptionInfoValidation, UIElementOptionInfoValidationDto>().ReverseMap();
             CreateMap<UIElementInputMethodType, UIElementInputMethodTypeDto>().ReverseMap();
             CreateMap<UIElementServiceRequirement, UIElementServiceRequirementDto>().ReverseMap();
             CreateMap<UIElementAdditionServiceRequirement, UIElementAdditionServiceRequirementDto>().ReverseMap();
+
+            CreateMap<PostUIElementServiceRequirementInputMethodDto, UIElementServiceRequirementInputMethod>();
+            CreateMap<PostUIElementValidationTypeDto, UIElementValidationType>()
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => !string.IsNullOrEmpty($"{src.Value}") ? $"{src.Value}" : null ));
+            CreateMap<PostUIElementInputOptionDto, UIElementInputOption>()
+                .ForMember(dest => dest.Info, opt => opt.MapFrom(src => src.Info ?? new List<PostUIElementOptionInfoDto>() { }));
+
+            CreateMap<PostUIElementOptionInfoDto, UIElementOptionInfo>()
+                .ForMember(dest => dest.Buttons, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Buttons ?? new List<string>() { })))
+                .ForMember(dest => dest.DefaultValue, opt => opt.MapFrom(src => !string.IsNullOrEmpty($"{src.DefaultValue}") ? $"{src.DefaultValue}" : "default" ));
+
+            CreateMap<PostUIElementOptionInfoValidationDto, UIElementOptionInfoValidation>();
+            CreateMap<PostUIElementInputMethodTypeDto, UIElementInputMethodType>()
+                .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.Options ));
+            CreateMap<PostUIElementServiceRequirementDto, UIElementServiceRequirement>()
+                .ForMember(dest => dest.Key, opt => opt.MapFrom(src => Helper.RequirementLabelToKey(src.Label) ));
+            CreateMap<PostUIElementAdditionServiceRequirementDto, UIElementAdditionServiceRequirement>()
+                .ForMember(dest => dest.Key, opt => opt.MapFrom(src => Helper.RequirementLabelToKey(src.Label)));
             #endregion
 
             #region Service requirement and additional requirement

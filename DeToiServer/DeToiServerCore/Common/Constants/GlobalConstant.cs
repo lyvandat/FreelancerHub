@@ -126,6 +126,10 @@
             public static readonly string Shipping = "shipping";
             public enum ShippingEnum { From, To }
             public enum DestinationEnum { Place }
+
+            public static readonly List<string> All = [
+                None, Destination, Shipping
+            ];
         }
 
         public static class Fee
