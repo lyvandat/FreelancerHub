@@ -47,6 +47,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+using System.Threading.RateLimiting;
 
 namespace DeToiServerData
 {
@@ -144,6 +145,38 @@ namespace DeToiServerData
             services.AddScoped<IChattingService, ChattingService>();
             return services;
         }
+
+        public static IServiceCollection AddCustomRateLimiter(this IServiceCollection services)
+        {
+            services.AddRateLimiter(options =>
+            {
+                options.OnRejected = (context, cancellationToken) =>
+                {
+                    _ = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter);
+                    context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+                    context.HttpContext.Response.WriteAsJsonAsync(
+                        value: new
+                        {
+                            Message = $"Quá nhiều yêu cầu, xin hãy thử lại sau. {retryAfter}"
+                        },
+                        cancellationToken: cancellationToken);
+
+                    return new ValueTask();
+                };
+
+                options.AddPolicy("fixedWindow", httpContext =>
+                    RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 5,
+                            Window = TimeSpan.FromSeconds(30),
+                            QueueLimit = 0
+                        }));
+            });
+
+            return services;
+        } 
 
         public static void ApplyDatabaseMigrations(this IApplicationBuilder app, IWebHostEnvironment env)
         {
