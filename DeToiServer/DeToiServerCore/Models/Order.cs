@@ -1,5 +1,6 @@
 ﻿using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Models.Accounts;
+using DeToiServerCore.Models.Reports;
 using DeToiServerCore.Models.Services;
 
 namespace DeToiServerCore.Models
@@ -39,6 +40,7 @@ namespace DeToiServerCore.Models
         public ICollection<BiddingOrder>? BiddingOrders { get; set; }
         public ICollection<OrderSkillRequired>? SkillRequired { get; set; }
         public ICollection<PaymentStatusHistory>? PaymentHistories { get; set; }
+        public ICollection<Report>? Reports { get; set; }
     }
 
     public class PaymentStatusHistory : ModelBase

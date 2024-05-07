@@ -4,8 +4,9 @@ namespace DeToiServer.Dtos.ReportDtos
 {
     public class PostReportDto
     {
+        public Guid OrderId { get; set; }
         public string ReportDescription { get; set; } = string.Empty;
-        public Guid ToId { get; set; }
+        public ICollection<string>? Images { get; set; }
     }
 
     public class PostRejectReportDto

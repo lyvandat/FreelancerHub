@@ -16,22 +16,24 @@ namespace DeToiServerData.Repositories.ReportRepo
         public async Task<Report> ApplyActionAsync(ApplyReportAction applyReportAction)
         {
             var report = await _context.Reports.AsSplitQuery()
+                .Include(r => r.Order)
                 .FirstOrDefaultAsync(r => r.Id.Equals(applyReportAction.ReportId));
 
             if (!GlobalConstant.Report.NoAction.Equals(applyReportAction.ActionIdOnFreelance))
             {
                 var freelance = await _context.Freelancers
                     .Include(fl => fl.Account)
-                    .FirstOrDefaultAsync(fl => fl.AccountId.Equals(report.ToId));
+                    .FirstOrDefaultAsync(fl => fl.Id.Equals(report.Order.FreelancerId));
 
                 if (GlobalConstant.Report.MarkFreelancer.Equals(applyReportAction.ActionIdOnFreelance))
                 {
-                    //freelance.MarkCount += 1;
+                    freelance.MarkCount += 1;
                     if (++freelance.MarkCount == GlobalConstant.Report.MarkToBan)
                     {
                         freelance.Account.IsActive = false;
                     }
-                } else if (GlobalConstant.Report.BanFreelancer.Equals(applyReportAction.ActionIdOnFreelance))
+                }
+                else if (GlobalConstant.Report.BanFreelancer.Equals(applyReportAction.ActionIdOnFreelance))
                 {
                     freelance.Account.IsActive = false;
                 }
@@ -41,7 +43,7 @@ namespace DeToiServerData.Repositories.ReportRepo
 
             }
 
-                report.ActionIdOnCustomer = applyReportAction.ActionIdOnCustomer;
+            report.ActionIdOnCustomer = applyReportAction.ActionIdOnCustomer;
             report.ActionIdOnFreelance = applyReportAction.ActionIdOnFreelance;
 
             return report;

@@ -1,4 +1,5 @@
-﻿using DeToiServerCore.Models.Accounts;
+﻿using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Models.Accounts;
 
 namespace DeToiServerCore.Models.Reports
 {
@@ -9,15 +10,17 @@ namespace DeToiServerCore.Models.Reports
         public string ReportDescription { get; set; } = string.Empty;
         public string ResolvingDescription { get; set; } = string.Empty;
 
-        public Guid ActionIdOnCustomer { get; set; }
+        public Guid ActionIdOnCustomer { get; set; } = GlobalConstant.Report.NoAction;
         public ReportAction? ActionOnCustomer { get; set; }
-        public Guid ActionIdOnFreelance { get; set; }
+        public Guid ActionIdOnFreelance { get; set; } = GlobalConstant.Report.NoAction;
         public ReportAction? ActionOnFreelance { get; set; }
 
-        public Guid FromId { get; set; }
+        public Guid OrderId { get; set; }
+        public Order? Order { get; set; }
+
+        public Guid FromAccountId { get; set; }
         public Account? FromAccount { get; set; }
-        public Guid ToId { get; set; }
-        public Account? ToAccount { get; set; }
+        public ICollection<ReportImage>? Images { get; set; }
     }
 
     public class ApplyReportAction

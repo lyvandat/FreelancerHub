@@ -170,7 +170,7 @@ namespace DeToiServerData
                         factory: _ => new FixedWindowRateLimiterOptions
                         {
                             PermitLimit = GlobalConstant.OTP.PermitCount,
-                            Window = GlobalConstant.OTP.WindowTime,
+                            Window = TimeSpan.FromSeconds(10), // TODO: Need fix
                             QueueLimit = 0
                         }));
             });

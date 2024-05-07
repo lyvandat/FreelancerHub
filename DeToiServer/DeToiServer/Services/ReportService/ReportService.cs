@@ -20,10 +20,23 @@ namespace DeToiServer.Services.ReportService
             return await _uow.ReportRepo.GetAllReportActionAsync();
         }
 
+        public async Task<IEnumerable<Report>> GetAllReports()
+        {
+            return await _uow.ReportRepo.GetAllAsync();
+        }
+
         public async Task<Report> PostReport(Guid fromId, PostReportDto postReport)
         {
             var reportToPost = _mapper.Map<Report>(postReport);
-            reportToPost.FromId = fromId;
+            reportToPost.FromAccountId = fromId;
+
+            if (postReport.Images != null)
+            { 
+                reportToPost.Images = postReport.Images.Select(img => new ReportImage() {
+                    Image = img,
+                    ReportId = reportToPost.Id,
+                }).ToList();
+            }
 
             return await _uow.ReportRepo.CreateAsync(reportToPost);
         }

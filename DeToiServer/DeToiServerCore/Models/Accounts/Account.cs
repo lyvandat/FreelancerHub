@@ -27,10 +27,9 @@ namespace DeToiServerCore.Models.Accounts
         public string ExpoPushToken { get; set; } = string.Empty;
         public string EncriptingToken { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
-        public Collection<NotificationAccount>? NotificationAccounts { get; set; }
-        public Collection<Report> ReportAccounts { get; set; } = null!;
-        public Collection<Report> ReportedBy { get; set; } = null!;
-        public Collection<Message> SentMessage { get; set; } = null!;
-        public Collection<Message> ReceivedMessage { get; set; } = null!;
+        public ICollection<NotificationAccount>? NotificationAccounts { get; set; }
+        public ICollection<Message> SentMessage { get; set; } = null!;
+        public ICollection<Message> ReceivedMessage { get; set; } = null!;
+        public ICollection<Report> PostedReports { get; set; } = null!;
     }
 }

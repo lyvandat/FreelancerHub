@@ -25,21 +25,21 @@ namespace DeToiServerData.Configurations
                 .WithMany(ac => ac.ReportsOnCustomer)
                 .HasForeignKey(r => r.ActionIdOnCustomer)
                 .OnDelete(DeleteBehavior.ClientNoAction);
+
             builder.HasOne(r => r.ActionOnFreelance)
                 .WithMany(ac => ac.ReportsOnFreelancer)
                 .HasForeignKey(r => r.ActionIdOnFreelance)
                 .OnDelete(DeleteBehavior.ClientNoAction);
 
+            builder.HasOne(r => r.Order)
+                .WithMany(o => o.Reports)
+                .HasForeignKey(r => r.OrderId)
+                .OnDelete(DeleteBehavior.ClientNoAction);
+
             builder.HasOne(r => r.FromAccount)
-                .WithMany(acc => acc.ReportedBy)
-                .HasForeignKey(r => r.FromId)
+                .WithMany(acc => acc.PostedReports)
+                .HasForeignKey(r => r.FromAccountId)
                 .OnDelete(DeleteBehavior.ClientNoAction);
-
-            builder.HasOne(r => r.ToAccount)
-                .WithMany(acc => acc.ReportAccounts)
-                .HasForeignKey(r => r.ToId)
-                .OnDelete(DeleteBehavior.ClientNoAction);
-
         }
     }
 
@@ -57,6 +57,17 @@ namespace DeToiServerData.Configurations
                 new() { Id = GlobalConstant.Report.BanFreelancer, Name = "Cấm tài khoản Freelancer", Description = "", },
                 new() { Id = GlobalConstant.Report.MarkFreelancer, Name = "Đánh gậy tài khoản Freelancer", Description = "", },
             });
+        }
+    }
+
+    internal class ReportImageConfiguration : EntityTypeConfigurationBaseClass<ReportImage>
+    {
+        protected override void OnConfigure(EntityTypeBuilder<ReportImage> builder)
+        {
+            builder.HasOne(ri => ri.Report)
+               .WithMany(r => r.Images)
+               .HasForeignKey(ri => ri.ReportId)
+               .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

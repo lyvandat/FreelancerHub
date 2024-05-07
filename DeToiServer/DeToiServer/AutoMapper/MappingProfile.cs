@@ -308,7 +308,9 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.Buttons, opt => opt.MapFrom(src => !src.Buttons.Equals("default") ? JsonConvert.DeserializeObject<IEnumerable<string>>(src.Buttons) : new List<string>() { }))
                 .ForMember(dest => dest.DefaultValue, opt => opt.MapFrom(src => Helper.StringToNum(src.DefaultValue)));
 
-            CreateMap<UIElementOptionInfoValidation, UIElementOptionInfoValidationDto>().ReverseMap();
+            CreateMap<UIElementOptionInfoValidation, UIElementOptionInfoValidationDto>()
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => Helper.StringToNum(src.Value)));
+
             CreateMap<UIElementInputMethodType, UIElementInputMethodTypeDto>().ReverseMap();
             CreateMap<UIElementServiceRequirement, UIElementServiceRequirementDto>().ReverseMap();
             CreateMap<UIElementAdditionServiceRequirement, UIElementAdditionServiceRequirementDto>().ReverseMap();
@@ -437,7 +439,8 @@ namespace DeToiServer.AutoMapper
             #endregion
 
             #region Report
-            CreateMap<PostReportDto, Report>();
+            CreateMap<PostReportDto, Report>()
+                .ForMember(dest => dest.Images, opt => opt.Ignore());
             #endregion
 
             #region Admin

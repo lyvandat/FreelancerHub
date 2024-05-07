@@ -95,6 +95,7 @@ namespace DeToiServerData
             #region Report Config
             modelBuilder.ApplyConfiguration(new ReportConfiguration());
             modelBuilder.ApplyConfiguration(new ReportActionConfiguration());
+            modelBuilder.ApplyConfiguration(new ReportImageConfiguration());
             modelBuilder.Entity<ApplyReportAction>().HasNoKey()
                 .ToTable("ApplyReportActions", t => t.ExcludeFromMigrations());
 
@@ -177,6 +178,7 @@ namespace DeToiServerData
         #region Report
         public DbSet<Report> Reports { get; set; }
         public DbSet<ReportAction> ReportActions { get; set; }
+        public DbSet<ReportImage> ReportImages { get; set; }
         #endregion
 
         #region Fee

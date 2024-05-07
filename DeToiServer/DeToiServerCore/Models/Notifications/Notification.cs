@@ -6,7 +6,7 @@ namespace DeToiServerCore.Models.Notifications
     public class Notification : ModelBase
     {
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public Collection<NotificationAccount>? NotificationAccounts { get; set; }
+        public ICollection<NotificationAccount>? NotificationAccounts { get; set; }
 
         public string PushTo { get; set; } = null!; // List<string>
         public string PushData { get; set; } = null!; // object
