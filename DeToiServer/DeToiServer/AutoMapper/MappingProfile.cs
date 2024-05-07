@@ -302,7 +302,8 @@ namespace DeToiServer.AutoMapper
 
             #endregion
             CreateMap<UIElementServiceRequirementInputMethod, UIElementServiceRequirementInputMethodDto>().ReverseMap();
-            CreateMap<UIElementValidationType, UIElementValidationTypeDto>();
+            CreateMap<UIElementValidationType, UIElementValidationTypeDto>()
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => Helper.StringToNum(src.Value)));
             CreateMap<UIElementInputOption, UIElementInputOptionDto>().ReverseMap();
             CreateMap<UIElementOptionInfo, UIElementOptionInfoDto>()
                 .ForMember(dest => dest.Buttons, opt => opt.MapFrom(src => !src.Buttons.Equals("default") ? JsonConvert.DeserializeObject<IEnumerable<string>>(src.Buttons) : new List<string>() { }))
@@ -323,7 +324,7 @@ namespace DeToiServer.AutoMapper
 
             CreateMap<PostUIElementOptionInfoDto, UIElementOptionInfo>()
                 .ForMember(dest => dest.Buttons, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Buttons ?? new List<string>() { })))
-                .ForMember(dest => dest.DefaultValue, opt => opt.MapFrom(src => !string.IsNullOrEmpty($"{src.DefaultValue}") ? $"{src.DefaultValue}" : "default" ));
+                .ForMember(dest => dest.DefaultValue, opt => opt.MapFrom(src => !string.IsNullOrEmpty($"{src.DefaultValue}") ? $"{src.DefaultValue}" : "1" ));
 
             CreateMap<PostUIElementOptionInfoValidationDto, UIElementOptionInfoValidation>();
             CreateMap<PostUIElementInputMethodTypeDto, UIElementInputMethodType>()
