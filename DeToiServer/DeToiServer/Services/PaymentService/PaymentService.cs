@@ -35,6 +35,7 @@ namespace DeToiServer.Services.PaymentService
         public async Task<FreelancePaymentHistory> AddFreelancePaymentHistory(AddFreelancePaymentHistoryDto paymentHistory)
         {
             var toAddData = _mapper.Map<FreelancePaymentHistory>(paymentHistory);
+            
 
             return await _uow.PaymentRepo.AddFreelancePaymentHistoryAsync(toAddData);
         }
@@ -63,13 +64,13 @@ namespace DeToiServer.Services.PaymentService
                         return null;
                     }
 
-                    rawFreelancer.Balance = AesEncryption.Encrypt(rawFreelancer.Id.ToString(), updatedValue.ToString());
+                    rawFreelancer.Balance = AesEncryption.Encrypt(updatedValue.ToString(), rawFreelancer.EncriptingToken);
                 }
                 else if (toUpdate.WalletType.Equals(GlobalConstant.Payment.Wallet.System))
                 {
                     updatedValue = freelancer.SystemBalance + toUpdate.Value;
-                    rawFreelancer.SystemBalance = AesEncryption.Encrypt(rawFreelancer.Id.ToString(), updatedValue.ToString());
-                    rawFreelancer.Balance = AesEncryption.Encrypt(rawFreelancer.Id.ToString(), (freelancer.Balance + toUpdate.Value).ToString());
+                    rawFreelancer.SystemBalance = AesEncryption.Encrypt(updatedValue.ToString(), rawFreelancer.EncriptingToken);
+                    rawFreelancer.Balance = AesEncryption.Encrypt((freelancer.Balance + toUpdate.Value).ToString(), rawFreelancer.EncriptingToken);
                 }
                 
                 if (updatedValue > 0 && addRecord)
@@ -79,7 +80,7 @@ namespace DeToiServer.Services.PaymentService
                         FreelancerId = rawFreelancer.Id,
                         Method = toUpdate.Method,
                         PaymentType = minus ? PaymentType.Subtract : PaymentType.Add,
-                        Value = toUpdate.Value,
+                        Value = AesEncryption.Encrypt(toUpdate.Value.ToString(), rawFreelancer.EncriptingToken),
                         Wallet = toUpdate.WalletType,
                     });
                 }

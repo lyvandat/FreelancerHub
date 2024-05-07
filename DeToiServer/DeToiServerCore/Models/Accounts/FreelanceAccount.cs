@@ -23,6 +23,7 @@ namespace DeToiServerCore.Models.Accounts
         public string Description { get; set; } = string.Empty;
         public int TeamMemberCount { get; set; } = 1;
         public int MarkCount { get; set; } = 0;
+        public string EncriptingToken { get; set; } = string.Empty;
         public ICollection<FreelanceSkill>? FreelanceSkills { get; set; }
         public ICollection<Order>? Orders { get; set; }
         public ICollection<ServiceProven>? ServiceProven { get; set; }

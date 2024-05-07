@@ -187,12 +187,12 @@ namespace DeToiServer.RealTime
                 {
                     NotificationType = NotificationType.Information.ToString(),
                     Title = "Tài khoản chưa xác thực không thể báo giá",
-                    Body = "Bạn chưa xác thực tài khoản, vui lòng xác thực tài khoản của bạn để tiếp tục"
+                    Body = "Admin chưa xét duyệt tài khoản của bạn, vui lòng chờ."
                 });
                 return new RealtimeResponseDto
                 {
                     Status = false,
-                    Message = "Bạn chưa xác thực tài khoản, vui lòng xác thực tài khoản của bạn để tiếp tục",
+                    Message = "Admin chưa xét duyệt tài khoản của bạn, vui lòng chờ.",
                     Data = new { Message = "Tài khoản chưa xác thực không thể báo giá" }
                 };
             }

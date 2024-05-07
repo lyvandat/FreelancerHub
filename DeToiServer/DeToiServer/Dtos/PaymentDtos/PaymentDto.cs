@@ -6,7 +6,7 @@ namespace DeToiServer.Dtos.PaymentDtos
 {
     public class AddFreelancePaymentHistoryDto
     {
-        public double Value { get; set; }
+        public string Value { get; set; } = string.Empty;
         public string Method { get; set; } = GlobalConstant.Payment.Card;
         public string Wallet { get; set; } = GlobalConstant.Payment.Wallet.Personal;
         public PaymentType PaymentType { get; set; } = PaymentType.Add;

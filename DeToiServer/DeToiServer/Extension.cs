@@ -169,8 +169,8 @@ namespace DeToiServerData
                         partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
                         factory: _ => new FixedWindowRateLimiterOptions
                         {
-                            PermitLimit = 5,
-                            Window = TimeSpan.FromSeconds(30),
+                            PermitLimit = GlobalConstant.OTP.PermitCount,
+                            Window = GlobalConstant.OTP.WindowTime,
                             QueueLimit = 0
                         }));
             });

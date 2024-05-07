@@ -1,4 +1,5 @@
-﻿using DeToiServerCore.Models.Accounts;
+﻿using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
 
 namespace DeToiServerCore.Models
@@ -28,6 +29,7 @@ namespace DeToiServerCore.Models
         public double FreelancerRating { get; set; } = 0;
         public string? FreelancerComment { get; set; }
         public bool IsCustomerRated { get; set; } = false;
+        public string FreelancerFaceImage { get; set; } = GlobalConstant.OrderConst.DefaultImage;
         public Guid ServiceStatusId { get; set; } = new Guid("a888efc3-1d7b-445a-b38c-758737b67bad");
         public ServiceStatus? ServiceStatus { get; set; }
         public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.NotPaid;

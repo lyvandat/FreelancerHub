@@ -342,6 +342,11 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Select(fl => fl.Skill.Id)
                 .ToList();
 
+            var validStatuses = new List<Guid>()
+            {
+                StatusConst.Created, StatusConst.OnMatching
+            };
+
             var query = _context.Orders
                 .AsNoTracking().AsSplitQuery()
                 .Include(o => o.OrderServiceTypes)
@@ -355,7 +360,7 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Include(o => o.OrderAddress)
                     .ThenInclude(oad => oad.Address)
                 .Where(order =>
-                    !order.ServiceStatusId.Equals(StatusConst.Canceled)
+                    validStatuses.Contains(order.ServiceStatusId)
                     && (order.SkillRequired.Any(skill => suitableSkills.Contains(skill.SkillId))
                     || order.OrderServiceTypes.Any(type => suitableServiceTypes.Contains(type.ServiceTypeId)))
                     && order.FreelancerId == null);
@@ -432,6 +437,7 @@ namespace DeToiServerData.Repositories.OrderRepo
                 StatusConst.Waiting,
                 StatusConst.OnMoving,
                 StatusConst.OnDoingService,
+                StatusConst.OnDelivering,
             };
 
             var result = await _context.Orders
@@ -461,6 +467,16 @@ namespace DeToiServerData.Repositories.OrderRepo
             }
 
             return result;
+        }
+
+        public async Task<Order> GetOrderDetailWithFreelancerAsync(Guid orderId)
+        {
+            var query = _context.Orders.AsSplitQuery()
+                .Where(o => o.Id.Equals(orderId))
+                .Include(o => o.Freelance)
+                    .ThenInclude(fl => fl.Account);
+
+            return await query.FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Order>> QueryOrdersByMonthAsync(int month, int year)

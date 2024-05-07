@@ -20,6 +20,7 @@ using DeToiServerCore.QueryModels.OrderQueryModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using static DeToiServerCore.Common.Helper.Helper;
 
 namespace DeToiServer.Controllers
 {
@@ -200,19 +201,19 @@ namespace DeToiServer.Controllers
                 FreelancerId = freelancer.Id,
                 Method = GlobalConstant.Payment.AppFee,
                 PaymentType = PaymentType.Subtract,
-                Value = commisionValue,
+                Value = AesEncryption.Encrypt(commisionValue.ToString(), freelancer.EncriptingToken),
                 Wallet = GlobalConstant.Payment.Wallet.Personal,
             });
 
-            var ignoredFreelancer = await _biddingOrderService.GetFreelancersForCustomerBiddingOrder(putOrder.OrderId, freelancer.Id);
-            var ignoredAccIds = ignoredFreelancer.Select(igfl => igfl.AccountId).ToList();
+            var ignoredFreelancer = await _biddingOrderService.GetDetailFreelancersForCustomerBiddingOrder(putOrder.OrderId, freelancer.Id);
+            var ignoredAccIds = ignoredFreelancer.Select(igfl => igfl.Freelancer!.AccountId).ToList();
 
             // Refund 'Balance' for the other freelancers and schedule jobs to remove bidding orders
             try
             {
                 if (ignoredFreelancer != null && ignoredFreelancer.Any())
                 {
-                    var newBalanceDict = ignoredFreelancer.ToDictionary(bf => bf.Id, bf => Helper.AesEncryption.Encrypt(bf.Id.ToString(), (bf.Balance + (_commissionRate * bf.PreviewPrice)).ToString()));
+                    var newBalanceDict = ignoredFreelancer.ToDictionary(bf => bf.Id, bf => AesEncryption.Encrypt((bf.Freelancer!.Balance + (_commissionRate * bf.PreviewPrice)).ToString(), bf.Freelancer!.EncriptingToken));
                     await _freelancerAcc.RefundAuctionBalance(newBalanceDict);
                 }
             }
@@ -251,7 +252,7 @@ namespace DeToiServer.Controllers
                 // Send fail noti to not choosen freelancers
                 await _notificationService.PushNotificationAsync(new PushNotificationDto()
                 {
-                    ExpoPushTokens = ignoredFreelancer.Select(igfl => igfl.Account.ExpoPushToken).ToList(),
+                    ExpoPushTokens = ignoredFreelancer.Select(igfl => igfl.Freelancer!.Account.ExpoPushToken).ToList(),
                     Title = "📣 Customer đã chọn người khác.",
                     Body = "Bạn hãy tiếp tục cố gắng nhé.",
                     Data = new()
@@ -342,6 +343,14 @@ namespace DeToiServer.Controllers
                 return BadRequest(new
                 {
                     Message = "Trạng thái đơn hàng không hợp lệ"
+                });
+            }
+
+            if (order.ServiceStatusId.Equals(StatusConst.Waiting) && order.FreelancerFaceImage.Equals(GlobalConstant.OrderConst.DefaultImage))
+            {
+                return BadRequest(new
+                {
+                    Message = "Bạn phải cập nhật ảnh gương mặt trước khi chuyển sang trạng thái làm việc."
                 });
             }
 
@@ -719,5 +728,37 @@ namespace DeToiServer.Controllers
         //{
         //    return Ok(await _orderService.FilterFeasibleFreelancerForOrder(orderId));
         //}
+
+        [HttpPut("freelancer-update-image"), AuthorizeRoles(GlobalConstant.Freelancer)]
+        public async Task<ActionResult<string>> PutFreelancerFaceImageInOrder(PutOrderFreelancerImageDto putOrderDto)
+        {
+            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var account = await _freelancerAcc.GetByAccId(accountId);
+
+            if (account is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không thể cập nhật ảnh, hãy đăng nhập để thử lại."
+                });
+            }
+
+            var order = await _orderService.UpdateFreelancerFaceImage(account.Id, putOrderDto);
+
+            if (order.Order == null)
+            {
+                return BadRequest(new
+                {
+                    Message = order.Message
+                });
+            }
+
+            await _uow.SaveChangesAsync();
+
+            return Ok(new
+            {
+                Message = "Cập nhật ảnh gương mặt thành công."
+            });
+        }
     }
 }

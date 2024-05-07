@@ -32,7 +32,7 @@ namespace DeToiServer.Services.OrderManagementService
             });
         }
 
-        public async Task<IEnumerable<GetFreelanceMatchingDto>> GetFreelancersForCustomerBiddingOrder(Guid orderId, Guid ignoredFreelancerId)
+        public async Task<IEnumerable<BiddingOrder>> GetDetailFreelancersForCustomerBiddingOrder(Guid orderId, Guid ignoredFreelancerId)
         {
             var biddingOrderDetail = await _uow.BiddingOrderRepo.GetMatchingFreelancersByOrderId(orderId);
 
@@ -40,6 +40,13 @@ namespace DeToiServer.Services.OrderManagementService
             {
                 biddingOrderDetail = biddingOrderDetail.Where(bo => bo.FreelancerId != ignoredFreelancerId);
             }
+
+            return biddingOrderDetail;
+        }
+
+        public async Task<IEnumerable<GetFreelanceMatchingDto>> GetFreelancersForCustomerBiddingOrder(Guid orderId, Guid ignoredFreelancerId)
+        {
+            var biddingOrderDetail = await GetDetailFreelancersForCustomerBiddingOrder(orderId, ignoredFreelancerId);
 
             return biddingOrderDetail.Select(bo => 
             {

@@ -4,6 +4,7 @@ using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.ServiceDtos;
 using DeToiServer.RealTime;
 using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Models;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.Models.Services;
 using DeToiServerCore.QueryModels.OrderQueryModels;
@@ -400,6 +401,35 @@ namespace DeToiServer.Services.OrderManagementService
             }
 
             return order;
+        }
+
+        public async Task<UpdateOrderResultDto> UpdateFreelancerFaceImage(Guid freelancerId, PutOrderFreelancerImageDto freelancerImage)
+        {
+            var order = await _uow.OrderRepo.GetOrderDetailWithFreelancerAsync(freelancerImage.OrderId);
+
+            if (order == null)
+                return new()
+                {
+                    Message = $"Không tìm được đơn với Id={freelancerImage.OrderId}"
+                };
+            else if (!order.FreelancerId.Equals(freelancerId))
+                return new()
+                {
+                    Message = "Bạn không có quyền cập nhật ảnh cho đơn này."
+                };
+            else if (!order.ServiceStatusId.Equals(StatusConst.Waiting))
+                return new()
+                {
+                    Message = "Trạng thái đơn không cho phép cập nhật ảnh."
+                };
+
+
+            order.FreelancerFaceImage = freelancerImage.Image;
+            return new()
+            {
+                Order = order,
+                Message = "Bạn không có quyền cập nhật ảnh cho đơn này."
+            };
         }
     }
 }

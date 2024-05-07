@@ -33,6 +33,7 @@
         {
             public static readonly double DefaultRecommendPrice = 100000d;
             public static readonly double MaximumTimeBeforeStartTimeForFreelancerCancel = 30; 
+            public static readonly string DefaultImage = "default_image";
         }
 
         public static class Payment
@@ -148,6 +149,12 @@
                 public static readonly double PlatformFee = 0.05;
                 public static readonly double MinServicePrice = 50000.0;
             }
+        }
+
+        public static class OTP
+        {
+            public static readonly int PermitCount = 5;
+            public static readonly TimeSpan WindowTime = TimeSpan.FromDays(5);
         }
     }
 

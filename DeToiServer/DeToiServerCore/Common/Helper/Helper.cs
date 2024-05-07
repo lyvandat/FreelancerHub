@@ -134,49 +134,40 @@ namespace DeToiServerCore.Common.Helper
 
         public class AesEncryption
         {
-            public static string Encrypt(string encryptionKey, string plainText)
+            private static readonly string Key = Environment.GetEnvironmentVariable("ENCRYPTION_KEY") 
+                ?? "DayLaSuperSecretKeySuDungTrongViecEncryptData";
+
+            private static byte[] GetValidKey()
             {
-                if (encryptionKey.Length < 32)
-                    throw new ArgumentException("Encryption key must be at least 32 characters long.");
+                return SHA256.HashData(Encoding.UTF8.GetBytes(Key));
+            }
 
-                // Truncate or pad encryption key to 32 bytes
-                encryptionKey = encryptionKey.Length > 32 ? encryptionKey[..32] : encryptionKey.PadRight(32, ' ');
-
-                // Generate IV from reversed encryption key
-                byte[] iv = SHA256.HashData(Encoding.UTF8.GetBytes(encryptionKey)).AsSpan(0, 16).ToArray();
-
+            // TODO: examine bug propagation
+            public static string Encrypt(string plainText, string iv)
+            {
                 using Aes aesAlg = Aes.Create();
-                aesAlg.Key = Encoding.UTF8.GetBytes(encryptionKey);
-                aesAlg.IV = iv;
+                aesAlg.Key = GetValidKey();
+                aesAlg.IV = Helper.StringToByteArray(iv);
+                aesAlg.Mode = CipherMode.CBC;
 
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
                 using MemoryStream msEncrypt = new();
-                using CryptoStream csEncrypt = new(msEncrypt, encryptor, CryptoStreamMode.Write);
-                using (StreamWriter swEncrypt = new(csEncrypt))
+                using (CryptoStream csEncrypt = new(msEncrypt, encryptor, CryptoStreamMode.Write))
                 {
+                    using StreamWriter swEncrypt = new(csEncrypt);
                     swEncrypt.Write(plainText);
                 }
-
                 return Convert.ToBase64String(msEncrypt.ToArray());
             }
 
-            public static string Decrypt(string encryptionKey, string cipherText)
+            public static string Decrypt(string cipherText, string iv)
             {
-                if (encryptionKey.Length < 32)
-                    throw new ArgumentException("Encryption key must be at least 32 characters long.");
-
-                // Truncate or pad encryption key to 32 bytes
-                encryptionKey = encryptionKey.Length > 32 ? encryptionKey[..32] : encryptionKey.PadRight(32, ' ');
-
-                // Generate IV from reversed encryption key
-                byte[] iv = SHA256.HashData(Encoding.UTF8.GetBytes(encryptionKey)).AsSpan(0, 16).ToArray();
-
                 byte[] cipherBytes = Convert.FromBase64String(cipherText);
-
                 using Aes aesAlg = Aes.Create();
-                aesAlg.Key = Encoding.UTF8.GetBytes(encryptionKey);
-                aesAlg.IV = iv;
+                aesAlg.Key = GetValidKey();
+                aesAlg.IV = StringToByteArray(iv);
+                aesAlg.Mode = CipherMode.CBC;
 
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
 
@@ -184,6 +175,16 @@ namespace DeToiServerCore.Common.Helper
                 using CryptoStream csDecrypt = new(msDecrypt, decryptor, CryptoStreamMode.Read);
                 using StreamReader srDecrypt = new(csDecrypt);
                 return srDecrypt.ReadToEnd();
+            }
+
+            public static string GenerateRandomIV()
+            {
+                byte[] iv = new byte[16]; // IV size for AES is typically 16 bytes
+                using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+                {
+                    rng.GetBytes(iv);
+                }
+                return ByteArrayToString(iv);
             }
         }
 

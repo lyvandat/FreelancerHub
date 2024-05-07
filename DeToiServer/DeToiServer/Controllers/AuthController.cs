@@ -114,6 +114,7 @@ namespace DeToiServer.Controllers
             }
 
             var accId = Guid.NewGuid();
+            var encryptingToken = AesEncryption.GenerateRandomIV();
             var accountCreated = new Account()
             {
                 Id = accId,
@@ -122,6 +123,7 @@ namespace DeToiServer.Controllers
                 Role = GlobalConstant.Admin,
                 Avatar = GlobalConstant.CustomerAvtMale,
                 IsVerified = true, // Temporary
+                EncriptingToken = encryptingToken,
             };
 
             await _accService.Add(accountCreated);
@@ -162,6 +164,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
+            var accountEncryptingToken = AesEncryption.GenerateRandomIV();
             account = new Account()
             {
                 Id = Guid.NewGuid(),
@@ -175,9 +178,11 @@ namespace DeToiServer.Controllers
                 Avatar = request.Avatar,
                 Gender = request.Gender,
                 IsVerified = false,
+                EncriptingToken = accountEncryptingToken,
             };
 
             var freelancerId = Guid.NewGuid();
+            var encryptToken = AesEncryption.GenerateRandomIV();
             var freelance = new FreelanceAccount()
             {
                 Id = freelancerId,
@@ -189,11 +194,12 @@ namespace DeToiServer.Controllers
                 Address = [
                     _mapper.Map<Address>(request.Address),
                 ],
-                IdentityNumber = request.IdentityNumber,
+                IdentityNumber = AesEncryption.Encrypt(request.IdentityNumber, encryptToken),
                 IdentityCardImage = request.IdentityCardImage,
                 IdentityCardImageBack = request.IdentityCardImageBack,
-                Balance = AesEncryption.Encrypt(freelancerId.ToString(), "0"),
-                SystemBalance = AesEncryption.Encrypt(freelancerId.ToString(), "0"),
+                Balance = AesEncryption.Encrypt("0", encryptToken),
+                SystemBalance = AesEncryption.Encrypt("0", encryptToken),
+                EncriptingToken = encryptToken
             };
 
             await _accService.Add(account);
@@ -272,6 +278,7 @@ namespace DeToiServer.Controllers
 
             if (rawAccount == null)
             {
+                var encryptingToken = AesEncryption.GenerateRandomIV();
                 var account = new Account()
                 {
                     Id = Guid.NewGuid(),
@@ -283,6 +290,7 @@ namespace DeToiServer.Controllers
                     Role = GlobalConstant.Customer,
                     Avatar = GlobalConstant.CustomerAvtMale,
                     IsVerified = true, // Temporary
+                    EncriptingToken = encryptingToken,
                 };
 
                 var customer = new CustomerAccount()
