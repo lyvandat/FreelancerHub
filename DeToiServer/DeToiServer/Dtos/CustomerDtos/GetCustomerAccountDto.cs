@@ -2,8 +2,9 @@
 
 namespace DeToiServer.Dtos.CustomerDtos
 {
-    public class GetCustomerDto
+    public class GetCustomerAccountDto
     {
+        public Guid Id { get; set; }
         public string Email { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;
         public DateOnly? DateOfBirth { get; set; } = null;

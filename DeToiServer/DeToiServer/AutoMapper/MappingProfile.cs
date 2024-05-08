@@ -3,6 +3,7 @@ using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.AdminDto;
 using DeToiServer.Dtos.ChattingDtos;
+using DeToiServer.Dtos.CustomerDtos;
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.LocationDtos;
 using DeToiServer.Dtos.NotificationDtos;
@@ -59,6 +60,9 @@ namespace DeToiServer.AutoMapper
             CreateMap<PutAccountDto, Account>().ReverseMap();
             CreateMap<GetFreelanceAccountDto, Account>().ReverseMap();
             CreateMap<GetFreelanceAccountInOrderDto, Account>().ReverseMap();
+
+            CreateMap<Account, GetCustomerAccountDto>();
+
             #endregion
 
             #region Address
@@ -98,7 +102,7 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.IdentityNumber, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.IdentityNumber, src.EncriptingToken)))
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
-                .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders))
+                .ForMember(dest => dest.Reviews, opt => opt.Ignore()) // MapFrom(src => src.Orders)
                 .ForMember(dest => dest.ActiveTime, opt => opt.MapFrom(src => src.Account.CreatedAt))
                 .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Balance, src.EncriptingToken))))
                 .ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.SystemBalance, src.EncriptingToken))))
@@ -108,7 +112,7 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.IdentityNumber, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.IdentityNumber, src.EncriptingToken)))
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
-                .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders))
+                .ForMember(dest => dest.Reviews, opt => opt.Ignore()) // MapFrom(src => src.Orders)
                 .ForMember(dest => dest.ActiveTime, opt => opt.MapFrom(src => src.Account.CreatedAt))
                 .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.Balance, src.EncriptingToken))))
                 .ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.SystemBalance, src.EncriptingToken))))
@@ -222,11 +226,13 @@ namespace DeToiServer.AutoMapper
             CreateMap<PostOrderDto, Order>()
                 .ForMember(dest => dest.OrderAddress, opt => opt.Ignore()) // MapFrom(src => src.Address)
                 .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartDate.ToDateTime(src.StartTime)));
+
             CreateMap<Order, GetOrderDto>()
                 .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.StartTime)))
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.StartTime)))
                 .ForMember(dest => dest.FinishTime, opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.FinishTime ?? DateTime.MinValue)))
                 .ForMember(dest => dest.FinishDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.FinishTime ?? DateTime.MinValue)))
+                .ForMember(dest => dest.Customer, opt => opt.MapFrom(src => src.Customer != null ? src.Customer.Account : null))
                 .ForMember(dest => dest.Freelance, opt => opt.MapFrom(src => src.Freelance != null ? src.Freelance.Account : null))
                 .ForMember(dest => dest.ServiceStatus, opt => opt.MapFrom(src => src.ServiceStatusId)) //  != null ? src.ServiceStatus.Name : "Chờ xử lí"
                 .ForMember(dest => dest.Services, opt => opt.MapFrom(src => src.OrderServices!.FirstOrDefault()))
@@ -239,6 +245,7 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.StartTime)))
                 .ForMember(dest => dest.FinishTime, opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.FinishTime ?? DateTime.MinValue)))
                 .ForMember(dest => dest.FinishDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.FinishTime ?? DateTime.MinValue)))
+                .ForMember(dest => dest.Customer, opt => opt.MapFrom(src => src.Customer != null ? src.Customer.Account : null))
                 .ForMember(dest => dest.Freelance, opt => opt.MapFrom(src => src.Freelance != null ? src.Freelance.Account : null))
                 .ForMember(dest => dest.ServiceStatus, opt => opt.MapFrom(src => src.ServiceStatusId)) //  != null ? src.ServiceStatus.Name : "Chờ xử lí"
                 .ForMember(dest => dest.Services, opt => opt.MapFrom(src => src.OrderServices!.FirstOrDefault()))

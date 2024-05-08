@@ -89,6 +89,8 @@ namespace DeToiServer.Services.FreelanceAccountService
 
             var getFreelancerDto = _mapper.Map<GetFreelanceMatchingDto>(rawResult);
             getFreelancerDto.AccountId = rawResult.Id;
+            getFreelancerDto.Reviews = orders?.Where(o => o.Comment != null)
+                .Select(o => _mapper.Map<GetFreelanceReviewDto>(o)).ToList();
             return getFreelancerDto;
         }
 

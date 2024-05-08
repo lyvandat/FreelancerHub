@@ -91,6 +91,8 @@ namespace DeToiServerData.Repositories.OrderRepo
                     .ThenInclude(skr => skr.Skill)
                 .Include(o => o.Freelance)
                     .ThenInclude(f => f.Account)
+                .Include(o => o.Customer)
+                    .ThenInclude(cus => cus.Account)
                 .Include(o => o.ServiceStatus)
                 .Include(o => o.OrderAddress)
                     .ThenInclude(oad => oad.Address)
@@ -122,6 +124,8 @@ namespace DeToiServerData.Repositories.OrderRepo
                     .ThenInclude(skr => skr.Skill)
                 .Include(o => o.Freelance)
                     .ThenInclude(f => f.Account)
+                .Include(o => o.Customer)
+                    .ThenInclude(cus => cus.Account)
                 .Include(o => o.ServiceStatus)
                 .Include(o => o.OrderAddress)
                     .ThenInclude(oad => oad.Address)
@@ -180,6 +184,8 @@ namespace DeToiServerData.Repositories.OrderRepo
                     .ThenInclude(skr => skr.Skill)
                 .Include(o => o.Freelance)
                     .ThenInclude(f => f.Account)
+                .Include(o => o.Customer)
+                    .ThenInclude(cus => cus.Account)
                 .Include(o => o.ServiceStatus)
                 .Include(o => o.OrderAddress)
                     .ThenInclude(oad => oad.Address);
@@ -349,6 +355,8 @@ namespace DeToiServerData.Repositories.OrderRepo
 
             var query = _context.Orders
                 .AsNoTracking().AsSplitQuery()
+                .Include(o => o.Customer)
+                    .ThenInclude(cus => cus.Account)
                 .Include(o => o.OrderServiceTypes)
                     .ThenInclude(ost => ost.ServiceType)
                         .ThenInclude(svt => svt.ServiceStatusList)
@@ -359,10 +367,12 @@ namespace DeToiServerData.Repositories.OrderRepo
                     .ThenInclude(skrq => skrq.Skill)
                 .Include(o => o.OrderAddress)
                     .ThenInclude(oad => oad.Address)
+                .Include(o => o.BiddingOrders)
                 .Where(order =>
                     validStatuses.Contains(order.ServiceStatusId)
                     && (order.SkillRequired.Any(skill => suitableSkills.Contains(skill.SkillId))
                     || order.OrderServiceTypes.Any(type => suitableServiceTypes.Contains(type.ServiceTypeId)))
+                    && !order.BiddingOrders.Any(bo => bo.FreelancerId.Equals(freelance.Id))
                     && order.FreelancerId == null);
 
             var sortExpression = GetFreelancerOrderSortExpression(filterQuery);
@@ -444,6 +454,8 @@ namespace DeToiServerData.Repositories.OrderRepo
                     .ThenInclude(skr => skr.Skill)
                 .Include(o => o.OrderAddress)
                     .ThenInclude(oad => oad.Address)
+                .Include(o => o.Customer)
+                    .ThenInclude(cus => cus.Account)
                 .Where(order =>
                     statuses.Contains(order.ServiceStatusId)
                     && order.FreelancerId.Equals(query.FreelancerId));

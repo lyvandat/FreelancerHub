@@ -197,24 +197,24 @@ namespace DeToiServer.RealTime
                 };
             }
 
-            var minPrice = await _paymentService.GetMinServicePrice();
-            var commissionFee = await _paymentService.GetCommission();
-            if (matchingFreelancer.PreviewPrice < minPrice)
-            {
-                await Clients.Caller.ErrorOccurred(new NotificationDto()
-                {
-                    NotificationType = NotificationType.Information.ToString(),
-                    Title = "Bạn báo giá với giá trị không cho phép",
-                    Body = "Bạn đang báo giá với mức giá thấp hơn so với quy định của [Điều khoản dịch vụ], hãy thử lại"
-                });
-                return new RealtimeResponseDto
-                {
-                    Status = false,
-                    Message = "Bạn đang báo giá với mức giá thấp hơn so với quy định của [Điều khoản dịch vụ], hãy thử lại",
-                    Data = new { Message = "Bạn báo giá với giá trị không cho phép" }
-                };
-            }
+            //var minPrice = await _paymentService.GetMinServicePrice();
+            //if (matchingFreelancer.PreviewPrice < minPrice)
+            //{
+            //    await Clients.Caller.ErrorOccurred(new NotificationDto()
+            //    {
+            //        NotificationType = NotificationType.Information.ToString(),
+            //        Title = "Bạn báo giá với giá trị không cho phép",
+            //        Body = "Bạn đang báo giá với mức giá thấp hơn so với quy định của [Điều khoản dịch vụ], hãy thử lại"
+            //    });
+            //    return new RealtimeResponseDto
+            //    {
+            //        Status = false,
+            //        Message = "Bạn đang báo giá với mức giá thấp hơn so với quy định của [Điều khoản dịch vụ], hãy thử lại",
+            //        Data = new { Message = "Bạn báo giá với giá trị không cho phép" }
+            //    };
+            //}
 
+            var commissionFee = await _paymentService.GetCommission();
             var order = await _orderService.GetById(matchingFreelancer.OrderId);
 
             if (order == null)

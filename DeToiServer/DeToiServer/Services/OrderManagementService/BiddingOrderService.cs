@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.OrderDtos;
+using DeToiServerCore.Common.Constants;
 
 namespace DeToiServer.Services.OrderManagementService
 {
@@ -24,12 +25,14 @@ namespace DeToiServer.Services.OrderManagementService
                 return Enumerable.Empty<GetOrderDto>();
             }
 
-            return biddingOrderDetail.Select(bo => {
-                var mapOrder = _mapper.Map<GetOrderDto>(bo.Order);
-                mapOrder.PreviewPrice = bo.PreviewPrice;
+            return biddingOrderDetail
+                .Where(bo => bo.Order?.ServiceStatusId.Equals(StatusConst.OnMatching) ?? true)
+                .Select(bo => {
+                    var mapOrder = _mapper.Map<GetOrderDto>(bo.Order);
+                    mapOrder.PreviewPrice = bo.PreviewPrice;
 
-                return mapOrder;
-            });
+                    return mapOrder;
+                });
         }
 
         public async Task<IEnumerable<BiddingOrder>> GetDetailFreelancersForCustomerBiddingOrder(Guid orderId, Guid ignoredFreelancerId)

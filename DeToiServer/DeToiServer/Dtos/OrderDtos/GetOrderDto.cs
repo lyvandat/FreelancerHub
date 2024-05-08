@@ -1,4 +1,5 @@
 ﻿using DeToiServer.Dtos.AddressDtos;
+using DeToiServer.Dtos.CustomerDtos;
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.ServiceDtos;
 using DeToiServer.Dtos.ServiceStatusDtos;
@@ -19,6 +20,7 @@ namespace DeToiServer.Dtos.OrderDtos
         public DateOnly StartDate { get; set; }
         public TimeOnly FinishTime { get; set; }
         public DateOnly FinishDate { get; set; }
+        public GetCustomerAccountDto? Customer { get; set; }
         [JsonPropertyName("freelancer")]
         public GetFreelanceAccountInOrderDto? Freelance { get; set; }
         public bool IsCustomerRated { get; set; }
@@ -41,6 +43,7 @@ namespace DeToiServer.Dtos.OrderDtos
         public DateOnly StartDate { get; set; }
         public TimeOnly FinishTime { get; set; }
         public DateOnly FinishDate { get; set; }
+        public GetCustomerAccountDto? Customer { get; set; }
         [JsonPropertyName("freelancer")]
         public GetFreelanceAccountInOrderDto? Freelance { get; set; }
         public bool IsCustomerRated { get; set; }
