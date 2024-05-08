@@ -454,10 +454,12 @@ namespace DeToiServerData.Repositories.OrderRepo
                     .ThenInclude(oad => oad.Address)
                 .Where(order =>
                     statusList.Contains(order.ServiceStatusId)
-                    && order.FreelancerId.Equals(freelancerId)
-                    && order.StartTime > DateTime.Now.AddDays(-2)) // withn 2 days after the start day
+                    && order.FreelancerId.Equals(freelancerId)) 
                 .OrderByDescending(o => o.CreatedTime)
                 .ToListAsync();
+
+            // && order.StartTime > DateTime.Now.AddDays(-2): revert filtering order by start day.
+            // withn 2 days after the start day
 
             foreach (var order in result)
             {
