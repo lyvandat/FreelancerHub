@@ -104,7 +104,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            await _rabbitMQConsumer.SendMessageToFreelancer(postOrder);
+            // await _rabbitMQConsumer.SendMessageToFreelancer(postOrder); TODO: duplicated on Orders services?
 
             return Ok(new PostOrderResultDto()
             {
@@ -342,13 +342,13 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            if (order.ServiceStatusId.Equals(StatusConst.Waiting) && order.FreelancerFaceImage.Equals(GlobalConstant.OrderConst.DefaultImage))
-            {
-                return BadRequest(new
-                {
-                    Message = "Bạn phải cập nhật ảnh gương mặt trước khi chuyển sang trạng thái làm việc."
-                });
-            }
+            //if (order.ServiceStatusId.Equals(StatusConst.Waiting) && order.FreelancerFaceImage.Equals(GlobalConstant.OrderConst.DefaultImage))
+            //{
+            //    return BadRequest(new
+            //    {
+            //        Message = "Bạn phải cập nhật ảnh gương mặt trước khi chuyển sang trạng thái làm việc."
+            //    });
+            //}
 
             order.ServiceStatusId = putOrderStatus.StatusId;
             await _uow.SaveChangesAsync();

@@ -144,15 +144,15 @@ namespace DeToiServer.Services.OrderManagementService
             // Save changes within the transaction scope
             if (!await _uow.SaveChangesAsync()) return null;
 
-            var filerData = await FilterFeasibleFreelancerForOrder(rawOrder.Id);
-            if (filerData != null && filerData.FreelancerPhones != null)
-            {
-                await _consumer.SendFeasibleOrderToFreelancer(new()
-                {
-                    FreelancerPhones = filerData.FreelancerPhones,
-                    OrderToSend = _mapper.Map<GetOrderDto>(filerData.OrderDetail),
-                });
-            }
+            //var filerData = await FilterFeasibleFreelancerForOrder(rawOrder.Id);
+            //if (filerData != null && filerData.FreelancerPhones != null)
+            //{
+            //    await _consumer.SendFeasibleOrderToFreelancer(new()
+            //    {
+            //        FreelancerPhones = filerData.FreelancerPhones,
+            //        OrderToSend = _mapper.Map<GetOrderDto>(filerData.OrderDetail),
+            //    });
+            //}
 
             return rawOrder;
         }
