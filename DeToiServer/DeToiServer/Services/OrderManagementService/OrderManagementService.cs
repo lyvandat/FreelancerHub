@@ -336,9 +336,16 @@ namespace DeToiServer.Services.OrderManagementService
             };
         }
 
-        public async Task<IEnumerable<GetOrderDto>> GetFreelancerIncomingOrders(Guid freelancerId)
+        public async Task<IEnumerable<GetOrderDto>> GetFreelancerIncomingOrders(FilterFreelancerIncomingOrderQuery query)
         {
-            var res = await _uow.OrderRepo.GetFreelancerIncomingOrdersAsync(freelancerId);
+            var res = await _uow.OrderRepo.GetFreelancerIncomingOrdersAsync(query);
+
+            return _mapper.Map<IEnumerable<GetOrderDto>>(res);
+        }
+
+        public async Task<IEnumerable<GetOrderDto>> GetFreelancerCompletedOrders(FilterFreelancerIncomingOrderQuery query)
+        {
+            var res = await _uow.OrderRepo.GetFreelancerCompletedOrdersAsync(query);
 
             return _mapper.Map<IEnumerable<GetOrderDto>>(res);
         }

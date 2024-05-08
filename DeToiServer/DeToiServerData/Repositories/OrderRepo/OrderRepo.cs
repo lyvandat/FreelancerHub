@@ -430,17 +430,9 @@ namespace DeToiServerData.Repositories.OrderRepo
             return result;
         }
 
-        public async Task<IEnumerable<Order>> GetFreelancerIncomingOrdersAsync(Guid freelancerId)
+        private async Task<IEnumerable<Order>> GetFreelancerOrdersByStatusesAsync(FilterFreelancerIncomingOrderQuery query, IEnumerable<Guid> statuses)
         {
-            var statusList = new List<Guid>()
-            {
-                StatusConst.Waiting,
-                StatusConst.OnMoving,
-                StatusConst.OnDoingService,
-                StatusConst.OnDelivering,
-            };
-
-            var result = await _context.Orders
+            var orderQuery = _context.Orders
                 .AsNoTracking().AsSplitQuery()
                 .Include(o => o.OrderServiceTypes)
                     .ThenInclude(ost => ost.ServiceType)
@@ -453,13 +445,19 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Include(o => o.OrderAddress)
                     .ThenInclude(oad => oad.Address)
                 .Where(order =>
-                    statusList.Contains(order.ServiceStatusId)
-                    && order.FreelancerId.Equals(freelancerId)) 
-                .OrderByDescending(o => o.CreatedTime)
-                .ToListAsync();
+                    statuses.Contains(order.ServiceStatusId)
+                    && order.FreelancerId.Equals(query.FreelancerId));
 
-            // && order.StartTime > DateTime.Now.AddDays(-2): revert filtering order by start day.
-            // withn 2 days after the start day
+            if (query.FromDate != null)
+            {
+                orderQuery = orderQuery.Where(order => order.StartTime.Date >= query.FromDate.Value.Date);
+            }
+            if (query.ToDate != null)
+            {
+                orderQuery = orderQuery.Where(order => order.StartTime.Date <= query.ToDate.Value.Date);
+            }
+
+            var result = await orderQuery.OrderByDescending(o => o.CreatedTime).ToListAsync();
 
             foreach (var order in result)
             {
@@ -468,6 +466,35 @@ namespace DeToiServerData.Repositories.OrderRepo
                     .ToList().Sum(price => price.Result);
             }
 
+            return result;
+        }
+
+        public async Task<IEnumerable<Order>> GetFreelancerIncomingOrdersAsync(FilterFreelancerIncomingOrderQuery query)
+        {
+            var statusList = new List<Guid>()
+            {
+                StatusConst.Waiting,
+                StatusConst.OnMoving,
+                StatusConst.OnDoingService,
+                StatusConst.OnDelivering,
+            };
+
+            var result = await GetFreelancerOrdersByStatusesAsync(query, statusList);
+
+            // && order.StartTime > DateTime.Now.AddDays(-2): revert filtering order by start day.
+            // withn 2 days after the start day
+
+            return result;
+        }
+
+        public async Task<IEnumerable<Order>> GetFreelancerCompletedOrdersAsync(FilterFreelancerIncomingOrderQuery query)
+        {
+            var statusList = new List<Guid>()
+            {
+                StatusConst.Completed,
+            };
+
+            var result = await GetFreelancerOrdersByStatusesAsync(query, statusList);
             return result;
         }
 

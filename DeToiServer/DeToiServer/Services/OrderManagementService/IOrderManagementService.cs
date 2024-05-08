@@ -15,10 +15,11 @@ namespace DeToiServer.Services.OrderManagementService
         Task<UpdateOrderResultDto> PostOrderReview(PostOrderCustomerReviewDto review, Guid customerId);
         Task<UpdateOrderResultDto> PostCancelOrderCustomer(Guid orderId, Guid customerId);
         Task<UpdateOrderResultWithOldPreviewPriceDto> PostCancelOrderFreelancer(Guid orderId, Guid freelancerId);
-        Task<IEnumerable<GetOrderDto>> GetFreelancerIncomingOrders(Guid freelancerId);
+        Task<IEnumerable<GetOrderDto>> GetFreelancerIncomingOrders(FilterFreelancerIncomingOrderQuery query);
         Task<IEnumerable<GetCustomerOrderDto>> GetAllCustomerOrders(Guid customerId, FilterCustomerOrderQuery orderQuery);
         Task<UpdateOrderResultDto> PostFreelancerReview(PostOrderFreelancerReviewDto review, Guid freelancerId);
         Task<Order?> UpdateStatusAndPostPaymentHistory(PostPaymentStatusHistoryDto paymentStatusHistory);
         Task<UpdateOrderResultDto> UpdateFreelancerFaceImage(Guid freelancerId, PutOrderFreelancerImageDto freelancerImage);
+        Task<IEnumerable<GetOrderDto>> GetFreelancerCompletedOrders(FilterFreelancerIncomingOrderQuery query);
     }
 }

@@ -189,12 +189,8 @@ namespace DeToiServer.Controllers
 
             order.EstimatedPrice = putOrder.ActualPrice;
             order.FreelancerId = freelancer.Id;
+            order.ServiceStatusId = StatusConst.Waiting;
             var commisionValue = _commissionRate * putOrder.ActualPrice;
-
-            if (order.ServiceStatusId.Equals(StatusConst.OnMatching))
-            {
-                order.ServiceStatusId = StatusConst.Waiting;
-            }
 
             await _paymentService.AddFreelancePaymentHistory(new AddFreelancePaymentHistoryDto()
             {

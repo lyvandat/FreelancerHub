@@ -166,10 +166,13 @@ namespace DeToiServer.Controllers
         }
 
         /// <summary>
-        /// get incoming orders for the current freelancer
+        /// Get incoming orders for the current freelancer
         /// </summary>
         [HttpGet("orders/incoming"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
-        public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetFreelancerIncomingOrders()
+        public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetFreelancerIncomingOrders(
+            [FromQuery] DateTime? fromDate,
+            [FromQuery] DateTime? toDate
+        )
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid freelancerId);
             var freelance = await _freelanceAccService.GetByAccId(freelancerId);
@@ -182,7 +185,42 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            var result = await _orderService.GetFreelancerIncomingOrders(freelance.Id);
+            var result = await _orderService.GetFreelancerIncomingOrders(new FilterFreelancerIncomingOrderQuery()
+            {
+                FreelancerId = freelance.Id,
+                FromDate = fromDate?.Date,
+                ToDate = toDate?.Date,
+            });
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get Completed orders for the current freelancer
+        /// </summary>
+        [HttpGet("orders/completed"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
+        public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetFreelancerCompletedOrders(
+            [FromQuery] DateTime? fromDate = null,
+            [FromQuery] DateTime? toDate = null
+        )
+        {
+            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            var freelance = await _freelanceAccService.GetByAccId(accountId);
+
+            if (freelance is null)
+            {
+                return BadRequest(new
+                {
+                    Message = "Không tìm thấy tài khoản, hãy đăng nhập để thử lại"
+                });
+            }
+
+            var result = await _orderService.GetFreelancerCompletedOrders(new FilterFreelancerIncomingOrderQuery()
+            {
+                FreelancerId = freelance.Id,
+                FromDate = fromDate?.Date,
+                ToDate = toDate?.Date,
+            });
 
             return Ok(result);
         }
