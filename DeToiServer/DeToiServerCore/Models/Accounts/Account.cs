@@ -26,6 +26,7 @@ namespace DeToiServerCore.Models.Accounts
         public bool IsVerified { get; set; } = false;
         public string ExpoPushToken { get; set; } = string.Empty;
         public string EncriptingToken { get; set; } = string.Empty;
+        public Guid SessionId { get; set; }
         public DateTime CreatedAt { get; set; }
         public ICollection<NotificationAccount>? NotificationAccounts { get; set; }
         public ICollection<Message> SentMessage { get; set; } = null!;

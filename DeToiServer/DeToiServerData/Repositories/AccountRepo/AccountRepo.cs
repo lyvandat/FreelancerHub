@@ -3,6 +3,7 @@ using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.QueryModels.AccountQueryModels;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Reflection.Metadata.Ecma335;
 
 namespace DeToiServerData.Repositories;
 
@@ -71,5 +72,14 @@ public class AccountRepo : RepositoryBase<Account>, IAccountRepo
                 || !roleCount || queryData.Roles.Contains(acc.Role));
 
         return await query.ToListAsync();
+    }
+
+    public async Task<bool> ValidateAccountSessionAsync(Guid id, Guid sessionId)
+    {
+        var query = _context.Accounts.AsSplitQuery().AsNoTracking()
+            .Select(acc => new { acc.Id, acc.SessionId })
+            .Where(acc => acc.Id.Equals(id) && acc.SessionId.Equals(sessionId));
+
+        return (await query.ToListAsync()).Count != 0;
     }
 }

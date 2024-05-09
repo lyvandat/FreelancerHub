@@ -28,6 +28,9 @@
         public const int InKilometers = 1;
         public const string GeoCodeDefault = "Dữ liệu bản đồ chưa có.";
         public const int DefaultDelayTime = 1000;
+        public const int MinimumAgeRequired = 18;
+
+        public const string MultipleDevicesLoginDetected = "LOGIN_MULTIPLE_DEVICES";
 
         public static class OrderConst
         {
@@ -216,6 +219,13 @@
         //    {OnDoingService, 2},
         //    {Completed, 3},
         //};
+    }
+
+    public static class AdminConst
+    {
+        public static readonly Guid Id = Guid.Parse("c3ef4ecc-475c-44a4-9175-d020ebb78fa9");
+        public static readonly Guid AccountId = Guid.Parse("bcb27918-266c-4fc3-a65e-5860393c2f6d");
+        public static readonly string AccountEncryptToken = "c2f37b3d5f1ef8f43d1faa82189cf348";
     }
 
     public static class CustomerRankConst

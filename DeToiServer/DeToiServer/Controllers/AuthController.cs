@@ -164,6 +164,14 @@ namespace DeToiServer.Controllers
                 });
             }
 
+            if (request.DateOfBirth > DateOnly.FromDateTime(DateTime.Now.AddYears(-GlobalConstant.MinimumAgeRequired)))
+            {
+                return BadRequest(new
+                {
+                    Message = "Bạn phải từ đủ 18 tuổi trở lên để đăng ký tài khoản Freelancer."
+                });
+            }
+
             var accountEncryptingToken = AesEncryption.GenerateRandomIV();
             account = new Account()
             {
@@ -283,7 +291,7 @@ namespace DeToiServer.Controllers
                 {
                     Id = Guid.NewGuid(),
                     Email = string.Empty,
-                    FullName = $"Customer_{DateTime.Now:yyyyMMdd}_VIE",
+                    FullName = "Khách Hàng ẩn danh",
                     CountryCode = request.CountryCode,
                     Phone = formatedPhone,
                     CombinedPhone = $"{request.CountryCode}{formatedPhone}",
@@ -347,7 +355,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            var token = CreateToken(account, account.Role);
+            var token = CreateToken(account);
             var refreshToken = GenerateRefreshToken();
             SetRefreshToken(refreshToken, account);
             await _accService.Update(account);
@@ -444,7 +452,8 @@ namespace DeToiServer.Controllers
             //        Message = "Mã otp đã hết hạn. Xin hãy yêu cầu mã OTP mới."
             //    });
 
-            var token = CreateToken(account, account.Role);
+            account.SessionId = Guid.NewGuid();
+            var token = CreateToken(account);
             var refreshToken = GenerateRefreshToken();
             SetRefreshToken(refreshToken, account);
             if (!account.Role.Equals(GlobalConstant.UnverifiedFreelancer))
@@ -594,7 +603,8 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            TokenDto token = CreateToken(account, account.Role);
+            account.SessionId = Guid.NewGuid();
+            TokenDto token = CreateToken(account);
             var newRefreshToken = GenerateRefreshToken();
             SetRefreshToken(newRefreshToken, account);
             await _accService.Update(account);
@@ -633,13 +643,14 @@ namespace DeToiServer.Controllers
             acc.TokenExpires = newRefreshToken.Expires;
         }
 
-        private TokenDto CreateToken(Account acc, string role)
+        private TokenDto CreateToken(Account acc)
         {
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Sid, acc.Id.ToString()),
                 new Claim(ClaimTypes.Name, acc.Phone),
-                new Claim(ClaimTypes.Role, role)
+                new Claim(ClaimTypes.Role, acc.Role),
+                new Claim(ClaimTypes.WindowsDeviceClaim, acc.SessionId.ToString()),
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
@@ -689,7 +700,7 @@ namespace DeToiServer.Controllers
             var base32String = Base32Encoding.ToString(key)
 ;
             var base32Bytes = Base32Encoding.ToBytes(base32String);
-            var totp = new Totp(base32Bytes, 300);
+            var totp = new Totp(base32Bytes, 300, totpSize: 4);
             return totp.ComputeTotp(DateTime.UtcNow);
         }
 

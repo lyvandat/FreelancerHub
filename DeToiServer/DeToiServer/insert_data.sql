@@ -70,9 +70,21 @@ INSERT INTO [Accounts] ([Id], [Email], [FullName], [DateOfBirth], [Gender], [Cou
 ('d466c2a7-44e7-457d-a1ff-40646c4cf2c4', '', N'Hoàng Quỳnh Nhi', '1978-01-13', 'Female', '84', '123456789', '84123456789', 'Freelancer', 'customer_avt/default_customer_2.jpg', 'string', 'default', '2024-04-13T20:27:27.285403', '2024-04-13 20:17:27.285403', '2024-04-13 20:27:27.285403', 1, 1),
 ('2695c848-8144-4a94-8d4d-763c5e768233', '', N'Ngô Vũ Lan Ngọc', '2006-02-17', 'Female', '84', '337839146', '84337839146', 'Freelancer', 'customer_avt/default_customer_2.jpg', 'string', 'default', '2024-04-13T20:27:27.242395', '2024-04-13 20:17:27.242395', '2024-04-13 20:27:27.242395', 1, 1),
 ('a7a76113-1a12-46c5-abec-01b0cccd1dde', '', N'Dương Hồ Gia Uy', '1989-06-30', 'Male', '84', '914510313', '84914510313', 'Freelancer', 'customer_avt/default_customer_2.jpg', 'string', 'default', '2024-04-13T20:27:27.283402', '2024-04-13 20:17:27.283402', '2024-04-13 20:27:27.283402', 1, 1),
-('95be2640-b5ec-416b-9153-09cbc7ec60f8', '', N'Lê Nhất Duy', '2002-04-09', 'Male', '84', '373344123', '84373344123', 'Admin', 'customer_avt/default_customer_2.jpg', 'string', 'default', '2024-05-07T17:25:40.825617', '2024-04-07 17:15:40.825617', '2024-05-07 17:25:40.825617', 1, 1),
+--('95be2640-b5ec-416b-9153-09cbc7ec60f8', '', N'Lê Nhất Duy', '2002-04-09', 'Male', '84', '373344123', '84373344123', 'Admin', 'customer_avt/default_customer_2.jpg', 'string', 'default', '2024-05-07T17:25:40.825617', '2024-04-07 17:15:40.825617', '2024-05-07 17:25:40.825617', 1, 1),
 ('44baa879-e243-4593-93ea-bb3fd0f0aa44', '', N'Trương Ðan Khanh', '1999-01-19', 'Male', '84', '708662390', '84708662390', 'Customer', 'customer_avt/default_customer_2.jpg', 'string', 'default', '2024-05-03T14:11:26.884131', '2024-05-03 14:01:26.884131', '2024-05-03 14:11:26.884131', 1, 1),
 ('9a9ffdf1-0cc7-4efc-80b7-d34524010af5', '', N'Trương Xuân Hiền', '1998-02-11', 'Male', '84', '795202798', '84795202798', 'Customer', 'customer_avt/default_customer_1.jpg', 'string', 'default', '2024-04-13T20:27:27.323945', '2024-04-13 20:17:27.323945', '2024-04-13 20:27:27.323945', 1, 1);
+
+-- Insert [Admin]
+INSERT INTO [Accounts] ([Id], [Email], [FullName], [DateOfBirth], [Gender], [CountryCode], [Phone], [CombinedPhone], [Role], [Avatar], [RefreshToken], [LoginToken], [LoginTokenExpires], [TokenCreated], [TokenExpires], [IsActive], [IsVerified], [EncriptingToken]) VALUES
+('bcb27918-266c-4fc3-a65e-5860393c2f6d', 'detoi.ceo@gmail.com', N'Detoi CEO', '1999-04-12', 'Male', '84', '', '84', 'Admin', 'customer_avt/default_customer_1.jpg', 'string', 'default', '2024-04-13T20:27:27.285403', '2024-04-13 20:17:27.285403', '2024-04-13 20:27:27.285403', 1, 1, 'c2f37b3d5f1ef8f43d1faa82189cf348');
+INSERT INTO [Admins] ([Id], [AccountId], [PasswordHash], [PasswordSalt], [PasswordResetToken], [ResetTokenExpires]) VALUES
+('c3ef4ecc-475c-44a4-9175-d020ebb78fa9',
+'bcb27918-266c-4fc3-a65e-5860393c2f6d',
+'fd6638c319e0d30406b1d2026f79387128e3ff7f6b2a585fa219b44d80b9179e4b7e1f515dbe31d0b2ebb4e8727782fd968da000d200b55a8181544e9316eda0',
+'e8d45b6f98ca524406ccef8cbc2e406fe2cb1254ee52ca2226b2c642bf31749d4981c5f328399ec56c6955aca9e0156984f2032f2778e9ee6061e21a1577c15db74dc82f024cf4f6fa2c36b0ed2233eef07cf97483b6217622e31a3e61aaf44bee4ee2ea0b81a1ceb38c4976338354e2b48f562de7b7828c8a7d253e9b3ef6b0',
+'2014',
+'2024-06-01T20:27:27.285403');
+
 
 INSERT INTO [Freelancers] ([Id], [AccountId], [Rating], [TotalReviewCount], [Balance], [SystemBalance], [OrderCount], [LoveCount], [PositiveReviewCount], [IdentityNumber], [IsTeam], [Description], [TeamMemberCount], [EncriptingToken]) VALUES
 ('89291984-3389-4fe8-8f58-9ec54f17b5bc', 'd466c2a7-44e7-457d-a1ff-40646c4cf2c4', 0, 0, '8nVJhfQdbjek0hMQ8fUl2w==', '8nVJhfQdbjek0hMQ8fUl2w==', 0, 0, 0, 'RwjwLaE9F9H78JgNp9KCqA==', 0, 'Beyond its particularly tree whom local tend. Artist truth trouble behavior style. Ability management test during foot that course nothing. Sound central myself before year. Your majority feeling fact by four two. White owner onto knowledge other.', 1, 'edaed910e11adb6e90fdf0213cb43d6a'),

@@ -233,21 +233,21 @@ namespace DeToiServer.RealTime
                 };
             }
 
-            if (freelancer.Balance < matchingFreelancer.PreviewPrice * commissionFee)
-            {
-                await Clients.Caller.ErrorOccurred(new NotificationDto()
-                {
-                    NotificationType = NotificationType.Information.ToString(),
-                    Title = "Không đủ số tiền trong tài khoản",
-                    Body = "Tài khoản của bạn không đủ để báo giá đơn hàng này"
-                });
-                return new RealtimeResponseDto
-                {
-                    Status = false,
-                    Message = "Tài khoản của bạn không đủ để báo giá đơn hàng này",
-                    Data = new { Message = "Không đủ số tiền trong tài khoản" }
-                };
-            }
+            //if (freelancer.Balance < matchingFreelancer.PreviewPrice * commissionFee)
+            //{
+            //    await Clients.Caller.ErrorOccurred(new NotificationDto()
+            //    {
+            //        NotificationType = NotificationType.Information.ToString(),
+            //        Title = "Không đủ số tiền trong tài khoản",
+            //        Body = "Tài khoản của bạn không đủ để báo giá đơn hàng này"
+            //    });
+            //    return new RealtimeResponseDto
+            //    {
+            //        Status = false,
+            //        Message = "Tài khoản của bạn không đủ để báo giá đơn hàng này",
+            //        Data = new { Message = "Không đủ số tiền trong tài khoản" }
+            //    };
+            //}
 
             var customer = await _customerService.GetByIdWithAccount(order.CustomerId);
             var biddingOrder = _mapper.Map<BiddingOrder>(matchingFreelancer);
@@ -280,30 +280,32 @@ namespace DeToiServer.RealTime
                     order.ServiceStatusId = StatusConst.OnMatching;
                 }
                 _context.BiddingOrders.Add(biddingOrder);
-                var updated = await _paymentService
-                    .UpdateFreelancerBalance(new UpdateFreelanceBalanceDto()
-                    {
-                        Id = freelancer.AccountId,
-                        Method = GlobalConstant.Payment.AppFee,
-                        WalletType = GlobalConstant.Payment.Wallet.Personal,
-                        Value = matchingFreelancer.PreviewPrice * commissionFee,
-                    }, minus: true, addRecord: false);
 
-                if (updated == null)
-                {
-                    await Clients.Caller.ErrorOccurred(new NotificationDto()
-                    {
-                        NotificationType = NotificationType.Error.ToString(),
-                        Title = "Không thể báo giá",
-                        Body = "Tài khoản bạn không đủ tiền để báo giá đơn hàng này, hãy nạp tiền để tiếp tục"
-                    });
-                    return new RealtimeResponseDto
-                    {
-                        Status = false,
-                        Message = "Tài khoản bạn không đủ tiền để báo giá đơn hàng này, hãy nạp tiền để tiếp tục",
-                        Data = new { Message = "Không thể báo giá" }
-                    };
-                }
+                // TODO: Need to uncommend
+                //var updated = await _paymentService
+                //    .UpdateFreelancerBalance(new UpdateFreelanceBalanceDto()
+                //    {
+                //        Id = freelancer.AccountId,
+                //        Method = GlobalConstant.Payment.AppFee,
+                //        WalletType = GlobalConstant.Payment.Wallet.Personal,
+                //        Value = matchingFreelancer.PreviewPrice * commissionFee,
+                //    }, minus: true, addRecord: false);
+
+                //if (updated == null)
+                //{
+                //    await Clients.Caller.ErrorOccurred(new NotificationDto()
+                //    {
+                //        NotificationType = NotificationType.Error.ToString(),
+                //        Title = "Không thể báo giá",
+                //        Body = "Tài khoản bạn không đủ tiền để báo giá đơn hàng này, hãy nạp tiền để tiếp tục"
+                //    });
+                //    return new RealtimeResponseDto
+                //    {
+                //        Status = false,
+                //        Message = "Tài khoản bạn không đủ tiền để báo giá đơn hàng này, hãy nạp tiền để tiếp tục",
+                //        Data = new { Message = "Không thể báo giá" }
+                //    };
+                //}
 
                 if (!await _uow.SaveChangesAsync())
                 {
@@ -352,7 +354,7 @@ namespace DeToiServer.RealTime
                 return new RealtimeResponseDto
                 {
                     Message = "Báo giá thành công.",
-                    Data = updated
+                    Data = new { Message = "Báo giá thành công." } // updated
                 };
             }
             catch(Exception ex)

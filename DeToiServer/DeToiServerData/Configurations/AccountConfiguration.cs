@@ -1,4 +1,5 @@
-﻿using DeToiServerCore.Models;
+﻿using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Models;
 using DeToiServerCore.Models.Accounts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -9,19 +10,28 @@ namespace DeToiServerData.Configurations
     {
         protected override void OnConfigure(EntityTypeBuilder<Account> builder)
         {
-            //builder.Property(e => e.Email).HasMaxLength(255);
-            //builder.Property(e => e.FullName).HasMaxLength(255);
-            //builder.Property(e => e.PasswordHash).HasMaxLength(512);
-            //builder.Property(e => e.PasswordResetToken).HasMaxLength(512);
-            //builder.Property(e => e.PasswordSalt).HasMaxLength(512);
-            //builder.Property(e => e.Phone).HasMaxLength(12);
-            //builder.Property(e => e.RefreshToken).HasMaxLength(512);
-            //builder.Property(e => e.Role).HasMaxLength(12);
-
             builder.Property(b => b.CreatedAt)
                 .ValueGeneratedOnAdd()
                 .HasDefaultValueSql("GETDATE()");
             builder.HasIndex(e => e.Phone).IsUnique();
+
+            //builder.HasData(new List<Account>() {
+            //    new() {
+            //        Id = AdminConst.AccountId,
+            //        Email = "detoi.ceo@gmail.com",
+            //        FullName = "",
+            //        DateOfBirth = new DateOnly(2002, 2, 14),
+            //        CountryCode = "84",
+            //        Phone = "",
+            //        CombinedPhone = "",
+            //        Role = GlobalConstant.Admin,
+            //        Avatar = GlobalConstant.CustomerAvtMale,
+            //        Gender = GlobalConstant.Gender.Male,
+            //        EncriptingToken = AdminConst.AccountEncryptToken,
+            //        IsActive = true,
+            //        IsVerified = true,
+            //    }
+            //});
         }
     }
 
