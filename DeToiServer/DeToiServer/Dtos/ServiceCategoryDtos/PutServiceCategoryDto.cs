@@ -10,5 +10,6 @@ namespace DeToiServer.Dtos.ServiceCategoryDtos
         public string? Description { get; set; } = string.Empty;
         public ICollection<string>? Keys { get; set; }
         public string ServiceClassName { get; set; } = string.Empty;
+        public bool IsActivated { get; set; } = true;
     }
 }

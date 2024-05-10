@@ -16,6 +16,14 @@ namespace DeToiServerCore.Common.Helper
         public double Lon { get; set; }
     }
 
+    public class DistanceComparingDto
+    {
+        public IEnumerable<Coordination>? Coordinations { get; set; }
+        public Coordination? FreelanceAddress { get; set; }
+        public string? AddressOptions { get; set; }
+        public int DefaultDistance { get; set; } = 5;
+    }
+
     public static class Helper
     {
         public static string ByteArrayToString(byte[] ba)
@@ -66,6 +74,32 @@ namespace DeToiServerCore.Common.Helper
         public static bool IsInAcceptableZone(Coordination customerAddress, Coordination freelanceAddress, int defaultDistance = 5)
         {
             return !(GeoCalculator.CalculateDistance(customerAddress, freelanceAddress) > defaultDistance); // (km)
+        }
+
+        public static bool IsInAcceptableZoneTest(DistanceComparingDto dto)
+        {
+            if (dto.AddressOptions == null)
+            {
+                return true;
+            }
+            if (dto.AddressOptions.Equals(GlobalConstant.AddressOption.None))
+            {
+                return true;
+            }
+            if (dto.AddressOptions.Equals(GlobalConstant.AddressOption.Destination))
+            {
+                var dest = dto.Coordinations?.ElementAt((int)GlobalConstant.AddressOption.DestinationEnum.Place);
+                if (dest == null || dto.FreelanceAddress == null) {
+                    return false;
+                }
+                return !(GeoCalculator.CalculateDistance(dest, dto.FreelanceAddress) > dto.DefaultDistance);
+            }
+            if (dto.AddressOptions.Equals(GlobalConstant.AddressOption.Shipping))
+            {
+
+            }
+
+             return true; // (km)
         }
 
         public static dynamic? StringToNum(string? value)

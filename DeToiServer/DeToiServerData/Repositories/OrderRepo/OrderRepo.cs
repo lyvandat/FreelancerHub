@@ -327,26 +327,26 @@ namespace DeToiServerData.Repositories.OrderRepo
             var freelance = await _context.Freelancers
                 .AsNoTracking().AsSplitQuery()
                 .Include(fl => fl.Address)
-                .Include(fl => fl.FreelanceSkills)
-                    .ThenInclude(fl_sk => fl_sk.Skill)
-                        .ThenInclude(sk => sk.ServiceTypeOfSkill)
-                            .ThenInclude(st_sk => st_sk.ServiceType)
+                //.Include(fl => fl.FreelanceSkills)
+                //    .ThenInclude(fl_sk => fl_sk.Skill)
+                //        .ThenInclude(sk => sk.ServiceTypeOfSkill)
+                //            .ThenInclude(st_sk => st_sk.ServiceType)
                 .Include(fl => fl.FreelancerFeasibleServices)
                     .ThenInclude(f_sv => f_sv.ServiceType)
-                .FirstOrDefaultAsync(fl => fl.Id == freelancerId);
+                .FirstOrDefaultAsync(fl => fl.Id.Equals(freelancerId));
 
             if (freelance == null) return [];
 
             // Materialize the suitable service types
-            var suitableServiceTypes = freelance.FreelanceSkills
-                .SelectMany(fl_sk => fl_sk.Skill.ServiceTypeOfSkill.Select(sk_st => sk_st.ServiceType.Id).ToList())
-                .Concat(freelance.FreelancerFeasibleServices.Select(f_sv => f_sv.ServiceType.Id))
-                .Distinct()
-                .ToList();
+            //var suitableServiceTypes = freelance.FreelanceSkills
+            //    .SelectMany(fl_sk => fl_sk.Skill.ServiceTypeOfSkill.Select(sk_st => sk_st.ServiceType.Id).ToList())
+            //    .Concat(freelance.FreelancerFeasibleServices.Select(f_sv => f_sv.ServiceType.Id))
+            //    .Distinct()
+            //    .ToList();
 
-            var suitableSkills = freelance.FreelanceSkills
-                .Select(fl => fl.Skill.Id)
-                .ToList();
+            //var suitableSkills = freelance.FreelanceSkills
+            //    .Select(fl => fl.Skill.Id)
+            //    .ToList();
 
             var validStatuses = new List<Guid>()
             {
@@ -370,8 +370,8 @@ namespace DeToiServerData.Repositories.OrderRepo
                 .Include(o => o.BiddingOrders)
                 .Where(order =>
                     validStatuses.Contains(order.ServiceStatusId)
-                    && (order.SkillRequired.Any(skill => suitableSkills.Contains(skill.SkillId))
-                    || order.OrderServiceTypes.Any(type => suitableServiceTypes.Contains(type.ServiceTypeId)))
+                    //&& (order.SkillRequired.Any(skill => suitableSkills.Contains(skill.SkillId))
+                    //|| order.OrderServiceTypes.Any(type => suitableServiceTypes.Contains(type.ServiceTypeId)))
                     && !order.BiddingOrders.Any(bo => bo.FreelancerId.Equals(freelance.Id))
                     && order.FreelancerId == null);
 

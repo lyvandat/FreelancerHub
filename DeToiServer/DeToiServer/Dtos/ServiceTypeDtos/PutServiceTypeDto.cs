@@ -21,6 +21,7 @@ namespace DeToiServer.Dtos.ServiceTypeDtos
         public string? Description { get; set; }
         public string? Image { get; set; }
         public string AddressRequireOption { get; set; } = null!;
+        public bool IsActivated { get; set; } = true;
         public Guid ServiceCategoryId { get; set; }
         public ICollection<string>? Keys { get; set; }
         public ICollection<PostUIElementServiceRequirementDto>? Requirements { get; set; }

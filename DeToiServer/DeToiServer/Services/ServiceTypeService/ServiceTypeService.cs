@@ -27,7 +27,9 @@ namespace DeToiServer.Services.ServiceTypeService
         {
             var serviceTypeRaw = await _uow.ServiceTypeRepo.GetAllWithCategory();
 
-            return serviceTypeRaw.Select(st => _mapper.Map<GetServiceTypeDto>(st)).ToList();
+            return serviceTypeRaw
+                .Select(st => _mapper.Map<GetServiceTypeDto>(st))
+                .OrderBy(st => st.Name);
         }
 
         public async Task<GetServiceTypeDto> GetById(Guid id)

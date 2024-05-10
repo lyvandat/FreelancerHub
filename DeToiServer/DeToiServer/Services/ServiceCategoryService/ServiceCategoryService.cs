@@ -31,6 +31,10 @@ namespace DeToiServer.Services.ServiceCategoryService
         public async Task<GetServiceCategoryWithChildDto> GetServiceCategoryById(Guid id)
         {
             var serviceCategory = await _uow.ServiceCategoryRepo.GetServiceCategoryByIdWithChild(id);
+            if (serviceCategory.ServiceTypes != null)
+            {
+                serviceCategory.ServiceTypes = serviceCategory.ServiceTypes.OrderBy(st => st.Name).ToList();
+            }
 
             return _mapper.Map<GetServiceCategoryWithChildDto>(serviceCategory);
         }

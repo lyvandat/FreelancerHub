@@ -73,30 +73,33 @@ namespace DeToiServer.RealTime
                 .Include(fl => fl.Address)
                 .ToListAsync();
 
-            freelanceAccounts = freelanceAccounts
-                    .Where(acc => {
-                        if (acc.Address != null && acc.Address.Count > 0)
-                        {
-                            var freelanceAddress = acc.Address.FirstOrDefault();
+            // TODO: No need to filter freelance by address -> they will evaluate the Order
+            // => Will filter in the future
+            //string? addressOption = (await _context.ServiceTypes
+            //    .Where(st => st.Id.Equals(order.Services.ServiceTypeId))
+            //    .FirstOrDefaultAsync())?.AddressRequireOption;
 
-                            if (freelanceAddress == null) return false;
-
-                            if (order.Address.Count == 0) return true;
-
-                            return Helper.IsInAcceptableZone(
-                                new Coordination()
-                                {
-                                    Lat = order.Address.First().Lat,
-                                    Lon = order.Address.First().Lon
-                                },
-                                new Coordination()
-                                {
-                                    Lat = freelanceAddress.Lat,
-                                    Lon = freelanceAddress.Lon
-                                }); 
-                        }
-                        return false;
-                    }).ToList();
+            //freelanceAccounts = freelanceAccounts
+            //        .Where(acc => {
+            //            if (acc.Address != null && acc.Address.Count > 0)
+            //            {
+            //                var freelanceAddress = acc.Address.FirstOrDefault();
+            //                if (order.Address == null || order.Address?.Count == 0) return true;
+            //                if (freelanceAddress == null) return false;
+            //                return Helper.IsInAcceptableZone(
+            //                    new Coordination()
+            //                    {
+            //                        Lat = order.Address?.First().Lat ?? 0,
+            //                        Lon = order.Address?.First().Lon ?? 0
+            //                    },
+            //                    new Coordination()
+            //                    {
+            //                        Lat = freelanceAddress.Lat,
+            //                        Lon = freelanceAddress.Lon
+            //                    }); 
+            //            }
+            //            return false;
+            //        }).ToList();
 
             // Online users that are connecting to SignalR
             var users = await _context.Users

@@ -108,29 +108,32 @@ namespace DeToiServer.Services.OrderManagementService
             rawOrder.ServiceStatusId = StatusConst.OnMatching;
 
             rawOrder.OrderAddress = new List<OrderAddress>() {};
-            foreach (PostOrderAddressDto address in postOrderDto.Address)
+            if (postOrderDto.Address != null)
             {
-                if (address.Id != null)
+                foreach (PostOrderAddressDto address in postOrderDto.Address)
                 {
-                    rawOrder.OrderAddress.Add(new OrderAddress()
+                    if (address.Id != null)
                     {
-                        // Order = null!,
-                        OrderId = rawOrder.Id,
-                        // Address = null!,
-                        AddressId = address.Id ?? Guid.Empty
-                    });
-                }
-                else
-                {
-                    var myAddress = _mapper.Map<Address>(address);
-                    myAddress.CustomerAccountId = postOrderDto.CustomerId;
-                    rawOrder.OrderAddress.Add(new OrderAddress()
+                        rawOrder.OrderAddress.Add(new OrderAddress()
+                        {
+                            // Order = null!,
+                            OrderId = rawOrder.Id,
+                            // Address = null!,
+                            AddressId = address.Id ?? Guid.Empty
+                        });
+                    }
+                    else
                     {
-                        OrderId = rawOrder.Id,
-                        // Order = null!,
-                        Address = myAddress,
-                        // AddressId = Guid.Empty
-                    });
+                        var myAddress = _mapper.Map<Address>(address);
+                        myAddress.CustomerAccountId = postOrderDto.CustomerId;
+                        rawOrder.OrderAddress.Add(new OrderAddress()
+                        {
+                            OrderId = rawOrder.Id,
+                            // Order = null!,
+                            Address = myAddress,
+                            // AddressId = Guid.Empty
+                        });
+                    }
                 }
             }
 
