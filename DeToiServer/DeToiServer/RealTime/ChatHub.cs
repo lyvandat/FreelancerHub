@@ -336,6 +336,7 @@ namespace DeToiServer.RealTime
                 if (user?.Connections != null)
                 {
                     freelancer.PreviewPrice = matchingFreelancer.PreviewPrice;
+                    freelancer.BiddingNote = matchingFreelancer.BiddingNote;
 
                     foreach (var connection in user.Connections)
                     {

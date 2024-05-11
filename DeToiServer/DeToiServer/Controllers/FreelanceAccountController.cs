@@ -346,6 +346,7 @@ namespace DeToiServer.Controllers
             var customer = await _customerAccountService.GetByIdWithAccount(order.CustomerId);
             var biddingOrder = _mapper.Map<BiddingOrder>(new GetFreelancerAndPreviewPriceDto()
             {
+                BiddingNote = bid.BiddingNote,
                 PreviewPrice = bid.PreviewPrice,
                 OrderId = bid.OrderId,
                 FreelancerId = freelancer.Id,

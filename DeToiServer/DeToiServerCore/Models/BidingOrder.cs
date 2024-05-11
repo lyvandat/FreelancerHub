@@ -9,5 +9,6 @@ namespace DeToiServerCore.Models
         public Guid FreelancerId { get; set; }
         public FreelanceAccount? Freelancer { get; set; }
         public double PreviewPrice { get; set; }
+        public string? BiddingNote { get; set; }
     }
 }

@@ -128,7 +128,10 @@ namespace DeToiServer.AutoMapper
 
             CreateMap<BiddingOrder, GetFreelanceMatchingDto>()
                 .ConvertUsing((src, dest, context) => {
-                    return context.Mapper.Map<GetFreelanceMatchingDto>(src.Freelancer);
+                    var freelancer = context.Mapper.Map<GetFreelanceMatchingDto>(src.Freelancer);
+                    freelancer.PreviewPrice = src.PreviewPrice;
+                    freelancer.BiddingNote = src.BiddingNote;
+                    return freelancer;
                 });
 
             CreateMap<FreelanceAccount, GetFreelancerWalletDto>()

@@ -30,6 +30,7 @@ namespace DeToiServer.Services.OrderManagementService
                 .Select(bo => {
                     var mapOrder = _mapper.Map<GetOrderDto>(bo.Order);
                     mapOrder.PreviewPrice = bo.PreviewPrice;
+                    mapOrder.BiddingNote = bo.BiddingNote;
 
                     return mapOrder;
                 });
@@ -61,6 +62,7 @@ namespace DeToiServer.Services.OrderManagementService
                 }
 
                 freelancer.PreviewPrice = bo.PreviewPrice;
+                freelancer.BiddingNote = bo.BiddingNote;
                 return freelancer;
             });
         }
