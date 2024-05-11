@@ -1,7 +1,9 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mssql-detoiserver-depl
+  name: mssql-detoiserver
+  labels:
+    app: mssql-detoiserver
 spec:
   serviceName: "mssql-detoiserver"
   replicas: 1
@@ -13,57 +15,82 @@ spec:
       labels:
         app: mssql-detoiserver
     spec:
+      securityContext:
+        fsGroup: 10001
       containers:
         - name: mssql-detoiserver
           image: mcr.microsoft.com/mssql/server:2019-latest
           ports:
             - containerPort: 1433
+              name: tcpsql
           env:
-            - name: MSSQL_PID
-              value: "Express"
             - name: ACCEPT_EULA
               value: "Y"
-            - name: SA_PASSWORD
+            - name: MSSQL_ENABLE_HADR
+              value: "1"
+            - name: MSSQL_AGENT_ENABLED
+              value: "1"
+            - name: MSSQL_SA_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mssql-detoiserver
-                  key: SA_PASSWORD
+                  key: MSSQL_SA_PASSWORD
           volumeMounts:
-            - mountPath: /var/opt/mssql/detoiserver-data
-              name: mssqldb-detoiserver
+            - name: mssql
+              mountPath: "/var/opt/mssql"
+            - name: userdata
+              mountPath: "/var/opt/mssql/userdata"
+            - name: userlog
+              mountPath: "/var/opt/mssql/userlog"
   volumeClaimTemplates:
     - metadata:
-        name: mssqldb-detoiserver
+        name: mssql
       spec:
         accessModes:
-          - ReadWriteMany
+          - ReadWriteOnce
         resources:
           requests:
-            storage: 500Mi
+            storage: 200Mi
+    - metadata:
+        name: userdata
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Mi
+    - metadata:
+        name: userlog
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mssql-detoiserver-clusterip-srv
+  name: mssql-detoiserver-headless
 spec:
-  type: ClusterIP
-  selector:
-    app: mssql-detoiserver
-  ports:
-    - name: mssql-detoiserver
-      protocol: TCP
-      port: 1433
-      targetPort: 1433
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mssql-detoiserver-loadbalancer
-spec:
-  type: LoadBalancer
+  clusterIP: None
   selector:
     app: mssql-detoiserver
   ports:
     - protocol: TCP
       port: 1433
       targetPort: 1433
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssql-detoiserver-0
+spec:
+  type: LoadBalancer
+  selector:
+    statefulset.kubernetes.io/pod-name: mssql-detoiserver-0
+  ports:
+    - protocol: TCP
+      port: 1433
+      targetPort: 1433
+      name: tcpsql
