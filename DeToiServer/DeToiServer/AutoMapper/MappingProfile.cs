@@ -100,6 +100,7 @@ namespace DeToiServer.AutoMapper
 
             CreateMap<FreelanceAccount, GetFreelanceDto>()
                 .ForMember(dest => dest.IdentityNumber, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.IdentityNumber, src.EncriptingToken)))
+                .ForMember(dest => dest.IsVerified, opt => opt.MapFrom(src => src.Account.IsVerified))
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
                 .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders ?? new List<Order>() {}))
@@ -110,6 +111,7 @@ namespace DeToiServer.AutoMapper
 
             CreateMap<FreelanceAccount, GetFreelanceMatchingDto>()
                 .ForMember(dest => dest.IdentityNumber, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.IdentityNumber, src.EncriptingToken)))
+                .ForMember(dest => dest.IsVerified, opt => opt.MapFrom(src => src.Account.IsVerified))
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
                 .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders ?? new List<Order>() {}))

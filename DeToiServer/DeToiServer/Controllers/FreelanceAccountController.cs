@@ -11,6 +11,7 @@ using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.FreelanceQuizService;
 using DeToiServer.Services.FreelanceSkillService;
+using DeToiServer.Services.NotificationService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.PaymentService;
 using DeToiServerCore.Common.Constants;
@@ -34,6 +35,7 @@ namespace DeToiServer.Controllers
         private readonly IFreelanceQuizService _quizService;
         private readonly IFreelanceSkillService _skillService;
         private readonly IBiddingOrderService _biddingOrderService;
+        private readonly INotificationService _notificationService;
         private readonly IPaymentService _paymentService;
         private readonly DataContext _context;
         private readonly UnitOfWork _uow;
@@ -47,6 +49,7 @@ namespace DeToiServer.Controllers
             IFreelanceQuizService quizService,
             IFreelanceSkillService skillService,
             IBiddingOrderService biddingOrderService,
+            INotificationService notificationService,
             IPaymentService paymentService,
             DataContext context,
             UnitOfWork unitOfWork,
@@ -59,6 +62,7 @@ namespace DeToiServer.Controllers
             _quizService = quizService;
             _skillService = skillService;
             _biddingOrderService = biddingOrderService;
+            _notificationService = notificationService;
             _paymentService = paymentService;
             _context = context;
             _uow = unitOfWork;
@@ -328,7 +332,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            var order = await _orderService.GetById(bid.OrderId);
+            var order = await _orderService.GetByIdWithServiceType(bid.OrderId);
 
             if (order == null) return BadRequest(new
             {
@@ -382,6 +386,17 @@ namespace DeToiServer.Controllers
                         Message = "loi bao gia"
                     });
                 }
+
+                await _notificationService.PushNotificationAsync(new PushNotificationDto()
+                {
+                    ExpoPushTokens = [customer.Account.ExpoPushToken],
+                    Title = $"📣 Đã có Freelancer báo giá! [{order.OrderServiceTypes.First().ServiceType.Name}]",
+                    Body = "Freelancer đã báo giá cho đơn của bạn! Hãy kiểm tra danh sách đơn nhé.",
+                    Data = new()
+                    {
+                        ActionKey = GlobalConstant.Notification.FreelancerQuoteServiceToCustomer,
+                    },
+                }, [customer.AccountId]);
             }
             catch (Exception ex)
             {

@@ -218,7 +218,7 @@ namespace DeToiServer.RealTime
             //}
 
             var commissionFee = await _paymentService.GetCommission();
-            var order = await _orderService.GetById(matchingFreelancer.OrderId);
+            var order = await _orderService.GetByIdWithServiceType(matchingFreelancer.OrderId);
 
             if (order == null)
             {
@@ -347,7 +347,7 @@ namespace DeToiServer.RealTime
                 await _notificationService.PushNotificationAsync(new PushNotificationDto()
                 {
                     ExpoPushTokens = [customer.Account.ExpoPushToken],
-                    Title = "📣 Đã có Freelancer báo giá!",
+                    Title = $"📣 Đã có Freelancer báo giá! [{order.OrderServiceTypes.First().ServiceType.Name}]",
                     Body = "Freelancer đã báo giá cho đơn của bạn! Hãy kiểm tra danh sách đơn nhé.",
                     Data = new()
                     {

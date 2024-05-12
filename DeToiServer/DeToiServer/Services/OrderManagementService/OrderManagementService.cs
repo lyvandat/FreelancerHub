@@ -441,5 +441,10 @@ namespace DeToiServer.Services.OrderManagementService
                 Message = "Bạn không có quyền cập nhật ảnh cho đơn này."
             };
         }
+
+        public async Task<Order?> GetByIdWithServiceType(Guid id)
+        {
+            return await _uow.OrderRepo.GetByIdWithServiceTypeAsync(id);
+        }
     }
 }

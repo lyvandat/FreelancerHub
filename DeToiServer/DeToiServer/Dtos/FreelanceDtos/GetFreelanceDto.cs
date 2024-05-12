@@ -24,6 +24,7 @@ namespace DeToiServer.Dtos.FreelanceDtos
         public int TeamMemberCount { get; set; }
         public string Description  { get; set; } = string.Empty; // mô tả ngắn.
         public DateTime ActiveTime { get; set; }
+        public bool IsVerified { get; set; }
         public ICollection<SkillDto>? Skills { get; set; }
         public ICollection<GetServiceProvenDto>? ServiceProven { get; set; }
         public ICollection<GetFreelanceReviewDto>? Reviews { get; set; }
@@ -50,6 +51,7 @@ namespace DeToiServer.Dtos.FreelanceDtos
         public DateTime ActiveTime { get; set; }
         public double PreviewPrice { get; set; }
         public string? BiddingNote { get; set; }
+        public bool IsVerified { get; set; }
         public ICollection<SkillDto>? Skills { get; set; }
         public ICollection<GetServiceProvenDto>? ServiceProven { get; set; }
         public ICollection<GetFreelanceReviewDto>? Reviews { get; set; }

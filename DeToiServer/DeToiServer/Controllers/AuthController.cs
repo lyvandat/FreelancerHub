@@ -4,11 +4,13 @@ using Azure.Core;
 using DeToiServer.CustomAttribute;
 using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.AuthDtos;
+using DeToiServer.Dtos.NotificationDtos;
 using DeToiServer.Filters;
 using DeToiServer.Services.AccountService;
 using DeToiServer.Services.AdminService;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
+using DeToiServer.Services.NotificationService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
 using DeToiServerCore.Common.Helper;
@@ -40,8 +42,9 @@ namespace DeToiServer.Controllers
         private readonly IAccountService _accService;
         private readonly ICustomerAccountService _customerAccService;
         private readonly IFreelanceAccountService _freelanceAccService;
+        private readonly INotificationService _notificationService;
         private readonly IAdminService _adminService;
-        private readonly LoginSocialSecret _socialSecret;
+        // private readonly LoginSocialSecret _socialSecret;
         private readonly UnitOfWork _uow;
         private readonly IMapper _mapper;
 
@@ -50,8 +53,9 @@ namespace DeToiServer.Controllers
             IAccountService accService,
             ICustomerAccountService customerAccountService,
             IFreelanceAccountService freelanceAccountService,
+            INotificationService notificationService,
             IAdminService adminService,
-            IOptions<ApplicationSecretSettings> appSecret,
+            // IOptions<ApplicationSecretSettings> appSecret,
             IMapper mapper,
             UnitOfWork uow)
         {
@@ -59,8 +63,9 @@ namespace DeToiServer.Controllers
             _accService = accService;
             _customerAccService = customerAccountService;
             _freelanceAccService = freelanceAccountService;
+            _notificationService = notificationService;
             _adminService = adminService;
-            _socialSecret = (appSecret.Value ?? throw new ArgumentException(null, nameof(appSecret))).LoginSocial;
+            // _socialSecret = (appSecret.Value ?? throw new ArgumentException(null, nameof(appSecret))).LoginSocial;
             _uow = uow;
             _mapper = mapper;
         }
@@ -87,6 +92,17 @@ namespace DeToiServer.Controllers
                     message = $"Lỗi kiểm chứng Freelancer."
                 });
             }
+
+            await _notificationService.PushNotificationAsync(new PushNotificationDto()
+            {
+                ExpoPushTokens = [freelance.Account.ExpoPushToken],
+                Title = "📣 Bạn đã được Admin xác thực!",
+                Body = "Admin đã xác kiểm chứng khoản bạn! Hãy bắt đầu làm việc sớm nhé.",
+                Data = new()
+                {
+                    ActionKey = GlobalConstant.Notification.AdminVefifyFreelancer,
+                },
+            }, [freelance.AccountId]);
 
             return Ok(new
             {
@@ -569,9 +585,9 @@ namespace DeToiServer.Controllers
 
             //await _accService.Update(account);
 
-            var res = await ValidateSocialToken(request);
+            //var res = await ValidateSocialToken(request);
 
-            return Ok(res);
+            return Ok();
         }
 
         [HttpPost("refresh-token")]
@@ -710,75 +726,75 @@ namespace DeToiServer.Controllers
             return timeSinceOtp.TotalSeconds > validityPeriodSeconds;
         }
 
-        private async Task<IActionResult> ValidateSocialToken(LoginSocialRequestDto request)
-        {
-            return request.Provider switch
-            {
-                LoginProviders.Facebook => await ValidateFacebookToken(request),
-                LoginProviders.Google => await ValidateGoogleToken(request),
-                _ => BadRequest(new
-                {
-                    message = $"Đăng nhập sử dụng {request.Provider} chưa hỗ trợ."
-                })
-            };
-        }
+        //private async Task<IActionResult> ValidateSocialToken(LoginSocialRequestDto request)
+        //{
+        //    return request.Provider switch
+        //    {
+        //        LoginProviders.Facebook => await ValidateFacebookToken(request),
+        //        LoginProviders.Google => await ValidateGoogleToken(request),
+        //        _ => BadRequest(new
+        //        {
+        //            message = $"Đăng nhập sử dụng {request.Provider} chưa hỗ trợ."
+        //        })
+        //    };
+        //}
 
-        private async Task<IActionResult> ValidateFacebookToken(LoginSocialRequestDto request)
-        {
-            var handler = new HttpClientHandler();
-            handler.ServerCertificateCustomValidationCallback +=
-                (sender, certificate, chain, errors) =>
-                {
-                    return true;
-                };
+        //private async Task<IActionResult> ValidateFacebookToken(LoginSocialRequestDto request)
+        //{
+        //    var handler = new HttpClientHandler();
+        //    handler.ServerCertificateCustomValidationCallback +=
+        //        (sender, certificate, chain, errors) =>
+        //        {
+        //            return true;
+        //        };
 
-            var clientId = _socialSecret.Facebook.ClientId;
-            var clientSecret = _socialSecret.Facebook.ClientSecret;
+        //    var clientId = _socialSecret.Facebook.ClientId;
+        //    var clientSecret = _socialSecret.Facebook.ClientSecret;
 
-            using (var httpClient = new HttpClient(handler))
-            {
-                var getCall = await httpClient.GetAsync($"https://graph.facebook.com/oauth/access_token?client_id={clientId}&client_secret={clientSecret}&grant_type=client_credentials");
-                var appAccessTokenResponse = getCall.IsSuccessStatusCode ? await getCall.Content.ReadFromJsonAsync<FacebookAppAccessTokenResponse>() : null;
+        //    using (var httpClient = new HttpClient(handler))
+        //    {
+        //        var getCall = await httpClient.GetAsync($"https://graph.facebook.com/oauth/access_token?client_id={clientId}&client_secret={clientSecret}&grant_type=client_credentials");
+        //        var appAccessTokenResponse = getCall.IsSuccessStatusCode ? await getCall.Content.ReadFromJsonAsync<FacebookAppAccessTokenResponse>() : null;
 
-                var debugCall = await httpClient.GetAsync($"https://graph.facebook.com/debug_token?input_token={request.AccessToken}&access_token={appAccessTokenResponse!.AccessToken}");
-                var response = debugCall.IsSuccessStatusCode ? await debugCall.Content.ReadFromJsonAsync<FacebookTokenValidationResult>() : null;
+        //        var debugCall = await httpClient.GetAsync($"https://graph.facebook.com/debug_token?input_token={request.AccessToken}&access_token={appAccessTokenResponse!.AccessToken}");
+        //        var response = debugCall.IsSuccessStatusCode ? await debugCall.Content.ReadFromJsonAsync<FacebookTokenValidationResult>() : null;
 
-                if (response != null && response.Data.IsValid)
-                {
-                    return Ok(response);
-                }
-            }
+        //        if (response != null && response.Data.IsValid)
+        //        {
+        //            return Ok(response);
+        //        }
+        //    }
 
-            return BadRequest(new
-            {
-                message = $"{request.Provider} access token không hợp lệ."
-            });
-        }
+        //    return BadRequest(new
+        //    {
+        //        message = $"{request.Provider} access token không hợp lệ."
+        //    });
+        //}
 
-        private async Task<IActionResult> ValidateGoogleToken(LoginSocialRequestDto request)
-        {
-            try
-            {
-                var settings = new GoogleJsonWebSignature.ValidationSettings
-                {
-                    Audience = new List<string> { _socialSecret.Google.ClientId }
-                };
-                GoogleJsonWebSignature.Payload payload = await GoogleJsonWebSignature.ValidateAsync(request.AccessToken, settings);
+        //private async Task<IActionResult> ValidateGoogleToken(LoginSocialRequestDto request)
+        //{
+        //    try
+        //    {
+        //        var settings = new GoogleJsonWebSignature.ValidationSettings
+        //        {
+        //            Audience = new List<string> { _socialSecret.Google.ClientId }
+        //        };
+        //        GoogleJsonWebSignature.Payload payload = await GoogleJsonWebSignature.ValidateAsync(request.AccessToken, settings);
 
-                if (payload != null)
-                {
-                    return Ok(payload);
-                }
-            }
-            catch (InvalidJwtException)
-            {
-                throw;
-            }
+        //        if (payload != null)
+        //        {
+        //            return Ok(payload);
+        //        }
+        //    }
+        //    catch (InvalidJwtException)
+        //    {
+        //        throw;
+        //    }
 
-            return Ok(new
-            {
-                message = "out"
-            });
-        }
+        //    return Ok(new
+        //    {
+        //        message = "out"
+        //    });
+        //}
     }
 }

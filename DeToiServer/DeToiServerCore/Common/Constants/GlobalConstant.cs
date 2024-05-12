@@ -108,6 +108,7 @@
             public static readonly string FreelancerUpdateOrderStatus = "FREELANCER_UPDATE_ORDER_STATUS";
             public static readonly string FreelancerCanceledOrder = "FREELANCER_CANCELED_ORDER";
             public static readonly string CustomerCanceledOrder = "CUSTOMER_CANCELED_ORDER";
+            public static readonly string AdminVefifyFreelancer = "ADMIN_VEFIFY_FREELANCER";
             public static readonly int TimeSpan = 30;
         }
 

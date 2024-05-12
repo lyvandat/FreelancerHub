@@ -23,6 +23,15 @@ namespace DeToiServerData.Repositories.OrderRepo
             _context = context;
         }
 
+        public async Task<Order> GetByIdWithServiceTypeAsync(Guid id)
+        {
+            var query = _context.Orders.AsSplitQuery()
+                .Include(o => o.OrderServiceTypes)
+                    .ThenInclude(ost => ost.ServiceType)
+                .Where(o => o.Id.Equals(id));
+
+            return await query.FirstOrDefaultAsync();
+        }
         public async Task<double> CalcAvgOrderPriceByServiceType(Guid serviceTypeId)
         {
             var query = await _context.OrderServiceTypes.AsNoTracking().AsSplitQuery()

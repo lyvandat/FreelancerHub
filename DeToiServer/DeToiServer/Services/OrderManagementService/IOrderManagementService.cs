@@ -21,5 +21,6 @@ namespace DeToiServer.Services.OrderManagementService
         Task<Order?> UpdateStatusAndPostPaymentHistory(PostPaymentStatusHistoryDto paymentStatusHistory);
         Task<UpdateOrderResultDto> UpdateFreelancerFaceImage(Guid freelancerId, PutOrderFreelancerImageDto freelancerImage);
         Task<IEnumerable<GetOrderDto>> GetFreelancerCompletedOrders(FilterFreelancerIncomingOrderQuery query);
+        Task<Order?> GetByIdWithServiceType(Guid id);
     }
 }
