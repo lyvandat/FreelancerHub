@@ -136,7 +136,7 @@ namespace DeToiServer.Controllers
         {
             Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
             var customer = await _customerAcc.GetByAccId(accountId);
-            var order = await _orderService.GetById(putOrder.OrderId);
+            var order = await _orderService.GetByIdWithServiceType(putOrder.OrderId);
             var freelancer = await _freelancerAcc.GetByAccId(putOrder.FreelancerId);
 
             if (freelancer == null)
@@ -235,7 +235,7 @@ namespace DeToiServer.Controllers
             {
                 ExpoPushTokens = [freelancer.Account.ExpoPushToken],
                 Title = "📣 Bạn đã được chọn!",
-                Body = "Customer đã chọn bạn! Hãy kiểm tra danh sách đơn nhé.",
+                Body = $"Customer đã chọn bạn cho đơn {order.OrderServiceTypes.First().ServiceType.Name}!",
                 Data = new()
                 {
                     ActionKey = GlobalConstant.Notification.CustomerChooseThisFreelancer,
@@ -249,8 +249,8 @@ namespace DeToiServer.Controllers
                 await _notificationService.PushNotificationAsync(new PushNotificationDto()
                 {
                     ExpoPushTokens = ignoredFreelancer.Select(igfl => igfl.Freelancer!.Account.ExpoPushToken).ToList(),
-                    Title = "📣 Customer đã chọn người khác.",
-                    Body = "Bạn hãy tiếp tục cố gắng nhé.",
+                    Title = $"📣 Customer đã chọn người khác.",
+                    Body = $"Đơn {order.OrderServiceTypes.First().ServiceType.Name} đã có Freelancer khác nhận. Bạn hãy tiếp tục cố gắng nhé.",
                     Data = new()
                     {
                         ActionKey = GlobalConstant.Notification.CustomerNotChooseThisFreelancer,
@@ -641,7 +641,7 @@ namespace DeToiServer.Controllers
                 {
                     ExpoPushTokens = [freelancerAcc.ExpoPushToken],
                     Title = $"📣 Rất tiếc, khách hàng đã hủy 1 đơn hàng!",
-                    Body = $"Khách hàng đã hủy 1 đơn hàng! Hãy kiểm tra danh sách đơn bị hủy nhé.",
+                    Body = $"Khách hàng đã hủy đơn {order.Order.OrderServiceTypes.First().ServiceType.Name}",
                     Data = new()
                     {
                         ActionKey = GlobalConstant.Notification.CustomerCanceledOrder,
@@ -706,7 +706,7 @@ namespace DeToiServer.Controllers
             {
                 ExpoPushTokens = [customerAcc.ExpoPushToken],
                 Title = $"📣 Rất tiếc, Freelancer đã từ chối nhận đơn hàng của bạn!",
-                Body = $"Freelancer đã từ chối 1 đơn hàng của bạn, đơn hàng của bạn sẽ được đưa lên sàn đấu giá",
+                Body = $"Freelancer đã từ chối đơn {order.Order.OrderServiceTypes.First().ServiceType.Name} của bạn, đơn hàng của bạn sẽ được đưa lên sàn đấu giá",
                 Data = new()
                 {
                     ActionKey = GlobalConstant.Notification.FreelancerCanceledOrder,

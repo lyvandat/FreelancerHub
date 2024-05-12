@@ -390,8 +390,8 @@ namespace DeToiServer.Controllers
                 await _notificationService.PushNotificationAsync(new PushNotificationDto()
                 {
                     ExpoPushTokens = [customer.Account.ExpoPushToken],
-                    Title = $"📣 Đã có Freelancer báo giá! [{order.OrderServiceTypes.First().ServiceType.Name}]",
-                    Body = "Freelancer đã báo giá cho đơn của bạn! Hãy kiểm tra danh sách đơn nhé.",
+                    Title = $"📣 Đã có Freelancer báo giá!",
+                    Body = $"Đơn dịch vụ {order.OrderServiceTypes.First().ServiceType.Name} của bạn được Freelancer đã báo giá!",
                     Data = new()
                     {
                         ActionKey = GlobalConstant.Notification.FreelancerQuoteServiceToCustomer,

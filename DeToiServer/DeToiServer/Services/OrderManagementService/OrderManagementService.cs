@@ -283,11 +283,9 @@ namespace DeToiServer.Services.OrderManagementService
                 StatusConst.Created, StatusConst.OnMatching, StatusConst.Waiting
             };
 
-            var order = await _uow.OrderRepo.GetByConditionsAsync(o =>
-                o.Id.Equals(orderId)
-                && o.CustomerId.Equals(customerId));
+            var order = await _uow.OrderRepo.GetByIdWithServiceTypeAsync(orderId);
 
-            if (order == null)
+            if (order == null || !order.CustomerId.Equals(customerId))
             {
                 return new()
                 {
@@ -314,11 +312,9 @@ namespace DeToiServer.Services.OrderManagementService
 
         public async Task<UpdateOrderResultWithOldPreviewPriceDto> PostCancelOrderFreelancer(Guid orderId, Guid freelancerId)
         {
-            var order = await _uow.OrderRepo.GetByConditionsAsync(o =>
-                o.Id.Equals(orderId)
-                && o.FreelancerId.Equals(freelancerId));
+            var order = await _uow.OrderRepo.GetByIdWithServiceTypeAsync(orderId);
 
-            if (order == null)
+            if (order == null || !order.FreelancerId.Equals(freelancerId))
             {
                 return new()
                 {
