@@ -1,3 +1,15 @@
+DECLARE @backupFileName NVARCHAR(1000);
+DECLARE @db_name NVARCHAR(20);
+DECLARE @fileDate NVARCHAR(20);
+DECLARE @commandtxt NVARCHAR(1000);
+
+SET @db_name = 'DeToiVN';
+SET @fileDate = REPLACE(CONVERT(NVARCHAR(10), GETDATE(), 112), '-', '');
+
+SET @backupFileName = 'E:\Backups\' + @db_name + '-' + @fileDate + '.bak';
+
+SET @commandtxt = 'BACKUP DATABASE ' + @db_name + ' TO DISK = N''' + @backupFileName + ''' WITH CHECKSUM';
+
 -- Create a new SQL Server Agent job
 EXEC msdb.dbo.sp_add_job @job_name = N'BackupDatabase', @enabled = 1;
 
@@ -6,7 +18,7 @@ EXEC msdb.dbo.sp_add_jobstep
     @job_name = N'BackupDatabase',
     @step_name = N'Run Backup',
     @subsystem = N'TSQL',
-    @command = N'BACKUP DATABASE DeToiVN TO DISK = N''E:\Backups\DeToiVN.bak'' WITH CHECKSUM',
+    @command = @commandtxt,
     @retry_attempts = 5,
     @retry_interval = 5;
 
