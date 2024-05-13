@@ -53,7 +53,7 @@ builder.Services.AddSingleton<RealtimeConsumer>();
 builder.Services.Configure<VnPayConfigModel>(builder.Configuration.GetSection("VnPayConfig"));
 builder.Services.AddHostedService<NotificationDataCleanupService>();
 builder.Services.AddCustomRateLimiter();
-
+builder.Services.AddHttpClient();
 var app = builder.Build();
 
 app.UseSwagger();
