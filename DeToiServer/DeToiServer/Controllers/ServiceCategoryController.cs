@@ -72,9 +72,10 @@ namespace DeToiServer.Controllers
         public async Task<IActionResult> DeleteServiceCategory(Guid id)
         {
             string role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? string.Empty;
-            var categoryToDelete = await _uow.ServiceCategoryRepo.GetByIdAsync(id);
-
-            categoryToDelete.IsActivated = !categoryToDelete.IsActivated;
+            // var categoryToDelete = await _uow.ServiceCategoryRepo.GetByIdAsync(id);
+            // categoryToDelete.IsActivated = !categoryToDelete.IsActivated;
+            
+            await _serviceCategory.DeleteServiceCategory(id);
             await _uow.SaveChangesAsync();
 
             return Ok(new
