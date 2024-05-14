@@ -11,6 +11,7 @@ namespace DeToiServer.Dtos.ServiceTypeDtos
         public string? Description { get; set; }
         public string? Image { get; set; }
         public string AddressRequireOption { get; set; } = null!;
+        public bool IsActivated { get; set; }
     }
 
     public class GetServiceTypeDetailDto
@@ -21,6 +22,7 @@ namespace DeToiServer.Dtos.ServiceTypeDtos
         public string? Description { get; set; }
         public string? Image { get; set; }
         public string AddressRequireOption { get; set; } = null!;
+        public bool IsActivated { get; set; }
         public ICollection<string> Keys { get; set; } = null!;
         public ICollection<UIElementServiceRequirementDto>? Requirements { get; set; }
         public ICollection<UIElementAdditionServiceRequirementDto>? AdditionalRequirements { get; set; }

@@ -14,16 +14,19 @@ namespace DeToiServer.Services.ServiceCategoryService
             _uow = uow;
         }
 
-        public async Task<IEnumerable<GetServiceCategoryDto>> GetServiceCategories()
+        public async Task<IEnumerable<GetServiceCategoryDto>> GetServiceCategories(bool isActivated = true)
         {
             var rawServiceCategories = await _uow.ServiceCategoryRepo.GetServiceCategoryWithChild();
+
+            if (isActivated)
+                rawServiceCategories = rawServiceCategories.Where(sc => sc.IsActivated);
 
             return _mapper.Map<IEnumerable<GetServiceCategoryDto>>(rawServiceCategories);
         }
 
-        public async Task<IEnumerable<GetServiceCategoryDto>> GetServiceCategoriesLimit(int limit)
+        public async Task<IEnumerable<GetServiceCategoryDto>> GetServiceCategoriesLimit(int limit, bool isActivated = true)
         {
-            var rawServiceCategories = await _uow.ServiceCategoryRepo.GetServiceCategoriesWithLimit(limit);
+            var rawServiceCategories = await _uow.ServiceCategoryRepo.GetServiceCategoriesWithLimit(limit, isActivated);
 
             return _mapper.Map<IEnumerable<GetServiceCategoryDto>>(rawServiceCategories);
         }

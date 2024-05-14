@@ -42,6 +42,9 @@ namespace DeToiServer.Services.ChattingService
                 if (item.Sender.Role.Equals(GlobalConstant.Freelancer))
                 {
                     mapped.Sender.Type = GlobalConstant.ChatConst.Freelancer;
+                } else if (item.Sender.Role.Equals(GlobalConstant.Admin))
+                {
+                    mapped.Sender.Type = GlobalConstant.ChatConst.Admin;
                 }
                 result.Add(mapped);
             }
@@ -83,6 +86,8 @@ namespace DeToiServer.Services.ChattingService
                     mapped.ConversationId = item.SenderId;
                     if (item.Sender.Role.Equals(GlobalConstant.Freelancer))
                         mapped.Sender.Type = GlobalConstant.ChatConst.Freelancer;
+                    else if (item.Sender.Role.Equals(GlobalConstant.Admin))
+                        mapped.Sender.Type = GlobalConstant.ChatConst.Admin;
                 }
                 else
                 {
@@ -90,6 +95,8 @@ namespace DeToiServer.Services.ChattingService
                     mapped.Sender = _mapper.Map<MessageSenderDto>(item.Receiver);
                     if (item.Receiver.Role.Equals(GlobalConstant.Freelancer))
                         mapped.Sender.Type = GlobalConstant.ChatConst.Freelancer;
+                    else if (item.Receiver.Role.Equals(GlobalConstant.Admin))
+                        mapped.Sender.Type = GlobalConstant.ChatConst.Admin;
                 }
                 result.Add(mapped);
             }

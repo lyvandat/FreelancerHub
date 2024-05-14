@@ -1,7 +1,11 @@
 ﻿using DeToiServer.Dtos.ServiceCategoryDtos;
 using DeToiServer.Services.ServiceCategoryService;
+using DeToiServerCore.Common.Constants;
+using DeToiServerCore.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace DeToiServer.Controllers
 {
@@ -18,16 +22,18 @@ namespace DeToiServer.Controllers
             _uow = uow;
         }
 
-        [HttpGet]
+        [HttpGet] // , Authorize
         public async Task<ActionResult<IEnumerable<GetServiceCategoryDto>>> GetServiceCategories()
         {
-            return Ok(await _serviceCategory.GetServiceCategoriesLimit(5));
+            string role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? string.Empty;
+            return Ok(await _serviceCategory.GetServiceCategoriesLimit(5, !role.Equals(GlobalConstant.Admin)));
         }
 
-        [HttpGet("all")]
+        [HttpGet("all")] // , Authorize
         public async Task<ActionResult<IEnumerable<GetServiceCategoryDto>>> GetAllServiceCategories()
         {
-            return Ok(await _serviceCategory.GetServiceCategories());
+            string role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? string.Empty;
+            return Ok(await _serviceCategory.GetServiceCategories(!role.Equals(GlobalConstant.Admin)));
         }
 
         [HttpGet("detail")]
@@ -62,12 +68,19 @@ namespace DeToiServer.Controllers
             return Ok(new { Message = "Cập nhật loại dịch vụ thành công" });
         }
 
-        [HttpDelete]
+        [HttpDelete] // , AuthorizeRoles(GlobalConstant.Admin)
         public async Task<IActionResult> DeleteServiceCategory(Guid id)
         {
-            await _serviceCategory.DeleteServiceCategory(id);
+            string role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? string.Empty;
+            var categoryToDelete = await _uow.ServiceCategoryRepo.GetByIdAsync(id);
+
+            categoryToDelete.IsActivated = !categoryToDelete.IsActivated;
             await _uow.SaveChangesAsync();
-            return NoContent();
+
+            return Ok(new
+            {
+                Message = "Xóa danh mục thành công"
+            });
         }
     }
 }

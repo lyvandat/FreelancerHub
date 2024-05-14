@@ -11,6 +11,7 @@ namespace DeToiServer.Dtos.ServiceCategoryDtos
         public string Description { get; set; } = string.Empty;
         public ICollection<string> Keys { get; set; } = null!;
         public string ServiceClassName { get; set; } = string.Empty;
+        public bool IsActivated { get; set; }
         public int ServiceTypeCount { get; set; } = 0;
     }
 
@@ -22,6 +23,7 @@ namespace DeToiServer.Dtos.ServiceCategoryDtos
         public string Description { get; set; } = string.Empty;
         public ICollection<string> Keys { get; set; } = null!;
         public string ServiceClassName { get; set; } = string.Empty;
+        public bool IsActivated { get; set; }
         public int ServiceTypeCount { get; set; } = 0;
         public ICollection<GetServiceTypeDto>? ServiceTypes { get; set; }
     }

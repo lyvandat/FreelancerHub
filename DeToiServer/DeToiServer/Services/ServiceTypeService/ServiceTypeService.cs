@@ -23,9 +23,14 @@ namespace DeToiServer.Services.ServiceTypeService
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<GetServiceTypeDto>> GetAll()
+        public async Task<IEnumerable<GetServiceTypeDto>> GetAll(bool isActivated = true)
         {
             var serviceTypeRaw = await _uow.ServiceTypeRepo.GetAllWithCategory();
+
+            if (isActivated)
+            {
+                serviceTypeRaw = serviceTypeRaw.Where(st => st.IsActivated);
+            }
 
             return serviceTypeRaw
                 .Select(st => _mapper.Map<GetServiceTypeDto>(st))
@@ -53,7 +58,7 @@ namespace DeToiServer.Services.ServiceTypeService
             await _uow.ServiceTypeRepo.DeleteAsync(id);
         }
 
-        public async Task<SearchServiceTypeAndCategoryDto> GetAllServiceInfo(FilterServiceTypeQuery query)
+        public async Task<SearchServiceTypeAndCategoryDto> GetAllServiceInfo(FilterServiceTypeQuery query, bool isActivated = true)
         {
             var rawResult = await _uow.ServiceTypeRepo.GetAllServiceTypeWithCategoryAsync();
             var rawCategories = await _uow.ServiceCategoryRepo.GetAllAsync();
@@ -89,6 +94,12 @@ namespace DeToiServer.Services.ServiceTypeService
                 //resultQuery.Where(st => st.Name.Contains(query.Name)
                 //    || (JsonConvert.DeserializeObject<List<string>>(st.Keys) ?? new List<string>() {})
                 //        .Any(item => item.CompareKey(query.Name)));
+            }
+
+            if (isActivated)
+            {
+                services = services.Where(s => s.IsActivated).ToList();
+                categories = categories.Where(c => c.IsActivated).ToList();
             }
 
             return new SearchServiceTypeAndCategoryDto()

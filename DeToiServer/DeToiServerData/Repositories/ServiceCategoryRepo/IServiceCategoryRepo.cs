@@ -6,6 +6,6 @@ namespace DeToiServerData.Repositories.ServiceCategoryRepo
     {
         Task<IEnumerable<ServiceCategory>> GetServiceCategoryWithChild();
         Task<ServiceCategory> GetServiceCategoryByIdWithChild(Guid id);
-        Task<IEnumerable<ServiceCategory>> GetServiceCategoriesWithLimit(int limit);
+        Task<IEnumerable<ServiceCategory>> GetServiceCategoriesWithLimit(int limit, bool isActivated);
     }
 }

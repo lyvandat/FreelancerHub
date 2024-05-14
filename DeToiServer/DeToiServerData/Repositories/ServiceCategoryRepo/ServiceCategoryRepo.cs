@@ -14,9 +14,16 @@ namespace DeToiServerData.Repositories.ServiceCategoryRepo
         public async Task<ServiceCategory> GetServiceCategoryByIdWithChild(Guid id)
             => await ApplySpecification(new ServiceCategoryByIdWithChildSpecification(sc => sc.Id == id)).FirstOrDefaultAsync();
 
-        public async Task<IEnumerable<ServiceCategory>> GetServiceCategoriesWithLimit(int limit)
+        public async Task<IEnumerable<ServiceCategory>> GetServiceCategoriesWithLimit(int limit, bool isActivated)
         {
-            return await _context.ServiceCategories.Take(limit).ToListAsync();
+            var query = _context.ServiceCategories.AsQueryable();
+
+            if (isActivated)
+            {
+                query = query.Where(sc => sc.IsActivated);
+            }
+
+            return await query.Take(limit).ToListAsync();
         }
     }
 }

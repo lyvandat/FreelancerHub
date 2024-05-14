@@ -11,6 +11,7 @@ using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.NotificationService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.PaymentService;
+using DeToiServer.Services.ServiceTypeService;
 using DeToiServer.Services.UserService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
@@ -38,6 +39,7 @@ namespace DeToiServer.Controllers
         private readonly IMapper _mapper;
         private readonly VnPayConfigModel _vnPayConfig;
         private readonly INotificationService _notificationService;
+        private readonly IServiceTypeService _serviceTypeService;
         private readonly IPaymentService _paymentService;
         private readonly ILogger<OrderController> _logger;
         private readonly double _commissionRate = 0;
@@ -53,6 +55,7 @@ namespace DeToiServer.Controllers
             //IMessageBusClient messageBusClient,
             IOptions<VnPayConfigModel> vnPayConfig,
             INotificationService notificationService,
+            IServiceTypeService serviceTypeService,
             IPaymentService paymentService,
             IMapper mapper, 
             ILogger<OrderController> logger)
@@ -67,6 +70,7 @@ namespace DeToiServer.Controllers
             _mapper = mapper;
             _vnPayConfig = vnPayConfig.Value;
             _notificationService = notificationService;
+            _serviceTypeService = serviceTypeService;
             _paymentService = paymentService;
             _logger = logger;
 
@@ -94,6 +98,24 @@ namespace DeToiServer.Controllers
             var customer = await _customerAcc.GetByAccId(accountId);
 
             postOrder.CustomerId = customer.Id;
+
+            var serviceActive = (await _serviceTypeService.GetById(postOrder.Services.ServiceTypeId))?.IsActivated;
+
+            if (serviceActive == null)
+            {
+                return BadRequest(new
+                {
+                    Message = $"Không tìm được dịch vụ với id={postOrder.Services.ServiceTypeId}"
+                });
+            }
+            else if (!(serviceActive ?? false)) 
+            {
+                return BadRequest(new
+                {
+                    Message = "Dịch vụ này có thể đã bị dừng hoạt động, xin hãy đặt địch vụ khác."
+                });
+            }
+
             var order = await _orderService.Add(postOrder);
 
             if (order is null)

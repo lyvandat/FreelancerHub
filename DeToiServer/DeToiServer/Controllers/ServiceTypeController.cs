@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Services.ServiceTypeService;
@@ -7,7 +7,9 @@ using DeToiServerCore.Common.CustomAttribute;
 using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Services;
 using DeToiServerCore.QueryModels.ServiceTypeQueryModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace DeToiServer.Controllers
 {
@@ -29,10 +31,12 @@ namespace DeToiServer.Controllers
             _uow = uow;
         }
 
-        [HttpGet] // , AuthorizeRoles(GlobalConstant.Customer, GlobalConstant.Freelancer, GlobalConstant.Admin)
+        [HttpGet] // , Authorize
         public async Task<ActionResult<IEnumerable<GetServiceTypeDto>>> GetServices()
         {
-            return Ok(await _service.GetAll());
+            string role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? string.Empty;
+
+            return Ok(await _service.GetAll(true)); // !role.Equals(GlobalConstant.Admin)
         }
 
         [HttpGet("detail")]
@@ -111,20 +115,28 @@ namespace DeToiServer.Controllers
             });
         }
 
-        [HttpDelete]
+        [HttpDelete] // , AuthorizeRoles(GlobalConstant.Admin)
         public async Task<IActionResult> DeleteService(Guid id)
         {
-            await _service.Delete(id);
+            string role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? string.Empty;
+            var serviceToDelete = await _service.GetServiceTypeDetailWithRequirementsTracking(id);
+
+            serviceToDelete.IsActivated = !serviceToDelete.IsActivated; // !serviceToDelete.IsActivated;
             await _uow.SaveChangesAsync();
-            return NoContent();
+            
+            return Ok(new
+            {
+                Message = "Xóa dịch vụ thành công"
+            });
         }
 
-        [HttpGet("search")]
+        [HttpGet("search")] // , Authorize
         public async Task<ActionResult<SearchServiceTypeAndCategoryDto>> SearchService(
             [FromQuery] FilterServiceTypeQuery query
         )
         {
-            var result = await _service.GetAllServiceInfo(query);
+            string role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? string.Empty;
+            var result = await _service.GetAllServiceInfo(query, !role.Equals(GlobalConstant.Admin));
 
             return Ok(result);
         }

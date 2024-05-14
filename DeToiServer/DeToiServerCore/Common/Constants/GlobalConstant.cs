@@ -67,6 +67,7 @@
         {
             public static readonly int Freelancer = 0;
             public static readonly int Customer = 1;
+            public static readonly int Admin = 2;
             public static readonly int LoadCount = 10;
         }
 
