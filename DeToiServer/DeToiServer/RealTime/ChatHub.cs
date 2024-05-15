@@ -7,6 +7,7 @@ using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.PaymentDtos;
 using DeToiServer.Dtos.RealTimeDtos;
 using DeToiServer.Models;
+using DeToiServer.Services.CacheService;
 using DeToiServer.Services.ChattingService;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
@@ -36,6 +37,7 @@ namespace DeToiServer.RealTime
         private readonly IChattingService _chattingService;
         private readonly IMapper _mapper;
         private readonly IPaymentService _paymentService;
+        private readonly ICacheService _cacheService;
         private readonly DataContext _context;
         private readonly UnitOfWork _uow;
         private readonly ILogger<ChatHub> _logger;
@@ -49,6 +51,7 @@ namespace DeToiServer.RealTime
             INotificationService notificationService,
             IChattingService chattingService,
             IPaymentService paymentService,
+            ICacheService cacheService,
             IMapper mapper,
             ILogger<ChatHub> logger)
         {
@@ -59,6 +62,7 @@ namespace DeToiServer.RealTime
             _chattingService = chattingService;
             _mapper = mapper;
             _paymentService = paymentService;
+            _cacheService = cacheService;
             _context = context;
             _uow = uow;
             _logger = logger;
@@ -337,7 +341,7 @@ namespace DeToiServer.RealTime
                 {
                     freelancer.PreviewPrice = matchingFreelancer.PreviewPrice;
                     freelancer.BiddingNote = matchingFreelancer.BiddingNote;
-
+                    _cacheService.RemoveData($"Order-freelancer{freelancer.Id}-bidding");
                     foreach (var connection in user.Connections)
                     {
                         await Clients.Client(connection.ConnectionId).ReceiveFreelancerResponse(freelancer);

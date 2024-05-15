@@ -6,6 +6,7 @@ using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.PaymentDtos;
 using DeToiServer.Dtos.RealTimeDtos;
 using DeToiServer.RealTime;
+using DeToiServer.Services.CacheService;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.NotificationService;
@@ -41,6 +42,7 @@ namespace DeToiServer.Controllers
         private readonly INotificationService _notificationService;
         private readonly IServiceTypeService _serviceTypeService;
         private readonly IPaymentService _paymentService;
+        private readonly ICacheService _cacheService;
         private readonly ILogger<OrderController> _logger;
         private readonly double _commissionRate = 0;
 
@@ -57,6 +59,7 @@ namespace DeToiServer.Controllers
             INotificationService notificationService,
             IServiceTypeService serviceTypeService,
             IPaymentService paymentService,
+            ICacheService cacheService,
             IMapper mapper, 
             ILogger<OrderController> logger)
         {
@@ -72,6 +75,7 @@ namespace DeToiServer.Controllers
             _notificationService = notificationService;
             _serviceTypeService = serviceTypeService;
             _paymentService = paymentService;
+            _cacheService = cacheService;
             _logger = logger;
 
             try
@@ -440,6 +444,13 @@ namespace DeToiServer.Controllers
         [HttpGet("detail")]
         public async Task<ActionResult<GetOrderDto>> GetOrderDetail(Guid id)
         {
+            var cacheData = _cacheService.GetData<GetOrderDto>($"Order{id}");
+
+            if (cacheData != null)
+            {
+                return Ok(cacheData);
+            }
+
             var order = await _orderService.GetOrderDetailById(id);
 
             if (order is null)
@@ -450,6 +461,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
+            _cacheService.SetData($"Order{id}", order, DateTimeOffset.Now.AddSeconds(30));
             return Ok(order);
         }
 
@@ -467,7 +479,24 @@ namespace DeToiServer.Controllers
                 });
             }
 
+            // Get cache data
+            if (query.OrderStatusId != null && query.OrderStatusId.Any())
+            {
+                var cacheData = _cacheService.GetData<IEnumerable<GetCustomerOrderDto>>($"Order-customer{customer.Id}-status-{string.Join("", query.OrderStatusId)}");
+
+                if (cacheData != null && cacheData.Any())
+                {
+                    return Ok(cacheData);
+                }
+            }
+
             var order = await _orderService.GetAllCustomerOrders(customer.Id, query);
+
+            // Set cache data
+            if (query.OrderStatusId != null && query.OrderStatusId.Any() && order != null)
+            {
+                var cacheData = _cacheService.SetData($"Order-customer{customer.Id}-status-{string.Join("", query.OrderStatusId)}", order, DateTimeOffset.Now.AddSeconds(20));
+            }
 
             return Ok(order);
         }
@@ -523,7 +552,19 @@ namespace DeToiServer.Controllers
                 });
             }
 
+            var cacheData = _cacheService.GetData<GetCustomerOrderDto>($"Order-customer{customer.Id}-latest");
+
+            if (cacheData != null)
+            {
+                return Ok(cacheData);
+            }
+
             var order = await _orderService.GetLatestCustomerOrders(customer.Id);
+
+            if (order != null)
+            {
+                _cacheService.SetData($"Order-customer{customer.Id}-latest", order, DateTimeOffset.Now.AddSeconds(20));
+            }
 
             return Ok(order);
         }
@@ -532,7 +573,7 @@ namespace DeToiServer.Controllers
         /// Get a list of orders that a freelancer has auctioned
         /// </summary>
         [HttpGet("freelancer-bidding"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
-        public async Task<ActionResult<GetOrderDto>> GetBiddingOrders()
+        public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetBiddingOrders()
         {
             Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
             var freelancer = await _freelancerAcc.GetByAccId(accountId);
@@ -545,7 +586,19 @@ namespace DeToiServer.Controllers
                 });
             }
 
+            var cacheData = _cacheService.GetData<IEnumerable<GetOrderDto>>($"Order-freelancer{freelancer.Id}-bidding");
+
+            if (cacheData != null)
+            {
+                return Ok(cacheData);
+            }
+
             var result = await _biddingOrderService.GetFreelancerBiddingOrders(freelancer.Id);
+
+            if (result != null && result.Any())
+            {
+                _cacheService.SetData($"Order-freelancer{freelancer.Id}-bidding", result, DateTimeOffset.Now.AddSeconds(30));
+            }
 
             return Ok(result);
         }

@@ -5,6 +5,7 @@ using DeToiServer.AutoMapper;
 using DeToiServer.ConfigModels;
 using DeToiServer.Middlewares;
 using DeToiServer.RealTime;
+using DeToiServer.Services.CacheService;
 using DeToiServer.WorkerServices;
 using DeToiServerCore.Common.Helper;
 using Microsoft.EntityFrameworkCore;
@@ -39,13 +40,14 @@ builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddServicesData();
 builder.Services.AddUnitOfWork(options =>
-    options.UseSqlServer(Helper.GetDockerConnectionString())); 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("local_dat"))); 
 // builder.Configuration.GetConnectionString("local")
 // Helper.GetDockerConnectionString()
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<RealtimeConsumer>();
+builder.Services.AddScoped<ICacheService, CacheService>();
 // Message queue to communicate between services (in microservice architecture)
 //builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
 //builder.Services.AddSingleton<IEventProcessor, EventProcessor>();
