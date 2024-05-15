@@ -79,6 +79,7 @@ namespace DeToiServer.Controllers
         [HttpGet("detail")] // , AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)
         public async Task<ActionResult<GetFreelanceDto>> GetFreelancerDetail(Guid id)
         {
+            // TODO: Add cache for freelancer and freelancers' orders
             var freelance = await _freelanceAccService.GetDetailWithStatistic(id);
 
             if (freelance is null)
