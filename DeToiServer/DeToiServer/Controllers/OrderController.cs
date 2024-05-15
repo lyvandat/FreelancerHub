@@ -222,7 +222,7 @@ namespace DeToiServer.Controllers
                 FreelancerId = freelancer.Id,
                 Method = GlobalConstant.Payment.AppFee,
                 PaymentType = PaymentType.Subtract,
-                Value = AesEncryption.Encrypt(commisionValue.ToString(), freelancer.EncriptingToken),
+                Value = AesEncryption.Encrypt(commisionValue.ToString()),
                 Wallet = GlobalConstant.Payment.Wallet.Personal,
             });
 
@@ -234,7 +234,7 @@ namespace DeToiServer.Controllers
             {
                 if (ignoredFreelancer != null && ignoredFreelancer.Any())
                 {
-                    var newBalanceDict = ignoredFreelancer.ToDictionary(bf => bf.Id, bf => AesEncryption.Encrypt((bf.Freelancer!.Balance + (_commissionRate * bf.PreviewPrice)).ToString(), bf.Freelancer!.EncriptingToken));
+                    var newBalanceDict = ignoredFreelancer.ToDictionary(bf => bf.Id, bf => AesEncryption.Encrypt((bf.Freelancer!.Balance + (_commissionRate * bf.PreviewPrice)).ToString()));
                     await _freelancerAcc.RefundAuctionBalance(newBalanceDict);
                 }
             }
@@ -442,7 +442,7 @@ namespace DeToiServer.Controllers
             var customer = await _customerAcc.GetByCondition(cus => cus.Id == order.CustomerId);
             await _rabbitMQConsumer.SendOrderStatusToCustomer(new UpdateOrderStatusRealTimeDto
             {
-                CustomerPhone = customer.Account.Phone,
+                CustomerPhone = Helper.AesEncryption.Decrypt(customer.Account.Phone),
                 Address = new AddressDto() { Lat = putOrderMovingStatusDto.Lat, Lon = putOrderMovingStatusDto.Lon },
                 ServiceStatusId = StatusConst.OnMoving
             });

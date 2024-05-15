@@ -5,6 +5,7 @@ using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.PaymentService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
+using DeToiServerCore.Common.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Net.payOS;
 using Net.payOS.Types;
@@ -51,7 +52,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            var phoneNumber = long.Parse(freelancer.Account.Phone);
+            var phoneNumber = long.Parse(Helper.AesEncryption.Decrypt(freelancer.Account.Phone));
             Random random = new Random();
             int randomDigits = random.Next(1000, 10000); // Generates a random 4-digit number
             long finalOrderCode = phoneNumber * 10000 + randomDigits;

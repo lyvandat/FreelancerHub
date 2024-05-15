@@ -56,12 +56,29 @@ namespace DeToiServer.AutoMapper
         public MappingProfile()
         {
             #region Account
-            CreateMap<GetAccountDto, Account>().ReverseMap();
-            CreateMap<PutAccountDto, Account>().ReverseMap();
-            CreateMap<GetFreelanceAccountDto, Account>().ReverseMap();
-            CreateMap<GetFreelanceAccountInOrderDto, Account>().ReverseMap();
+            CreateMap<Account, GetAccountDto>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.FullName)))
+                .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.CountryCode)))
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.Phone)))
+                .ForMember(dest => dest.CombinedPhone, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.CombinedPhone)));
+
+            CreateMap<PutAccountDto, Account>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => AesEncryption.Encrypt(src.FullName)))
+                .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => AesEncryption.Encrypt(src.CountryCode)))
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => AesEncryption.Encrypt(src.Phone)));
+
+            CreateMap<GetFreelanceAccountDto, Account>();
+
+            CreateMap<Account, GetFreelanceAccountInOrderDto>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.FullName)));
 
             CreateMap<Account, GetCustomerAccountDto>();
+
+            CreateMap<Account, AccountDecryptedDto>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.FullName)))
+                .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.CountryCode)))
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.Phone)))
+                .ForMember(dest => dest.CombinedPhone, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.CombinedPhone)));
 
             #endregion
 
@@ -99,25 +116,25 @@ namespace DeToiServer.AutoMapper
                 .ForMember(dest => dest.ReviewDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.FinishTime ?? GlobalConstant.Review.DefaultDateTime)));
 
             CreateMap<FreelanceAccount, GetFreelanceDto>()
-                .ForMember(dest => dest.IdentityNumber, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.IdentityNumber, src.EncriptingToken)))
+                .ForMember(dest => dest.IdentityNumber, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.IdentityNumber)))
                 .ForMember(dest => dest.IsVerified, opt => opt.MapFrom(src => src.Account.IsVerified))
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
                 .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders ?? new List<Order>() {}))
                 .ForMember(dest => dest.ActiveTime, opt => opt.MapFrom(src => src.Account.CreatedAt))
-                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Balance, src.EncriptingToken))))
-                .ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.SystemBalance, src.EncriptingToken))))
+                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Balance))))
+                .ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.SystemBalance))))
                 .ForMember(dest => dest.FreelancerFeasibleServices, opt => opt.MapFrom(src => src.FreelancerFeasibleServices));
 
             CreateMap<FreelanceAccount, GetFreelanceMatchingDto>()
-                .ForMember(dest => dest.IdentityNumber, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.IdentityNumber, src.EncriptingToken)))
+                .ForMember(dest => dest.IdentityNumber, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.IdentityNumber)))
                 .ForMember(dest => dest.IsVerified, opt => opt.MapFrom(src => src.Account.IsVerified))
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.FreelanceSkills))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => (src.Address ?? new List<Address>()).FirstOrDefault()))
                 .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Orders ?? new List<Order>() {}))
                 .ForMember(dest => dest.ActiveTime, opt => opt.MapFrom(src => src.Account.CreatedAt))
-                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.Balance, src.EncriptingToken))))
-                .ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.SystemBalance, src.EncriptingToken))))
+                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.Balance))))
+                .ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.SystemBalance))))
                 .ForMember(dest => dest.FreelancerFeasibleServices, opt => opt.MapFrom(src => src.FreelancerFeasibleServices ));
 
             CreateMap<GetFreelanceMatchingDto, GetFreelanceDto>();
@@ -125,8 +142,8 @@ namespace DeToiServer.AutoMapper
             CreateMap<FreelanceAccount, GetFreelanceAccountShortDetailDto>()
                 .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Account.Avatar ?? GlobalConstant.DefaultCommentAvt))
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Account.FullName ?? "Người dùng"))
-                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.Balance, src.EncriptingToken))))
-                .ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.SystemBalance, src.EncriptingToken))));
+                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.Balance))))
+                .ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.SystemBalance))));
 
             CreateMap<BiddingOrder, GetFreelanceMatchingDto>()
                 .ConvertUsing((src, dest, context) => {
@@ -137,17 +154,17 @@ namespace DeToiServer.AutoMapper
                 });
 
             CreateMap<FreelanceAccount, GetFreelancerWalletDto>()
-                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Balance, src.EncriptingToken))));
+                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Balance))));
             CreateMap<FreelancePaymentHistory, GetFreelanceShortPaymentHistoryDto>()
                 .ForMember(dest => dest.PaymentType, opt => opt.MapFrom(src => src.PaymentType.ToString()))
-                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Value, src.FreelanceAccount.EncriptingToken))));
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.Value))));
 
             #endregion
 
             #region Payment
             CreateMap<FreelancePaymentHistory, GetFreelancePaymentHistoryDto>()
                 .ForMember(dest => dest.Value, opt => opt
-                    .MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.Value, src.FreelanceAccount.EncriptingToken))));
+                    .MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.Value))));
 
             CreateMap<AddFreelancePaymentHistoryDto, FreelancePaymentHistory>()
                 //.ForMember(dest => dest.Value, opt => opt.Ignore())
@@ -470,6 +487,7 @@ namespace DeToiServer.AutoMapper
 
             #region Chatting
             CreateMap<Account, MessageSenderDto>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.FullName)))
                 .ForMember(dest => dest.Type, opt => opt.Ignore());
             CreateMap<Message, MessageDto>()
                 .ForMember(dest => dest.TimeReceived, opt => opt.MapFrom(src => src.Time));

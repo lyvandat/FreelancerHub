@@ -66,5 +66,12 @@ namespace DeToiServer.Services.AccountService
 
             return rawAccounts.Select(_mapper.Map<GetAccountDto>);
         }
+
+        public async Task<Account> GetByPhone(string countryCode, string phone)
+        {
+            var rawAccount = await _unitOfWork.AccountRepo.GetByPhoneAsync(countryCode, phone);
+
+            return rawAccount;
+        }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using DeToiServer.Dtos.AccountDtos;
+using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Accounts;
 using DeToiServerCore.QueryModels.AccountQueryModels;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Reflection.Metadata.Ecma335;
+using static DeToiServerCore.Common.Constants.GlobalConstant.Fee;
 
 namespace DeToiServerData.Repositories;
 
@@ -81,5 +83,15 @@ public class AccountRepo : RepositoryBase<Account>, IAccountRepo
             .Where(acc => acc.Id.Equals(id) && acc.SessionId.Equals(sessionId));
 
         return (await query.ToListAsync()).Count != 0;
+    }
+
+    public async Task<Account> GetByPhoneAsync(string countryCode, string phone)
+    {
+        var accounts = await _context.Accounts.AsSplitQuery().ToListAsync();
+        var query = accounts.Where(acc =>
+            Helper.AesEncryption.Decrypt(acc.Phone).Contains(phone)
+            && Helper.AesEncryption.Decrypt(acc.CountryCode).Equals(countryCode));
+
+        return query.FirstOrDefault();
     }
 }

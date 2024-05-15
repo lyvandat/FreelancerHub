@@ -64,13 +64,13 @@ namespace DeToiServer.Services.PaymentService
                         return null;
                     }
 
-                    rawFreelancer.Balance = AesEncryption.Encrypt(updatedValue.ToString(), rawFreelancer.EncriptingToken);
+                    rawFreelancer.Balance = AesEncryption.Encrypt(updatedValue.ToString());
                 }
                 else if (toUpdate.WalletType.Equals(GlobalConstant.Payment.Wallet.System))
                 {
                     updatedValue = freelancer.SystemBalance + toUpdate.Value;
-                    rawFreelancer.SystemBalance = AesEncryption.Encrypt(updatedValue.ToString(), rawFreelancer.EncriptingToken);
-                    rawFreelancer.Balance = AesEncryption.Encrypt((freelancer.Balance + toUpdate.Value).ToString(), rawFreelancer.EncriptingToken);
+                    rawFreelancer.SystemBalance = AesEncryption.Encrypt(updatedValue.ToString());
+                    rawFreelancer.Balance = AesEncryption.Encrypt((freelancer.Balance + toUpdate.Value).ToString());
                 }
                 
                 if (updatedValue > 0 && addRecord)
@@ -80,7 +80,7 @@ namespace DeToiServer.Services.PaymentService
                         FreelancerId = rawFreelancer.Id,
                         Method = toUpdate.Method,
                         PaymentType = minus ? PaymentType.Subtract : PaymentType.Add,
-                        Value = AesEncryption.Encrypt(toUpdate.Value.ToString(), rawFreelancer.EncriptingToken),
+                        Value = AesEncryption.Encrypt(toUpdate.Value.ToString()),
                         Wallet = toUpdate.WalletType,
                     });
                 }

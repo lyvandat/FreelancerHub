@@ -14,5 +14,6 @@ namespace DeToiServer.Services.AccountService
         Task<GetAccountDto> GetAccountDetailsById(Guid accountId);
         Task BanAccount(Guid accountId);
         Task<IEnumerable<GetAccountDto>> GetAllAccountInfo(FilterAccountQuery searchAccount);
+        Task<Account> GetByPhone(string countryCode, string phone);
     }
 }

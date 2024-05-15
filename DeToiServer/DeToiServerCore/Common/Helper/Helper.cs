@@ -171,17 +171,20 @@ namespace DeToiServerCore.Common.Helper
             private static readonly string Key = Environment.GetEnvironmentVariable("ENCRYPTION_KEY") 
                 ?? "DayLaSuperSecretKeySuDungTrongViecEncryptData";
 
+            private static readonly string IV = Environment.GetEnvironmentVariable("ENCRYPTION_IV")
+                ?? "46cd742eb4cbe8f6db524248fa47b40a";
+
             private static byte[] GetValidKey()
             {
                 return SHA256.HashData(Encoding.UTF8.GetBytes(Key));
             }
 
             // TODO: examine bug propagation
-            public static string Encrypt(string plainText, string iv)
+            public static string Encrypt(string plainText)
             {
                 using Aes aesAlg = Aes.Create();
                 aesAlg.Key = GetValidKey();
-                aesAlg.IV = Helper.StringToByteArray(iv);
+                aesAlg.IV = Helper.StringToByteArray(IV);
                 aesAlg.Mode = CipherMode.CBC;
 
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
@@ -195,12 +198,12 @@ namespace DeToiServerCore.Common.Helper
                 return Convert.ToBase64String(msEncrypt.ToArray());
             }
 
-            public static string Decrypt(string cipherText, string iv)
+            public static string Decrypt(string cipherText)
             {
                 byte[] cipherBytes = Convert.FromBase64String(cipherText);
                 using Aes aesAlg = Aes.Create();
                 aesAlg.Key = GetValidKey();
-                aesAlg.IV = StringToByteArray(iv);
+                aesAlg.IV = StringToByteArray(IV);
                 aesAlg.Mode = CipherMode.CBC;
 
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
