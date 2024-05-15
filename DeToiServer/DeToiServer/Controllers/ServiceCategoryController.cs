@@ -23,17 +23,17 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet] // , Authorize
-        public async Task<ActionResult<IEnumerable<GetServiceCategoryDto>>> GetServiceCategories()
-        {
-            string role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? string.Empty;
-            return Ok(await _serviceCategory.GetServiceCategoriesLimit(5, !role.Equals(GlobalConstant.Admin)));
-        }
-
-        [HttpGet("all")] // , Authorize
         public async Task<ActionResult<IEnumerable<GetServiceCategoryDto>>> GetAllServiceCategories()
         {
             string role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? string.Empty;
-            return Ok(await _serviceCategory.GetServiceCategories(!role.Equals(GlobalConstant.Admin)));
+            return Ok(await _serviceCategory.GetServiceCategories(false)); // !role.Equals(GlobalConstant.Admin)
+        }
+
+        [HttpGet("preview")] // , Authorize
+        public async Task<ActionResult<IEnumerable<GetServiceCategoryDto>>> GetServiceCategories()
+        {
+            string role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? string.Empty;
+            return Ok(await _serviceCategory.GetServiceCategoriesLimit(5, false)); // !role.Equals(GlobalConstant.Admin)
         }
 
         [HttpGet("detail")]
