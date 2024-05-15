@@ -19,6 +19,7 @@ namespace DeToiServerCore.Models
         public double EstimatedPrice { get; set; }
         public double RecommendPrice { get; set; }
         public DateTime StartTime { get; set; }
+        public bool IsFastestPossible { get; set; }
         public DateTime? FinishTime { get; set; }
         public DateTime CreatedTime { get; set; } = DateTime.Now;
         public Guid? FreelancerId { get; set; }

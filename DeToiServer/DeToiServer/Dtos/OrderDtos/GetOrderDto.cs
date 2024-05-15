@@ -21,6 +21,7 @@ namespace DeToiServer.Dtos.OrderDtos
         public DateOnly StartDate { get; set; }
         public TimeOnly FinishTime { get; set; }
         public DateOnly FinishDate { get; set; }
+        public bool IsFastestPossible { get; set; }
         public GetCustomerAccountDto? Customer { get; set; }
         [JsonPropertyName("freelancer")]
         public GetFreelanceAccountInOrderDto? Freelance { get; set; }
@@ -44,6 +45,7 @@ namespace DeToiServer.Dtos.OrderDtos
         public DateOnly StartDate { get; set; }
         public TimeOnly FinishTime { get; set; }
         public DateOnly FinishDate { get; set; }
+        public bool IsFastestPossible { get; set; }
         public GetCustomerAccountDto? Customer { get; set; }
         [JsonPropertyName("freelancer")]
         public GetFreelanceAccountInOrderDto? Freelance { get; set; }

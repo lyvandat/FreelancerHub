@@ -106,6 +106,10 @@ namespace DeToiServer.Services.OrderManagementService
             rawOrder.Id = Guid.NewGuid();
             rawOrder.PaymentStatus = PaymentStatus.NotPaid;
             rawOrder.ServiceStatusId = StatusConst.OnMatching;
+            if (postOrderDto.IsFastestPossible)
+            {
+                rawOrder.StartTime = rawOrder.CreatedTime;
+            }
 
             rawOrder.OrderAddress = new List<OrderAddress>() {};
             if (postOrderDto.Address != null)

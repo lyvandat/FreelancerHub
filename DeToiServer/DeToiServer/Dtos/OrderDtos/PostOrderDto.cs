@@ -6,7 +6,8 @@ namespace DeToiServer.Dtos.OrderDtos
     public class PostOrderDto
     {
         public ICollection<PostOrderAddressDto>? Address { get; set; }
-        public TimeOnly StartTime { get; set; }
+        public bool IsFastestPossible { get; set; }
+        public TimeOnly? StartTime { get; set; }
         public DateOnly StartDate { get; set; }
         public Guid CustomerId { get; set; }
         public required PostServiceDto Services { get; set; }

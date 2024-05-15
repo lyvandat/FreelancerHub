@@ -230,7 +230,7 @@ namespace DeToiServer.AutoMapper
             CreateMap<PaymentStatusHistory, PostPaymentStatusHistoryDto>().ReverseMap();
             CreateMap<PostOrderDto, Order>()
                 .ForMember(dest => dest.OrderAddress, opt => opt.Ignore()) // MapFrom(src => src.Address)
-                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartDate.ToDateTime(src.StartTime)));
+                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartDate.ToDateTime(src.StartTime ?? TimeOnly.MinValue)));
 
             CreateMap<Order, GetOrderDto>()
                 .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => TimeOnly.FromDateTime(src.StartTime)))

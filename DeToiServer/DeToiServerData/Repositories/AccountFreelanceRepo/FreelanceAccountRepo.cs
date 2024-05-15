@@ -109,7 +109,11 @@ public class FreelanceAccountRepo : RepositoryBase<FreelanceAccount>, IFreelance
             .Where(fst => fst.FreelancerId.Equals(freelancerId)).Select(fst => fst.ServiceTypeId)
             .ToListAsync();
 
-        var toAddServices = serviceTypes.Where(svId => !addedServices.Contains(svId)).Select(svId => new FreelanceServiceType
+        var inactiveServices = await _context.ServiceTypes.AsNoTracking().AsSplitQuery()
+            .Where(st => !st.IsActivated).Select(st => st.Id).ToListAsync();
+
+        var toAddServices = serviceTypes.Where(svId => !addedServices.Contains(svId) 
+            && !inactiveServices.Contains(svId)).Select(svId => new FreelanceServiceType
         {
             FreelancerId = freelancerId,
             Freelancer = null!,
