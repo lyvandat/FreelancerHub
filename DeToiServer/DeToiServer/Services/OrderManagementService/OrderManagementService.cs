@@ -260,11 +260,18 @@ namespace DeToiServer.Services.OrderManagementService
                     Message = "Đơn đặt hàng của bạn chưa được nhận bởi Freelancer"
                 };
             }
-            if (order.Rating != 0)
+            if (order.IsCustomerRated)
             {
                 return new()
                 {
                     Message = "Đơn đặt hàng của bạn đã được review."
+                };
+            }
+            if (!order.ServiceStatusId.Equals(StatusConst.Completed))
+            {
+                return new()
+                {
+                    Message = "Không thể đánh giá đơn hàng chưa hoàn thành."
                 };
             }
 
@@ -372,6 +379,13 @@ namespace DeToiServer.Services.OrderManagementService
                 return new()
                 {
                     Message = "Bạn đã review cho đơn này."
+                };
+            }
+            if (!order.ServiceStatusId.Equals(StatusConst.Completed))
+            {
+                return new()
+                {
+                    Message = "Không thể đánh giá đơn hàng chưa hoàn thành."
                 };
             }
 

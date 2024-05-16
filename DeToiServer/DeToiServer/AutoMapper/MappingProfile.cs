@@ -113,7 +113,7 @@ namespace DeToiServer.AutoMapper
             CreateMap<Order, GetFreelanceReviewDto>()
                 .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.Customer!.Id))
                 .ForMember(dest => dest.Avt, opt => opt.MapFrom(src => src.Customer!.Account.Avatar ?? GlobalConstant.DefaultCommentAvt))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Customer!.Account.FullName ?? "Người dùng"))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.Customer!.Account.FullName) ?? "Người dùng ẩn danh"))
                 .ForMember(dest => dest.RatingPoint, opt => opt.MapFrom(src => src.Rating))
                 .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Comment ?? GlobalConstant.DefaultCommentContent))
                 .ForMember(dest => dest.ReviewDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.FinishTime ?? GlobalConstant.Review.DefaultDateTime)));
@@ -144,7 +144,7 @@ namespace DeToiServer.AutoMapper
 
             CreateMap<FreelanceAccount, GetFreelanceAccountShortDetailDto>()
                 .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Account.Avatar ?? GlobalConstant.DefaultCommentAvt))
-                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.Account.FullName ?? "Người dùng"))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.Account.FullName) ?? "Người dùng ẩn danh"))
                 .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => Convert.ToDouble(AesEncryption.Decrypt(src.Balance))))
                 .ForMember(dest => dest.SystemBalance, opt => opt.MapFrom(src => Convert.ToDouble(Helper.AesEncryption.Decrypt(src.SystemBalance))));
 
@@ -479,6 +479,10 @@ namespace DeToiServer.AutoMapper
             #region Report
             CreateMap<PostReportDto, Report>()
                 .ForMember(dest => dest.Images, opt => opt.Ignore());
+
+            CreateMap<ReportImage, GetReportImageDto>();
+            CreateMap<Report, GetReportDto>();
+
             #endregion
 
             #region Admin

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos.AccountDtos;
+using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.ReportDtos;
 using DeToiServer.Services.AccountService;
 using DeToiServer.Services.NotificationService;
@@ -34,15 +35,15 @@ namespace DeToiServer.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<ActionResult<GetAccountDto>> GetAllReport()
+        public async Task<ActionResult<GetReportDto>> GetAllReport()
         {
             var result = await _reportService.GetAllReports();
 
-            return Ok(result);
+            return Ok(_mapper.Map<IEnumerable<GetReportDto>>(result));
         }
 
         [HttpPost(), AuthorizeRoles(GlobalConstant.Customer, GlobalConstant.Freelancer)]
-        public async Task<ActionResult<GetAccountDto>> PostReport(PostReportDto reportDto)
+        public async Task<ActionResult<GetReportDto>> PostReport(PostReportDto reportDto)
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
             var account = await _accountService.GetAccountDetailsById(accountId);
@@ -65,7 +66,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            return Ok(result);
+            return Ok(_mapper.Map<GetReportDto>(result));
         }
     }
 }

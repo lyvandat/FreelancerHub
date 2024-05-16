@@ -180,8 +180,10 @@ namespace DeToiServerCore.Common.Helper
             }
 
             // TODO: examine bug propagation
-            public static string Encrypt(string plainText)
+            public static string? Encrypt(string? plainText)
             {
+                if (plainText == null) return null;
+
                 using Aes aesAlg = Aes.Create();
                 aesAlg.Key = GetValidKey();
                 aesAlg.IV = Helper.StringToByteArray(IV);
@@ -198,8 +200,10 @@ namespace DeToiServerCore.Common.Helper
                 return Convert.ToBase64String(msEncrypt.ToArray());
             }
 
-            public static string Decrypt(string cipherText)
+            public static string? Decrypt(string? cipherText)
             {
+                if (cipherText == null) return null;
+
                 byte[] cipherBytes = Convert.FromBase64String(cipherText);
                 using Aes aesAlg = Aes.Create();
                 aesAlg.Key = GetValidKey();
