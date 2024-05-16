@@ -12,4 +12,5 @@ public interface IAccountRepo : IRepository<Account>
     Task<IEnumerable<Account>> QueryAccountByCreationTimeAndRoleAsync(AccountCreationDateAndRolesQuery queryData);
     Task<bool> ValidateAccountSessionAsync(Guid id, Guid sessionId);
     Task<Account> GetByPhoneAsync(string countryCode, string phone);
+    Task<Account> GetByCombinedPhoneAsync(string combindPhone);
 }

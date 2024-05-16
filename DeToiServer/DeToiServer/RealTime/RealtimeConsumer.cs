@@ -62,7 +62,7 @@ namespace DeToiServer.RealTime
                     return;
                 }
 
-                await _connectionSignalR.InvokeAsync("SendReceiveOrderMessageToFreelancer", freelancer.Account.Phone, getOrderDto);
+                await _connectionSignalR.InvokeAsync("SendReceiveOrderMessageToFreelancer", freelancer.Account.CombinedPhone, getOrderDto);
             }
             catch (Exception ex)
             {

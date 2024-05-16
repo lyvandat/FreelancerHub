@@ -87,11 +87,16 @@ public class AccountRepo : RepositoryBase<Account>, IAccountRepo
 
     public async Task<Account> GetByPhoneAsync(string countryCode, string phone)
     {
-        var accounts = await _context.Accounts.AsSplitQuery().ToListAsync();
+        var accounts = await _context.Accounts.ToListAsync();
         var query = accounts.Where(acc =>
             Helper.AesEncryption.Decrypt(acc.Phone).Contains(phone)
             && Helper.AesEncryption.Decrypt(acc.CountryCode).Equals(countryCode));
 
         return query.FirstOrDefault();
+    }
+
+    public async Task<Account> GetByCombinedPhoneAsync(string combinedPhone)
+    {
+        return await _context.Accounts.FirstOrDefaultAsync(acc => acc.CombinedPhone.Equals(combinedPhone));
     }
 }

@@ -2,6 +2,7 @@
 using DeToiServer.Dtos.AccountDtos;
 using DeToiServerCore.Models.Accounts;
 using System.Linq.Expressions;
+using static DeToiServerCore.Common.Helper.Helper;
 
 namespace DeToiServer.Services.AccountService
 {
@@ -72,6 +73,12 @@ namespace DeToiServer.Services.AccountService
             var rawAccount = await _unitOfWork.AccountRepo.GetByPhoneAsync(countryCode, phone);
 
             return rawAccount;
+        }
+
+        public async Task<Account> GetByCombinedPhone(string combinedPhone)
+        {
+            var encryptedPhone = AesEncryption.Encrypt(combinedPhone);
+            return await _unitOfWork.AccountRepo.GetByCombinedPhoneAsync(encryptedPhone);
         }
     }
 }
