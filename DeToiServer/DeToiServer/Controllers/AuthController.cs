@@ -457,8 +457,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            if (!request.Otp.Equals("2014") 
-                && !request.Otp.Equals("201402")
+            if (!request.Otp.Equals("201402")
                 && !account.LoginToken.Equals(request.Otp))
                 return BadRequest(new
                 {
