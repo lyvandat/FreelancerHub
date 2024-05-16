@@ -16,7 +16,6 @@ using DeToiServer.Services.ServiceTypeService;
 using DeToiServer.Services.UserService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
-using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Payment;
 using DeToiServerCore.QueryModels.OrderQueryModels;
 using Microsoft.AspNetCore.Mvc;
@@ -60,7 +59,7 @@ namespace DeToiServer.Controllers
             IServiceTypeService serviceTypeService,
             IPaymentService paymentService,
             ICacheService cacheService,
-            IMapper mapper, 
+            IMapper mapper,
             ILogger<OrderController> logger)
         {
             _uow = uow;
@@ -112,7 +111,7 @@ namespace DeToiServer.Controllers
                     Message = $"Không tìm được dịch vụ với id={postOrder.Services.ServiceTypeId}"
                 });
             }
-            else if (!(serviceActive ?? false)) 
+            else if (!(serviceActive ?? false))
             {
                 return BadRequest(new
                 {
@@ -131,7 +130,7 @@ namespace DeToiServer.Controllers
             }
 
             // await _rabbitMQConsumer.SendMessageToFreelancer(postOrder); TODO: duplicated on Orders services?
-
+            _cacheService.RemoveData($"Order-customer{accountId}-latest");
             return Ok(new PostOrderResultDto()
             {
                 Id = order.Id,
@@ -322,7 +321,14 @@ namespace DeToiServer.Controllers
         [HttpPut("service-status"), AuthorizeRoles(GlobalConstant.Freelancer)]
         public async Task<ActionResult> UpdateOrderStatus(PutOrderStatus putOrderStatus)
         {
-            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            if (!Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId))
+            {
+                return BadRequest(new
+                {
+                    Message = "Vui lòng đăng nhập để tiếp tục"
+                });
+            }
+
             var isValidStatus = StatusConst.SupportedStatuses.Contains(putOrderStatus.StatusId);
             var freelancer = await _uow.FreelanceAccountRepo.GetByAccId(accountId);
 
@@ -377,7 +383,13 @@ namespace DeToiServer.Controllers
             //}
 
             order.ServiceStatusId = putOrderStatus.StatusId;
-            await _uow.SaveChangesAsync();
+            if (!await _uow.SaveChangesAsync())
+            {
+                return BadRequest(new
+                {
+                    Message = "Cập nhật trạng thái đơn hàng thất bại"
+                });
+            }
 
             // Handle real time - freelancers send update status message to customers.
             var customer = await _customerAcc.GetByCondition(cus => cus.Id == order.CustomerId);
@@ -468,7 +480,25 @@ namespace DeToiServer.Controllers
 
         private async Task<ActionResult<IEnumerable<GetCustomerOrderDto>>> GetCustomerOrders(FilterCustomerOrderQuery query)
         {
-            _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            if (!Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId))
+            {
+                return BadRequest(new
+                {
+                    Message = "Vui lòng đăng nhập để tiếp tục"
+                });
+            }
+
+            // Get cache data
+            if (query.OrderStatusId != null && query.OrderStatusId.Any())
+            {
+                var cacheData = _cacheService.GetData<IEnumerable<GetCustomerOrderDto>>($"Order-customer{accountId}-status-{string.Join("", query.OrderStatusId)}");
+
+                if (cacheData != null && cacheData.Any())
+                {
+                    return Ok(cacheData);
+                }
+            }
+
             var customer = await _customerAcc.GetByAccId(accountId);
 
             if (customer is null)
@@ -479,23 +509,13 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            // Get cache data
-            if (query.OrderStatusId != null && query.OrderStatusId.Any())
-            {
-                var cacheData = _cacheService.GetData<IEnumerable<GetCustomerOrderDto>>($"Order-customer{customer.Id}-status-{string.Join("", query.OrderStatusId)}");
-
-                if (cacheData != null && cacheData.Any())
-                {
-                    return Ok(cacheData);
-                }
-            }
-
+            // TODO: URGENT, need optimization!!!
             var order = await _orderService.GetAllCustomerOrders(customer.Id, query);
 
             // Set cache data
             if (query.OrderStatusId != null && query.OrderStatusId.Any() && order != null)
             {
-                var cacheData = _cacheService.SetData($"Order-customer{customer.Id}-status-{string.Join("", query.OrderStatusId)}", order, DateTimeOffset.Now.AddSeconds(20));
+                var cacheData = _cacheService.SetData($"Order-customer{accountId}-status-{string.Join("", query.OrderStatusId)}", order, DateTimeOffset.Now.AddSeconds(20));
             }
 
             return Ok(order);
@@ -541,7 +561,21 @@ namespace DeToiServer.Controllers
         [HttpGet("customer-latest"), AuthorizeRoles(GlobalConstant.Customer)]
         public async Task<ActionResult<GetCustomerOrderDto>> GetCustomerLatestOrders()
         {
-            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            if (!Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId))
+            {
+                return BadRequest(new
+                {
+                    Message = "Vui lòng đăng nhập để tiếp tục"
+                });
+            }
+
+            var cacheData = _cacheService.GetData<GetCustomerOrderDto>($"Order-customer{accountId}-latest");
+
+            if (cacheData != null)
+            {
+                return Ok(cacheData);
+            }
+
             var customer = await _customerAcc.GetByAccId(accountId);
 
             if (customer is null)
@@ -552,18 +586,11 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            var cacheData = _cacheService.GetData<GetCustomerOrderDto>($"Order-customer{customer.Id}-latest");
-
-            if (cacheData != null)
-            {
-                return Ok(cacheData);
-            }
-
             var order = await _orderService.GetLatestCustomerOrders(customer.Id);
 
             if (order != null)
             {
-                _cacheService.SetData($"Order-customer{customer.Id}-latest", order, DateTimeOffset.Now.AddSeconds(20));
+                _cacheService.SetData($"Order-customer{accountId}-latest", order, DateTimeOffset.Now.AddSeconds(20));
             }
 
             return Ok(order);
@@ -575,7 +602,21 @@ namespace DeToiServer.Controllers
         [HttpGet("freelancer-bidding"), AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)]
         public async Task<ActionResult<IEnumerable<GetOrderDto>>> GetBiddingOrders()
         {
-            Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
+            if (!Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId))
+            {
+                return BadRequest(new
+                {
+                    Message = "Vui lòng đăng nhập để tiếp tục"
+                });
+            }
+
+            var cacheData = _cacheService.GetData<IEnumerable<GetOrderDto>>($"Order-freelancer{accountId}-bidding");
+
+            if (cacheData != null)
+            {
+                return Ok(cacheData);
+            }
+
             var freelancer = await _freelancerAcc.GetByAccId(accountId);
 
             if (freelancer is null)
@@ -586,18 +627,11 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            var cacheData = _cacheService.GetData<IEnumerable<GetOrderDto>>($"Order-freelancer{freelancer.Id}-bidding");
-
-            if (cacheData != null)
-            {
-                return Ok(cacheData);
-            }
-
             var result = await _biddingOrderService.GetFreelancerBiddingOrders(freelancer.Id);
 
             if (result != null && result.Any())
             {
-                _cacheService.SetData($"Order-freelancer{freelancer.Id}-bidding", result, DateTimeOffset.Now.AddSeconds(30));
+                _cacheService.SetData($"Order-freelancer{accountId}-bidding", result, DateTimeOffset.Now.AddSeconds(30));
             }
 
             return Ok(result);
@@ -764,7 +798,7 @@ namespace DeToiServer.Controllers
                     WalletType = GlobalConstant.Payment.Wallet.Personal,
                     Value = order.OldPreviewPrice * _commissionRate,
                 });
-            } 
+            }
 
             if (!await _uow.SaveChangesAsync())
             {

@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using DeToiServer.Dtos.AddressDtos;
 using DeToiServer.Dtos.ChattingDtos;
 using DeToiServer.Dtos.FreelanceDtos;
 using DeToiServer.Dtos.NotificationDtos;
 using DeToiServer.Dtos.OrderDtos;
-using DeToiServer.Dtos.PaymentDtos;
 using DeToiServer.Dtos.RealTimeDtos;
 using DeToiServer.Models;
 using DeToiServer.Services.CacheService;
@@ -15,16 +13,9 @@ using DeToiServer.Services.NotificationService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.PaymentService;
 using DeToiServerCore.Common.Constants;
-using DeToiServerCore.Common.Helper;
-using DeToiServerCore.Models;
 using DeToiServerCore.Models.Accounts;
-using DeToiServerCore.Models.Chat;
-using DeToiServerData;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DeToiServer.RealTime
 {
@@ -331,6 +322,9 @@ namespace DeToiServer.RealTime
                     };
                 }
 
+                _cacheService.RemoveData($"Order-freelancer{freelancer.Account.Id}-bidding");
+                _cacheService.RemoveData($"Customer{customer.AccountId}-order{matchingFreelancer.OrderId}-freelancers");
+
                 var user = await _context.Users
                     .AsNoTracking()
                     .Where(u => u.Phone.Equals(customer.Account.CombinedPhone))
@@ -341,7 +335,6 @@ namespace DeToiServer.RealTime
                 {
                     freelancer.PreviewPrice = matchingFreelancer.PreviewPrice;
                     freelancer.BiddingNote = matchingFreelancer.BiddingNote;
-                    _cacheService.RemoveData($"Order-freelancer{freelancer.Id}-bidding");
                     foreach (var connection in user.Connections)
                     {
                         await Clients.Client(connection.ConnectionId).ReceiveFreelancerResponse(freelancer);
