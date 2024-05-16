@@ -1,6 +1,7 @@
 ﻿using DeToiServer.Dtos.ServiceProvenDtos;
 using DeToiServer.Services.ServiceProvenService;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace DeToiServer.Controllers
 {
@@ -44,7 +45,15 @@ namespace DeToiServer.Controllers
 
             if (serviceProven != null)
             {
-                serviceProven.ImageAfter = string.Join("|", postServiceProven.MediaPath);
+                var images = JsonConvert.DeserializeObject<ICollection<string>>(serviceProven.ImageAfter);
+                if (images != null)
+                {
+                    serviceProven.ImageAfter = JsonConvert.SerializeObject(images.Concat(postServiceProven.MediaPath));
+                }
+                else
+                {
+                    serviceProven.ImageAfter = JsonConvert.SerializeObject(postServiceProven.MediaPath);
+                }  
             }
             else
             {

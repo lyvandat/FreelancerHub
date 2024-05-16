@@ -12,6 +12,7 @@ namespace DeToiServer.Dtos.ServiceProvenDtos
         public double EstimatedPrice { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime FinishTime { get; set; }
+        public bool IsFastestPossible { get; set; }
         public string ServiceType { get; set; } = string.Empty;
     }
 }

@@ -75,6 +75,8 @@ public class FreelanceAccountRepo : RepositoryBase<FreelanceAccount>, IFreelance
                 .ThenInclude(fls => fls.Skill)
             .Include(fl => fl.ServiceProven)
                 .ThenInclude(sp => sp.ServiceType)
+            .Include(fl => fl.ServiceProven)
+                .ThenInclude(sp => sp.Order)
             .Include(fl => fl.Orders)
                 .ThenInclude(o => o.Customer)
                         .ThenInclude(cus => cus.Account)

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DeToiServer.Dtos.ServiceProvenDtos;
 using DeToiServerCore.Models.Services;
+using Newtonsoft.Json;
 
 namespace DeToiServer.Services.ServiceProvenService
 {
@@ -18,7 +19,7 @@ namespace DeToiServer.Services.ServiceProvenService
         public async Task<ServiceProven> Add(PostServiceProvenDto serviceProven, bool before = false)
         {
             var proven = _mapper.Map<ServiceProven>(serviceProven);
-            var jointPath = string.Join("|", serviceProven.MediaPath);
+            var jointPath = JsonConvert.SerializeObject(serviceProven.MediaPath);
 
             if (before)
             {
@@ -49,8 +50,8 @@ namespace DeToiServer.Services.ServiceProvenService
             }
 
             var getSpDto = _mapper.Map<GetServiceProvenDto>(serviceProven);
-            getSpDto.MediaPathBefore = serviceProven.ImageBefore?.Split("|");
-            getSpDto.MediaPathAfter = serviceProven.ImageAfter?.Split("|");
+            getSpDto.MediaPathBefore = JsonConvert.DeserializeObject<ICollection<string>>(serviceProven.ImageBefore);
+            getSpDto.MediaPathAfter = JsonConvert.DeserializeObject<ICollection<string>>(serviceProven.ImageAfter);
 
             return getSpDto;
         }
