@@ -170,31 +170,28 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            if (!serviceToUpdate.AddressRequireOption.Equals(putServiceTypeDto.AddressRequireOption))
+            serviceToUpdate.AddressRequireOption = putServiceTypeDto.AddressRequireOption;
+            serviceToUpdate.ServiceStatusList = new List<ServiceTypeStatus>() { };
+            var statusIdList = StatusConst.AddressOpt.None;
+            if (serviceToUpdate.AddressRequireOption.Equals(GlobalConstant.AddressOption.Destination))
             {
-                serviceToUpdate.AddressRequireOption = putServiceTypeDto.AddressRequireOption;
-                serviceToUpdate.ServiceStatusList = new List<ServiceTypeStatus>() { };
-                var statusIdList = StatusConst.AddressOpt.None;
-                if (serviceToUpdate.AddressRequireOption.Equals(GlobalConstant.AddressOption.Destination))
-                {
-                    statusIdList = StatusConst.AddressOpt.Destination;
-                }
-                else if (serviceToUpdate.AddressRequireOption.Equals(GlobalConstant.AddressOption.Shipping))
-                {
-                    statusIdList = StatusConst.AddressOpt.Shipping;
-                }
+                statusIdList = StatusConst.AddressOpt.Destination;
+            }
+            else if (serviceToUpdate.AddressRequireOption.Equals(GlobalConstant.AddressOption.Shipping))
+            {
+                statusIdList = StatusConst.AddressOpt.Shipping;
+            }
 
-                foreach (var sId in statusIdList)
+            foreach (var sId in statusIdList)
+            {
+                serviceToUpdate.ServiceStatusList.Add(new()
                 {
-                    serviceToUpdate.ServiceStatusList.Add(new()
-                    {
-                        ServiceStatus = null!,
-                        ServiceType = null!,
-                        ServiceStatusId = sId,
-                        ServiceTypeId = serviceToUpdate.Id,
-                    });
-                }
-            }    
+                    ServiceStatus = null!,
+                    ServiceType = null!,
+                    ServiceStatusId = sId,
+                    ServiceTypeId = serviceToUpdate.Id,
+                });
+            }
 
             await _uow.SaveChangesAsync();
             return Ok(new
