@@ -3,6 +3,7 @@ using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.ServiceCategoryDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Dtos.UIElementDtos;
+using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Services;
 using DeToiServerCore.Models.SevicesUIElement;
@@ -119,6 +120,29 @@ namespace DeToiServer.Services.ServiceTypeService
         public async Task<ServiceType> AddWithRequirement(PostServiceTypeWithRequirementDto postServiceDto)
         {
             var service = _mapper.Map<ServiceType>(postServiceDto);
+
+            service.ServiceStatusList = new List<ServiceTypeStatus>() { };
+            var statusIdList = StatusConst.AddressOpt.None;
+            if (service.AddressRequireOption.Equals(GlobalConstant.AddressOption.Destination))
+            {
+                statusIdList = StatusConst.AddressOpt.Destination;
+            }
+            else if (service.AddressRequireOption.Equals(GlobalConstant.AddressOption.Shipping))
+            {
+                statusIdList = StatusConst.AddressOpt.Shipping;
+            }
+
+            foreach (var sId in statusIdList)
+            {
+                service.ServiceStatusList.Add(new()
+                {
+                    ServiceStatus = null!,
+                    ServiceType = null!,
+                    ServiceStatusId = sId,
+                    ServiceTypeId = service.Id,
+                });
+            }
+
             await _uow.ServiceTypeRepo.CreateAsync(service);
             return service;
         }
@@ -126,6 +150,13 @@ namespace DeToiServer.Services.ServiceTypeService
         public async Task<ServiceType> GetServiceTypeDetailWithRequirementsTracking(Guid id)
         {
             var rawDetail = await _uow.ServiceTypeRepo.GetServiceTypeDetailWithRequirementsTrackingAsync(id);
+
+            return rawDetail;
+        }
+
+        public async Task<ServiceType> UpdateServiceTypeStatuses(Guid serviceId, string addressOption)
+        {
+            var rawDetail = await _uow.ServiceTypeRepo.UpdateServiceTypeStatusAsync(serviceId, addressOption);
 
             return rawDetail;
         }

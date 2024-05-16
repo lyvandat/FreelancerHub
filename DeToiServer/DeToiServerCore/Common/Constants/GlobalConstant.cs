@@ -195,6 +195,19 @@
             Completed,
             Canceled,
         ];
+
+        public static class AddressOpt
+        {
+            public static readonly IEnumerable<Guid> None = [
+                Canceled, Created, OnMatching, Waiting, OnDoingService, Completed
+            ];
+            public static readonly IEnumerable<Guid> Destination = [
+                Canceled, Created, OnMatching, Waiting, OnMoving, Completed
+            ];
+            public static readonly IEnumerable<Guid> Shipping = [
+                Canceled, Created, OnMatching, Waiting, OnDelivering, Completed
+            ];
+        }
     }
 
     public static class ReportConst

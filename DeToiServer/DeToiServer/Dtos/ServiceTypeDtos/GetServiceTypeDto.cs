@@ -1,4 +1,5 @@
 ﻿using DeToiServer.Dtos.ServiceCategoryDtos;
+using DeToiServer.Dtos.ServiceStatusDtos;
 using DeToiServer.Dtos.UIElementDtos;
 
 namespace DeToiServer.Dtos.ServiceTypeDtos
@@ -26,6 +27,7 @@ namespace DeToiServer.Dtos.ServiceTypeDtos
         public ICollection<string> Keys { get; set; } = null!;
         public ICollection<UIElementServiceRequirementDto>? Requirements { get; set; }
         public ICollection<UIElementAdditionServiceRequirementDto>? AdditionalRequirements { get; set; }
+        public ICollection<GetServiceStatusDto> ServiceStatusList { get; set; } = null!;
     }
 
     public class GetServiceTypeWithCategoryDto

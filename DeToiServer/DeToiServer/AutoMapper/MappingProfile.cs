@@ -158,7 +158,9 @@ namespace DeToiServer.AutoMapper
             #region ServiceType and ServiceCategory
             CreateMap<GetServiceTypeDto, ServiceType>().ReverseMap();
             CreateMap<ServiceType, GetServiceTypeDetailDto>()
+                .ForMember(dest => dest.ServiceStatusList, opt => opt.MapFrom(src => src.ServiceStatusList.OrderBy(sts => sts.ServiceStatus.Priority)))
                 .ForMember(dest => dest.Keys, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<List<string>>(src.Keys)));
+
             CreateMap<PostServiceTypeDto, ServiceType>().ReverseMap();
             CreateMap<PutServiceTypeDto, ServiceType>().ReverseMap();
 

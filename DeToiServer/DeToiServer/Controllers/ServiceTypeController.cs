@@ -1,6 +1,7 @@
 using AutoMapper;
 using DeToiServer.Dtos.AccountDtos;
 using DeToiServer.Dtos.ServiceTypeDtos;
+using DeToiServer.Services.ServiceCategoryService;
 using DeToiServer.Services.ServiceTypeService;
 using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.CustomAttribute;
@@ -9,6 +10,7 @@ using DeToiServerCore.Models.Services;
 using DeToiServerCore.QueryModels.ServiceTypeQueryModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.SqlServer.Management.Smo.Wmi;
 using System.Security.Claims;
 
 namespace DeToiServer.Controllers
@@ -17,15 +19,18 @@ namespace DeToiServer.Controllers
     [Route("api/v1/service-type")]
     public class ServiceTypeController : Controller
     {
+        private readonly IServiceCategoryService _categoryService;
         private readonly IServiceTypeService _service;
         private readonly IMapper _mapper;
         private readonly UnitOfWork _uow;
 
         public ServiceTypeController(
+            IServiceCategoryService categoryService,
             IServiceTypeService service,
             IMapper mapper,
             UnitOfWork uow)
         {
+            _categoryService = categoryService;
             _service = service;
             _mapper = mapper;
             _uow = uow;
@@ -67,13 +72,14 @@ namespace DeToiServer.Controllers
             }
 
             // TODO: Check CategoryId
-            //if (!GlobalConstant.AddressOption.All.Contains(serviceTypeDto.AddressRequireOption))
-            //{
-            //    return BadRequest(new
-            //    {
-            //        Message = "Loại địa chỉ cho dịch vụ không đúng định dạng"
-            //    });
-            //}
+            var category = await _categoryService.GetServiceCategoryById(serviceTypeDto.ServiceCategoryId);
+            if (category == null)
+            {
+                return BadRequest(new
+                {
+                    Message = $"Không tìm được category với Id={serviceTypeDto.ServiceCategoryId}"
+                });
+            }
 
             var serviceType = await _service.AddWithRequirement(serviceTypeDto);
             await _uow.SaveChangesAsync();
@@ -98,19 +104,101 @@ namespace DeToiServer.Controllers
             }
 
             // TODO: Check CategoryId
-            //if (!(serviceTypeDto.AddressRequireOption))
+            //var category = await _categoryService.GetServiceCategoryByIdNoChild(putServiceTypeDto.ServiceCategoryId);
+            //if (category == null)
             //{
             //    return BadRequest(new
             //    {
-            //        Message = "Loại địa chỉ cho dịch vụ không đúng định dạng"
+            //        Message = $"Không tìm được category với Id={putServiceTypeDto.ServiceCategoryId}"
             //    });
             //}
 
+            if (!serviceToUpdate.AddressRequireOption.Equals(putServiceTypeDto.AddressRequireOption))
+            {
+                serviceToUpdate.AddressRequireOption = putServiceTypeDto.AddressRequireOption;
+                serviceToUpdate.ServiceStatusList = new List<ServiceTypeStatus>() { };
+                var statusIdList = StatusConst.AddressOpt.None;
+                if (serviceToUpdate.AddressRequireOption.Equals(GlobalConstant.AddressOption.Destination))
+                {
+                    statusIdList = StatusConst.AddressOpt.Destination;
+                }
+                else if (serviceToUpdate.AddressRequireOption.Equals(GlobalConstant.AddressOption.Shipping))
+                {
+                    statusIdList = StatusConst.AddressOpt.Shipping;
+                }
+
+                foreach (var sId in statusIdList)
+                {
+                    serviceToUpdate.ServiceStatusList.Add(new()
+                    {
+                        ServiceStatus = null!,
+                        ServiceType = null!,
+                        ServiceStatusId = sId,
+                        ServiceTypeId = serviceToUpdate.Id,
+                    });
+                }
+            }
+
             _mapper.Map(source: putServiceTypeDto, destination: serviceToUpdate);
+            
 
             await _uow.SaveChangesAsync();
             return Ok(new
             { 
+                Message = "Cập nhật dịch vụ thành công"
+            });
+        }
+
+        [HttpPut("address-option")]
+        public async Task<IActionResult> UpdateServiceAddressOption(PutServiceTypeAddressOptionDto putServiceTypeDto)
+        {
+            var serviceToUpdate = await _service.GetServiceTypeDetailWithRequirementsTracking(putServiceTypeDto.Id);
+
+            if (serviceToUpdate == null)
+            {
+                return BadRequest(new
+                {
+                    Message = $"Không tìm thấy Service với id:{putServiceTypeDto.Id}"
+                });
+            }
+
+            if (!GlobalConstant.AddressOption.All.Contains(putServiceTypeDto.AddressRequireOption))
+            {
+                return BadRequest(new
+                {
+                    Message = "Loại địa chỉ cho dịch vụ không đúng định dạng"
+                });
+            }
+
+            if (!serviceToUpdate.AddressRequireOption.Equals(putServiceTypeDto.AddressRequireOption))
+            {
+                serviceToUpdate.AddressRequireOption = putServiceTypeDto.AddressRequireOption;
+                serviceToUpdate.ServiceStatusList = new List<ServiceTypeStatus>() { };
+                var statusIdList = StatusConst.AddressOpt.None;
+                if (serviceToUpdate.AddressRequireOption.Equals(GlobalConstant.AddressOption.Destination))
+                {
+                    statusIdList = StatusConst.AddressOpt.Destination;
+                }
+                else if (serviceToUpdate.AddressRequireOption.Equals(GlobalConstant.AddressOption.Shipping))
+                {
+                    statusIdList = StatusConst.AddressOpt.Shipping;
+                }
+
+                foreach (var sId in statusIdList)
+                {
+                    serviceToUpdate.ServiceStatusList.Add(new()
+                    {
+                        ServiceStatus = null!,
+                        ServiceType = null!,
+                        ServiceStatusId = sId,
+                        ServiceTypeId = serviceToUpdate.Id,
+                    });
+                }
+            }    
+
+            await _uow.SaveChangesAsync();
+            return Ok(new
+            {
                 Message = "Cập nhật dịch vụ thành công"
             });
         }

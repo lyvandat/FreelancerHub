@@ -16,5 +16,6 @@ namespace DeToiServer.Services.ServiceTypeService
         public Task<GetServiceTypeDetailDto> GetServiceTypeDetailWithRequirements(Guid id);
         public Task<ServiceType> AddWithRequirement(PostServiceTypeWithRequirementDto postServiceDto);
         public Task<ServiceType> GetServiceTypeDetailWithRequirementsTracking(Guid id);
+        public Task<ServiceType> UpdateServiceTypeStatuses(Guid serviceId, string addressOption);
     }
 }

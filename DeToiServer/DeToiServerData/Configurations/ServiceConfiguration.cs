@@ -184,12 +184,12 @@ namespace DeToiServerData.Configurations
             builder.HasOne(sts => sts.ServiceType)
                 .WithMany(st => st.ServiceStatusList)
                 .HasForeignKey(sts => sts.ServiceTypeId)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(sts => sts.ServiceStatus)
                 .WithMany(s => s.ServiceStatusList)
                 .HasForeignKey(sts => sts.ServiceStatusId)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
