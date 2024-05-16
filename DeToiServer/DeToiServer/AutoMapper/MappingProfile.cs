@@ -72,14 +72,17 @@ namespace DeToiServer.AutoMapper
             CreateMap<Account, GetFreelanceAccountInOrderDto>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.FullName)));
 
-            CreateMap<Account, GetCustomerAccountDto>();
+            CreateMap<Account, GetCustomerAccountDto>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.FullName)))
+                .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.CountryCode)))
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.Phone)))
+                .ForMember(dest => dest.CombinedPhone, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.CombinedPhone)));
 
             CreateMap<Account, AccountDecryptedDto>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.FullName)))
                 .ForMember(dest => dest.CountryCode, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.CountryCode)))
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.Phone)))
                 .ForMember(dest => dest.CombinedPhone, opt => opt.MapFrom(src => AesEncryption.Decrypt(src.CombinedPhone)));
-
             #endregion
 
             #region Address
