@@ -5,6 +5,7 @@ using DeToiServer.Dtos.NotificationDtos;
 using DeToiServer.Dtos.OrderDtos;
 using DeToiServer.Dtos.RealTimeDtos;
 using DeToiServer.Models;
+using DeToiServer.Services.AccountService;
 using DeToiServer.Services.CacheService;
 using DeToiServer.Services.ChattingService;
 using DeToiServer.Services.CustomerAccountService;
@@ -16,6 +17,8 @@ using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Models.Accounts;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using static DeToiServerCore.Common.Helper.Helper;
+using User = DeToiServer.Models.User;
 
 namespace DeToiServer.RealTime
 {
@@ -23,6 +26,7 @@ namespace DeToiServer.RealTime
     {
         private readonly IFreelanceAccountService _freelancerService;
         private readonly ICustomerAccountService _customerService;
+        private readonly IAccountService _accService;
         private readonly IOrderManagementService _orderService;
         private readonly INotificationService _notificationService;
         private readonly IChattingService _chattingService;
@@ -38,6 +42,7 @@ namespace DeToiServer.RealTime
             DataContext context,
             IFreelanceAccountService freelancerService,
             ICustomerAccountService customerService,
+            IAccountService accService,
             IOrderManagementService orderService,
             INotificationService notificationService,
             IChattingService chattingService,
@@ -48,6 +53,7 @@ namespace DeToiServer.RealTime
         {
             _freelancerService = freelancerService;
             _customerService = customerService;
+            _accService = accService;
             _orderService = orderService;
             _notificationService = notificationService;
             _chattingService = chattingService;
@@ -59,6 +65,7 @@ namespace DeToiServer.RealTime
             _logger = logger;
         }
 
+        // Thông báo đơn mới đặt cho freelancer (Hiện đang không dùng)
         public async Task<RealtimeResponseDto> SendMessageToFreelancer(PostOrderDto order)
         {
             // Get freelance accounts that are in the acceptable zone.
@@ -127,6 +134,7 @@ namespace DeToiServer.RealTime
             };
         }
 
+        // tested - 16/5/2024
         public async Task<RealtimeResponseDto> SendReceiveOrderMessageToFreelancer(string freelancerPhone, GetOrderDto getOrderDto)
         {
             // Online users that are connecting to SignalR
@@ -157,6 +165,7 @@ namespace DeToiServer.RealTime
             };
         }
 
+        // Freelancer bao gia don - tested 16/5/2024
         public async Task<RealtimeResponseDto> SendMessageToCustomer(GetFreelancerAndPreviewPriceDto matchingFreelancer)
         {
             var freelancer = await _freelancerService.GetDetailWithStatistic(matchingFreelancer.FreelancerId);
@@ -396,6 +405,7 @@ namespace DeToiServer.RealTime
             };
         }
 
+        // not used currently
         public async Task SendFeasibleOrderToFreelancer(SendFeasibleOrderFreelancerDto orderData)
         {
             var userList = await _context.Users
@@ -500,7 +510,7 @@ namespace DeToiServer.RealTime
             if (receiveUser != null)
             {
                 var connectTo = await _context.Users.AsNoTracking().Include(u => u.Connections)
-                    .FirstOrDefaultAsync(user => user.Phone.Contains(receiveUser.Phone));
+                    .FirstOrDefaultAsync(user => user.Phone.Contains(receiveUser.CombinedPhone));
 
                 if (connectTo?.Connections != null)
                 {
@@ -533,7 +543,7 @@ namespace DeToiServer.RealTime
                 {
                     user = new User
                     {
-                        Phone = phone,
+                        Phone = AesEncryption.Encrypt(phone)!,
                         Connections = new List<Connection>()
                     };
                     _context.Users.Add(user);
@@ -546,13 +556,15 @@ namespace DeToiServer.RealTime
                     Connected = true
                 });
 
-                await _context.SaveChangesAsync();
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Real time connection error: " + ex.Message);
+                }
             }
-
-            //else
-            //{
-            //    await Groups.AddToGroupAsync(Context.ConnectionId, "guests");
-            //}
 
             await base.OnConnectedAsync();
         }

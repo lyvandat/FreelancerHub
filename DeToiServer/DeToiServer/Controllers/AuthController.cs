@@ -168,9 +168,7 @@ namespace DeToiServer.Controllers
             string formatedPhone = request.Phone[0].Equals('0') ? // request.Phone.Length == 10 && 
                 request.Phone[1..] : request.Phone;
             var account = await _accService
-                .GetByCondition(flc => (flc.Phone.Equals(formatedPhone)
-                    || flc.Phone.Substring(1).Equals(formatedPhone))
-                    && flc.CountryCode.Equals(request.CountryCode));
+                .GetByPhone(request.CountryCode, formatedPhone);
 
             if (account != null)
             {
@@ -193,11 +191,11 @@ namespace DeToiServer.Controllers
             {
                 Id = Guid.NewGuid(),
                 Email = string.Empty,
-                FullName = request.FullName ?? $"Freelancer_{DateTime.Now:yyyyMMdd}_VIE",
+                FullName = Helper.AesEncryption.Encrypt(request.FullName ?? $"Freelancer_{DateTime.Now:yyyyMMdd}_VIE"),
                 DateOfBirth = request.DateOfBirth,
-                CountryCode = request.CountryCode,
-                Phone = formatedPhone,
-                CombinedPhone = $"{request.CountryCode}{formatedPhone}",
+                CountryCode = Helper.AesEncryption.Encrypt(request.CountryCode),
+                Phone = Helper.AesEncryption.Encrypt(formatedPhone),
+                CombinedPhone = Helper.AesEncryption.Encrypt($"{request.CountryCode}{formatedPhone}"),
                 Role = GlobalConstant.UnverifiedFreelancer,
                 Avatar = request.Avatar,
                 Gender = request.Gender,
@@ -218,11 +216,11 @@ namespace DeToiServer.Controllers
                 Address = [
                     _mapper.Map<Address>(request.Address),
                 ],
-                IdentityNumber = AesEncryption.Encrypt(request.IdentityNumber, encryptToken),
+                IdentityNumber = AesEncryption.Encrypt(request.IdentityNumber),
                 IdentityCardImage = request.IdentityCardImage,
                 IdentityCardImageBack = request.IdentityCardImageBack,
-                Balance = AesEncryption.Encrypt("0", encryptToken),
-                SystemBalance = AesEncryption.Encrypt("0", encryptToken),
+                Balance = AesEncryption.Encrypt("0"),
+                SystemBalance = AesEncryption.Encrypt("0"),
                 EncriptingToken = encryptToken
             };
 
@@ -248,11 +246,11 @@ namespace DeToiServer.Controllers
             string formatedPhone = request.Phone[0].Equals('0') ? // request.Phone.Length == 10 && 
                 request.Phone[1..] : request.Phone;
             var freelance = await _accService
-                .GetByCondition(frl => (frl.Phone.Equals(formatedPhone)
-                    || frl.Phone.Substring(1).Equals(formatedPhone))
+                .GetByCondition(frl => (frl.Phone.Equals(Helper.AesEncryption.Encrypt(formatedPhone))
+                    || frl.Phone.Substring(1).Equals(Helper.AesEncryption.Encrypt(formatedPhone)))
                     && (new List<string>() { GlobalConstant.UnverifiedFreelancer, GlobalConstant.Freelancer })
                         .Contains(frl.Role)
-                    && frl.CountryCode.Equals(request.CountryCode));
+                    && frl.CountryCode.Equals(Helper.AesEncryption.Encrypt(request.CountryCode)));
 
             if (freelance == null)
             {
@@ -285,10 +283,7 @@ namespace DeToiServer.Controllers
         {
             string formatedPhone = request.Phone[0].Equals('0') ? // request.Phone.Length == 10 && 
                 request.Phone[1..] : request.Phone;
-            var rawAccount = await _accService
-                .GetByCondition(acc => (acc.Phone.Equals(formatedPhone)
-                    || acc.Phone.Substring(1).Equals(formatedPhone))
-                    && acc.CountryCode.Equals(request.CountryCode));
+            var rawAccount = await _accService.GetByPhone(request.CountryCode, formatedPhone);
 
             if (rawAccount != null 
                 && (rawAccount.Role.Equals(GlobalConstant.Freelancer)
@@ -307,10 +302,10 @@ namespace DeToiServer.Controllers
                 {
                     Id = Guid.NewGuid(),
                     Email = string.Empty,
-                    FullName = "Khách Hàng ẩn danh",
-                    CountryCode = request.CountryCode,
-                    Phone = formatedPhone,
-                    CombinedPhone = $"{request.CountryCode}{formatedPhone}",
+                    FullName = Helper.AesEncryption.Encrypt("Khách Hàng ẩn danh"),
+                    CountryCode = AesEncryption.Encrypt(request.CountryCode),
+                    Phone = AesEncryption.Encrypt(formatedPhone),
+                    CombinedPhone = AesEncryption.Encrypt($"{request.CountryCode}{formatedPhone}"),
                     Role = GlobalConstant.Customer,
                     Avatar = GlobalConstant.CustomerAvtMale,
                     IsVerified = true, // Temporary
@@ -436,10 +431,7 @@ namespace DeToiServer.Controllers
         {
             string formatedPhone = request.Phone[0].Equals('0') ?
                 request.Phone[1..] : request.Phone;
-            var account = await _accService
-                .GetByCondition(acc => (acc.Phone.Equals(formatedPhone) 
-                    || acc.Phone.Substring(1).Equals(formatedPhone))
-                    && acc.CountryCode.Equals(request.CountryCode));
+            var account = await _accService.GetByPhone(request.CountryCode, formatedPhone);
 
             if (account == null)
             {
@@ -491,9 +483,7 @@ namespace DeToiServer.Controllers
             string formatedPhone = request.Phone[0].Equals('0') ?
                 request.Phone[1..] : request.Phone;
             var account = await _accService
-                .GetByCondition(acc => (acc.Phone.Equals(formatedPhone)
-                    || acc.Phone.Substring(1).Equals(formatedPhone))
-                    && acc.CountryCode.Equals(request.CountryCode));
+                .GetByPhone(request.CountryCode, formatedPhone);
 
             if (account == null)
             {
@@ -549,47 +539,47 @@ namespace DeToiServer.Controllers
             });
         }
 
-        [HttpPost("login-social")]
-        public async Task<ActionResult<string>> LoginSocial(LoginSocialRequestDto request)
-        {
+        //[HttpPost("login-social")]
+        //public async Task<ActionResult<string>> LoginSocial(LoginSocialRequestDto request)
+        //{
 
-            //var account = await _accService.GetByCondition(acc => acc.Email.Equals(request.Email));
+        //    //var account = await _accService.GetByCondition(acc => acc.Email.Equals(request.Email));
 
-            //if (account == null)
-            //{
-            //    return NotFound(new
-            //    {
-            //        Message = "Tài khoản không tồn tại."
-            //    });
-            //}
+        //    //if (account == null)
+        //    //{
+        //    //    return NotFound(new
+        //    //    {
+        //    //        Message = "Tài khoản không tồn tại."
+        //    //    });
+        //    //}
 
-            //var hasOrigin = this.Request.Headers.TryGetValue("Origin", out var requestOrigin);
-            //if (!hasOrigin || !Helper.IsAuthorizedOrigin(requestOrigin.ToString(), account.Role))
-            //{
-            //    return BadRequest(new
-            //    {
-            //        message = "Tài khoản đang đăng nhập tại sai trang web!",
-            //    });
-            //}
+        //    //var hasOrigin = this.Request.Headers.TryGetValue("Origin", out var requestOrigin);
+        //    //if (!hasOrigin || !Helper.IsAuthorizedOrigin(requestOrigin.ToString(), account.Role))
+        //    //{
+        //    //    return BadRequest(new
+        //    //    {
+        //    //        message = "Tài khoản đang đăng nhập tại sai trang web!",
+        //    //    });
+        //    //}
 
-            //if (!VerifyPasswordHash(request.Password, Helper.StringToByteArray(account.PasswordHash), Helper.StringToByteArray(account.PasswordSalt)))
-            //{
-            //    return BadRequest(new
-            //    {
-            //        message = "Sai thông tin tài khoản",
-            //    });
-            //}
+        //    //if (!VerifyPasswordHash(request.Password, Helper.StringToByteArray(account.PasswordHash), Helper.StringToByteArray(account.PasswordSalt)))
+        //    //{
+        //    //    return BadRequest(new
+        //    //    {
+        //    //        message = "Sai thông tin tài khoản",
+        //    //    });
+        //    //}
 
-            //string token = CreateToken(account, account.Role);
-            //var refreshToken = GenerateRefreshToken();
-            //SetRefreshToken(refreshToken, account);
+        //    //string token = CreateToken(account, account.Role);
+        //    //var refreshToken = GenerateRefreshToken();
+        //    //SetRefreshToken(refreshToken, account);
 
-            //await _accService.Update(account);
+        //    //await _accService.Update(account);
 
-            //var res = await ValidateSocialToken(request);
+        //    //var res = await ValidateSocialToken(request);
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
         [HttpPost("refresh-token")]
         public async Task<ActionResult<string>> RefreshToken([Required] string refreshToken)

@@ -74,6 +74,7 @@
         public static class SqlFiles
         {
             public static readonly string DataFile = "insert_data.sql";
+            public static readonly string Procedure = "sql_procedure.sql";
         }
 
         public static class Quiz

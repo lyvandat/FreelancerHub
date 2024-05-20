@@ -49,7 +49,7 @@ namespace DeToiServer.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetAccountDto>>> GetAll()
         {
-            return Ok(await _accountService.GetAll());
+            return Ok(_mapper.Map<IEnumerable<AccountDecryptedDto>>(await _accountService.GetAll()));
         }
 
         [HttpGet("current-account"), Authorize]
@@ -82,7 +82,7 @@ namespace DeToiServer.Controllers
             }
 
             _mapper.Map(putAccountDto, account);
-            account.CombinedPhone = $"{putAccountDto.CountryCode}{putAccountDto.Phone}";
+            account.CombinedPhone = Helper.AesEncryption.Encrypt($"{putAccountDto.CountryCode}{putAccountDto.Phone}");
 
             var result = await _accountService.Update(account);
 
