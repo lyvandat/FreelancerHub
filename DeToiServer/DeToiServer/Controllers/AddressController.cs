@@ -146,13 +146,7 @@ namespace DeToiServer.Controllers
                 });
             }
 
-            address.Lat = putAddress.Lat;
-            address.Lon = putAddress.Lon;
-            address.AddressLine = putAddress.AddressLine;
-            address.Ward = putAddress.Ward;
-            address.District = putAddress.District;
-            address.Province = putAddress.Province;
-            address.Country = putAddress.Country;
+            _mapper.Map(source: putAddress, destination: address);
 
             if (!await _uow.SaveChangesAsync())
             {
