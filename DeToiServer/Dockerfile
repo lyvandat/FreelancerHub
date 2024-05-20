@@ -22,6 +22,7 @@ RUN dotnet publish "./DeToiServer.csproj" -c $BUILD_CONFIGURATION -o /app/publis
 FROM base AS final
 WORKDIR /app
 COPY ["/DeToiServer/insert_data.sql", "insert_data.sql"]
+COPY ["/DeToiServer/sql_jobs.sql", "sql_jobs.sql"]
 COPY --from=publish /app/publish .
 USER $APP_UID
 ENTRYPOINT ["dotnet", "DeToiServer.dll"]
