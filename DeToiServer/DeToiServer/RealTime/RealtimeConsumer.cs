@@ -22,6 +22,7 @@ namespace DeToiServer.RealTime
             try
             {
                 Connect().Wait();
+                _logger.LogInformation("Connect to real time hub successfully!");
             }
             catch(Exception ex)
             {
