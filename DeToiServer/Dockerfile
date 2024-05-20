@@ -23,4 +23,5 @@ FROM base AS final
 WORKDIR /app
 COPY ["/DeToiServer/insert_data.sql", "insert_data.sql"]
 COPY --from=publish /app/publish .
+USER $APP_UID
 ENTRYPOINT ["dotnet", "DeToiServer.dll"]
