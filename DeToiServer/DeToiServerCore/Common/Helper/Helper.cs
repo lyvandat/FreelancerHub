@@ -1,11 +1,6 @@
 ﻿using DeToiServerCore.Common.Constants;
-using System;
-using System.Formats.Asn1;
-using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace DeToiServerCore.Common.Helper
@@ -48,6 +43,14 @@ namespace DeToiServerCore.Common.Helper
             var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "detoidb";
             var dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "DeToiVN";
             var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD") ?? "Password@12345#";
+            return $"Data Source={dbHost};Initial Catalog={dbName};User ID=sa;Password={dbPassword};TrustServerCertificate=True;";
+        }
+
+        public static string GetProductionConnectionString()
+        {
+            var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "mssql-detoiserver-headless,1433";
+            var dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "DeToiVN";
+            var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD") ?? string.Empty;
             return $"Data Source={dbHost};Initial Catalog={dbName};User ID=sa;Password={dbPassword};TrustServerCertificate=True;";
         }
 
