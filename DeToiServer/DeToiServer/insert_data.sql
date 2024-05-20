@@ -35,6 +35,17 @@ INSERT INTO [Accounts] ([Id], [Email], [FullName], [DateOfBirth], [Gender], [Cou
 ('44baa879-e243-4593-93ea-bb3fd0f0aa44', '', N'ABshIQYQhRk6YITbGgJ40gV67atOJUanPePkKN/gEW0=', '1999-01-19', 'Male', 'c8zdyqXKZlW+g0/5lkMo7Q==', 'pnZk7NirVFPwyN+eC7lT9w==', 'cXktqgGxla+hU3rXJx7Z/w==', 'Customer', 'customer_avt/default_customer_2.jpg', 'string', 'default', '2024-05-03T14:11:26.884131', '2024-05-03 14:01:26.884131', '2024-05-03 14:11:26.884131', 1, 1, '463f47f36803bc1dad9574c21b2ebdd7'),
 ('9a9ffdf1-0cc7-4efc-80b7-d34524010af5', '', N'vRtS6S9mO8Tw8KbvqcQhGHKZB6Y50Lfa+yu6tPPuQ4g=', '1998-02-11', 'Male', 'c8zdyqXKZlW+g0/5lkMo7Q==', '7Pj1v/qf+bRNVL9UsTJIMw==', '92UFUWSMMpQIFk9ibG6GbA==', 'Customer', 'customer_avt/default_customer_1.jpg', 'string', 'default', '2024-04-13T20:27:27.323945', '2024-04-13 20:17:27.323945', '2024-04-13 20:27:27.323945', 1, 1, 'f693e22efce946df6e9a48975f656bef');
 
+UPDATE [Accounts] SET [FullName] = N'2Et4dcEjOkGxCdoLEV50X4jUisg3gtoRCw8ozV/Hf+0=', [CountryCode] = 'c8zdyqXKZlW+g0/5lkMo7Q==', [Phone] = 'kGKT99p/NdqJrN47OuaVVg==', [CombinedPhone] = '4GjxLTvIQTViYk5GsNfzIw=='
+WHERE [Id] = 'd466c2a7-44e7-457d-a1ff-40646c4cf2c4';
+UPDATE [Accounts] SET [FullName] = N'jM0LEIth166pwI1UxsVPhw4ghAFoZG80j84snk8oLTk=', [CountryCode] = 'c8zdyqXKZlW+g0/5lkMo7Q==', [Phone] =  'KNJdAPl7d+rITGgP1dpU6w==', [CombinedPhone] = 'mX0fTv1KB3o261JPunP4ag=='
+WHERE [Id] = '2695c848-8144-4a94-8d4d-763c5e768233';
+UPDATE [Accounts] SET [FullName] = N'yq2qdoGhFeI8dUXwWWtm8FygI5dcSzPjTBdavl8jXBk=', [CountryCode] = 'c8zdyqXKZlW+g0/5lkMo7Q==', [Phone] = 'lKYXWT0BPQwjA5gZeLqUTQ==', [CombinedPhone] = '1VL92fpPQAJROjvbGZgBNw=='
+WHERE [Id] = 'a7a76113-1a12-46c5-abec-01b0cccd1dde';
+UPDATE [Accounts] SET [FullName] = N'ABshIQYQhRk6YITbGgJ40gV67atOJUanPePkKN/gEW0=', [CountryCode] = 'c8zdyqXKZlW+g0/5lkMo7Q==', [Phone] = 'pnZk7NirVFPwyN+eC7lT9w==', [CombinedPhone] = 'cXktqgGxla+hU3rXJx7Z/w=='
+WHERE [Id] = '44baa879-e243-4593-93ea-bb3fd0f0aa44';
+UPDATE [Accounts] SET [FullName] = N'vRtS6S9mO8Tw8KbvqcQhGHKZB6Y50Lfa+yu6tPPuQ4g=', [CountryCode] = 'c8zdyqXKZlW+g0/5lkMo7Q==', [Phone] = '7Pj1v/qf+bRNVL9UsTJIMw==', [CombinedPhone] = '92UFUWSMMpQIFk9ibG6GbA=='
+WHERE [Id] = '9a9ffdf1-0cc7-4efc-80b7-d34524010af5';
+
 -- INSERT INTO [Accounts] ([Id], [Email], [FullName], [DateOfBirth], [Gender], [CountryCode], [Phone], [CombinedPhone], [Role], [Avatar], [RefreshToken], [LoginToken], [LoginTokenExpires], [TokenCreated], [TokenExpires], [IsActive], [IsVerified], [EncriptingToken]) VALUES
 -- ('d466c2a7-44e7-457d-a1ff-40646c4cf2c4', '', N'Hoàng Quỳnh Nhi', '1978-01-13', 'Female', '84', '123456789', '84123456789', 'Freelancer', 'customer_avt/default_customer_2.jpg', 'string', 'default', '2024-04-13T20:27:27.285403', '2024-04-13 20:17:27.285403', '2024-04-13 20:27:27.285403', 1, 1),
 -- ('2695c848-8144-4a94-8d4d-763c5e768233', '', N'Ngô Vũ Lan Ngọc', '2006-02-17', 'Female', '84', '337839146', '84337839146', 'Freelancer', 'customer_avt/default_customer_2.jpg', 'string', 'default', '2024-04-13T20:27:27.242395', '2024-04-13 20:17:27.242395', '2024-04-13 20:27:27.242395', 1, 1),
@@ -48,6 +59,9 @@ INSERT INTO [Accounts] ([Id], [Email], [FullName], [DateOfBirth], [Gender], [Cou
 -- Insert [Admin]
 INSERT INTO [Accounts] ([Id], [Email], [FullName], [DateOfBirth], [Gender], [CountryCode], [Phone], [CombinedPhone], [Role], [Avatar], [RefreshToken], [LoginToken], [LoginTokenExpires], [TokenCreated], [TokenExpires], [IsActive], [IsVerified], [EncriptingToken]) VALUES
 ('bcb27918-266c-4fc3-a65e-5860393c2f6d', 'detoi.ceo@gmail.com', N'7DGaYxZUyqEmT9XKHaXfkQ==', '1999-04-12', 'Male', 'c8zdyqXKZlW+g0/5lkMo7Q==', '', 'c8zdyqXKZlW+g0/5lkMo7Q==', 'Admin', 'customer_avt/default_customer_1.jpg', 'string', 'default', '2024-04-13T20:27:27.285403', '2024-04-13 20:17:27.285403', '2024-04-13 20:27:27.285403', 1, 1, 'b3a097d2793fbdbbeb406f71eec79b7a');
+UPDATE [Accounts] SET [FullName] = N'7DGaYxZUyqEmT9XKHaXfkQ==', [CountryCode] = 'c8zdyqXKZlW+g0/5lkMo7Q==', [Phone] = '', [CombinedPhone] = 'c8zdyqXKZlW+g0/5lkMo7Q=='
+WHERE [Id] = 'bcb27918-266c-4fc3-a65e-5860393c2f6d';
+
 INSERT INTO [Admins] ([Id], [AccountId], [PasswordHash], [PasswordSalt], [PasswordResetToken], [ResetTokenExpires]) VALUES
 ('c3ef4ecc-475c-44a4-9175-d020ebb78fa9',
 'bcb27918-266c-4fc3-a65e-5860393c2f6d',
@@ -56,11 +70,22 @@ INSERT INTO [Admins] ([Id], [AccountId], [PasswordHash], [PasswordSalt], [Passwo
 '2014',
 '2024-06-01T20:27:27.285403');
 
+INSERT INTO [Freelancers] ([Id], [AccountId], [Rating], [TotalReviewCount], [Balance], [SystemBalance], [OrderCount], [LoveCount], [PositiveReviewCount], [IdentityNumber], [IsTeam], [Description], [TeamMemberCount], [EncriptingToken]) VALUES
+('89291984-3389-4fe8-8f58-9ec54f17b5bc', 'd466c2a7-44e7-457d-a1ff-40646c4cf2c4', 0, 0, '3j1luM+9H0WF5zGaMSNxVg==', 'YHAYH/JHpJvtihH0j98ueQ==', 0, 0, 0, 'b4OrSVJyoblgAmzgJoZCBw==', 0, 'Beyond its particularly tree whom local tend. Artist truth trouble behavior style. Ability management test during foot that course nothing. Sound central myself before year. Your majority feeling fact by four two. White owner onto knowledge other.', 1, 'edaed910e11adb6e90fdf0213cb43d6a'),
+('75968ca3-4984-41ac-bbcd-dc899e4215b6', '2695c848-8144-4a94-8d4d-763c5e768233', 0, 0, '3j1luM+9H0WF5zGaMSNxVg==', 'BD4ctxBwPV9DD0tx/SrRiQ==', 0, 0, 0, 'LRazNM0o9NkF+YtmBb/8fg==', 1, 'Party prevent live. Quickly candidate change although. Together type music hospital. Every speech support time operation wear often.', 5, 'e89827082b676bc6d3e2b8c342f726b8'),
+('e7784f3c-b89c-4d7f-a2b6-4cc66e917535', 'a7a76113-1a12-46c5-abec-01b0cccd1dde', 0, 0, '3j1luM+9H0WF5zGaMSNxVg==', '/4xsfqX999BQ7YzbR07lOw==', 0, 0, 0, '7WXNpFIor5fuYWqBRhTXlg==', 1, 'Picture suddenly drug rule bring determine some forward. Beyond chair recently and. Plant view own available buy country store. Hospital have wonder already. Create wife responsibility. Decision song view age international big employee.', 3, '6a5f56e77cad1e4da5f7be38c82bb43f');
 
 INSERT INTO [Freelancers] ([Id], [AccountId], [Rating], [TotalReviewCount], [Balance], [SystemBalance], [OrderCount], [LoveCount], [PositiveReviewCount], [IdentityNumber], [IsTeam], [Description], [TeamMemberCount], [EncriptingToken]) VALUES
 ('89291984-3389-4fe8-8f58-9ec54f17b5bc', 'd466c2a7-44e7-457d-a1ff-40646c4cf2c4', 0, 0, '3j1luM+9H0WF5zGaMSNxVg==', 'YHAYH/JHpJvtihH0j98ueQ==', 0, 0, 0, 'b4OrSVJyoblgAmzgJoZCBw==', 0, 'Beyond its particularly tree whom local tend. Artist truth trouble behavior style. Ability management test during foot that course nothing. Sound central myself before year. Your majority feeling fact by four two. White owner onto knowledge other.', 1, 'edaed910e11adb6e90fdf0213cb43d6a'),
 ('75968ca3-4984-41ac-bbcd-dc899e4215b6', '2695c848-8144-4a94-8d4d-763c5e768233', 0, 0, '3j1luM+9H0WF5zGaMSNxVg==', 'BD4ctxBwPV9DD0tx/SrRiQ==', 0, 0, 0, 'LRazNM0o9NkF+YtmBb/8fg==', 1, 'Party prevent live. Quickly candidate change although. Together type music hospital. Every speech support time operation wear often.', 5, 'e89827082b676bc6d3e2b8c342f726b8'),
 ('e7784f3c-b89c-4d7f-a2b6-4cc66e917535', 'a7a76113-1a12-46c5-abec-01b0cccd1dde', 0, 0, '3j1luM+9H0WF5zGaMSNxVg==', '/4xsfqX999BQ7YzbR07lOw==', 0, 0, 0, '7WXNpFIor5fuYWqBRhTXlg==', 1, 'Picture suddenly drug rule bring determine some forward. Beyond chair recently and. Plant view own available buy country store. Hospital have wonder already. Create wife responsibility. Decision song view age international big employee.', 3, '6a5f56e77cad1e4da5f7be38c82bb43f');
+
+UPDATE [Freelancers] SET [Balance] = '3j1luM+9H0WF5zGaMSNxVg==', [SystemBalance] = 'YHAYH/JHpJvtihH0j98ueQ==', [IdentityNumber] = 'b4OrSVJyoblgAmzgJoZCBw=='
+WHERE [Id] = '89291984-3389-4fe8-8f58-9ec54f17b5bc';
+UPDATE [Freelancers] SET [Balance] = '3j1luM+9H0WF5zGaMSNxVg==', [SystemBalance] = 'BD4ctxBwPV9DD0tx/SrRiQ==', [IdentityNumber] = 'LRazNM0o9NkF+YtmBb/8fg=='
+WHERE [Id] = '75968ca3-4984-41ac-bbcd-dc899e4215b6';
+UPDATE [Freelancers] SET [Balance] = '3j1luM+9H0WF5zGaMSNxVg==', [SystemBalance] = '/4xsfqX999BQ7YzbR07lOw==', [IdentityNumber] = '7WXNpFIor5fuYWqBRhTXlg=='
+WHERE [Id] = 'e7784f3c-b89c-4d7f-a2b6-4cc66e917535';
 
 INSERT INTO [Customers] ([Id], [AccountId], [CustomerRank], [MemberPoint]) VALUES
 ('37dc6a4f-2544-4467-ac60-fd6dfbd99f8a', '44baa879-e243-4593-93ea-bb3fd0f0aa44', 'Unranked', 0),
