@@ -40,7 +40,7 @@ builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddServicesData();
 builder.Services.AddUnitOfWork(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("local_dev"))); 
+    options.UseSqlServer(Helper.GetProductionConnectionString())); 
 // builder.Configuration.GetConnectionString("local")
 // Helper.GetDockerConnectionString()
 
