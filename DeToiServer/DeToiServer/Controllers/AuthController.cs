@@ -135,7 +135,7 @@ namespace DeToiServer.Controllers
             {
                 Id = accId,
                 Email = request.Email,
-                FullName = $"Admin_{accId}",
+                FullName = Helper.AesEncryption.Encrypt($"Quản Trị Viên ẩn danh"),
                 Role = GlobalConstant.Admin,
                 Avatar = GlobalConstant.CustomerAvtMale,
                 IsVerified = true, // Temporary
