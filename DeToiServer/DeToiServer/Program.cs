@@ -3,11 +3,15 @@ global using DeToiServerData;
 using DeToiServer;
 using DeToiServer.AutoMapper;
 using DeToiServer.ConfigModels;
+using DeToiServer.CustomAttribute;
+using DeToiServer.Filters;
 using DeToiServer.Middlewares;
 using DeToiServer.RealTime;
 using DeToiServer.Services.CacheService;
 using DeToiServer.WorkerServices;
+using DeToiServerCore.Common.Constants;
 using DeToiServerCore.Common.Helper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -19,7 +23,29 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnCh
     .AddEnvironmentVariables();
 builder.Services.Configure<ApplicationSecretSettings>(builder.Configuration.GetSection("ApplicationSecrets"));
 
+// TODO: Need to clean, moving into Extension.cs
 builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState
+                .Where(e => e.Value != null && e.Value.Errors.Count > 0)
+                .Select(e => new ValidationErrorDto
+                {
+                    Field = e.Key.LowercaseFirstCharacter(),
+                    Error = e.Value!.Errors.First().ErrorMessage
+                }).ToList();
+
+            var response = new ValidationResponseDto
+            {
+                Message = GlobalConstant.DefaultValidationErrorResponse,
+                Errors = errors
+            };
+
+            return new BadRequestObjectResult(response);
+        };
+    })
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

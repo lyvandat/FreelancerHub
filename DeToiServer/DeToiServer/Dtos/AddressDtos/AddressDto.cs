@@ -1,4 +1,6 @@
-﻿namespace DeToiServer.Dtos.AddressDtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DeToiServer.Dtos.AddressDtos
 {
     public class AddressDto
     {

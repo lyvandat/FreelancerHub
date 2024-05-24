@@ -174,6 +174,14 @@ namespace DeToiServerCore.Common.Helper
             return char.ToLowerInvariant(className[0]) + className[1..];
         }
 
+        public static string LowercaseFirstCharacter(this string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            return char.ToLower(input[0]) + input.Substring(1);
+        }
+
         public class AesEncryption
         {
             private static readonly string Key = Environment.GetEnvironmentVariable("ENCRYPTION_KEY") 

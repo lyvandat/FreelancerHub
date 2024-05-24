@@ -34,6 +34,8 @@
         public const string UnauthorizeMessage = "Bạn phải đăng nhập để sử dụng dịch vụ của chúng tôi.";
         public const string NeedAuthorizeMessage = "Bạn chưa được phép sử dụng dịch vụ này.";
 
+        public const string DefaultValidationErrorResponse = "Có một hoặc nhiều lỗi trong dữ liệu gửi đến Server.";
+
         public static class OrderConst
         {
             public static readonly double DefaultRecommendPrice = 100000d;
