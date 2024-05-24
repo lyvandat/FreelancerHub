@@ -4,7 +4,7 @@ using DeToiServer.Dtos.ServiceTypeDtos;
 using DeToiServer.Services.ServiceCategoryService;
 using DeToiServer.Services.ServiceTypeService;
 using DeToiServerCore.Common.Constants;
-using DeToiServerCore.Common.CustomAttribute;
+using DeToiServerCore.CustomAttribute;
 using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Services;
 using DeToiServerCore.QueryModels.ServiceTypeQueryModels;

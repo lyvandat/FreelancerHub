@@ -15,7 +15,7 @@ using DeToiServer.Services.PaymentService;
 using DeToiServer.Services.ServiceTypeService;
 using DeToiServer.Services.UserService;
 using DeToiServerCore.Common.Constants;
-using DeToiServerCore.Common.CustomAttribute;
+using DeToiServerCore.CustomAttribute;
 using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models.Payment;
 using DeToiServerCore.QueryModels.OrderQueryModels;

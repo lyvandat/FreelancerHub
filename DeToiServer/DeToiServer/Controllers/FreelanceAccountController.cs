@@ -13,7 +13,7 @@ using DeToiServer.Services.NotificationService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServer.Services.PaymentService;
 using DeToiServerCore.Common.Constants;
-using DeToiServerCore.Common.CustomAttribute;
+using DeToiServerCore.CustomAttribute;
 using DeToiServerCore.Common.Helper;
 using DeToiServerCore.QueryModels.OrderQueryModels;
 using Microsoft.AspNetCore.Mvc;
@@ -77,7 +77,7 @@ namespace DeToiServer.Controllers
             return Ok(_mapper.Map<IEnumerable<GetFreelanceDto>>(freelance));
         }
 
-        [HttpGet("detail")] // , AuthorizeRoles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)
+        [HttpGet("detail")] // , Authorize]Roles(GlobalConstant.Freelancer, GlobalConstant.UnverifiedFreelancer)
         public async Task<ActionResult<GetFreelanceDto>> GetFreelancerDetail(Guid id)
         {
             var cacheData = _cacheService.GetData<GetFreelanceDto>($"Freelancer{id}");

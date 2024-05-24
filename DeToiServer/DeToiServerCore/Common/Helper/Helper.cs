@@ -59,6 +59,11 @@ namespace DeToiServerCore.Common.Helper
             return Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost";
         }
 
+        public static string GetGeocodingApiKey()
+        {
+            return Environment.GetEnvironmentVariable("ApplicationSecrets__GeoCoding__ApiKey") ?? "";
+        }
+
         public static string GetRealtimeConnectionString()
         {
             return Environment.GetEnvironmentVariable("MQ_HOST") != null

@@ -6,7 +6,7 @@ using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.FreelanceQuizService;
 using DeToiServer.Services.OrderManagementService;
 using DeToiServerCore.Common.Constants;
-using DeToiServerCore.Common.CustomAttribute;
+using DeToiServerCore.CustomAttribute;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

@@ -4,7 +4,7 @@ using DeToiServer.Dtos.PaymentDtos;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.PaymentService;
 using DeToiServerCore.Common.Constants;
-using DeToiServerCore.Common.CustomAttribute;
+using DeToiServerCore.CustomAttribute;
 using DeToiServerCore.Common.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Net.payOS;

@@ -4,11 +4,12 @@ using DeToiServer.Dtos.NotificationDtos;
 using DeToiServer.Services.AccountService;
 using DeToiServer.Services.NotificationService;
 using DeToiServerCore.Common.Constants;
-using DeToiServerCore.Common.CustomAttribute;
+using DeToiServerCore.CustomAttribute;
 using DeToiServerCore.Common.Helper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using DeToiServer.CustomAttribute;
 
 namespace DeToiServer.Controllers
 {
@@ -52,7 +53,7 @@ namespace DeToiServer.Controllers
             return Ok(_mapper.Map<IEnumerable<AccountDecryptedDto>>(await _accountService.GetAll()));
         }
 
-        [HttpGet("current-account"), Authorize]
+        [HttpGet("current-account"), AuthorizeRoles]
         public async Task<ActionResult<GetAccountDto>> GetCurrentAccount()
         {
             Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
@@ -67,7 +68,7 @@ namespace DeToiServer.Controllers
             return Ok(result);
         }
 
-        [HttpPut(""), Authorize]
+        [HttpPut(""), AuthorizeRoles]
         public async Task<ActionResult<int>> UpdateAccount(PutAccountDto putAccountDto)
         {
             _ = Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
@@ -98,7 +99,7 @@ namespace DeToiServer.Controllers
             });
         }
 
-        [HttpPut("ban"), Authorize(Roles = GlobalConstant.Admin)]
+        [HttpPut("ban"), AuthorizeRoles(GlobalConstant.Admin)]
         public async Task<IActionResult> BanAccount(BanAccountDto acc)
         {
             Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);
@@ -126,7 +127,7 @@ namespace DeToiServer.Controllers
             return Ok(accPage);
         }
 
-        [HttpGet("notification/all"), Authorize]
+        [HttpGet("notification/all"), AuthorizeRoles]
         public async Task<ActionResult<IEnumerable<GetNotificationDto>>> SearchAccount()
         {
             Guid.TryParse(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Sid)?.Value, out Guid accountId);

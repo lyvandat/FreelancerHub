@@ -5,7 +5,7 @@ using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FavoriteService;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServerCore.Common.Constants;
-using DeToiServerCore.Common.CustomAttribute;
+using DeToiServerCore.CustomAttribute;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;

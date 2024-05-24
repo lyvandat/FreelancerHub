@@ -4,7 +4,7 @@ using DeToiServer.Services.AccountService;
 using DeToiServer.Services.ChattingService;
 using DeToiServer.Services.NotificationService;
 using DeToiServerCore.Common.Constants;
-using DeToiServerCore.Common.CustomAttribute;
+using DeToiServerCore.CustomAttribute;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

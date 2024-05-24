@@ -19,6 +19,7 @@ using DeToiServer.Services.ServiceTypeService;
 using DeToiServer.Services.UIElementService;
 using DeToiServer.Services.UserService;
 using DeToiServerCore.Common.Constants;
+using DeToiServerCore.CustomAttribute;
 using DeToiServerData.Repositories;
 using DeToiServerData.Repositories.AccountCustomerRepo;
 using DeToiServerData.Repositories.AccountFreelanceRepo;
@@ -42,15 +43,46 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Swashbuckle.AspNetCore.Filters;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 using System.Threading.RateLimiting;
 
 namespace DeToiServerData
 {
+    public class SecurityRequirementsOperationFilter : IOperationFilter
+    {
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
+        {
+            var hasAuthorize = context.MethodInfo.DeclaringType!.GetCustomAttributes(true).OfType<AuthorizeRolesAttribute>().Any() ||
+                               context.MethodInfo.GetCustomAttributes(true).OfType<AuthorizeRolesAttribute>().Any();
+
+            if (hasAuthorize)
+            {
+                if (operation.Security == null)
+                    operation.Security = new List<OpenApiSecurityRequirement>();
+
+                var oauth2Scheme = new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "oauth2"
+                    }
+                };
+
+                operation.Security.Add(new OpenApiSecurityRequirement
+                {
+                    [oauth2Scheme] = new[] { "readAccess", "writeAccess" }
+                });
+            }
+        }
+    }
+
     public static class Extension
     {
         public static void AddCustomSwagger(this IServiceCollection services)

@@ -25,7 +25,7 @@ namespace DeToiServer.Controllers
         {
             _uow = uow;
             _mapper = mapper;
-            _apiKey = appSecret.Value.GeoCoding == null ? "" : appSecret.Value.GeoCoding.ApiKey;
+            _apiKey = appSecret.Value.GeoCoding == null ? Helper.GetGeocodingApiKey() : appSecret.Value.GeoCoding.ApiKey;
         }
 
         [HttpGet("reverse")]

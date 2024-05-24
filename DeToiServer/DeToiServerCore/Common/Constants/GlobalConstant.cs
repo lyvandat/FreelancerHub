@@ -26,11 +26,13 @@
         public const string DefaultCommentContent = "Người dùng không nhận xét.";
         public const int InMeters = 1000;
         public const int InKilometers = 1;
-        public const string GeoCodeDefault = "Dữ liệu bản đồ chưa có.";
+        public const string GeoCodeDefault = "";
         public const int DefaultDelayTime = 1000;
         public const int MinimumAgeRequired = 18;
 
         public const string MultipleDevicesLoginDetected = "LOGIN_MULTIPLE_DEVICES";
+        public const string UnauthorizeMessage = "Bạn phải đăng nhập để sử dụng dịch vụ của chúng tôi.";
+        public const string NeedAuthorizeMessage = "Bạn chưa được phép sử dụng dịch vụ này.";
 
         public static class OrderConst
         {
@@ -204,10 +206,10 @@
                 Canceled, Created, OnMatching, Waiting, OnDoingService, Completed
             ];
             public static readonly IEnumerable<Guid> Destination = [
-                Canceled, Created, OnMatching, Waiting, OnMoving, Completed
+                Canceled, Created, OnMatching, Waiting, OnMoving, OnDoingService, Completed
             ];
             public static readonly IEnumerable<Guid> Shipping = [
-                Canceled, Created, OnMatching, Waiting, OnDelivering, Completed
+                Canceled, Created, OnMatching, Waiting, OnMoving, OnDelivering, Completed
             ];
         }
     }

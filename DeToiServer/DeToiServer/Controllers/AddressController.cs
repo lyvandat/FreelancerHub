@@ -5,7 +5,7 @@ using DeToiServer.Services.AddressService;
 using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServerCore.Common.Constants;
-using DeToiServerCore.Common.CustomAttribute;
+using DeToiServerCore.CustomAttribute;
 using DeToiServerCore.Models.Accounts;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

@@ -12,7 +12,7 @@ using DeToiServer.Services.CustomerAccountService;
 using DeToiServer.Services.FreelanceAccountService;
 using DeToiServer.Services.NotificationService;
 using DeToiServerCore.Common.Constants;
-using DeToiServerCore.Common.CustomAttribute;
+using DeToiServerCore.CustomAttribute;
 using DeToiServerCore.Common.Helper;
 using DeToiServerCore.Models;
 using DeToiServerCore.Models.Accounts;
@@ -397,6 +397,7 @@ namespace DeToiServer.Controllers
             admin.ResetTokenExpires = DateTime.Now.AddMinutes(5);
             await _uow.SaveChangesAsync();
 
+            // TODO: Need implementation
             //string contentRootPath = _hostingEnvironment.ContentRootPath;
             //string folderPath = Path.Combine(contentRootPath, "EmailTemplate");
             //Setup mail
