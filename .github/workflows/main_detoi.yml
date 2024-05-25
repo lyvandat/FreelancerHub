@@ -23,10 +23,10 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet DeToiServer/DeToiServer.sln build --configuration Release
+        run: dotnet build DeToiServer/DeToiServer.sln --configuration Release
 
       - name: dotnet publish
-        run: dotnet DeToiServer/DeToiServer.sln publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish DeToiServer/DeToiServer.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
