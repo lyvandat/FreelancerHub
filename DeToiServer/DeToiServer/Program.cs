@@ -68,7 +68,7 @@ builder.Services.AddServicesData();
 builder.Services.AddUnitOfWork(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("local_dev"))); 
 // builder.Configuration.GetConnectionString("local")
-// Helper.GetDockerConnectionString()
+// Helper.GetDockerConnectionString() //test
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSignalR();
