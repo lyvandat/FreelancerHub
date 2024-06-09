@@ -284,7 +284,7 @@ namespace DeToiServer.Controllers
                 }, ignoredAccIds);
             }
             var getOrderDto = await _orderService.GetOrderDetailById(putOrder.OrderId);
-            await _rabbitMQConsumer.SendReceiveOrderMessageToFreelancer(freelancer, getOrderDto);
+            await _rabbitMQConsumer.SendReceiveOrderMessageToFreelancer(freelancer, putOrder.OrderId);
             return Ok(order);
         }
 

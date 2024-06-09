@@ -47,7 +47,7 @@ namespace DeToiServer.RealTime
             }
         }
 
-        public async Task SendReceiveOrderMessageToFreelancer(FreelanceAccount freelancer, GetOrderDto? getOrderDto)
+        public async Task SendReceiveOrderMessageToFreelancer(FreelanceAccount freelancer, Guid orderId)
         {
             try
             {
@@ -57,13 +57,7 @@ namespace DeToiServer.RealTime
                     return;
                 }
 
-                if (getOrderDto == null)
-                {
-                    _logger.LogError("Cannot send real time messages due to data error");
-                    return;
-                }
-
-                await _connectionSignalR.InvokeAsync("SendReceiveOrderMessageToFreelancer", freelancer.Account.CombinedPhone, getOrderDto);
+                await _connectionSignalR.InvokeAsync("SendReceiveOrderMessageToFreelancer", freelancer.Account.CombinedPhone, orderId);
             }
             catch (Exception ex)
             {

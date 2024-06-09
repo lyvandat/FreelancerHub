@@ -135,7 +135,7 @@ namespace DeToiServer.RealTime
         }
 
         // tested - 16/5/2024
-        public async Task<RealtimeResponseDto> SendReceiveOrderMessageToFreelancer(string freelancerPhone, GetOrderDto getOrderDto)
+        public async Task<RealtimeResponseDto> SendReceiveOrderMessageToFreelancer(string freelancerPhone, Guid orderId)
         {
             // Online users that are connecting to SignalR
             var users = await _context.Users
@@ -152,7 +152,7 @@ namespace DeToiServer.RealTime
                     {
                         foreach (var connection in user.Connections)
                         {
-                            await Clients.Client(connection.ConnectionId).ReceiveConfirmCustomerOrder(getOrderDto);
+                            await Clients.Client(connection.ConnectionId).ReceiveConfirmCustomerOrder(orderId);
                         }
                     }
                 }
@@ -161,7 +161,7 @@ namespace DeToiServer.RealTime
             return new RealtimeResponseDto
             {
                 Message = "Thành công.",
-                Data = getOrderDto
+                Data = orderId
             };
         }
 

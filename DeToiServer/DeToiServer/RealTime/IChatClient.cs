@@ -12,7 +12,7 @@ namespace DeToiServer.RealTime
         Task ReceiveFreelancerResponse(GetFreelanceMatchingDto matchingFreelancer);
         Task ReceiveFreelancerStatusResponse(UpdateOnMovingOrderStatusDto onMovingStatusDto);
         Task ReceiveFreelancerPositionResponse(UpdateMovingStatusDto onMovingStatusDto);
-        Task ReceiveConfirmCustomerOrder(GetOrderDto getOrderDto);
+        Task ReceiveConfirmCustomerOrder(Guid orderId);
         Task ReceiveFreelancerFeasibleOrder(GetOrderDto getOrderDto);
         Task ReceiveRealtimeMessageFromAccount(MessageDto message);
         Task ErrorOccurred(NotificationDto message);
